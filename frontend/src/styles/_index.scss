@@ -1,0 +1,16 @@
+/* ~~~~ bootstrap ~~~~ */
+@import 'bootstrap/scss/functions'; 
+@import 'bootstrap/scss/variables'; 
+@import 'bootstrap/scss/mixins'; 
+
+/* variables */
+@import 'variables';
+
+/* mixins */
+@import 'mixins';
+
+/* layouts */
+@import 'Layouts/layout';
+@import 'Layouts/header';
+@import 'Layouts/logo';
+
