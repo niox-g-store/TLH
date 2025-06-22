@@ -1,3 +1,8 @@
+.homeBanner {
+    position: relative;
+    top: calc(0% + -85px);
+}
+
 .videoContainer {
     video {
         @include media-breakpoint-down(md) {

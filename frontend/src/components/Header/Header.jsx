@@ -9,7 +9,7 @@ import {
   isLoggedIn,
 } from "../../../../Backend/auth";
 
-import { CiMenuFries } from "react-icons/ci";
+import { CgMenuRightAlt } from "react-icons/cg";
 import { IoMdClose } from "react-icons/io";
 import Dropdown from "../Others/DropDown";
 import DropdownConfirm from "../Others/DropDownConfirm";
@@ -18,6 +18,16 @@ const Header = () => {
   const [isActive, setActive] = useState(0);
   const [login, setlogin] = useState(0);
   const [user, setUser] = useState(undefined);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 100); // Trigger at 100px scroll (adjust as needed)
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     setlogin(isLoggedIn);
@@ -35,43 +45,26 @@ const Header = () => {
     });
   };
 
-  const styles={
-        bgColor: "white",
-        rowTitleColor: "black",
-        rowTitleTextSize: '16px',
-        rowContentColor: "#48484a",
-        rowContentTextSize: '15px',
-        rowContentPaddingTop: '5px',
-        rowContentPaddingBottom: '5px',
-        arrowColor: "black",
-  }
-
-  const config = {
-        animate: true,
-        tabFocus: true
-  };
-
   return (
     <>
-      <header>
+      <header className={scrolled ? "scrolled" : ""}>
         <div className="container">
           <div className="navigation">
             <div className="logo">
               <Link to="/">
-                <img src={MainLogo} alt="LogoImage" width="150" height="105" />
+                <div className="logo-image" alt="LogoImage" />
               </Link>
             </div>
             <div className="nav">
               <ul>
                 <li>
-                  <Link to="/">Home</Link>
+                  <Link to="/about">Discover Events</Link>
                 </li>
+
                 <li>
                   <Link to="/gallery">Gallery</Link>
                 </li>
-                <li>
-                  <Link to="/about">Events</Link>
-                </li>
+
                 <li>
                   <Link to="/events">Organizers</Link>
                 </li>
@@ -118,7 +111,7 @@ const Header = () => {
             )}
 
             <div className="menu-toggle" onClick={toggle}>
-              <CiMenuFries color={"white"} size={30}/>
+              <CgMenuRightAlt color={"white"} size={30}/>
             </div>
 
             <div className={`header-menu-mobile  ${isActive ? "show" : " "}`}>
@@ -130,17 +123,17 @@ const Header = () => {
               <div className="nav">
                 <ul>
                 <li>
-                  <Link to="/">Home</Link>
+                  <Link to="/about">Discover Events</Link>
                 </li>
+
                 <li>
                   <Link to="/gallery">Gallery</Link>
                 </li>
-                <li>
-                  <Link to="/about">Events</Link>
-                </li>
+
                 <li>
                   <Link to="/events">Organizers</Link>
                 </li>
+
                 <li>
                   <Dropdown parent={"Pages"}>
                     <Link to={"/about"}>About Us</Link>
@@ -149,12 +142,15 @@ const Header = () => {
                     <Link to={"/faq"}>FAQs</Link>
                   </Dropdown>
                 </li>
+
                 <li>
                   <Link to="/contactus">Blog</Link>
                 </li>
+
                 <li>
                   <Link to="/contactus">Contact Us</Link>
                 </li>
+
                 </ul>
               </div>
               <div className="buttons">
