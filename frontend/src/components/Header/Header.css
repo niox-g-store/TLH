@@ -2,6 +2,13 @@ header {
   background-color: var(--neutral_bg_color);
   padding: 0px 0;
 }
+
+
+@media (min-width: 1024px) {
+  header .container {
+    padding: 0 !important;
+  }
+}
 .navigation {
   display: flex;
   flex-wrap: wrap;
@@ -10,7 +17,7 @@ header {
 }
 
 .logo {
-  flex: 0 0 22%;
+  flex: 0 0 15%;
 }
 .nav {
   flex: 0 0 auto;
@@ -19,7 +26,7 @@ header {
 .nav > ul,
 .nav a {
   display: flex;
-  gap: 40px;
+  gap: 50px;
   list-style: none;
   text-decoration: none;
   color: var(--white);

@@ -81,6 +81,7 @@ video {
   border: 1px solid var(--primary_color);
   display: inline-block;
   color: var(--white);
+  width: max-content;
 }
 
 .button--secondary {
@@ -89,11 +90,13 @@ video {
   border-radius: 10px;
   padding: 10px 24px;
   display: inline-block;
+  width: max-content;
 }
 
 #button--secondary {
   display: inline-flex;
   align-items: center;
+  width: max-content;
 }
 #button--secondary span {
   margin-left: 10px;

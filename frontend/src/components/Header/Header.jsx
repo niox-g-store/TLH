@@ -10,6 +10,7 @@ import {
 } from "../../../../Backend/auth";
 
 import { CiMenuFries } from "react-icons/ci";
+import Dropdown from "../Others/DropDown";
 
 const Header = () => {
   const [isActive, setActive] = useState(0);
@@ -39,7 +40,7 @@ const Header = () => {
           <div className="navigation">
             <div className="logo">
               <Link to="/">
-                <img src={MainLogo} alt="LogoImage" width="120" height="90" />
+                <img src={MainLogo} alt="LogoImage" width="150" height="105" />
               </Link>
             </div>
             <div className="nav">
@@ -48,13 +49,21 @@ const Header = () => {
                   <Link to="/">Home</Link>
                 </li>
                 <li>
-                  <Link to="/about">About</Link>
+                  <Link to="/about">Events</Link>
                 </li>
                 <li>
-                  <Link to="/events">Events</Link>
+                  <Link to="/events">Organizers</Link>
                 </li>
                 <li>
-                  <Link to="/FAQs">FAQ s</Link>
+                  <Dropdown parent={"Pages"}>
+                    <Link to={"/about"}>About Us</Link>
+                    <Link to={"/terms"}>Terms & Conditions</Link>
+                    <Link to={"/privacy"}>Privacy Policy</Link>
+                    <Link to={"/faq"}>FAQs</Link>
+                  </Dropdown>
+                </li>
+                <li>
+                  <Link to="/contactus">Blog</Link>
                 </li>
                 <li>
                   <Link to="/contactus">Contact Us</Link>
@@ -78,11 +87,11 @@ const Header = () => {
               </div>
             ) : (
               <div className="buttons">
-                <Link to="/login" className="button--secondary">
+                <Link to="/login" className="button">
                   Log In
                 </Link>
-                <Link to="/signup" className="button">
-                  Sign Up
+                <Link to="/signup" className="button--secondary">
+                  Register an event
                 </Link>
               </div>
             )}
