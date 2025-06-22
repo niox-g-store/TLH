@@ -1,0 +1,14 @@
+{
+  "name": "first-react-app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "install": "npm run install-all",
+    "install-all": "cd frontend && npm install && cd ../backend && npm install",
+    "dev": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "cd frontend && npm run preview"
+  }
+}

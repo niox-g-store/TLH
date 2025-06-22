@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "../../../global.css";
 import "./Card.css";
-import { isLoggedIn, getCurrentUserDetail } from "../../../../Backend/auth";
+//import { isLoggedIn, getCurrentUserDetail } from "../../../../Backend/auth";
 import { useNavigate } from "react-router-dom";
 const Card = (props) => {
   const [eventsData, setEventsData] = useState([]);
   const navigate = useNavigate();
 
-  const currentUser = getCurrentUserDetail();
+  const currentUser = getCurrentUserDetail() ?? null;
 
   const userID = currentUser ? currentUser.id : null; // Assuming your user ID is stored as 'id' in the currentUser object
   console.log(userID, "UserID");
@@ -34,11 +34,11 @@ const Card = (props) => {
   const register = async (eventId, userID) => {
     try {
       // Check if user is authenticated
-      if (!isLoggedIn()) {
+      /*if (!isLoggedIn()) {
         // Redirect to login page
         navigate("/login"); // Adjust the login page URL as needed
         return;
-      }
+      }*/
       console.log(userID, "Inside User iD");
       const response = await fetch("http://localhost:3000/register-event", {
         method: "POST",
