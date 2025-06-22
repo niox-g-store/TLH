@@ -73,7 +73,6 @@ header.scrolled {
   position: relative;
   padding: 12px 0;
   transition: all 0.3s;
-  border-bottom: 1px solid var(--primary_color);
 }
 
 .nav > ul > li:before {
@@ -224,6 +223,12 @@ header.scrolled {
     flex-direction: row;
     justify-content: space-around;
   }
+  .header-menu-mobile .nav > ul > li {
+    position: relative;
+    padding: 12px 0;
+    transition: all 0.3s;
+    border-bottom: 1px solid var(--primary_color);
+}
 }
 
 @media (max-width: 768px) {
