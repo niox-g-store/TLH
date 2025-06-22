@@ -64,7 +64,7 @@
     display: inline-block;
 }
 .n-button:focus {
-    pointer-events: none;
+    outline: none;
 }
 
 .n-button:focus ~ .n-dropdown{
