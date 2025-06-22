@@ -73,6 +73,7 @@ header.scrolled {
   position: relative;
   padding: 12px 0;
   transition: all 0.3s;
+  border-bottom: 1px solid var(--primary_color);
 }
 
 .nav > ul > li:before {
@@ -120,7 +121,6 @@ header.scrolled {
   right: -100%;
   background: var(--bg-secondary);
   width: 100%;
-  max-width: 320px;
   padding:30px 20px;
   opacity: 0;
   visibility: hidden;
@@ -214,14 +214,15 @@ header.scrolled {
   .header-menu-mobile ul {
     display: flex;
     flex-direction: column;
-    gap: 1em;
+    gap: 1.5em;
   }
 
   .navigation .header-menu-mobile.show .buttons {
     display: flex;
-    flex-direction: column;
     align-items: flex-start;
     margin-top: 5em;
+    flex-direction: row;
+    justify-content: space-around;
   }
 }
 
