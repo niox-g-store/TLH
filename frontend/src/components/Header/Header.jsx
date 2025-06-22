@@ -9,6 +9,8 @@ import {
   isLoggedIn,
 } from "../../../../Backend/auth";
 
+import { CiMenuFries } from "react-icons/ci";
+
 const Header = () => {
   const [isActive, setActive] = useState(0);
   const [login, setlogin] = useState(0);
@@ -37,7 +39,7 @@ const Header = () => {
           <div className="navigation">
             <div className="logo">
               <Link to="/">
-                <img src={MainLogo} alt="LogoImage" width="150" height="100" />
+                <img src={MainLogo} alt="LogoImage" width="120" height="90" />
               </Link>
             </div>
             <div className="nav">
@@ -86,7 +88,7 @@ const Header = () => {
             )}
 
             <div className="menu-toggle" onClick={toggle}>
-              <span></span>
+              <CiMenuFries color={"white"} size={30}/>
             </div>
 
             <div className={`header-menu-mobile  ${isActive ? "show" : " "}`}>
