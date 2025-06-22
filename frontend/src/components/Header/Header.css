@@ -94,7 +94,7 @@ header {
   top: 0;
   bottom: 0;
   right: -100%;
-  background: #27282e;
+  background: var(--bg-secondary);
   width: 100%;
   max-width: 320px;
   padding: 20px;
