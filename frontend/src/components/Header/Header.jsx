@@ -12,6 +12,7 @@ import {
 import { CiMenuFries } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
 import Dropdown from "../Others/DropDown";
+import DropdownConfirm from "../Others/DropDownConfirm";
 
 const Header = () => {
   const [isActive, setActive] = useState(0);
@@ -32,6 +33,22 @@ const Header = () => {
       setlogin(false);
       console.log("Logout");
     });
+  };
+
+  const styles={
+        bgColor: "white",
+        rowTitleColor: "black",
+        rowTitleTextSize: '16px',
+        rowContentColor: "#48484a",
+        rowContentTextSize: '15px',
+        rowContentPaddingTop: '5px',
+        rowContentPaddingBottom: '5px',
+        arrowColor: "black",
+  }
+
+  const config = {
+        animate: true,
+        tabFocus: true
   };
 
   return (
@@ -56,7 +73,7 @@ const Header = () => {
                   <Link to="/events">Organizers</Link>
                 </li>
                 <li>
-                  <Dropdown parent={"Pages"}>
+                  <Dropdown type={"hover"} parent={"Pages"}>
                     <Link to={"/about"}>About Us</Link>
                     <Link to={"/terms"}>Terms & Conditions</Link>
                     <Link to={"/privacy"}>Privacy Policy</Link>

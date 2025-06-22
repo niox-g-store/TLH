@@ -38,3 +38,74 @@
 .dropdown:hover .dropdown-content {
   display: block;
 }
+
+
+
+
+
+
+.n-button{
+    background-color: inherit;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: inherit;
+    user-select: none;
+    transition: .2s;
+    display: flex;
+    align-items: center;
+    gap: .25em;
+}
+
+.n-button i{
+    transition: .3s ease-in-out;
+    margin-left: 10px;
+    position: relative;
+    display: inline-block;
+}
+.n-button:focus {
+    pointer-events: none;
+}
+
+.n-button:focus ~ .n-dropdown{
+    top: calc(100% + 10px);
+    pointer-events: auto;
+    opacity: 1;
+    display: block;
+}
+.n-button:focus i{
+    transform: rotate(180deg);
+}
+
+.n-dropdown-container {
+    position: relative;
+}
+
+.n-dropdown {
+    top: calc(100% + 20px);
+    width: 100%;
+    border-radius: 10px;
+    transition: .3s ease-in-out;
+    pointer-events: none;
+    padding: 5px;
+    background: var(--neutral_bg_color);
+    opacity: 0;
+    display: none;
+}
+
+.n-dropdown a{
+    text-decoration: none;
+    border-radius: 5px;
+    user-select: none;
+    font-size: 14px;
+    padding: 10px 20px;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    color: #fff;
+    transition: .2s;
+}
+.n-dropdown a:hover {
+    background-color: var(--primary_color);
+    color: white;
+}
