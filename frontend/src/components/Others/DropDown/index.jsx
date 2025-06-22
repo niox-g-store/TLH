@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import "./styles.css";
 import { MdKeyboardArrowDown } from "react-icons/md";
+import { useState } from "react";
 
 const Dropdown = (props) => {
     const { parent, children, type } = props;
+    const [open, setOpen] = useState(false);
     if (type === 'hover') {
         return (
             <div className="dropdown">
@@ -15,14 +17,23 @@ const Dropdown = (props) => {
         );
     }
 
-    return (
-        <div className="n-dropdown-container">
-            <button className="n-button">{parent}<MdKeyboardArrowDown /></button>
-            <div className="n-dropdown">
-                {children}
-            </div>
-        </div>
-    )
+  return (
+    <div className="n-dropdown-container">
+      <button
+        className="n-button"
+        onClick={() => setOpen((prev) => !prev)}
+        aria-expanded={open}
+      >
+        {parent}
+        <MdKeyboardArrowDown
+          style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)", transition: ".3s" }}
+        />
+      </button>
+      <div className="n-dropdown" style={{ display: open ? "block" : "none", opacity: open ? 1 : 0 }}>
+        {children}
+      </div>
+    </div>
+  );
 }
 
 export default Dropdown;
