@@ -190,7 +190,7 @@ header {
   .header-menu-mobile ul {
     display: flex;
     flex-direction: column;
-    gap: 0;
+    gap: 1em;
   }
 
   .navigation .header-menu-mobile.show .buttons {
