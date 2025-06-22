@@ -87,7 +87,7 @@
     border-radius: 10px;
     transition: .3s ease-in-out;
     pointer-events: none;
-    padding: 5px;
+    padding: 10px 5px 0px 5px;
     background: var(--neutral_bg_color);
     opacity: 0;
     display: none;

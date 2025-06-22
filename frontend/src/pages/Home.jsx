@@ -16,11 +16,11 @@ const Home = () => {
     <>
     <HomeBanner />
       <HeroBanner
-        heading="Reliable, secure conference to get the best events"
-        desc="Hold incredible events, share knowledge, build and grow your product , create opportunity"
+        heading="Discover The Link Hangouts Experience"
+        desc="Your plug for premium hangouts, parties, and good times."
         bannerImage={bannerImage}
-        PButton={<PButton content="Create Conference" />}
-        SButton={<SButton content="Watch Story" />}
+        PButton={<PButton content="View Events" />}
+        SButton={<SButton content="Gallery" />}
       />
 
       <BrandSection />
