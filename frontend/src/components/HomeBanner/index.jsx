@@ -5,7 +5,8 @@ const HomeBanner = () => {
         <div className="homeBanner">
             <div className="videoContainer">
                 <video autoPlay muted playsInline loop>
-                    <source src={"/uploads/videos/purple.webm"} type="video/mp4"></source>
+                    <source src={"/uploads/videos/purple.webm"} type="video/webm"></source>
+                    <source src={"/uploads/videos/purple.mp4"} type="video/mp4"></source>
                 </video>
             </div>
         </div>
