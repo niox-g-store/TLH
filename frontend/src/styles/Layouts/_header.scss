@@ -1,6 +1,14 @@
+.header-information {
+    width: 100%;
+    background-color: black;
+    color: #fff;
+}
+
+
 header {
     // background-color: $other-color;
     height: fit-content;
+    padding: 15px;
     .lg {
         @include media-breakpoint-down(lg) {
             display: none;
@@ -28,9 +36,17 @@ header {
     }
 
     .md {
-        display: none;
         @include media-breakpoint-down(lg) {
             display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        display: none;
+
+        .row-1 {
+            .menu-icon {
+                cursor: pointer;
+            }
         }
     }
 }

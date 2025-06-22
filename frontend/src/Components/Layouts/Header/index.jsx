@@ -1,15 +1,20 @@
 import React from 'react';
 import { connect } from "react-redux";
 import { Routes, Route } from "react-router-dom";
+import { CiMenuFries } from "react-icons/ci";
+import { IoMdQrScanner } from "react-icons/io";
 
 import { STORE_NAME } from '../../../constants';
 import Logo from '../Logo';
 import HyperLink from '../../HtmlTags/Link';
 import Button from '../../HtmlTags/Button';
+import HeaderInformation from '../HeaderInformation';
 
 class Header extends React.PureComponent {
     render() {
         return (
+            <>
+            <HeaderInformation />
             <header>
                 <div className='lg'>
                     <div className='row-1'>
@@ -34,13 +39,20 @@ class Header extends React.PureComponent {
 
                 <div className='md'>
                     <div className='row-1'>
-                        <Logo />
+                        <CiMenuFries className='menu-icon' size={30}/>
                     </div>
 
                     <div className='row-2'>
+                        <Logo size={30}/>
                     </div>
+
+                    <div className='row-3'>
+                        <IoMdQrScanner size={25}/>
+                    </div>
+
                 </div>
             </header>
+            </>
         )
     }
 

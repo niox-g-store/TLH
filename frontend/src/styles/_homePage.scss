@@ -1,0 +1,9 @@
+.videoContainer {
+    video {
+        @include media-breakpoint-down(md) {
+            aspect-ratio: 9/16;
+        }
+        width: 100%;
+        object-fit: cover;
+    }
+}
