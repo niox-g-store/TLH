@@ -23,6 +23,40 @@
   max-width: 100%;
   text-align: right;
 }
+
+.col-banner-image {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 columns */
+  grid-template-rows: repeat(2, 1fr);    /* 2 rows */
+  gap: 8px;
+  max-width: 100%;
+  margin: 0 auto;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.col-banner-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 50%;
+}
+
+.banner-image-0 {
+padding: 25px;
+}
+
+.banner-image-1 {
+}
+
+.banner-image-2 {
+}
+
+.banner-image-3 {
+  padding: 25px;
+}
+
 .hero-banner .row-banner-btns {
   margin-top: 56px;
 }

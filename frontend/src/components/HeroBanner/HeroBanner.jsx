@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 
 const HeroBanner = (props) => {
   const maxWidth = props.imgMaxWidth;
+  const { bannerImage } = props;
 
   return (
     <>
@@ -25,11 +26,9 @@ const HeroBanner = (props) => {
               </div>
             </div>
             <div className="col-banner-image" data-aos="fade-up">
-              <img
-                src={props.bannerImage}
-                style={{ maxWidth }}
-                alt="hero-banner-image"
-              />
+              {bannerImage.map((element, index) => (
+                <img className={`banner-image-${index}`} data-aos="fade-up" data-aos-delay="600" key={index} src={element} style={{ maxWidth }} alt="banner-image" />
+              ))}
             </div>
           </div>
         </div>

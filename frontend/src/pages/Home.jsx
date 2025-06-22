@@ -11,14 +11,21 @@ import PButton from "../../src/components/PrimaryButton/PButton";
 import SButton from "../../src/components/SecondaryButton/SButton";
 import HomeBanner from "../components/HomeBanner";
 
+// events images
+import event1 from "../assets/events/event_1.png";
+import event2 from "../assets/events/event_2.png";
+import event3 from "../assets/events/event_3.jpeg";
+import event4 from "../assets/events/event_4.jpeg";
+
 const Home = () => {
+  const eventImages =  [event1, event2, event3, event4];
   return (
     <>
     <HomeBanner />
       <HeroBanner
         heading="Discover The Link Hangouts Experience"
         desc="Your plug for premium hangouts, parties, and good times."
-        bannerImage={bannerImage}
+        bannerImage={eventImages}
         PButton={<PButton content="View Events" />}
         SButton={<SButton content="Gallery" />}
       />
