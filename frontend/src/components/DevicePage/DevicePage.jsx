@@ -4,7 +4,7 @@ import ConfImg from "../../assets/confernce-image.svg";
 import video1 from "../../assets/video/sample-video-1.mp4";
 import Button from "../HtmlTags/Button";
 import { Link } from "react-router-dom";
-import ModalImg from "../../assets/events/event_5.jpeg";
+import ModalImg from "../../assets/events/event_5.jpg";
 
 const DevicePage = () => {
   const [state, setState] = useState(null);

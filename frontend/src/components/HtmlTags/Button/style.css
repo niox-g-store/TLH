@@ -1,5 +1,6 @@
-.button-container {
-
+.button-container button {
+    font-family: inherit;
+    letter-spacing: 2px;
 }
 
 .btn-primary {
