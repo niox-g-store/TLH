@@ -63,7 +63,7 @@ const DevicePage = () => {
               <h2 className="h2-content">
                 Got an event coming up?
               </h2>
-              <p className="p-content">
+              <p className="p-content p-info">
                 Create your event, choose ticket types like Regular or VIP, set your prices, and start selling tickets instantly. Share your event link and manage everything from one place.
               </p>
               <Link to="/create-event"><Button type={"secondary"} text={"Create Event"}/></Link>

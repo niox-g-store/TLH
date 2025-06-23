@@ -1,5 +1,5 @@
 .all-featuers {
-  background-color: #0f1017;
+  background-color: var(--primary_color);
   background-image: url("../../assets/Maskgroup.svg");
   padding: 6.593rem 0;
 }

@@ -32,7 +32,7 @@ const Home = () => {
 
       <BrandSection />
       <DevicePage />
-      <Conference />
+      {/*<Conference />*/}
       <AllFeatures />
       <Benefits />
       <GettingMsg />

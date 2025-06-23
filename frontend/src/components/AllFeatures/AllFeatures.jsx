@@ -1,5 +1,5 @@
 import React from "react";
-import features from "../../assets/features.png";
+import features from "../../assets/events/event_6.jpg";
 import "../AllFeatures/AllFeatures.css";
 
 const AllFeatures = () => {
@@ -9,42 +9,42 @@ const AllFeatures = () => {
         <div className="container">
           <div className="all-features-row-wrapper">
             <div className="col-features-content">
-              <p className="p-content p-all-features ff h6" data-aos="fade-up">
+              <p className="p-info p-all-features ff h6" data-aos="fade-up">
                 All Features
               </p>
               <h2 className="h2-content h2-all-features" data-aos="fade-up">
-                Video calls loved by extraordinary teams.
+                Everything You Need to Host Events
               </h2>
-              <p className="p-content p-all-features" data-aos="fade-up">
-                Making hybrid conference inclusive with unique audio technology.
+              <p className="p-info p-all-features" data-aos="fade-up">
+                From ticketing to promotion, we give you all the tools to host events that sell out and stand out.
               </p>
               <div className="list-tags">
                 <ul className="ul-all-features p-all-features">
                   <li data-aos="fade-right">
-                    <a href="#">Intergration with google meet</a>
+                    <p className="p-white"> Create Custom Tickets</p>
                   </li>
                   <li data-aos="fade-right">
-                    <a href="#">Get data event analytics </a>
+                    <p className="p-white"> Get Event Analytics </p>
                   </li>
                   <li data-aos="fade-right">
-                    <a href="#">Protect events with a passcode</a>
+                    <p className="p-white"> Secure Online Payments</p>
                   </li>
                 </ul>
                 <ul className="ul-all-features">
                   <li data-aos="fade-right">
-                    <a href="#">Messages with participation</a>
+                    <p className="p-white"> On-Site Ticket Scanning</p>
                   </li>
                   <li data-aos="fade-right">
-                    <a href="#">Advanced Q&A settings </a>
+                    <p className="p-white"> Send real-time updates, reminders, directly to registered attendees.</p>
                   </li>
                   <li data-aos="fade-right">
-                    <a href="#">Crowdsource questions </a>
+                    <p className="p-white"> Create custom discount codes And Coupons To Reward Your Audience </p>
                   </li>
                 </ul>
               </div>
             </div>
             <div className="col-features-image" data-aos="fade-up">
-              <img src={features} alt="features-image" />
+              <img className="border-10" src={features} alt="features-image" />
             </div>
           </div>
         </div>

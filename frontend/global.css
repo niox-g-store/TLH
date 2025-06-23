@@ -140,6 +140,17 @@ select {
   position: relative;
 }
 
+.p-info {
+  font-size: 20px;
+}
+.p-white {
+  color: #fff !important;
+}
+
+.border-10 {
+  border-radius: 10px;
+}
+
 @media (max-width: 1024px) {
   h1,
   .h1 {

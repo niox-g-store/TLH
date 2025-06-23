@@ -13,7 +13,7 @@ const HeroBanner = (props) => {
           <div className="row-wrapper-content-with-image">
             <div className="col-banner-content ">
               <h1 data-aos="fade-up">{props.heading}</h1>
-              <p data-aos="fade-up" data-aos-delay="600">
+              <p className="p-info" data-aos="fade-up" data-aos-delay="600">
                 {props.desc}
               </p>
               <div
