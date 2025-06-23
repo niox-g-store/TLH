@@ -148,6 +148,10 @@ const Header = () => {
                 </li>
 
                 <li>
+                  <Link to="/whatsapp">Join the chat room</Link>
+                </li>
+
+                <li>
                   <Link to="/contactus">Contact Us</Link>
                 </li>
 
