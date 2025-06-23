@@ -1,3 +1,7 @@
+footer {
+  background-color: var(--bg-secondary);
+}
+
 .footer-row-wrapper {
   display: flex;
   flex-wrap: wrap;

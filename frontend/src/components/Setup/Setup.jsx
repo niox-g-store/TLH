@@ -9,11 +9,10 @@ const Setup = () => {
           <div className="setup-row-wrapper" data-aos="fade-up">
             <div className="col-setup-content">
               <h2 className="h2-all-features" data-aos="fade-up">
-                Ready to setup your next conference?
+                ARE YOU AN EVENT ORGANIZER?
               </h2>
               <p className="p-all-features h2-all-features" data-aos="fade-up">
-                Build opportunities for future opportunities for products,
-                startups.
+                Host and manage your events with us!
               </p>
             </div>
             <div className="col-setup-buttons">
@@ -23,14 +22,14 @@ const Setup = () => {
                   className="button"
                   data-aos="fade-up"
                   data-aos-delay="300">
-                  Create Conference
+                  Create Event
                 </a>
                 <a
                   href="#"
                   className="button--secondary"
                   data-aos="fade-up"
                   data-aos-delay="500">
-                  Watch Story{" "}
+                  Join The Chat Room{" "}
                 </a>
               </div>
             </div>

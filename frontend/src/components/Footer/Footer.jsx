@@ -1,5 +1,5 @@
 import React from "react";
-import ftrlogo from "../../assets/ftr-logo.png";
+import ftrlogo from "../../assets/logo.png";
 import Share from "../../assets/Share.png";
 import "./Footer.css";
 
@@ -11,64 +11,60 @@ const Footer = () => {
           <div className="footer-row-wrapper">
             <div className="col-ftr-logo">
               <a href="#">
-                <img src={ftrlogo} alt="ftr-logo-eventup" />
+                <img className="width-100" src={ftrlogo} alt="logo" />
               </a>
             </div>
             <div className="col-ftr-links">
               <div className="col-links-p">
-                <h4>Products</h4>
+                <h4 className="p-white">Quick Links</h4>
                 <ul>
                   <li>
-                    <a href="#">Conference</a>
+                    <a className="p-white" href="#">Terms & Conditions</a>
                   </li>
                   <li>
-                    <a href="#">Pricing</a>
+                    <a className="p-white" href="#">Privacy Policy</a>
                   </li>
                   <li>
-                    <a href="#">Solution</a>
+                    <a className="p-white" href="#">FAQs</a>
                   </li>
                 </ul>
               </div>
               <div className="col-links-c">
-                <h4>Company</h4>
+                <h4 className="p-white">Socials</h4>
                 <ul>
                   <li>
-                    <a href="#">About</a>
+                    <a className="p-white" href="#">Whatsapp</a>
                   </li>
                   <li>
-                    <a href="#">Contact</a>
+                    <a className="p-white" href="#">Tiktok</a>
                   </li>
                   <li>
-                    <a href="#">Careers</a>
+                    <a className="p-white" href="#">Instagram</a>
                   </li>
                   <li>
-                    <a href="#">Blog</a>
+                    <a className="p-white" href="#">Blog</a>
                   </li>
                 </ul>
               </div>
               <div className="col-links-s">
-                <h4>Support</h4>
+                <h4 className="p-white">Support</h4>
                 <ul>
                   <li>
-                    <a href="#">Contact Us</a>
+                    <a className="p-white" href="#">Contact Us</a>
                   </li>
                   <li>
-                    <a href="#">Support Policy</a>
-                  </li>
-                  <li>
-                    <a href="#">Talk to Sales</a>
+                    <a className="p-white" href="#">Join the chat room</a>
                   </li>
                 </ul>
               </div>
             </div>
             <div className="col-ftr-newsletter">
-              <h4>Subscribe to our newsletter</h4>
-              <p className="p-content p-all-features">
-                Want to stay up to date with news and updates about our product?
-                Subscribe.
+              <h4 className="p-white">Subscribe to our newsletter</h4>
+              <p className="p-white p-content p-all-features">
+                Want to stay up to date with us?
               </p>
-              <input type="email" placeholder="email@provider.com" />
-              <p className="sub-text">
+              <input type="email" placeholder="Email" />
+              <p className="p-white sub-text">
                 By subscribing to our newsletter you agree to our privacy policy
                 and will get commercial communication.
               </p>
@@ -76,25 +72,9 @@ const Footer = () => {
           </div>
           <div className="ftr-copyright">
             <div className="ftr-copyright-links">
-              <p className="ftr-copyright-symbol">&copy; 2024 EventUp. Inc.</p>
-            </div>
-            <div className="ftr-copyright-list">
-              <ul className="ul-all-features">
-                <li>
-                  <a href="#">Privacy Policy</a>
-                </li>
-                <li>
-                  <a href="#">Terms of Service </a>
-                </li>
-                <li>
-                  <a href="#">Cookie Settings </a>
-                </li>
-              </ul>
+              <p className="ftr-copyright-symbol">&copy; {new Date().getFullYear()} The Link Hangouts</p>
             </div>
 
-            <div className="ftr-copyright-logos">
-              <img src={Share} alt="share-image" />
-            </div>
           </div>
         </div>
       </footer>

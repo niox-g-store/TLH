@@ -151,6 +151,15 @@ select {
   border-radius: 10px;
 }
 
+.align-middle {
+  text-align: center;
+}
+
+.width-100 {
+  width: 100px;
+  height: 100px;
+}
+
 @media (max-width: 1024px) {
   h1,
   .h1 {

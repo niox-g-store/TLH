@@ -2,7 +2,7 @@
   display: flex;
   justify-content: space-between;
   background-image: url(../../assets/Maskgroup3.png);
-  background-color: #953314;
+  background-color: var(--bg-secondary);
   border-radius: 20px;
   padding: 70px;
   align-items: center;

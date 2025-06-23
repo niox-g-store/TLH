@@ -24,7 +24,7 @@ const AllFeatures = () => {
                     <p className="p-white"> Create Custom Tickets</p>
                   </li>
                   <li data-aos="fade-right">
-                    <p className="p-white"> Get Event Analytics </p>
+                    <p className="p-white"> Low Commission Rate </p>
                   </li>
                   <li data-aos="fade-right">
                     <p className="p-white"> Secure Online Payments</p>
