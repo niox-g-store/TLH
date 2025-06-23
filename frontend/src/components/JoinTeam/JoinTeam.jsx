@@ -1,5 +1,4 @@
 import React from "react";
-import "../../../../global.css";
 import "./JoinTeam.css";
 
 const JoinTeam = () => {

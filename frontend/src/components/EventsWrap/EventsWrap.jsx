@@ -1,5 +1,4 @@
 import React from "react";
-import "../../../global.css";
 import Card from "../Card/Card";
 import "./EventsWrap.css";
 

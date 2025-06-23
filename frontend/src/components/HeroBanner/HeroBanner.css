@@ -31,9 +31,9 @@
   grid-template-rows: repeat(2, 1fr);    /* 2 rows */
   gap: 20px;
   max-width: 100%;
-  margin: 0 auto;
   border-radius: 10px;
   overflow: hidden;
+  padding: 3em;
 }
 
 .col-banner-image img {
@@ -47,6 +47,8 @@
 
 .hero-banner .row-banner-btns {
   margin-top: 56px;
+  display: flex;
+  flex-direction: row;
 }
 .row-banner-btns div {
   padding: 16px 24px;
@@ -56,6 +58,10 @@
 /*Responsive Design */
 
 @media (max-width: 767px) {
+  .hero-banner .row-banner-btns {
+    flex-direction: column;
+    gap: 1em;
+  }
   .row-wrapper-content-with-image {
     flex-direction: column;
   }
@@ -69,5 +75,6 @@
     flex: 0 0 100%;
     max-width: 100%;
     text-align: center;
+    padding: 0;
   }
 }

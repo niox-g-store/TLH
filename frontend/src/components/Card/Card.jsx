@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "../../../global.css";
 import "./Card.css";
 //import { isLoggedIn, getCurrentUserDetail } from "../../../../Backend/auth";
 import { useNavigate } from "react-router-dom";

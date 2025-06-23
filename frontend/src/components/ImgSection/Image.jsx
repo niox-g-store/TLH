@@ -1,6 +1,5 @@
 import React from "react";
 import about1 from "../../assets/about-1.png";
-import "../../../global.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";

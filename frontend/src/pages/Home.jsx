@@ -24,10 +24,10 @@ const Home = () => {
     <HomeBanner />
       <HeroBanner
         heading="Discover The Link Hangouts Experience"
-        desc="Your plug for premium hangouts, parties, and good times."
+        desc="Host events with The Link Hangouts. Create events, sell tickets, and connect your audience to unforgettable experiences."
         bannerImage={eventImages}
-        PButton={<PButton content="View Events" />}
-        SButton={<SButton content="Gallery" />}
+        PButton={<PButton content="Discover Events" />}
+        SButton={<SButton content="See Gallery" />}
       />
 
       <BrandSection />

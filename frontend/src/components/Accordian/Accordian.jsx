@@ -1,6 +1,5 @@
 import React, { useRef, useState } from "react";
 import "./Accordian.css";
-import "../../../global.css";
 
 const Accordian = () => {
   const faqs = [

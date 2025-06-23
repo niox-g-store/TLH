@@ -1,5 +1,4 @@
 import React from "react";
-import "../../../global.css";
 
 const Testimonials = () => {
   return (

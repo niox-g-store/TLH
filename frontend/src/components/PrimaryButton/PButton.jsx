@@ -1,5 +1,4 @@
 import React from "react";
-import "../../../global.css";
 
 const PButton = (props) => {
   return (

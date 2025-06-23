@@ -196,6 +196,7 @@
   .device-page-row-wrapper {
     flex-wrap: wrap;
     padding: 50px 0;
+    flex-direction: column-reverse;
   }
   .col-page-image,
   .col-page-content {

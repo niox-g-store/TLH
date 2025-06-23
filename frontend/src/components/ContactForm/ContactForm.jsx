@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "../../../global.css";
 import "./ContactForm.css";
 
 const ContactForm = () => {

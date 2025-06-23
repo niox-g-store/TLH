@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import "../../../global.css";
 import "../Header/Header.css";
 import {
   doLogout,
@@ -46,7 +45,7 @@ const Header = () => {
 
   return (
     <>
-      <header className={scrolled ? "scrolled" : ""}>
+      <header className={scrolled ? "scrolled" : ""} data-aos={scrolled ?? "fade-down"} data-aos-delay={scrolled ?? "300"}>
         <div className="container">
           <div className="navigation">
             <div className="logo">
@@ -104,7 +103,7 @@ const Header = () => {
                   Log In
                 </Link>
                 <Link to="/signup" className="button--secondary">
-                  Register an event
+                  Create event
                 </Link>
               </div>
             )}
@@ -161,7 +160,7 @@ const Header = () => {
                   Log In
                 </Link>
                 <Link to="/signup" className="button--secondary">
-                  Register an event
+                  Create event
                 </Link>
               </div>
             </div>

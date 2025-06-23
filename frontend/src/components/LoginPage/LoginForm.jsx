@@ -6,7 +6,6 @@ import blogo4 from "../../assets/content3.svg";
 import blogo5 from "../../assets/content4.svg";
 import ConferenceIMG from "../../assets/conference.png";
 import GoogleLogo from "../../assets/google-logo.svg";
-import "../../../global.css";
 import "./Login.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";

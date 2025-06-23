@@ -1,5 +1,4 @@
 import React from "react";
-import "../../../global.css";
 import "../HeroBanner/HeroBanner.css";
 import PropTypes from "prop-types";
 

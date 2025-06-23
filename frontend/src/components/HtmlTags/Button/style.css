@@ -1,0 +1,30 @@
+.button-container {
+
+}
+
+.btn-primary {
+    background-color: var(--primary_color);
+    padding: 20px 25px;
+    border: none;
+    color: #fff;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.button-container .secondary {
+    background-color: var(--bg-secondary);
+    padding: 20px 25px;
+    border: 1px solid #fff;
+    color: #fff;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.button-container .other {
+    background-color: var(--neutral_bg_color);
+    padding: 20px 25px;
+    border: none;
+    color: #fff;
+    border-radius: 10px;
+    cursor: pointer;
+}

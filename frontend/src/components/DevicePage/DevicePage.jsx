@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import "../DevicePage/DevicePage.css";
 import ConfImg from "../../assets/confernce-image.svg";
 import video1 from "../../assets/video/sample-video-1.mp4";
+import Button from "../HtmlTags/Button";
+import { Link } from "react-router-dom";
+import ModalImg from "../../assets/events/event_5.jpeg";
 
 const DevicePage = () => {
   const [state, setState] = useState(null);
@@ -14,12 +17,14 @@ const DevicePage = () => {
       <section className="device-page">
         <div className="container">
           <div className="device-page-row-wrapper">
+
             <div
               className="col-page-image"
               id="col-page-image"
               data-aos="fade-up">
-              <img src={ConfImg} alt="conference-image" />
-              <div className="video-play-button" onClick={toggleClick}>
+              <img src={ModalImg} className="modal-img" />
+              {/*<img src={ConfImg} alt="conference-image" />
+              {<div className="video-play-button" onClick={toggleClick}>
                 <svg
                   onClick={toggleClick}
                   className="play-logo"
@@ -50,17 +55,18 @@ const DevicePage = () => {
                     </g>
                   </g>
                 </svg>
-              </div>
+              </div>*/}
             </div>
-            <div className="col-page-content">
-              <h2 className="h2-content" data-aos="fade-up">
-                Everyone on their own device.
+
+
+            <div className="col-page-content" data-aos="fade-up" data-aos-delay="800">
+              <h2 className="h2-content">
+                Got an event coming up?
               </h2>
-              <p className="p-content" data-aos="fade-up" data-aos-delay="300">
-                <strong>EventUp</strong> is designed to be inclusive, by being
-                able to use your own device to help hybrid-conference teams
-                create, collaborate and celebrate together.
+              <p className="p-content">
+                Create your event, choose ticket types like Regular or VIP, set your prices, and start selling tickets instantly. Share your event link and manage everything from one place.
               </p>
+              <Link to="/create-event"><Button type={"secondary"} text={"Create Event"}/></Link>
             </div>
             <div className={`video-overlay ${state ? "open" : ""}`}></div>
             <div
@@ -85,13 +91,13 @@ const DevicePage = () => {
                       />
                     </svg>
                   </span>
-                  <video
+                  {/*<video
                     src={video1}
                     type="video/mp4"
                     width={320}
                     height={240}
                     id="video1"
-                    controls="controls"></video>
+                    controls="controls"></video>*/}
                 </div>
               </div>
             </div>
