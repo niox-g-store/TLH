@@ -9,7 +9,7 @@ const Setup = () => {
           <div className="setup-row-wrapper" data-aos="fade-up">
             <div className="col-setup-content">
               <h2 className="h2-all-features" data-aos="fade-up">
-                Are you part of our whatsapp community?
+                Hosting an event soon?
               </h2>
               <p className="p-all-features h2-all-features" data-aos="fade-up">
                 Host and manage your events with us!
@@ -20,10 +20,10 @@ const Setup = () => {
 
                 <a
                   href="#"
-                  className="button--secondary"
+                  className="button"
                   data-aos="fade-up"
-                  data-aos-delay="500">
-                  Join The Chat Room
+                  data-aos-delay="300">
+                  Create Event
                 </a>
               </div>
             </div>

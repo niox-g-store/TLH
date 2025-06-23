@@ -18,7 +18,7 @@ import event3 from "../assets/events/event_3.jpeg";
 import event4 from "../assets/events/event_4.jpeg";
 
 const Home = () => {
-  const eventImages =  [event1, event2, event3, event4];
+  const eventImages =  [event1, event3, event2, event4];
   return (
     <>
     <HomeBanner />
