@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import MainLogo from "../../assets/logo.svg";
 import { Link } from "react-router-dom";
 import "../../../global.css";
 import "../Header/Header.css";
