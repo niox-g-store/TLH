@@ -24,7 +24,7 @@ const Home = () => {
     <HomeBanner />
       <HeroBanner
         heading="Discover The Link Hangouts Experience"
-        desc="Host events with The Link Hangouts. Create events, sell tickets, and connect your audience to unforgettable experiences."
+        desc="We are a vibrant lifestyle company based in Lagos, Nigeria, dedicated to curating and orchestrating exceptional events, parties, and hangouts that bring people together to create lasting memories."
         bannerImage={eventImages}
         PButton={<PButton content="Discover Events" />}
         SButton={<SButton content="See Gallery" />}

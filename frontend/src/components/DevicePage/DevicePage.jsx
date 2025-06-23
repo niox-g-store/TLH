@@ -61,12 +61,10 @@ const DevicePage = () => {
 
             <div className="col-page-content" data-aos="fade-up" data-aos-delay="800">
               <h2 className="h2-content">
-                Got an event coming up?
+                Join the vibe!!
               </h2>
-              <p className="p-content p-info">
-                Create your event, choose ticket types like Regular or VIP, set your prices, and start selling tickets instantly. Share your event link and manage everything from one place.
-              </p>
-              <Link to="/create-event"><Button type={"secondary"} text={"Create Event"}/></Link>
+              <p className="p-content p-info">We host epic games nights, pool parties, chill picnics, group trips, vacations, networking events & so much more. Come for the vibes, stay for the crew!</p>
+              <Link to="/create-event"><Button type={"secondary"} text={"Join the chat room"}/></Link>
             </div>
             <div className={`video-overlay ${state ? "open" : ""}`}></div>
             <div
