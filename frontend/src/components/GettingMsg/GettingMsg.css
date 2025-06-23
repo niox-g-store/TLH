@@ -29,6 +29,19 @@
   align-items: center;
 }
 
+.founder-name {
+  width: 100%;
+}
+
+.founder-name .brand-section {
+  background: inherit !important;
+}
+
+.founder-name .brand-section .slick-slide img {
+  width: 100px;
+  height: 100px;
+}
+
 @media (max-width: 767px) {
   .getting-msg-row-wrapper {
     flex-wrap: wrap;

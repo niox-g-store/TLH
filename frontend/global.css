@@ -159,6 +159,12 @@ select {
   width: 100px;
   height: 100px;
 }
+.display-flex {
+  display: flex;
+}
+.display-middle {
+  justify-content: center;
+}
 
 @media (max-width: 1024px) {
   h1,

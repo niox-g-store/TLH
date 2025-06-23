@@ -3,7 +3,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import "../BrandSection/BrandSection.css";
-import blogo1 from "../../assets//logo.png";
+import blogo1 from "../../assets/logo.png";
 import blogo2 from "../../assets/logo.png";
 import blogo3 from "../../assets/logo.png";
 import blogo4 from "../../assets/logo.png";
@@ -47,7 +47,8 @@ const logoData = [
   },
 ];
 
-const BrandSection = () => {
+const BrandSection = (props) => {
+  const { images, slidesToShow=2 } = props;
   let settings = {
     slidesToShow: 6,
     slidesToScroll: 1,
@@ -67,18 +68,19 @@ const BrandSection = () => {
       {
         breakpoint: 767,
         settings: {
-          slidesToShow: 2,
+          slidesToShow: slidesToShow,
         },
       },
     ],
   };
+  const logoImages = images ? images : logoData;
   return (
     <>
       <section className="brand-section">
         <div className="container">
           <div className="brand-row-wrapper" data-aos="fade-up">
             <Slider {...settings}>
-              {logoData.map((d, index) => (
+              {logoImages.map((d, index) => (
                 <a className="inner_img" href="#" key={index}>
                   <img src={d.img} alt={d.name}></img>
                 </a>

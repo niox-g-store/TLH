@@ -1,5 +1,50 @@
 import aa from "../../assets/aa.jpg";
 import "./GettingMsg.css";
+import BrandSection from "../BrandSection/BrandSection";
+
+import blogo1 from "../../assets/events/partner/partner_1.png";
+import blogo2 from "../../assets/events/partner/partner_2.png";
+import blogo3 from "../../assets/events/partner/partner_3.png";
+import blogo4 from "../../assets/events/partner/partner_4.png";
+import blogo5 from "../../assets/events/partner/partner_1.png";
+import blogo6 from "../../assets/events/partner/partner_2.png";
+import blogo7 from "../../assets/events/partner/partner_3.png";
+import blogo8 from "../../assets/events/partner/partner_4.png";
+
+const logoData = [
+  {
+    name: "logo 1",
+    img: blogo1,
+  },
+  {
+    name: "logo 2",
+    img: blogo2,
+  },
+  {
+    name: "logo 3",
+    img: blogo3,
+  },
+  {
+    name: "logo 4",
+    img: blogo4,
+  },
+  {
+    name: "logo 5",
+    img: blogo5,
+  },
+  {
+    name: "logo 6",
+    img: blogo6,
+  },
+  {
+    name: "logo 7",
+    img: blogo7,
+  },
+  {
+    name: "logo 8",
+    img: blogo8,
+  },
+];
 
 const GettingMsg = () => {
   return (
@@ -10,10 +55,11 @@ const GettingMsg = () => {
             <div className="col-getting-msg-profile">
 
               <div className="founder-name">
-                <h2 className="h3 align-middle" data-aos="fade-up">
+                <h2 className="align-middle display-flex display-middle" data-aos="fade-up">
                   Reputable organizations we have worked with
                 </h2>
-                <p data-aos="fade-up"></p>
+                <BrandSection images={logoData} slidesToShow={2}/>
+
               </div>
             </div>
 
