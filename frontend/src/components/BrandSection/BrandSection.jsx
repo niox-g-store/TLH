@@ -3,14 +3,14 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import "../BrandSection/BrandSection.css";
-import blogo1 from "../../assets/content-1.svg";
-import blogo2 from "../../assets/content.svg";
-import blogo3 from "../../assets/content2.svg";
-import blogo4 from "../../assets/content3.svg";
-import blogo5 from "../../assets/content4.svg";
-import blogo6 from "../../assets/content5.svg";
-import blogo7 from "../../assets/content6.svg";
-import blogo8 from "../../assets/content7.svg";
+import blogo1 from "../../assets//logo.png";
+import blogo2 from "../../assets/logo.png";
+import blogo3 from "../../assets/logo.png";
+import blogo4 from "../../assets/logo.png";
+import blogo5 from "../../assets/logo.png";
+import blogo6 from "../../assets/logo.png";
+import blogo7 from "../../assets/logo.png";
+import blogo8 from "../../assets/logo.png";
 
 const logoData = [
   {

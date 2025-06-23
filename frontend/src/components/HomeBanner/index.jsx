@@ -1,4 +1,5 @@
 import React from "react";
+import { CiChat1 } from "react-icons/ci";
 
 const HomeBanner = () => {
     return (
