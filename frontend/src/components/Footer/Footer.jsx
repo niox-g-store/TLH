@@ -11,7 +11,7 @@ const Footer = () => {
           <div className="footer-row-wrapper">
             <div className="col-ftr-logo">
               <a href="#">
-                <img className="width-100" src={ftrlogo} alt="logo" />
+                <img className="width-90 height-130" src={ftrlogo} alt="logo" />
               </a>
             </div>
             <div className="col-ftr-links">
