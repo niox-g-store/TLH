@@ -12,8 +12,8 @@ import SButton from "../../src/components/SecondaryButton/SButton";
 import HomeBanner from "../components/HomeBanner";
 
 // events images
-import event1 from "../assets/events/event_1.png";
-import event2 from "../assets/events/event_2.png";
+import event1 from "../assets/events/event_1.jpeg";
+import event2 from "../assets/events/event_2.jpeg";
 import event3 from "../assets/events/event_3.jpeg";
 import event4 from "../assets/events/event_4.jpeg";
 
