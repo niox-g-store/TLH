@@ -37,4 +37,19 @@ export const formatDateRange = (startDateString, endDateString) => {
     const month = startDate.toLocaleString("default", { month: "short" });
     const year = startDate.getFullYear().toString().substr(-2); // Get last two digits of the year
     return `${startDay} - ${endDay} ${month} ${year}`;
-  };
+};
+
+export const formatReadableDate = (rawDate) => {
+  const date = new Date(rawDate);
+  const day = date.getDate();
+  const suffix =
+    day % 10 === 1 && day !== 11
+      ? "st"
+      : day % 10 === 2 && day !== 12
+      ? "nd"
+      : day % 10 === 3 && day !== 13
+      ? "rd"
+      : "th";
+  const options = { month: "long", year: "numeric" };
+  return `${day}${suffix} ${date.toLocaleDateString("en-US", options)}`;
+};

@@ -6,13 +6,13 @@ const HeroBanner = (props) => {
   const { bannerImage = [],
           desc = "Sorry the Description did not rendered",
           heading = "Sorry Heading Not rendered",
-          imgMaxWidth, PButton, SButton, className
+          imgMaxWidth, PButton, SButton, className, heroBannerBg
   } = props;
   const maxWidth = imgMaxWidth;
 
   return (
     <>
-      <section className="hero-banner">
+      <section style={heroBannerBg ? { background: `url(${heroBannerBg})` }: { display: "block" }} className="hero-banner">
         <div className="container">
           <div className="row-wrapper-content-with-image">
             <div className="col-banner-content ">

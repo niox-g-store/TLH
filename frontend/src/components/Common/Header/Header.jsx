@@ -121,6 +121,9 @@ const Header = () => {
               <div className="nav">
                 <ul>
                 <li>
+                  <Link onClick={toggle} to="/">Home</Link>
+                </li>
+                <li>
                   <Link onClick={toggle} to="/events">Discover Events</Link>
                 </li>
 

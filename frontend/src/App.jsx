@@ -14,6 +14,7 @@ import ContactUs from "./containers/Contact";
 import TestBack from "./pages/TestBack";
 import User from "./pages/User";
 import Gallery from "./containers/Gallery";
+import ScrollToTop from "./components/Common/ScrollToTop";
 import UserDb from "./pages/UserDb";
 
 const App = () => {
@@ -30,6 +31,7 @@ const App = () => {
   }, []);
   return (
     <>
+    <ScrollToTop />
       {location.pathname !== "/login" && <Header /> &&
         location.pathname !== "/signup" && <Header />}
 
