@@ -1,0 +1,10 @@
+.events {
+    .hero-banner {
+        background: url("../../public/assets/events/event_8.jpeg");
+        @include backgroundControl();
+        padding-top: 25%;
+        @include media-breakpoint-down(md){
+            padding-top: 50%;
+        }
+    }
+}

@@ -1,5 +1,5 @@
 import React from "react";
-import features from "../../assets/events/event_6.jpg";
+import features from "../../../public/assets/events/event_6.jpg";
 import "../AllFeatures/AllFeatures.css";
 
 const AllFeatures = () => {

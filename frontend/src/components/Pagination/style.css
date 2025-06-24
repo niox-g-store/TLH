@@ -1,0 +1,56 @@
+.paginated-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.paginated-content > div {
+  flex: 1 1 calc(25% - 20px); /* 4 per row with gap */
+  min-width: 250px;
+  max-width: 300px;
+  box-sizing: border-box;
+}
+
+.pagination {
+    display: flex;
+    gap: 1em;
+    justify-content: center;
+    margin: 1em 0em 2em 0em;
+}
+
+.pagination .active {
+    background: var(--primary_color);
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+
+
+/* Medium screens: 3 per row */
+@media (max-width: 1200px) {
+  .paginated-content > div {
+    flex: 1 1 calc(33.33% - 20px);
+  }
+}
+
+/* Tablets and small laptops: 2 per row */
+@media (max-width: 900px) {
+  .paginated-content > div {
+    flex: 1 1 calc(50% - 20px);
+  }
+}
+
+/* Tiny phones: still show 2 per row unless below 350px */
+@media (max-width: 400px) {
+  .paginated-content > div {
+    flex: 1 1 calc(50% - 10px); /* keep 2 per row, smaller gap */
+  }
+}
+
+/* Ultra-small: 1 per row as fallback */
+@media (max-width: 300px) {
+  .paginated-content > div {
+    flex: 1 1 100%;
+  }
+}

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import "../DevicePage/DevicePage.css";
-import ConfImg from "../../assets/confernce-image.svg";
-import video1 from "../../assets/video/sample-video-1.mp4";
-import Button from "../HtmlTags/Button";
+import ConfImg from "../../../public/assets/confernce-image.svg";
+import video1 from "../../../public/assets/video/sample-video-1.mp4";
+import Button from "../Common/HtmlTags/Button";
 import { Link } from "react-router-dom";
-import ModalImg from "../../assets/events/event_5.jpg";
+import ModalImg from "../../../public/assets/events/event_5.jpg";
 
 const DevicePage = () => {
   const [state, setState] = useState(null);

@@ -1,6 +1,6 @@
 import React from "react";
 import "./Conference.css";
-import ConferenceIMG from "../../assets/conference.png";
+import ConferenceIMG from "../../../public/assets/conference.png";
 
 const Conference = () => {
   return (

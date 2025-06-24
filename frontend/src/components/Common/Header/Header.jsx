@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import "../Header/Header.css";
+import "./Header.css";
 import {
   doLogout,
   getCurrentUserDetail,
   isLoggedIn,
-} from "../../../../Backend/auth";
+} from "../../../../../Backend/auth";
 
 import { CgMenuRightAlt } from "react-icons/cg";
 import { IoMdClose } from "react-icons/io";
-import Dropdown from "../Others/DropDown";
-import DropdownConfirm from "../Others/DropDownConfirm";
+import Dropdown from "../../Others/DropDown";
+import DropdownConfirm from "../../Others/DropDownConfirm";
 
 const Header = () => {
   const [isActive, setActive] = useState(0);
@@ -56,7 +56,7 @@ const Header = () => {
             <div className="nav">
               <ul>
                 <li>
-                  <Link to="/about">Discover Events</Link>
+                  <Link to="/events">Discover Events</Link>
                 </li>
 
                 <li>
@@ -64,7 +64,7 @@ const Header = () => {
                 </li>
 
                 <li>
-                  <Link to="/events">Organizers</Link>
+                  <Link to="/organizers">Organizers</Link>
                 </li>
                 <li>
                   <Dropdown type={"hover"} parent={"Pages"}>
@@ -75,10 +75,10 @@ const Header = () => {
                   </Dropdown>
                 </li>
                 <li>
-                  <Link to="/contactus">Blog</Link>
+                  <Link to="/blog">Blog</Link>
                 </li>
                 <li>
-                  <Link to="/contactus">Contact Us</Link>
+                  <Link to="/contact">Contact Us</Link>
                 </li>
               </ul>
             </div>
@@ -102,7 +102,7 @@ const Header = () => {
                 <Link to="/login" className="button">
                   Log In
                 </Link>
-                <Link to="/signup" className="button--secondary">
+                <Link to="/events/create" className="button--secondary">
                   Create event
                 </Link>
               </div>
@@ -121,7 +121,7 @@ const Header = () => {
               <div className="nav">
                 <ul>
                 <li>
-                  <Link to="/about">Discover Events</Link>
+                  <Link to="/events">Discover Events</Link>
                 </li>
 
                 <li>
@@ -129,7 +129,7 @@ const Header = () => {
                 </li>
 
                 <li>
-                  <Link to="/events">Organizers</Link>
+                  <Link to="/organizers">Organizers</Link>
                 </li>
 
                 <li>
@@ -142,7 +142,7 @@ const Header = () => {
                 </li>
 
                 <li>
-                  <Link to="/contactus">Blog</Link>
+                  <Link to="/blog">Blog</Link>
                 </li>
 
                 <li>
@@ -150,7 +150,7 @@ const Header = () => {
                 </li>
 
                 <li>
-                  <Link to="/contactus">Contact Us</Link>
+                  <Link to="/contact">Contact Us</Link>
                 </li>
 
                 </ul>
@@ -159,7 +159,7 @@ const Header = () => {
                 <Link to="/login" className="button">
                   Log In
                 </Link>
-                <Link to="/signup" className="button--secondary">
+                <Link to="/events/create" className="button--secondary">
                   Create event
                 </Link>
               </div>

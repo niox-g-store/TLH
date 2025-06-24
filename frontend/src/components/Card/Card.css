@@ -1,8 +1,7 @@
 .card-wrapper {
-  font-family: "Poppins", sans-serif;
   display: flex;
   flex-direction: column;
-  max-width: 27%;
+  max-width: 100%;
   flex: 0 0 30%;
   transition: all 0.3s ease;
   justify-content: space-between;

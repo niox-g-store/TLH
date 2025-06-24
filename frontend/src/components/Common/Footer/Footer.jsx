@@ -1,6 +1,6 @@
 import React from "react";
-import ftrlogo from "../../assets/logo.png";
-import Share from "../../assets/Share.png";
+import ftrlogo from "../../../../public/assets/logo.png";
+import Share from "../../../../public/assets/Share.png";
 import "./Footer.css";
 
 const Footer = () => {
@@ -65,8 +65,7 @@ const Footer = () => {
               </p>
               <input type="email" placeholder="Email" />
               <p className="p-white sub-text">
-                By subscribing to our newsletter you agree to our privacy policy
-                and will get commercial communication.
+                By subscribing to our newsletter you agree to our privacy policy and communication emails from us
               </p>
             </div>
           </div>

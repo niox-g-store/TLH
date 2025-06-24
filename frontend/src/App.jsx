@@ -2,15 +2,15 @@ import React, { useEffect } from "react";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import Header from "./components/Header/Header";
-import Home from "./pages/Home";
-import Footer from "./components/Footer/Footer";
-import About from "./pages/About";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import FAQs from "./pages/FAQs";
-import Events from "./pages/Events";
-import ContactUs from "./pages/ContactUs";
+import Header from "./components/Common/Header/Header";
+import Home from "./containers/HomePage";
+import Footer from "./components/Common/Footer/Footer";
+import About from "./containers/About";
+import Login from "./containers/Login";
+import Signup from "./containers/SignUp";
+import FAQs from "./containers/Faq";
+import Events from "./containers/Events";
+import ContactUs from "./containers/Contact";
 import TestBack from "./pages/TestBack";
 import User from "./pages/User";
 import UserDb from "./pages/UserDb";
@@ -40,7 +40,7 @@ const App = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/FAQs" element={<FAQs />} />
         <Route path="/events" element={<Events />} />
-        <Route path="/contactus" element={<ContactUs />} />
+        <Route path="/contact" element={<ContactUs />} />
         <Route path="/testapi" element={<TestBack />} />
         <Route path="/user" element={<User />}>
           {/*<Route path="dashboard" element={<UserDb />} />*/}

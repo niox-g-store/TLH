@@ -1,7 +1,7 @@
 import React from "react";
-import contactus from "../assets/contactus.png";
-import HeroBanner from "../components/HeroBanner/HeroBanner";
-import ContactForm from "../components/ContactForm/ContactForm";
+import contactus from "../../../public/assets/contactus.png";
+import HeroBanner from "../../components/HeroBanner/HeroBanner";
+import ContactForm from "../../components/ContactForm/ContactForm";
 
 const ContactUs = () => {
   return (

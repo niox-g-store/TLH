@@ -1,5 +1,5 @@
 import React from "react";
-import benfitsIMG from "../../assets/events/event_7.jpg";
+import benfitsIMG from "../../../public/assets/events/event_7.jpg";
 import "./Benefits.css";
 
 const Benefits = () => {

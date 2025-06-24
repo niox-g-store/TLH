@@ -28,7 +28,7 @@
   height: 2px;
   top: 50%;
   left: 0px;
-  background: #57585d;
+  background: var(--bg-secondary);
 }
 
 .col-features-content ul {
@@ -53,6 +53,7 @@
   padding-left: 10px;
   background-image: url(../../assets/tick-circle.svg);
   color: var(--primary_color);
+  top: -2px;
 }
 .col-features-image img {
   width: 100%;

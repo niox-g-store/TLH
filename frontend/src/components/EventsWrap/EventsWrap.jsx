@@ -1,8 +1,10 @@
 import React from "react";
-import Card from "../Card/Card";
+import Card from "../Card";
 import "./EventsWrap.css";
+import Pagination from "../Pagination";
 
-const EventsWrap = () => {
+const EventsWrap = (props) => {
+  const { events } = props;
   return (
     <>
       <div className="container">
@@ -12,7 +14,11 @@ const EventsWrap = () => {
 
         <div className="events-list-wrapper">
           <div className="upcoming-events">
-            <Card />
+            <Pagination
+              items={events}
+              itemsPerPage={12}
+              renderItem={(event, index) => <Card event={event} key={index} />}
+            />
           </div>
         </div>
       </div>

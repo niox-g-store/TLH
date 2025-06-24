@@ -1,11 +1,11 @@
 import React, { useState, memo } from "react";
-import blogo1 from "../../assets/content-1.svg";
-import blogo2 from "../../assets/content.svg";
-import blogo3 from "../../assets/content2.svg";
-import blogo4 from "../../assets/content3.svg";
-import blogo5 from "../../assets/content4.svg";
-import ConferenceIMG from "../../assets/conference.png";
-import GoogleLogo from "../../assets/google-logo.svg";
+import blogo1 from "../../../public/assets/content-1.svg";
+import blogo2 from "../../../public/assets/content.svg";
+import blogo3 from "../../../public/assets/content2.svg";
+import blogo4 from "../../../public/assets/content3.svg";
+import blogo5 from "../../../public/assets/content4.svg";
+import ConferenceIMG from "../../../public/assets/conference.png";
+import GoogleLogo from "../../../public/assets/google-logo.svg";
 import "./Login.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";

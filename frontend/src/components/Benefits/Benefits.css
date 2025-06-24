@@ -39,6 +39,7 @@
   padding-left: 10px;
   background-image: url(../../assets/tick-circle.svg);
   color: var(--primary_color);
+  top: -2px;
 }
 
 @media (max-width: 767px) {
