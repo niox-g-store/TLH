@@ -9,7 +9,7 @@
 .paginated-content > div {
   flex: 1 1 calc(25% - 20px); /* 4 per row with gap */
   min-width: 250px;
-  max-width: 300px;
+  max-width: 90%;
   box-sizing: border-box;
 }
 
