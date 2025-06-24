@@ -121,45 +121,45 @@ const Header = () => {
               <div className="nav">
                 <ul>
                 <li>
-                  <Link to="/events">Discover Events</Link>
+                  <Link onClick={toggle} to="/events">Discover Events</Link>
                 </li>
 
                 <li>
-                  <Link to="/gallery">Gallery</Link>
+                  <Link onClick={toggle} to="/gallery">Gallery</Link>
                 </li>
 
                 <li>
-                  <Link to="/organizers">Organizers</Link>
+                  <Link onClick={toggle} to="/organizers">Organizers</Link>
                 </li>
 
                 <li>
                   <Dropdown parent={"Pages"}>
-                    <Link to={"/about"}>About Us</Link>
-                    <Link to={"/terms"}>Terms & Conditions</Link>
-                    <Link to={"/privacy"}>Privacy Policy</Link>
-                    <Link to={"/faq"}>FAQs</Link>
+                    <Link onClick={toggle} to={"/about"}>About Us</Link>
+                    <Link onClick={toggle} to={"/terms"}>Terms & Conditions</Link>
+                    <Link onClick={toggle} to={"/privacy"}>Privacy Policy</Link>
+                    <Link onClick={toggle} to={"/faq"}>FAQs</Link>
                   </Dropdown>
                 </li>
 
                 <li>
-                  <Link to="/blog">Blog</Link>
+                  <Link onClick={toggle} to="/blog">Blog</Link>
                 </li>
 
                 <li>
-                  <Link to="/whatsapp">Join the chat room</Link>
+                  <Link onClick={toggle} to="/whatsapp">Join the chat room</Link>
                 </li>
 
                 <li>
-                  <Link to="/contact">Contact Us</Link>
+                  <Link onClick={toggle} to="/contact">Contact Us</Link>
                 </li>
 
                 </ul>
               </div>
               <div className="buttons">
-                <Link to="/login" className="button">
+                <Link onClick={toggle} to="/login" className="button">
                   Log In
                 </Link>
-                <Link to="/events/create" className="button--secondary">
+                <Link onClick={toggle} to="/events/create" className="button--secondary">
                   Create event
                 </Link>
               </div>

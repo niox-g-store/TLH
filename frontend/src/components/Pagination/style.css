@@ -20,10 +20,15 @@
     margin: 1em 0em 2em 0em;
 }
 
+.pagination li {
+  cursor: default;
+}
+
 .pagination .active {
     background: var(--primary_color);
     padding: 2px 5px;
     border-radius: 3px;
+    color: white;
 }
 
 

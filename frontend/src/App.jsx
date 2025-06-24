@@ -13,6 +13,7 @@ import Events from "./containers/Events";
 import ContactUs from "./containers/Contact";
 import TestBack from "./pages/TestBack";
 import User from "./pages/User";
+import Gallery from "./containers/Gallery";
 import UserDb from "./pages/UserDb";
 
 const App = () => {
@@ -36,10 +37,11 @@ const App = () => {
         <Route path="*" element={<p>There's nothing here: 404!</p>} />
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
+        <Route path="/events" element={<Events />} />
+        <Route path="/gallery" element={<Gallery />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/FAQs" element={<FAQs />} />
-        <Route path="/events" element={<Events />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/testapi" element={<TestBack />} />
         <Route path="/user" element={<User />}>

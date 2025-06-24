@@ -9,7 +9,7 @@ const EventsWrap = (props) => {
     <>
       <div className="container">
         <div className="event-heading">
-          <h2 className="head1">Our Events</h2>
+          <h2 className="head1">Discover our Events</h2>
         </div>
 
         <div className="events-list-wrapper">
