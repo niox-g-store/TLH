@@ -1,5 +1,5 @@
 import React from "react";
-import "./Card.css";
+import "./style.css";
 import { getCurrentUserDetail } from "../../../../Backend/auth";
 import { getRegistrationStatus, formatDateRange } from "./fucntions";
 
