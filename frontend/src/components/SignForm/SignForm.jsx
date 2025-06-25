@@ -1,9 +1,5 @@
 import React, { useState } from "react";
-import blogo1 from "../../../public/assets/content-1.svg";
-import blogo2 from "../../../public/assets/content.svg";
-import blogo3 from "../../../public/assets/content2.svg";
-import blogo4 from "../../../public/assets/content3.svg";
-import blogo5 from "../../../public/assets/content4.svg";
+
 import ConferenceIMG from "../../../public/assets/conference.png";
 import GoogleLogo from "../../../public/assets/google-logo.svg";
 import logoIMG from "../../../public/assets/logo.png";
@@ -14,90 +10,17 @@ import Slider from "react-slick";
 import { Link } from "react-router-dom";
 import PButton from "../Common/HtmlTags/PrimaryButton/PButton";
 import { doLogin } from "../../../../Backend/auth";
+import BrandSection from "../BrandSection/BrandSection";
 
 const SignForm = () => {
-  const [submitted, setSubmitted] = useState(false);
+  const submitted = false;
   const [inputs, setInputs] = useState({});
-
   const [error, setError] = useState("");
 
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
     setInputs((values) => ({ ...values, [name]: value }));
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    console.log(inputs, "inputs");
-
-    try {
-      const response = await fetch("http://localhost:3000/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(inputs),
-      });
-      if (response.ok) {
-        console.log("Message sent successfully!");
-        const responseData = await response.json();
-
-        const loginDetails = {
-          fname: responseData.firstName,
-          lname: responseData.lastName,
-          id: responseData.id,
-        };
-        console.log(loginDetails);
-        doLogin(loginDetails, () => {
-          console.log("The data saved in Local Storage");
-        });
-        setSubmitted(true);
-        // setInputs({});
-      } else {
-        const errorMessage = await response.json();
-        console.error(
-          "Failed to send message. Server responded with status:",
-          response
-        );
-        throw new Error(errorMessage.message);
-        setSubmitted(false);
-      }
-    } catch (error) {
-      console.error("Error sending message:", error);
-      if (error.message.includes("Email already exists")) {
-        // setError("*Email already exists*");
-        setTimeout(() => {
-          setError("Email already exists"); // Update error state to trigger transition
-        }, 200);
-      }
-      setSubmitted(false);
-    }
-  };
-
-  let settings = {
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 0,
-    arrows: false,
-    speed: 8000,
-    pauseOnHover: false,
-    cssEase: "linear",
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 3,
-        },
-      },
-      {
-        breakpoint: 767,
-        settings: {
-          slidesToShow: 2,
-        },
-      },
-    ],
   };
   return (
     <>
@@ -133,66 +56,24 @@ const SignForm = () => {
               alt="login-confernce-image"
               width="100%"
               height="100%"
+              data-aos="fade-up"
             />
-            <h1 className="h2-all-features h2-content h2">
-              You'll be in good company
+            <h1 className="h2-all-features h2-content h2 p-black">
+              Join The Link Hangouts
             </h1>
-            <p className="p-all-features p-content h2-content">
-              Get started with your free account today
+            <p className="p-all-features p-content h2-content p-black">
+              Create an account as a 
             </p>
-            <div className="col-login-image-brand-section">
-              <Slider {...settings}>
-                <a href="#">
-                  <img
-                    src={blogo1}
-                    alt="slack-logo"
-                    width="100%"
-                    height="100%"
-                  />
-                </a>
-                <a href="#">
-                  <img
-                    src={blogo2}
-                    alt="slack-logo"
-                    width="100%"
-                    height="100%"
-                  />
-                </a>
-                <a href="#">
-                  <img
-                    src={blogo3}
-                    alt="slack-logo"
-                    width="100%"
-                    height="100%"
-                  />
-                </a>
-                <a href="#">
-                  <img
-                    src={blogo4}
-                    alt="slack-logo"
-                    width="100%"
-                    height="100%"
-                  />
-                </a>
-                <a href="#">
-                  <img
-                    src={blogo5}
-                    alt="slack-logo"
-                    width="100%"
-                    height="100%"
-                  />
-                </a>
-              </Slider>
-            </div>
+
           </div>
         </div>
 
         <div className="right-login">
-          <div className={`col-login-form  ${submitted ? "toggle " : " "}`}>
+          <div data-aos="fade-up" className={`col-login-form  ${submitted ? "toggle " : " "}`}>
             <h1>Hi there!</h1>
             <p className="p-content"></p>
             <p>Join us to try the different experiments fot the conference</p>
-            <form method="post" onSubmit={handleSubmit}>
+            <form method="post">
               <div className="name">
                 <div className="first-name form-field">
                   <div className="form-label">
@@ -262,6 +143,24 @@ const SignForm = () => {
                   />
                 </div>
               </div>
+
+              <div className="form-field password">
+                <div className="form-label">
+                  <label htmlFor="pass">Confirm Password</label>
+                </div>
+                <div className="input">
+                  <input
+                    type="password"
+                    id="pass"
+                    placeholder="Password"
+                    name="current_password"
+                    pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"
+                    value={inputs.current_password || ""}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+
               <div className="forget-pass-sec">
                 <div className="remember-me signup">
                   <div className="input">
@@ -305,22 +204,6 @@ const SignForm = () => {
               </p>
             </div>
           </div>
-
-          {submitted ? (
-            <div className={`thanks-signup ${submitted ? "pop" : " "}`}>
-              <p>
-                Thank You <strong>{inputs.fname}</strong> !! <br />
-                You have successfully created your account, your username is{" "}
-                <strong>{inputs.email}</strong>
-              </p>
-
-              <Link to="/user/dashboard">
-                <PButton content="Your Events" />
-              </Link>
-            </div>
-          ) : (
-            " "
-          )}
         </div>
       </div>
     </>

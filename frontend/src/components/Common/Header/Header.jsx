@@ -64,7 +64,7 @@ const Header = () => {
                 </li>
 
                 <li>
-                  <Link to="/organizers">Organizers</Link>
+                  <Link to="/signup">Organizers</Link>
                 </li>
                 <li>
                   <Dropdown type={"hover"} parent={"Pages"}>
@@ -132,7 +132,7 @@ const Header = () => {
                 </li>
 
                 <li>
-                  <Link onClick={toggle} to="/organizers">Organizers</Link>
+                  <Link onClick={toggle} to="/signup">Organizers</Link>
                 </li>
 
                 <li>

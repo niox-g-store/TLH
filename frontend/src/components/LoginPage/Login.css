@@ -1,14 +1,13 @@
 .login {
   display: flex;
   flex-wrap: wrap;
-  overflow: hidden;
+  overflow: scroll;
   background-color: #f8f8f8;
   align-items: center;
   height: 100vh;
 }
 .col-login-image h1 {
   text-align: center;
-  color: #867f7f;
 }
 .col-login-image-brand-section {
   opacity: 0.6;
@@ -179,8 +178,6 @@
 
 @media (max-width: 768px) {
   .login {
-    overflow: visible;
-    height: 100%;
   }
   .logo-signup p {
     flex: 0 0 60%;

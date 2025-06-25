@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import './style.css';
-import { scrollToTop } from '../../pages/scrollToTop';
+import { ScrollTop } from '../../pages/ScrollTop';
 
 const Pagination = ({
   items = [],
@@ -21,7 +21,7 @@ const Pagination = ({
     const newOffset = (selectedPage * itemsPerPage) % items.length;
     setItemOffset(newOffset);
     setCurrentPage(selectedPage); // update current page state
-    scrollToTop(scrollToTopHeight);
+    ScrollTop(scrollToTopHeight);
   };
 
   return (

@@ -22,3 +22,9 @@
     }
 }
 
+.row-wrapper-content-with-image {
+    @include media-breakpoint-down(md) {
+        display: block !important;
+    }
+}
+

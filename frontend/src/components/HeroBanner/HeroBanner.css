@@ -78,9 +78,3 @@
     padding: 0;
   }
 }
-
-@media (min-width: 767px) {
-  .row-wrapper-content-with-image {
-    display: block !important;
-  }
-}

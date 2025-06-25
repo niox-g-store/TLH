@@ -12,11 +12,11 @@ const HeroBanner = (props) => {
 
   return (
     <>
-      <section style={heroBannerBg ? { background: `url(${heroBannerBg})` }: { display: "block" }} className="hero-banner">
+      <section style={heroBannerBg ? { background: `url(${heroBannerBg})` }: { display: "flex" }} className="hero-banner">
         <div className="container">
           <div className="row-wrapper-content-with-image">
             <div className="col-banner-content ">
-              <h1 className={className} data-aos="fade-up">{heading}</h1>
+              <h1 className={`${className} p-white`} data-aos="fade-up">{heading}</h1>
               <p className={`p-info p-white`} data-aos="fade-up" data-aos-delay="600">
                 {desc}
               </p>
