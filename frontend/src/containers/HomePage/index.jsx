@@ -7,9 +7,10 @@ import Benefits from "../../components/Benefits/Benefits";
 import GettingMsg from "../../components/GettingMsg/GettingMsg";
 import Setup from "../../components/Setup/Setup";
 import bannerImage from "../../../public/assets/hero-banner-image.svg.png";
-import PButton from "../../components/PrimaryButton/PButton";
-import SButton from "../../components/SecondaryButton/SButton";
+import PButton from "../../components/Common/HtmlTags/PrimaryButton/PButton";
+import SButton from "../../components/Common/HtmlTags/SecondaryButton/SButton";
 import HomeBanner from "./HomeBanner";
+import Button from "../../components/Common/HtmlTags/Button";
 
 // events images
 import event1 from "../../../public/assets/events/event_1.jpeg";
@@ -26,8 +27,8 @@ const Home = () => {
         heading="Discover The Link Hangouts Experience"
         desc="We are a vibrant lifestyle company based in Lagos, Nigeria, dedicated to curating and orchestrating exceptional events, parties, and hangouts that bring people together to create lasting memories."
         bannerImage={eventImages}
-        PButton={<PButton content="Discover Events" />}
-        SButton={<SButton content="See Gallery" />}
+        PButton={<PButton link={"/events"} content="Discover Events" />}
+        SButton={<SButton link={"/gallery"} content="See Gallery" />}
         className={"border-10"}
       />
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect, memo } from "react";
 import { Link } from "react-router-dom";
 import { isLoggedIn, getCurrentUserDetail } from "../../../Backend/auth";
 import "../pagesCSS/UserDB.css";
-import PButton from "../components/PrimaryButton/PButton";
+import PButton from "../components/Common/HtmlTags/PrimaryButton/PButton";
 
 const UserDb = () => {
   const [login, setlogin] = useState(0);

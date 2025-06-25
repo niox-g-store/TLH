@@ -5,7 +5,7 @@ export const mockEvents = [
     startDate: "2025-07-10",
     endDate: "2025-07-12",
     eventStartDate: "2025-07-10",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "Health & Wellness Expo",
@@ -13,7 +13,7 @@ export const mockEvents = [
     startDate: "2025-06-25",
     endDate: "2025-06-27",
     eventStartDate: "2025-06-25",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "Startup Pitch Fest",
@@ -21,7 +21,7 @@ export const mockEvents = [
     startDate: "2025-08-05",
     endDate: "2025-08-06",
     eventStartDate: "2025-08-05",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "AI Innovation Day",
@@ -29,7 +29,7 @@ export const mockEvents = [
     startDate: "2025-09-01",
     endDate: "2025-09-02",
     eventStartDate: "2025-09-01",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "Art in Motion",
@@ -37,7 +37,7 @@ export const mockEvents = [
     startDate: "2025-07-20",
     endDate: "2025-07-21",
     eventStartDate: "2025-07-20",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "Green Earth Summit",
@@ -45,7 +45,7 @@ export const mockEvents = [
     startDate: "2025-08-10",
     endDate: "2025-08-12",
     eventStartDate: "2025-08-10",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "Cybersecurity Bootcamp",
@@ -53,7 +53,7 @@ export const mockEvents = [
     startDate: "2025-06-28",
     endDate: "2025-07-01",
     eventStartDate: "2025-06-28",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "Blockchain Forum",
@@ -61,7 +61,7 @@ export const mockEvents = [
     startDate: "2025-07-15",
     endDate: "2025-07-16",
     eventStartDate: "2025-07-15",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "Women in Tech",
@@ -69,7 +69,7 @@ export const mockEvents = [
     startDate: "2025-07-25",
     endDate: "2025-07-25",
     eventStartDate: "2025-07-25",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "Cloud Computing Meetup",
@@ -77,7 +77,7 @@ export const mockEvents = [
     startDate: "2025-06-24",
     endDate: "2025-06-24",
     eventStartDate: "2025-06-24",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "GameDev Expo",
@@ -85,7 +85,7 @@ export const mockEvents = [
     startDate: "2025-09-10",
     endDate: "2025-09-12",
     eventStartDate: "2025-09-10",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "Eco Design Hackathon",
@@ -93,7 +93,7 @@ export const mockEvents = [
     startDate: "2025-07-05",
     endDate: "2025-07-06",
     eventStartDate: "2025-07-05",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "Marketing Mastery",
@@ -101,7 +101,7 @@ export const mockEvents = [
     startDate: "2025-08-01",
     endDate: "2025-08-02",
     eventStartDate: "2025-08-01",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "Future of Mobility",
@@ -109,7 +109,7 @@ export const mockEvents = [
     startDate: "2025-07-18",
     endDate: "2025-07-18",
     eventStartDate: "2025-07-18",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "Medical Breakthroughs 2025",
@@ -117,7 +117,7 @@ export const mockEvents = [
     startDate: "2025-07-30",
     endDate: "2025-07-31",
     eventStartDate: "2025-07-30",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "Designers United",
@@ -125,7 +125,7 @@ export const mockEvents = [
     startDate: "2025-06-29",
     endDate: "2025-06-30",
     eventStartDate: "2025-06-29",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "Youth Code Camp",
@@ -133,7 +133,7 @@ export const mockEvents = [
     startDate: "2025-07-03",
     endDate: "2025-07-07",
     eventStartDate: "2025-07-03",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "VR/AR Demo Day",
@@ -141,7 +141,7 @@ export const mockEvents = [
     startDate: "2025-08-18",
     endDate: "2025-08-18",
     eventStartDate: "2025-08-18",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "Fintech Live",
@@ -149,7 +149,7 @@ export const mockEvents = [
     startDate: "2025-09-20",
     endDate: "2025-09-21",
     eventStartDate: "2025-09-20",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "Ethical Hacking Showdown",
@@ -157,7 +157,7 @@ export const mockEvents = [
     startDate: "2025-07-13",
     endDate: "2025-07-13",
     eventStartDate: "2025-07-13",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "Photography Summit",
@@ -165,7 +165,7 @@ export const mockEvents = [
     startDate: "2025-06-26",
     endDate: "2025-06-27",
     eventStartDate: "2025-06-26",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "Quantum Computing Briefing",
@@ -173,7 +173,7 @@ export const mockEvents = [
     startDate: "2025-07-09",
     endDate: "2025-07-09",
     eventStartDate: "2025-07-09",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "FoodTech Expo",
@@ -181,7 +181,7 @@ export const mockEvents = [
     startDate: "2025-07-17",
     endDate: "2025-07-18",
     eventStartDate: "2025-07-17",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "Voice Tech Conference",
@@ -189,7 +189,7 @@ export const mockEvents = [
     startDate: "2025-08-15",
     endDate: "2025-08-16",
     eventStartDate: "2025-08-15",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "3D Printing Fair",
@@ -197,7 +197,7 @@ export const mockEvents = [
     startDate: "2025-06-30",
     endDate: "2025-07-01",
     eventStartDate: "2025-06-30",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "Remote Work World",
@@ -205,7 +205,7 @@ export const mockEvents = [
     startDate: "2025-07-22",
     endDate: "2025-07-23",
     eventStartDate: "2025-07-22",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "eSports Clash",
@@ -213,7 +213,7 @@ export const mockEvents = [
     startDate: "2025-08-05",
     endDate: "2025-08-06",
     eventStartDate: "2025-08-05",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "Biohacking Workshop",
@@ -221,7 +221,7 @@ export const mockEvents = [
     startDate: "2025-07-19",
     endDate: "2025-07-19",
     eventStartDate: "2025-07-19",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "EdTech Revolution",
@@ -229,7 +229,7 @@ export const mockEvents = [
     startDate: "2025-09-03",
     endDate: "2025-09-04",
     eventStartDate: "2025-09-03",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   },
   {
     name: "Astronomy Night",
@@ -237,6 +237,6 @@ export const mockEvents = [
     startDate: "2025-07-06",
     endDate: "2025-07-06",
     eventStartDate: "2025-07-06",
-    image: "../../../public/assets/events/event_1.jpeg",
+    image: "./assets/events/event_1.jpeg",
   }
 ];

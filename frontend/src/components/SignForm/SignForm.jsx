@@ -12,7 +12,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import { Link } from "react-router-dom";
-import PButton from "../..//components/PrimaryButton/PButton";
+import PButton from "../Common/HtmlTags/PrimaryButton/PButton";
 import { doLogin } from "../../../../Backend/auth";
 
 const SignForm = () => {

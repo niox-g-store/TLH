@@ -1,8 +1,11 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const SButton = (props) => {
+  const { link } = props;
   return (
     <>
+    <Link to={link}>
       <div className="button--secondary" id="button--secondary">
         {props.content}
         <svg
@@ -23,6 +26,7 @@ const SButton = (props) => {
           />
         </svg>
       </div>
+      </Link>
     </>
   );
 };
