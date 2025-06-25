@@ -1,0 +1,17 @@
+.login {
+    .left-login {
+        @include media-breakpoint-down(md) {
+            display: none;
+        }
+        img {
+            margin-bottom: -5px;
+        }
+    }
+
+    .right-login {
+        @include media-breakpoint-up(md) {
+            width: 50%;
+        }
+        width: 100%;
+    }
+}

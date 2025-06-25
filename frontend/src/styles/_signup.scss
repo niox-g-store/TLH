@@ -1,7 +1,123 @@
-.right-login {
+.sing {
+    .left-login {
+        margin-top: -15%;
+    }
+
+    .signup {
+        flex-wrap: wrap;
+        padding: 50px 20px;
+        overflow: auto;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        background-color: white;
+        position: relative;
+
+        form {
+            position: relative;
+        }
+
+        @include media-breakpoint-up(md) {
+            h1 {
+                text-align: center;
+            }
+            padding: 40px 40px;
+        }
+
+        .form-field-section {
+            @include media-breakpoint-up(md) {
+                display: flex;
+                flex-direction: row;
+                gap: 2em;
+
+                .form-field-left {
+                    width: 50%;
+                }
+
+                .form-field-right {
+                    width: 50%;
+                    position: relative;
+                    .forget-pass-sec, .create-account-links {
+                        @include media-breakpoint-up(md) {
+                            position: absolute;
+                            width: 100%;
+                            left: -105%;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
     .col-login-form {
         @include media-breakpoint-up(md) {
-            padding: 12em 0em 2em 0em;
+            padding: 2em 0em 2em 0em;
         }
+
+        @include media-breakpoint-up(md) {
+            .p-content {
+                text-align: center;
+            }
+        }
+    }
+}
+
+
+.login-confernce-image {
+    @include media-breakpoint-up(md) {
+        display: block;
+    }
+    display: none;
+}
+
+.remember-me {
+    padding: 0 !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+}
+
+
+.n-signup {
+    display: flex;
+    flex-direction: row;
+    @include media-breakpoint-up(md) {
+        padding: 40px;
+    }
+    @include media-breakpoint-down(md) {
+        flex-direction: column;
+    }
+    padding: 50px 20px;
+    .signup-left {
+        width: 50%;
+        @include media-breakpoint-down(md) {
+            width: 100%;
+        }
+    }
+
+    .signup-right {
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 20px 40px;
+        @include media-breakpoint-down(md) {
+            width: 100%;
+            padding: 20px 0px;
+        }
+    }
+}
+
+.back-to-home {
+    display: flex;
+}
+
+.create-account {
+    @include media-breakpoint-up(md) {
+        width: 48.5%;
+        position: absolute !important;
+        bottom: -25%;
+        right: 0%;
     }
 }

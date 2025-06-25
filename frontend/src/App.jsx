@@ -16,6 +16,7 @@ import User from "./pages/User";
 import Gallery from "./containers/Gallery";
 import ScrollToTop from "./components/Common/ScrollToTop";
 import UserDb from "./pages/UserDb";
+import OrganizerSignUp from "./containers/Organizer/SIgnUp";
 
 const App = () => {
   const location = useLocation();
@@ -33,7 +34,8 @@ const App = () => {
     <>
     <ScrollToTop />
       {location.pathname !== "/login" && <Header /> &&
-        location.pathname !== "/signup" && <Header />}
+        location.pathname !== "/signup" && <Header /> &&
+        location.pathname !== "/organizer-signup" && <Header />}
 
       <Routes>
         <Route path="*" element={<p>There's nothing here: 404!</p>} />
@@ -43,6 +45,7 @@ const App = () => {
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/organizer-signup" element={<OrganizerSignUp />} />
         <Route path="/FAQs" element={<FAQs />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/testapi" element={<TestBack />} />
@@ -52,7 +55,8 @@ const App = () => {
       </Routes>
 
       {location.pathname !== "/login" && <Footer /> &&
-        location.pathname !== "/signup" && <Footer />}
+        location.pathname !== "/signup" && <Footer /> &&
+        location.pathname !== "/organizer-signup" && <Footer />}
     </>
   );
 };

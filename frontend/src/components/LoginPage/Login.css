@@ -4,7 +4,6 @@
   overflow: scroll;
   background-color: #f8f8f8;
   align-items: center;
-  height: 100vh;
 }
 .col-login-image h1 {
   text-align: center;
@@ -25,8 +24,6 @@
 .left-login {
   background-color: #f8f8f8;
   /* overflow: auto; */
-  flex: 0 0 50%;
-  padding: 20px 40px;
   max-height: 100%;
   max-width: 50%;
 }
@@ -35,16 +32,9 @@
 }
 
 .right-login {
-  flex: 0 0 50%;
   flex-wrap: wrap;
   padding: 20px 40px;
   overflow: auto;
-  position: absolute;
-  right: 0;
-  width: 50%;
-  top: 0;
-  bottom: 0;
-  max-width: 100%;
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -127,8 +117,7 @@
   margin-bottom: 20px;
 }
 .remember-me {
-  flex: 0 0 60%;
-  color: #867f7f;
+  color: var(--secondary-bg);
   opacity: 0.8;
   display: flex;
   align-items: center;
@@ -177,8 +166,6 @@
 }
 
 @media (max-width: 768px) {
-  .login {
-  }
   .logo-signup p {
     flex: 0 0 60%;
     text-align: left;
@@ -193,9 +180,7 @@
   }
 
   .right-login {
-    flex: 0 0 100%;
-    max-width: 100%;
-    padding: 50px 10px;
+    padding: 50px 20px;
   }
   .remember-me {
     flex: 0 0 50%;
@@ -215,9 +200,6 @@
   .last-name {
     flex: 0 0 100%;
     max-width: 100%;
-  }
-  .right-login {
-    position: unset;
   }
   .name {
     margin-bottom: 20px;
