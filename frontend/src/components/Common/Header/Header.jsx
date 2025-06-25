@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./Header.css";
 import {
   doLogout,
@@ -17,6 +17,8 @@ const Header = () => {
   const [login, setlogin] = useState(0);
   const [user, setUser] = useState(undefined);
   const [scrolled, setScrolled] = useState(false);
+
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -137,7 +139,7 @@ const Header = () => {
 
                 <li>
                   <Dropdown parent={"Pages"}>
-                    <Link onClick={toggle} to={"/about"}>About Us</Link>
+                    <Link onClick={toggle} to={"/about"} target="_blank">About Us</Link>
                     <Link onClick={toggle} to={"/terms"}>Terms & Conditions</Link>
                     <Link onClick={toggle} to={"/privacy"}>Privacy Policy</Link>
                     <Link onClick={toggle} to={"/faq"}>FAQs</Link>

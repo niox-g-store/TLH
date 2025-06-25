@@ -1,4 +1,9 @@
 .page-404 {
+    .hero-banner {
+        @include media-breakpoint-down(md) {
+            padding-top: 10em;
+        }
+    }
     .col-banner-image {
         display: block;
     }
