@@ -17,6 +17,7 @@ import Gallery from "./containers/Gallery";
 import ScrollToTop from "./components/Common/ScrollToTop";
 import UserDb from "./pages/UserDb";
 import OrganizerSignUp from "./containers/Organizer/SIgnUp";
+import Page404 from "./containers/Page404";
 
 const App = () => {
   const location = useLocation();
@@ -38,7 +39,7 @@ const App = () => {
         location.pathname !== "/organizer-signup" && <Header />}
 
       <Routes>
-        <Route path="*" element={<p>There's nothing here: 404!</p>} />
+        <Route path="*" element={<Page404 />} />
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/events" element={<Events />} />

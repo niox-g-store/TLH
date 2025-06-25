@@ -102,7 +102,7 @@ const Header = () => {
                 <Link to="/login" className="button">
                   Log In
                 </Link>
-                <Link to="/events/create" className="button--secondary">
+                <Link to="/organizer-signup" className="button--secondary">
                   Create event
                 </Link>
               </div>
@@ -158,7 +158,7 @@ const Header = () => {
                 <Link onClick={toggle} to="/login" className="button">
                   Log In
                 </Link>
-                <Link onClick={toggle} to="/events/create" className="button--secondary">
+                <Link onClick={toggle} to="/organizer-signup" className="button--secondary">
                   Create event
                 </Link>
               </div>
