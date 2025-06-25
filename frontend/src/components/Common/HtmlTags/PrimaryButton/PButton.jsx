@@ -5,7 +5,7 @@ const PButton = (props) => {
   const { link } = props;
   return (
     <>
-      <Link to={link} target="_blank">
+      <Link to={link}>
         <div className="button">{props.content}</div>
       </Link>
     </>
