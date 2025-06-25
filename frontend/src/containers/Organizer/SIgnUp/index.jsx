@@ -6,6 +6,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import { Link } from "react-router-dom";
 import { BackIcon } from "../../../components/Common/Icons/Back";
+import Input from "../../../components/Common/HtmlTags/Input";
 
 const OrganizerSignUp = () => {
   const submitted = false;
@@ -34,56 +35,14 @@ const OrganizerSignUp = () => {
               <div className="form-field-section">
               <div className="form-field-left">
                 <div className="first-name form-field">
-                  <div className="form-label">
-                    <label htmlFor="fname">Username</label>
-                  </div>
-                  <div className="input">
-                    <input
-                      type="text"
-                      name="fname"
-                      placeholder=""
-                      value={inputs.fname || ""}
-                      onChange={handleChange}
-                    />
-                  </div>
+                  <Input type={"text"} label={"Username"} />
               </div>
                 <div className="form-field email">
-                <div className="form-label">
-                  <label htmlFor="email">Company name</label>
-                </div>
-
-                <div className={`input ${error ? "active" : ""}`}>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder=""
-                    value={inputs.email || ""}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="error-form">
-                  {error && (
-                    <span className={error ? "active" : ""}>{error}</span>
-                  )}
-                </div>
+                  <Input type={"text"} label={"Company name"} />
               </div>
 
               <div className="form-field password">
-                <div className="form-label">
-                  <label htmlFor="pass">Email</label>
-                </div>
-                <div className="input">
-                  <input
-                    type="password"
-                    id="pass"
-                    placeholder=""
-                    name="current_password"
-                    pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"
-                    value={inputs.current_password || ""}
-                    onChange={handleChange}
-                  />
-                </div>
+                  <Input type={"email"} label={"Email"} />
               </div>
               </div>
 
@@ -94,63 +53,19 @@ const OrganizerSignUp = () => {
                 {/** */}
               <div className="form-field-right">
                 <div className="first-name form-field">
-                  <div className="form-label">
-                    <label htmlFor="fname">Phone number</label>
-                  </div>
-                  <div className="input">
-                    <input
-                      type="text"
-                      name="fname"
-                      placeholder=""
-                      value={inputs.fname || ""}
-                      onChange={handleChange}
-                    />
-                  </div>
+                  <Input type={"text"} label={"Phone Number"} />
               </div>
               <div className="form-field email">
-                <div className="form-label">
-                  <label htmlFor="email">Password</label>
-                </div>
-
-                <div className={`input ${error ? "active" : ""}`}>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder=""
-                    value={inputs.email || ""}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="error-form">
-                  {error && (
-                    <span className={error ? "active" : ""}>{error}</span>
-                  )}
-                </div>
+                  <Input type={"password"} label={"Password"} />
               </div>
 
               <div className="form-field password">
-                <div className="form-label">
-                  <label htmlFor="pass">Confirm Password</label>
-                </div>
-                <div className="input">
-                  <input
-                    type="password"
-                    id="pass"
-                    placeholder=""
-                    name="current_password"
-                    pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"
-                    value={inputs.current_password || ""}
-                    onChange={handleChange}
-                  />
-                </div>
+                  <Input type={"password"} label={"Confirm Password"} />
               </div>
 
               <div className="forget-pass-sec">
                 <div className="remember-me signup">
-                  <div className="input">
-                    <input type="checkbox" checked />
-                  </div>
+                  <Input type={"checkbox"} checked={true} />&nbsp;&nbsp;
                   <div className="form-label">
                     <label>I want to recieve updates about The link hangouts</label>
                   </div>

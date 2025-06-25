@@ -8,6 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { doLogin } from "../../../../Backend/auth";
 import UserDb from "../../pages/UserDb";
 import { BackIcon } from "../Common/Icons/Back";
+import Input from "../Common/HtmlTags/Input";
 
 const LoginForm = () => {
   const [inputs, setInputs] = useState({});
@@ -41,48 +42,14 @@ const LoginForm = () => {
             <p className="p-content p-black">Log in as a User or Access Your Organizer Account</p>
             <form method="post">
               <div className="form-field email">
-                <div className="form-label">
-                  <label htmlFor="email">Email/Username</label>
-                </div>
-                <div className={`input ${error ? "active" : ""}`}>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder=""
-                    value={inputs.email || ""}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="error-form">
-                  {error && (
-                    <span className={error ? "active" : ""}>{error}</span>
-                  )}
-                </div>
+                  <Input type={"email"} label={"Email/Username"}/>
               </div>
               <div className="form-field password">
-                <div className="form-label">
-                  <label htmlFor="pass">Password</label>
-                </div>
-                <div className={`input ${error ? "active" : ""}`}>
-                  <input
-                    type="password"
-                    name="current_password"
-                    placeholder=""
-                    value={inputs.current_password || ""}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="error-form">
-                  {error && (
-                    <span className={error ? "active" : ""}>{error}</span>
-                  )}
-                </div>
+                  <Input type={"password"} label={"Password"}/>
               </div>
               <div className="forget-pass-sec">
                 <div className="remember-me">
-                  <div className="input">
-                    <input type="checkbox" />
-                  </div>
+                  <Input type={"checkbox"} />&nbsp; &nbsp;
                   <div className="form-label">
                     <label>Remember Me</label>
                   </div>
@@ -92,7 +59,7 @@ const LoginForm = () => {
                 </div>
               </div>
               <div className="form-field input login-btn">
-                <input type="submit" Value="Log In" className="form-btn" />
+                <Input type={"submit"} value={"Log in"} className={"form-btn"} />
               </div>
             </form>
             <div className="or-line login-btn">

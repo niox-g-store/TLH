@@ -10,6 +10,7 @@ import PButton from "../Common/HtmlTags/PrimaryButton/PButton";
 import { doLogin } from "../../../../Backend/auth";
 import BrandSection from "../BrandSection/BrandSection";
 import { BackIcon } from "../Common/Icons/Back";
+import Input from "../Common/HtmlTags/Input";
 
 const SignForm = () => {
   const submitted = false;
@@ -31,84 +32,30 @@ const SignForm = () => {
               <BackIcon />
               <p> Back to Home</p>
             </Link>
-          <div data-aos="fade-up" className={`col-login-form  ${submitted ? "toggle " : " "}`}>
+          <div data-aos="fade-up" className={`col-login-form`}>
             <h1>Join The Link Hangouts!</h1>
             <p className="p-content p-black">Join our community to discover and attend amazing events near you.</p>
             <form method="post">
                 <div className="first-name form-field">
-                  <div className="form-label">
-                    <label htmlFor="fname">Full Name</label>
-                  </div>
-                  <div className="input">
-                    <input
-                      type="text"
-                      name="fname"
-                      placeholder=""
-                      value={inputs.fname || ""}
-                      onChange={handleChange}
-                    />
-                  </div>
-              </div>
-              <div className="form-field email">
-                <div className="form-label">
-                  <label htmlFor="email">Email</label>
+                  <Input type={"text"} label={"Full name"}/>
                 </div>
 
-                <div className={`input ${error ? "active" : ""}`}>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder=""
-                    value={inputs.email || ""}
-                    onChange={handleChange}
-                  />
+                <div className="form-field email">
+                  <Input type={"email"} label={"email"} />
                 </div>
-                <div className="error-form">
-                  {error && (
-                    <span className={error ? "active" : ""}>{error}</span>
-                  )}
-                </div>
-              </div>
 
-              <div className="form-field password">
-                <div className="form-label">
-                  <label htmlFor="pass">Password</label>
+                <div className="form-field password">
+                  <Input type={"password"} label={"password"} />
                 </div>
-                <div className="input">
-                  <input
-                    type="password"
-                    id="pass"
-                    placeholder=""
-                    name="current_password"
-                    pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"
-                    value={inputs.current_password || ""}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
 
-              <div className="form-field password">
-                <div className="form-label">
-                  <label htmlFor="pass">Confirm Password</label>
+                <div className="form-field password">
+                  <Input type={"password"} label={"Confirm password"} />
                 </div>
-                <div className="input">
-                  <input
-                    type="password"
-                    id="pass"
-                    placeholder=""
-                    name="current_password"
-                    pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"
-                    value={inputs.current_password || ""}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
 
               <div className="forget-pass-sec">
                 <div className="remember-me signup">
                   <div className="input">
-                    <input type="checkbox" checked />
+                    <Input type={"checkbox"} checked={true}/>
                   </div>
                   <div className="form-label">
                     <label>I want to recieve updates about The link hangouts</label>
@@ -123,8 +70,6 @@ const SignForm = () => {
                   className="form-btn"
                 />
               </div>
-
-
             </form>
           </div>
         </div>
