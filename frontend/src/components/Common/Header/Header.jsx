@@ -77,7 +77,7 @@ const Header = () => {
                   </Dropdown>
                 </li>
                 <li>
-                  <Link onClick={toggle} target={"_blank"} to="https://chat.whatsapp.com/BITMxQSwpFT5x8zjX0v6z2">Join the chat room</Link>
+                  <Link target={"_blank"} to="https://chat.whatsapp.com/BITMxQSwpFT5x8zjX0v6z2">Join the chat room</Link>
                 </li>
                 <li>
                   <Link to="/contact">Contact Us</Link>
@@ -139,7 +139,7 @@ const Header = () => {
 
                 <li>
                   <Dropdown parent={"Pages"}>
-                    <Link onClick={toggle} to={"/about"} target="_blank">About Us</Link>
+                    <Link onClick={toggle} to={"/about"}>About Us</Link>
                     <Link onClick={toggle} to={"/terms"}>Terms & Conditions</Link>
                     <Link onClick={toggle} to={"/privacy"}>Privacy Policy</Link>
                     <Link onClick={toggle} to={"/faq"}>FAQs</Link>
