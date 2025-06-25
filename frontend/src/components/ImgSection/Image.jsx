@@ -1,10 +1,10 @@
 import React from "react";
-import about1 from "../../../public/assets/about-1.png";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 
 const Image = () => {
+  const about1 = "./assets/about/about_8.JPG"
   let settings = {
     slidesToShow: 1,
     slidesToScroll: 1,

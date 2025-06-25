@@ -23,7 +23,7 @@
   display: block;
   width: 20px;
   height: 1px;
-  background: #c3c3c5;
+  background: var(--bg-secondary);
   position: absolute;
   top: 50%;
   left: 0;

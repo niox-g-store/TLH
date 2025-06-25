@@ -45,7 +45,7 @@ const Header = () => {
 
   return (
     <>
-      <header className={scrolled ? "scrolled" : ""} data-aos={scrolled ?? "fade-down"} data-aos-delay={scrolled ?? "300"}>
+      <header className={scrolled ? "scrolled" : ""} data-aos={scrolled ?? "fade-down"} data-aos-delay={scrolled ?? "50"}>
         <div className="container">
           <div className="navigation">
             <div className="logo">

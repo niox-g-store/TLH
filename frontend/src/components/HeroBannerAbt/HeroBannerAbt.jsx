@@ -1,24 +1,27 @@
 import React from "react";
 import "./HeroBannerAbt.css";
+import HomeBanner from "../../containers/HomePage/HomeBanner";
+import VideoDevice from "../Common/VideoDevice";
 
 const HeroBannerAbt = () => {
+  const about1 = "./assets/about/about_7.JPG";
+  const about2 = "./assets/about/about_4.JPG";
+  const about3 = "./assets/about/about_3.jpeg";
+  const about4 = "./assets/about/about_1.jpeg";
+
+  const aboutVideo = "./assets/about/about_video.MP4"
+
   return (
     <>
-      <section className="hero-section">
+      <section className="hero-section about-us-one">
         <div className="container">
           <div className="hero-banner">
             <div className="col-hero-banner-h1" data-aos="fade-up">
-              <h1>Experience you can trust</h1>
+              <h1>Welcome to The Link Hangouts</h1>
+              <h4>We are a vibrant lifestyle company based in Lagos, Nigeria, dedicated to curating and orchestrating exceptional events, parties, and hangouts that bring people together to create lasting memories. As stewards of a burgeoning community of influencers and enthusiastic youths, we take pride in connecting like-minded individuals to explore the pulse of Lagos's cultural scene.</h4>
             </div>
-            <div
-              className="col-hero-banner-p"
-              data-aos="fade-up"
-              data-aos-delay="300">
-              <p>
-                From year to year, we strive to invest in the most innovative
-                technology that is used by both small enterprises and space
-                enterprises
-              </p>
+            <div className="col-hero-banner-p">
+                <VideoDevice video={aboutVideo} img={about4} />
             </div>
           </div>
         </div>

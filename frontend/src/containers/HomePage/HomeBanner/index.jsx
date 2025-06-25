@@ -1,12 +1,10 @@
-import React from "react";
-import { CiChat1 } from "react-icons/ci";
-
-const HomeBanner = () => {
+const HomeBanner = (props) => {
+    const { video = "/uploads/videos/purple.mp4" } = props;
     return (
         <div className="homeBanner">
             <div className="videoContainer">
                 <video autoPlay muted playsInline loop>
-                    <source src={"/uploads/videos/purple.mp4"} type="video/mp4"></source>
+                    <source src={video} type="video/mp4"></source>
                 </video>
             </div>
         </div>

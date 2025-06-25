@@ -1,0 +1,42 @@
+.about-us-one {
+    .hero-banner {
+        padding-top: 10em;
+        @include media-breakpoint-down(md) {
+            gap: 3em;
+        }
+        .col-hero-banner-h1 {
+            @include media-breakpoint-up(md) {
+                flex: 0 0 55%;
+            }
+        }
+
+        .col-hero-banner-p {
+            @include media-breakpoint-up(md) {
+                flex: 0 0 45%;
+            }
+            .videoContainer {
+                video {
+                    border-radius: 10px;
+                }
+            }
+            
+            .device-page {
+                background: var(--bg-secondary) ;
+            }
+
+            .device-page-row-wrapper {
+                padding: 0;
+            }
+
+            .col-page-image {
+                max-width: 100%;
+            }
+        }
+    }
+}
+
+
+#image-section {
+    .slick-list {
+    }
+}
