@@ -43,7 +43,7 @@ const SignForm = () => {
                     <input
                       type="text"
                       name="fname"
-                      placeholder="Full Name"
+                      placeholder=""
                       value={inputs.fname || ""}
                       onChange={handleChange}
                     />
@@ -59,7 +59,7 @@ const SignForm = () => {
                     type="email"
                     id="email"
                     name="email"
-                    placeholder="abc@thelinkhangouts.com"
+                    placeholder=""
                     value={inputs.email || ""}
                     onChange={handleChange}
                   />
@@ -79,7 +79,7 @@ const SignForm = () => {
                   <input
                     type="password"
                     id="pass"
-                    placeholder="Password"
+                    placeholder=""
                     name="current_password"
                     pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"
                     value={inputs.current_password || ""}
@@ -96,7 +96,7 @@ const SignForm = () => {
                   <input
                     type="password"
                     id="pass"
-                    placeholder="Password"
+                    placeholder=""
                     name="current_password"
                     pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"
                     value={inputs.current_password || ""}

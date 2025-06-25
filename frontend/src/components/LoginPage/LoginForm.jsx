@@ -42,13 +42,13 @@ const LoginForm = () => {
             <form method="post">
               <div className="form-field email">
                 <div className="form-label">
-                  <label htmlFor="email">Email</label>
+                  <label htmlFor="email">Email/Username</label>
                 </div>
                 <div className={`input ${error ? "active" : ""}`}>
                   <input
                     type="email"
                     name="email"
-                    placeholder="abc@thelinkhangouts.com"
+                    placeholder=""
                     value={inputs.email || ""}
                     onChange={handleChange}
                   />
@@ -67,7 +67,7 @@ const LoginForm = () => {
                   <input
                     type="password"
                     name="current_password"
-                    placeholder="Password"
+                    placeholder=""
                     value={inputs.current_password || ""}
                     onChange={handleChange}
                   />
