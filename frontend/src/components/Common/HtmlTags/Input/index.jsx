@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import { IoIosSearch } from "react-icons/io";
 
 const Input = props => {
   const {
@@ -144,6 +145,30 @@ const Input = props => {
         <span className='invalid-message'>{error && error[0]}</span>
       </div>
     );
+  } else if (type === "search") {
+    return (
+    <div className={`input-search ${className}`}>
+        {label && <p style={{ marginBottom: '10px' }}>{label}</p>}
+        <div className='input-text-block'>
+          <input
+            className={className && `${className} input-text` || 'input-text'}
+            autoComplete={autoComplete}
+            type={type}
+            onChange={e => {
+              _onChange(e);
+            }}
+            disabled={disabled}
+            name={name}
+            value={value}
+            placeholder={placeholder}
+            checked={checked}
+          />
+          {inlineElement}
+          <div className="input-search-icon"><IoIosSearch size={30}/> </div>
+        </div>
+        <span className='invalid-message'>{error && error[0]}</span>
+      </div>
+    )
   } else {
     const styles = `input-box${inlineElement ? ` inline-btn-box` : ''} ${
       error ? 'invalid' : ''

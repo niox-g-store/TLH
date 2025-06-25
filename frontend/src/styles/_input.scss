@@ -1,0 +1,25 @@
+.input-search {
+    margin-bottom: 1.5em;
+    .input-text-block {
+        position: relative;
+        .input-text {
+            width: 100%;
+            font-family: inherit;
+            line-height: 1.2;
+            font-size: 16px;
+            width: 100%;
+            outline: 0;
+            padding: 13px 10px;
+            border: 1px solid #c9c9c9;
+            border-radius: 8px;
+        }
+    }
+
+    .input-search-icon {
+        width: fit-content;
+        position: absolute;
+        right: 10px;
+        top: 6px;
+    }
+
+}

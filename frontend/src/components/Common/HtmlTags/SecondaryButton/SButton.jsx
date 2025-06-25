@@ -5,7 +5,7 @@ const SButton = (props) => {
   const { link } = props;
   return (
     <>
-    <Link to={link}>
+    <Link to={link} target="_blank">
       <div className="button--secondary" id="button--secondary">
         {props.content}
         <svg

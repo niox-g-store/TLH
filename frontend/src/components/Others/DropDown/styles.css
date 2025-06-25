@@ -19,11 +19,11 @@
 .dropdown-content {
   display: none;
   background: var(--neutral_bg_color);
-  min-width: 20em;
+  min-width: 18em;
   position: absolute;
   z-index: 1;
   padding: 15px;
-  margin-top: .1em;
+  margin-top: -4px;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
 }
 

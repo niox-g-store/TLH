@@ -2,6 +2,8 @@ import React from "react";
 import Card from "../Card";
 import "./EventsWrap.css";
 import Pagination from "../Pagination";
+import Input from "../Common/HtmlTags/Input";
+import { IoIosSearch } from "react-icons/io";
 
 const EventsWrap = (props) => {
   const { events } = props;
@@ -10,6 +12,8 @@ const EventsWrap = (props) => {
       <div className="container">
         <div className="event-heading">
           <h2 className="head1" data-aos="fade-up">Discover our Events</h2>
+
+          <Input placeholder={"Search events by name"} type={"search"} />
         </div>
 
         <div className="events-list-wrapper">

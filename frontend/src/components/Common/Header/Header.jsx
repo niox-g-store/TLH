@@ -75,7 +75,7 @@ const Header = () => {
                   </Dropdown>
                 </li>
                 <li>
-                  <Link to="/blog">Blog</Link>
+                  <Link onClick={toggle} target={"_blank"} to="https://chat.whatsapp.com/BITMxQSwpFT5x8zjX0v6z2">Join the chat room</Link>
                 </li>
                 <li>
                   <Link to="/contact">Contact Us</Link>
@@ -145,11 +145,7 @@ const Header = () => {
                 </li>
 
                 <li>
-                  <Link onClick={toggle} to="/blog">Blog</Link>
-                </li>
-
-                <li>
-                  <Link onClick={toggle} to="/whatsapp">Join the chat room</Link>
+                  <Link onClick={toggle} target={"_blank"} to="https://chat.whatsapp.com/BITMxQSwpFT5x8zjX0v6z2">Join the chat room</Link>
                 </li>
 
                 <li>
