@@ -40,11 +40,15 @@
                     position: relative;
                     .forget-pass-sec, .create-account-links {
                         @include media-breakpoint-up(md) {
-                            position: absolute;
-                            width: 100%;
-                            left: -105%;
+                            display: none;
                         }
                     }
+                    .forget-pass-sec-large-screen, .create-account-links-large-screen {
+                        @include media-breakpoint-down(md) {
+                            display: none;
+                        }
+                    }
+
                 }
             }
         }
@@ -115,9 +119,24 @@
 
 .create-account {
     @include media-breakpoint-up(md) {
-        width: 48.5%;
-        position: absolute !important;
-        bottom: -25%;
-        right: 0%;
+        width: 50%;
+        display: none;
     }
+}
+
+.create-account-large-screen {
+    @include media-breakpoint-down(md) {
+        display: none;
+    }
+}
+.large-screens {
+    @include media-breakpoint-down(md) {
+        display: none;
+    }
+    position: relative;
+    top: -4em;
+    display: flex;
+    gap: 1em;
+    flex-direction: column;
+    width: 50%;
 }

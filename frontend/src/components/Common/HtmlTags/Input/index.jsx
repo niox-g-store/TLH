@@ -48,7 +48,9 @@ const Input = props => {
   };
 
   const _onChange = e => {
-    if (e.target.name === 'image') {
+    if (e.target.type === 'checkbox') {
+      onInputChange(e.target.name, e.target.checked);
+    } else if (e.target.name === 'image') {
       onInputChange(e.target.name, e.target.files[0]);
     } else {
       onInputChange(e.target.name, e.target.value);
@@ -167,6 +169,20 @@ const Input = props => {
           <div className="input-search-icon"><IoIosSearch size={30}/> </div>
         </div>
         <span className='invalid-message'>{error && error[0]}</span>
+      </div>
+    )
+  } else if (type === 'checkbox') {
+    return (
+      <div className="checkbox-wrapper">
+        <input
+          type="checkbox"
+          name={name}
+          checked={checked}
+          onChange={_onChange}
+          disabled={disabled}
+          className={className}
+        />
+        {label && <label htmlFor={name}>{label}</label>}
       </div>
     )
   } else {

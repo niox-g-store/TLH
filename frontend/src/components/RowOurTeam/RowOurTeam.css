@@ -17,7 +17,7 @@
 
 .item-img > img {
   object-fit: cover;
-  width: 100%;
+  width: 90%;
   height: 100%;
 
   min-height: 322px;
@@ -25,7 +25,7 @@
 
 .col-our-team-item > div {
   flex: 0 0 50%;
-  max-width: 50%;
+  max-width: 45%;
 }
 .item-content {
   padding: 20px;

@@ -1,5 +1,6 @@
 import React from "react";
 import "./Setup.css";
+import { Link } from "react-router-dom";
 
 const Setup = () => {
   return (
@@ -17,14 +18,7 @@ const Setup = () => {
             </div>
             <div className="col-setup-buttons">
               <div className="row-banner-btns">
-
-                <a
-                  href="#"
-                  className="button"
-                  data-aos="fade-up"
-                  data-aos-delay="300">
-                  Create Event
-                </a>
+                <Link to={"/organizer-signup"} className="button" data-aos="fade-up" data-aos-delay="300">Create Event</Link>
               </div>
             </div>
           </div>

@@ -2,14 +2,14 @@ import aa from "../../../public/assets/aa.jpg";
 import "./GettingMsg.css";
 import BrandSection from "../BrandSection/BrandSection";
 
-import blogo1 from "../../../public/assets/partner/partner_1.png";
-import blogo2 from "../../../public/assets/partner/partner_2.png";
-import blogo3 from "../../../public/assets/partner/partner_3.png";
-import blogo4 from "../../../public/assets/partner/partner_4.png";
-import blogo5 from "../../../public/assets/partner/partner_1.png";
-import blogo6 from "../../../public/assets/partner/partner_2.png";
-import blogo7 from "../../../public/assets/partner/partner_3.png";
-import blogo8 from "../../../public/assets/partner/partner_4.png";
+const blogo1 = "./assets/partner/partner_1.png";
+const blogo2 = "./assets/partner/partner_2.png";
+const blogo3 = "./assets/partner/partner_3.png";
+const blogo4 = "./assets/partner/partner_4.png";
+const blogo5 = "./assets/partner/partner_1.png";
+const blogo6 = "./assets/partner/partner_2.png";
+const blogo7 = "./assets/partner/partner_3.png";
+const blogo8 = "./assets/partner/partner_4.png";
 
 const logoData = [
   {

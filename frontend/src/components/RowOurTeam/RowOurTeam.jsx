@@ -1,11 +1,11 @@
 import React from "react";
-import item1 from "../../../public/assets/item1.png";
-import item2 from "../../../public/assets/item2.png";
-import item3 from "../../../public/assets/item3.png";
-import item4 from "../../../public/assets/item4.png";
 import "./RowOurTeam.css";
 
 const RowOurTeam = () => {
+  const team1 = "./assets/team/team_2.JPG";
+  const team2 = "./assets/team/team_1.JPG";
+  const team3 = "./assets/team/team_1.JPG";
+  const team4 = "./assets/team/team_2.JPG";
   return (
     <>
       <section className="row-our-team">
@@ -22,17 +22,16 @@ const RowOurTeam = () => {
             <div className="row-wrapper-our-team-list">
               <div className="col-our-team-item items-1">
                 <div className="item-img" data-aos="zoom-in-up">
-                  <img src={item1} alt="item1" width="320" height="322" />
+                  <img src={team1} alt="item1" width="320" height="322" />
                 </div>
                 <div className="item-content">
                   <div className="item-inner">
-                    <h2 className="h4" data-aos="fade-up">
-                      Sunny Marwah
+                    <h2 className="font-size-30" data-aos="fade-up">
+                      Oluwatobiloba Jamal
                     </h2>
-                    <p data-aos="fade-up">Visual Designer</p>
-                    <p data-aos="fade-up">
-                      Bringing the ideas to life , pixel by pixel . That's what
-                      drives me
+                    <p className="font-size-20" data-aos="fade-up">Event director</p>
+                    <p className="font-size-14" data-aos="fade-up">
+                      oversees the planning and execution of every event with precision and creativity. With a passion for delivering seamless experiences, he ensures each event reflects our clients’ vision and exceeds expectations.
                     </p>
                   </div>
                 </div>
@@ -40,17 +39,16 @@ const RowOurTeam = () => {
 
               <div className="col-our-team-item items-2">
                 <div className="item-img" data-aos="zoom-in-up">
-                  <img src={item2} alt="item2" width="320" height="322" />
+                  <img src={team2} alt="item2" width="320" height="322" />
                 </div>
                 <div className="item-content">
                   <div className="item-inner">
-                    <h2 className="h4" data-aos="fade-up">
-                      Samsel Sunday
+                    <h2 className="font-size-30" data-aos="fade-up">
+                      Lawal Oluwatomiwa
                     </h2>
-                    <p data-aos="fade-up">Head of design</p>
-                    <p data-aos="fade-up">
-                      As a design leader to make sure That users need into a
-                      visual direction for our team to work with
+                    <p className="font-size-20" data-aos="fade-up">Head of sales and marketing</p>
+                    <p className="font-size-14" data-aos="fade-up">
+                      leads our sales and marketing with a sharp eye for strategy and a passion for creating memorable event experiences. She connects clients to impactful moments that resonate and deliver results.
                     </p>
                   </div>
                 </div>
@@ -59,15 +57,15 @@ const RowOurTeam = () => {
             <div className="row-wrapper-our-team-list col-reverse">
               <div className="col-our-team-item items-1">
                 <div className="item-img" data-aos="zoom-in-up">
-                  <img src={item3} alt="item3" width="320" height="322" />
+                  <img src={team3} alt="item3" width="320" height="322" />
                 </div>
                 <div className="item-content">
                   <div className="item-inner">
-                    <h2 className="h4" data-aos="fade-up">
+                    <h2 className="font-size-30" data-aos="fade-up">
                       Mentari Crystal
                     </h2>
-                    <p data-aos="fade-up">Developer</p>
-                    <p data-aos="fade-up">
+                    <p className="font-size-20" data-aos="fade-up">Developer</p>
+                    <p className="font-size-14" data-aos="fade-up">
                       Making sure we're up to date to the latest technologies is
                       what i strive for
                     </p>
@@ -76,15 +74,15 @@ const RowOurTeam = () => {
               </div>
               <div className="col-our-team-item items-2">
                 <div className="item-img" data-aos="zoom-in-up">
-                  <img src={item4} alt="item4" width="320" height="322" />
+                  <img src={team4} alt="item4" width="320" height="322" />
                 </div>
                 <div className="item-content">
                   <div className="item-inner">
-                    <h2 className="h4" data-aos="fade-up">
+                    <h2 className="font-size-30" data-aos="fade-up">
                       Berry Syam
                     </h2>
-                    <p data-aos="fade-up">VP of Engineering</p>
-                    <p data-aos="fade-up">
+                    <p className="font-size-20" data-aos="fade-up">VP of Engineering</p>
+                    <p className="font-size-14" data-aos="fade-up">
                       Getting the best out of the dev squad and building solid
                       products together is what puts a smile on my face
                     </p>

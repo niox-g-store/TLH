@@ -80,7 +80,7 @@ const Header = () => {
                   <Link target={"_blank"} to="https://chat.whatsapp.com/BITMxQSwpFT5x8zjX0v6z2">Join the chat room</Link>
                 </li>
                 <li>
-                  <Link to="/contact">Contact Us</Link>
+                  <Link to="mailto:contact@thelinkhangout.com">Contact Us</Link>
                 </li>
               </ul>
             </div>
@@ -151,7 +151,7 @@ const Header = () => {
                 </li>
 
                 <li>
-                  <Link onClick={toggle} to="/contact">Contact Us</Link>
+                  <Link onClick={toggle} to="mailto:contact@thelinkhangout.com">Contact Us</Link>
                 </li>
 
                 </ul>

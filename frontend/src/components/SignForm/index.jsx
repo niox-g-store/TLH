@@ -16,6 +16,13 @@ const SignForm = () => {
   const submitted = false;
   const [inputs, setInputs] = useState({});
   const [error, setError] = useState("");
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleCheckboxChange = (name, value) => {
+    if (name === 'checkbox') {
+      setIsChecked(value);
+    }
+  };
 
   const handleChange = (event) => {
     const name = event.target.name;
@@ -55,7 +62,7 @@ const SignForm = () => {
               <div className="forget-pass-sec">
                 <div className="remember-me signup">
                   <div className="input">
-                    <Input type={"checkbox"} checked={true}/>
+                    <Input name={"checkbox"} checked={isChecked} onInputChange={handleCheckboxChange} type={"checkbox"}/>
                   </div>
                   <div className="form-label">
                     <label>I want to recieve updates about The link hangouts</label>

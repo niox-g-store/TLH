@@ -12,6 +12,13 @@ const OrganizerSignUp = () => {
   const submitted = false;
   const [inputs, setInputs] = useState({});
   const [error, setError] = useState("");
+  const [isChecked, setIsChecked] = useState(false);
+  
+  const handleCheckboxChange = (name, value) => {
+    if (name === 'checkbox') {
+      setIsChecked(value);
+    }
+  };
 
   const handleChange = (event) => {
     const name = event.target.name;
@@ -62,10 +69,17 @@ const OrganizerSignUp = () => {
               <div className="form-field password">
                   <Input type={"password"} label={"Confirm Password"} />
               </div>
+              <div className="form-field input create-account-large-screen">
+                <input
+                  type="submit"
+                  value="Create Account"
+                  className="form-btn"
+                />
+              </div>
 
               <div className="forget-pass-sec">
                 <div className="remember-me signup">
-                  <Input type={"checkbox"} checked={true} />&nbsp;&nbsp;
+                  <Input name={"checkbox"} checked={isChecked} onInputChange={handleCheckboxChange} type={"checkbox"}/>&nbsp;&nbsp;
                   <div className="form-label">
                     <label>I want to recieve updates about The link hangouts</label>
                   </div>
@@ -92,6 +106,25 @@ const OrganizerSignUp = () => {
                   className="form-btn"
                 />
               </div>
+
+              <div className="large-screens">
+              <div className="forget-pass-sec-large-screen">
+                <div className="remember-me signup">
+                  <Input name={"checkbox"} checked={isChecked} onInputChange={handleCheckboxChange} type={"checkbox"}/>&nbsp;&nbsp;
+                  <div className="form-label">
+                    <label>I want to recieve updates about The link hangouts</label>
+                  </div>
+                </div>
+              </div>
+              <div className="create-account-links-large-screen">
+                <p>
+                  Already have an account? &nbsp;
+                <span className="h6">
+                  <Link to="/login">Log In</Link>
+                </span>
+              </p>
+            </div>
+            </div>
 
             </form>
           </div>
