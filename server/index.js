@@ -6,8 +6,7 @@ const helmet = require('helmet');
 
 const keys = require('./config/keys');
 const routes = require('./routes');
-const socket = require('./socket');
-const setupDB = require('./db/db');
+const setupDB = require('./db');
 
 const { port } = keys;
 const app = express();
@@ -33,5 +32,3 @@ const server = app.listen(port, () => {
     )}`
   );
 });
-
-socket(server);

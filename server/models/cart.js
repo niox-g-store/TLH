@@ -1,8 +1,7 @@
-const Mongoose = require('mongoose');
-const { Schema } = Mongoose;
+const mongoose = require('mongoose');
 
 // Cart Item Schema
-const CartItemSchema = new Schema({
+const CartItemSchema = new mongoose.Schema({
   ticket: {
     type: Schema.Types.ObjectId,
     ref: 'Ticket'
@@ -25,18 +24,21 @@ const CartItemSchema = new Schema({
   },
 });
 
-module.exports = Mongoose.model('CartItem', CartItemSchema);
+module.exports = mongoose.model('CartItem', CartItemSchema);
 
 // Cart Schema
-const CartSchema = new Schema({
+const CartSchema = new mongoose.Schema({
   tickets: [CartItemSchema],
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
     default: null
   },
-  updated: Date,
-  created: {
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
     type: Date,
     default: Date.now
   },
@@ -46,4 +48,4 @@ const CartSchema = new Schema({
   }
 });
 
-module.exports = Mongoose.model('Cart', CartSchema);
+module.exports = mongoose.model('Cart', CartSchema);

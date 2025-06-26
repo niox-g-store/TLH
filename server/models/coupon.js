@@ -42,7 +42,7 @@ const couponSchema = new mongoose.Schema({
 });
 
 // Automatically update `updatedAt` on save
-attendeeSchema.pre('save', function (next) {
+couponSchema.pre('save', function (next) {
   this.updatedAt = new Date();
   next();
 });

@@ -1,8 +1,7 @@
-const Mongoose = require('mongoose');
-const { Schema } = Mongoose;
+const mongoose = require('mongoose');
 
 // Organizer Schema
-const OrganizerSchema = new Schema({
+const OrganizerSchema = new mongoose.Schema({
   companyName: {
     type: String,
   },
@@ -20,11 +19,14 @@ const OrganizerSchema = new Schema({
     ref: 'Event',
     default: null
   },
-  updated: Date,
   created: {
     type: Date,
     default: Date.now
-  }
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  },
 });
 
-module.exports = Mongoose.model('Organizer', OrganizerSchema);
+module.exports = mongoose.model('Organizer', OrganizerSchema);

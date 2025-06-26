@@ -1,11 +1,9 @@
-const Mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 const { ROLES, EMAIL_PROVIDER } = require('../utils/constants');
 
-const { Schema } = Mongoose;
-
 // User Schema
-const UserSchema = new Schema({
+const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     lowercase: true,
@@ -15,7 +13,8 @@ const UserSchema = new Schema({
     }
   },
   userName: {
-    type: String
+    type: String,
+    required: true
   },
   name: {
     type: String
@@ -25,7 +24,7 @@ const UserSchema = new Schema({
     default: null,
   },
   organizer: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Organizer',
     default: null
   },
@@ -44,11 +43,14 @@ const UserSchema = new Schema({
   },
   resetPasswordToken: { type: String },
   resetPasswordExpires: { type: Date },
-  updated: Date,
-  created: {
-    type: Date,
-    default: Date.now
-  }
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
 });
 
-module.exports = Mongoose.model('User', UserSchema);
+// Automatically create a slug from the title before saving
+UserSchema.pre('save', function(next) {
+  this.updatedAt = new Date();
+  next();
+});
+
+module.exports = mongoose.model('User', UserSchema);

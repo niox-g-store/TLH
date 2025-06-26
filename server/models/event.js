@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
-const EVENT_CATEGORIES = require('../utils/eventCategories');
-const EVENT_STATUS = requrie('../utils/eventStatus');
+const { EVENT_STATUS, EVENT_CATEGORIES } = require('../utils/constants');
 
 const eventSchema = new mongoose.Schema({
   name: {
