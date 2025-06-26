@@ -2,9 +2,9 @@ import React from "react";
 import "./RowOurTeam.css";
 
 const RowOurTeam = () => {
-  const team1 = "./assets/team/team_2.JPG";
-  const team2 = "./assets/team/team_1.JPG";
-  const team3 = "./assets/team/team_1.JPG";
+  const team1 = "./assets/team/team_1.JPG";
+  const team2 = "./assets/team/team_2.JPG";
+  const team3 = "./assets/team/team_3.JPG";
   const team4 = "./assets/team/team_2.JPG";
   return (
     <>
@@ -62,17 +62,16 @@ const RowOurTeam = () => {
                 <div className="item-content">
                   <div className="item-inner">
                     <h2 className="font-size-30" data-aos="fade-up">
-                      Mentari Crystal
+                      Akintola Jenrola
                     </h2>
-                    <p className="font-size-20" data-aos="fade-up">Developer</p>
+                    <p className="font-size-20" data-aos="fade-up">Hospitality Manager</p>
                     <p className="font-size-14" data-aos="fade-up">
-                      Making sure we're up to date to the latest technologies is
-                      what i strive for
+                      ensures every guest experience is seamless, welcoming, and memorable. With a strong eye for detail and a commitment to excellence, she oversees all hospitality operations to create a warm and professional environment at every event.
                     </p>
                   </div>
                 </div>
               </div>
-              <div className="col-our-team-item items-2">
+              {/*<div className="col-our-team-item items-2">
                 <div className="item-img" data-aos="zoom-in-up">
                   <img src={team4} alt="item4" width="320" height="322" />
                 </div>
@@ -88,7 +87,7 @@ const RowOurTeam = () => {
                     </p>
                   </div>
                 </div>
-              </div>
+              </div>*/}
             </div>
           </div>
         </div>
