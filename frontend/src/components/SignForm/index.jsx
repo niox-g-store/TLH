@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-import logoIMG from "../../../public/assets/logo.png";
 import "./style.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";

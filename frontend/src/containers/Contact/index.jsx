@@ -1,9 +1,9 @@
 import React from "react";
-import contactus from "../../../public/assets/contactus.png";
 import HeroBanner from "../../components/HeroBanner/HeroBanner";
 import ContactForm from "../../components/ContactForm/ContactForm";
 
 const ContactUs = () => {
+  const contactus = "./assets/contactus.png";
   return (
     <>
       <HeroBanner

@@ -1,8 +1,8 @@
 import React from "react";
 import "./Conference.css";
-import ConferenceIMG from "../../../public/assets/conference.png";
 
 const Conference = () => {
+  const ConferenceIMG = "./assets/conference.png";
   return (
     <>
       <section className="conference-sln">

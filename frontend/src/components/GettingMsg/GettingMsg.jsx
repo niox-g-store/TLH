@@ -1,4 +1,3 @@
-import aa from "../../../public/assets/aa.jpg";
 import "./GettingMsg.css";
 import BrandSection from "../BrandSection/BrandSection";
 

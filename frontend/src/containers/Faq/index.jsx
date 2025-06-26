@@ -1,9 +1,9 @@
 import React from "react";
 import HeroBanner from "../../components/HeroBanner/HeroBanner";
-import faq from "../../../public/assets/faq.png";
 import Accordian from "../../components/Accordian/Accordian";
 
 const FAQs = () => {
+  const faq = "./assets/faq.png";
   return (
     <>
       <div className="faq-section">

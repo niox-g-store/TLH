@@ -3,7 +3,8 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import "../BrandSection/BrandSection.css";
-import blogo1 from "../../../public/assets/logo.png";
+
+const blogo1 = "./assets/logo.png";
 
 export const logoData = [
   {

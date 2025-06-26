@@ -1,6 +1,5 @@
 import React from "react";
 import HeroBanner from "../../components/HeroBanner/HeroBanner";
-import events from "../../../public/assets/events/event_8.jpeg";
 
 import EventsWrap from "../../components/EventsWrap/EventsWrap";
 import { mockEvents } from "./data";

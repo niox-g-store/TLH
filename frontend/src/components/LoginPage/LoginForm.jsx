@@ -1,5 +1,4 @@
 import React, { useState, memo } from "react";
-import GoogleLogo from "../../../public/assets/google-logo.svg";
 import "./Login.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -21,6 +20,7 @@ const LoginForm = () => {
   };
 
   const logo = "./assets/login.JPG"
+  const GoogleLogo = "./assets/google-logo.svg";
 
   return (
     <>

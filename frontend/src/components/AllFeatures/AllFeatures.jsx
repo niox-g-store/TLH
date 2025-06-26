@@ -1,8 +1,8 @@
 import React from "react";
-import features from "../../../public/assets/events/event_6.jpg";
 import "../AllFeatures/AllFeatures.css";
 
 const AllFeatures = () => {
+  const features = "./assets/events/event_6.jpg";
   return (
     <>
       <section className="all-featuers">

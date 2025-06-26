@@ -6,19 +6,18 @@ import AllFeatures from "../../components/AllFeatures/AllFeatures";
 import Benefits from "../../components/Benefits/Benefits";
 import GettingMsg from "../../components/GettingMsg/GettingMsg";
 import Setup from "../../components/Setup/Setup";
-import bannerImage from "../../../public/assets/hero-banner-image.svg.png";
 import PButton from "../../components/Common/HtmlTags/PrimaryButton/PButton";
 import SButton from "../../components/Common/HtmlTags/SecondaryButton/SButton";
 import HomeBanner from "./HomeBanner";
-import Button from "../../components/Common/HtmlTags/Button";
 
-// events images
-import event1 from "../../../public/assets/events/event_1.jpeg";
-import event2 from "../../../public/assets/events/event_2.jpeg";
-import event3 from "../../../public/assets/events/event_3.jpeg";
-import event4 from "../../../public/assets/events/event_4.jpeg";
 
 const Home = () => {
+  // events images
+  const event1 = "./assets/events/event_1.jpeg";
+  const event2 = "./assets/events/event_2.jpeg";
+  const event3 = "./assets/events/event_3.jpeg";
+  const event4 = "./assets/events/event_4.jpeg";
+
   const eventImages =  [event1, event3, event2, event4];
   return (
     <>

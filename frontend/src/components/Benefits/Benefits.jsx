@@ -1,15 +1,15 @@
 import React from "react";
-import benfitsIMG from "../../../public/assets/events/event_7.jpg";
 import "./Benefits.css";
 
 const Benefits = () => {
+  const benefitsIMG = "./assets/events/event_7.jpg";
   return (
     <>
       <section className="benefits">
         <div className="container">
           <div className="benefits-row-wrapper">
             <div className="col-benefits-image" data-aos="fade-up">
-              <img className="border-10" src={benfitsIMG} alt="benefits-image" />
+              <img className="border-10" src={benefitsIMG} alt="benefits-image" />
             </div>
             <div className="col-benefits-content">
               <p className="p-content p-all-features" data-aos="fade-up">

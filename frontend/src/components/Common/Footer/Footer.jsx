@@ -1,9 +1,8 @@
 import React from "react";
-import ftrlogo from "../../../../public/assets/logo.png";
-import Share from "../../../../public/assets/Share.png";
 import "./Footer.css";
 
 const Footer = () => {
+  const ftrlogo = "./assets/logo.png";
   return (
     <>
       <footer>
