@@ -44,7 +44,10 @@ const SignForm = () => {
             <p className="p-content p-black">Join our community to discover and attend amazing events near you.</p>
             <form method="post">
                 <div className="first-name form-field">
-                  <Input type={"text"} label={"Full name"}/>
+                  <Input type={"text"} label={"Name"}/>
+                </div>
+                <div className="first-name form-field">
+                  <Input type={"text"} label={"Username"}/>
                 </div>
 
                 <div className="form-field email">

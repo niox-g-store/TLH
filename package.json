@@ -10,5 +10,8 @@
     "build": "cd frontend && npm run build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "cd frontend && npm run preview"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
   }
 }
