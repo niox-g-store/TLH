@@ -8,6 +8,9 @@ dotenv.config();
 
 export default defineConfig({
   plugins: [react()],
+  optimizeDeps: {
+    include: ['redux-thunk'],
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),

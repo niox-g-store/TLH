@@ -8,7 +8,7 @@ const keys = require('./config/keys');
 const routes = require('./routes');
 const setupDB = require('./db');
 
-const { port } = keys;
+const { port, apiURL } = keys;
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
@@ -28,7 +28,7 @@ app.use(routes);
 const server = app.listen(port, () => {
   console.log(
     `${chalk.green('✓')} ${chalk.blue(
-      `Listening on port ${port}. Visit http://localhost:${port}/ in your browser.`
+      `Listening on port ${port}. Visit http://localhost:${port}/${apiURL} in your browser.`
     )}`
   );
 });

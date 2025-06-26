@@ -1,0 +1,31 @@
+{
+  "ROLE ADMIN": [
+    { "to": "", "name": "Account Details", "prefix": "/dashboard" },
+    { "to": "/security", "name": "Account Security", "prefix": "/dashboard", "provider": ["Email"] },
+    { "to": "/events", "name": "Events", "prefix": "/dashboard" },
+    { "to": "/organizers", "name": "Organizers", "prefix": "/dashboard" },
+    { "to": "/users", "name": "Users", "prefix": "/dashboard" },
+    { "to": "/orders", "name": "All Orders", "prefix": "/dashboard" },
+    { "to": "/media", "name": "Media Manager", "prefix": "/dashboard" },
+    { "to": "/gallery", "name": "Gallery", "prefix": "/dashboard" },
+    { "to": "/coupons", "name": "Coupons", "prefix": "/dashboard" },
+    { "to": "/guests", "name": "Guest Buyers", "prefix": "/dashboard" },
+    { "to": "/tickets", "name": "All Tickets", "prefix": "/dashboard" },
+    { "to": "/scan", "name": "Ticket Scanner", "prefix": "/dashboard" }
+  ],
+  "ROLE MERCHANT": [
+    { "to": "", "name": "Account Details", "prefix": "/dashboard" },
+    { "to": "/security", "name": "Account Security", "prefix": "/dashboard", "provider": ["Email"] },
+    { "to": "/events", "name": "My Events", "prefix": "/dashboard" },
+    { "to": "/orders", "name": "My Orders", "prefix": "/dashboard" },
+    { "to": "/coupons", "name": "My Coupons", "prefix": "/dashboard" },
+    { "to": "/tickets", "name": "My Tickets", "prefix": "/dashboard" },
+    { "to": "/scan", "name": "Ticket Scanner", "prefix": "/dashboard" }
+  ],
+  "ROLE MEMBER": [
+    { "to": "", "name": "Account Details", "prefix": "/dashboard" },
+    { "to": "/security", "name": "Account Security", "prefix": "/dashboard" },
+    { "to": "/orders", "name": "My Orders", "prefix": "/dashboard" },
+    { "to": "/tickets", "name": "My Tickets", "prefix": "/dashboard" }
+  ]
+}

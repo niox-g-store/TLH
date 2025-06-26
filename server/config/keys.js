@@ -4,6 +4,7 @@ module.exports = {
     apiURL: `${process.env.BASE_API_URL}`,
     clientURL: process.env.FRONTEND_URL
   },
+  apiURL: `${process.env.BASE_API_URL}`,
   port: process.env.PORT || 3000,
   database: {
     HOST: process.env.MONGO_HOST,

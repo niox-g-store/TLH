@@ -82,6 +82,7 @@ video {
   display: inline-block;
   color: var(--white);
   width: max-content;
+  cursor: pointer;
 }
 
 .button--secondary {
@@ -181,6 +182,12 @@ select {
 
 .font-size-14 {
   font-size: 14px;
+}
+
+.invalid-message {
+  color: red;
+  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: 12px;
 }
 
 @media (max-width: 1024px) {
