@@ -11,7 +11,7 @@ const UserHeaderHelper = (props) => {
             <div className="nav">
               <ul>
                 {
-                    links.map((link, index) => {
+                    links && links.map((link, index) => {
                         const PREFIX = link.prefix ? link.prefix : '';
                         return (
                             <li key={index}>
@@ -52,7 +52,7 @@ const UserHeaderHelper = (props) => {
               <div className="nav">
                 <ul>
                 {
-                    links.map((link, index) => {
+                    links && links.map((link, index) => {
                         const PREFIX = link.prefix ? link.prefix : '';
                         return (
                             <li key={index}>
@@ -70,6 +70,14 @@ const UserHeaderHelper = (props) => {
                 </li>
             
                 </ul>
+              </div>
+
+              <div className="buttons">
+                <div className="logout-button">
+                  <Link to="/" className="button " onClick={doLogout}>
+                    Logout
+                  </Link>
+                </div>
               </div>
             </div>
         </>

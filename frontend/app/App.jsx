@@ -5,6 +5,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import actions from './actions';
 
+import Navigation from './containers/Navigation';
 import Footer from './components/Common/Footer/Footer';
 
 import Authentication from './containers/Authentication';
@@ -15,12 +16,11 @@ import Login from './containers/Login';
 import Signup from './containers/SignUp';
 import FAQs from './containers/Faq';
 import Events from './containers/Events';
-import TestBack from './pages/TestBack';
 import Gallery from './containers/Gallery';
 import OrganizerSignUp from './containers/Organizer/SignUp';
 import Dashboard from './containers/Dashboard';
 import Page404 from './containers/Page404';
-import Navigation from './containers/Navigation';
+import ScrollToTop from './components/Common/ScrollToTop';
 
 function App(props) {
   const location = useLocation();
@@ -41,6 +41,7 @@ function App(props) {
 
   return (
     <>
+      <ScrollToTop />
       <Notification />
       {showHeaderFooter && <Navigation />}
       <Routes>

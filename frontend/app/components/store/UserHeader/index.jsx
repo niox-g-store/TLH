@@ -16,7 +16,7 @@ const UserHeader = (props) => {
         doLogout
     } = props;
 
-    if (authenticated && user && user.role) {
+    if (authenticated && user && user.role !== 'ROLE ADMIN') {
         return (
             <>
             <UserHeaderHelper {...props} />

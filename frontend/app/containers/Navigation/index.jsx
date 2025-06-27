@@ -12,9 +12,9 @@ import dashboardLinks from "../Dashboard/links.json";
 import { ROLES } from '../../constants';
 
 class Navigation extends React.PureComponent {
+  
   componentDidMount () {
     const token = localStorage.getItem('token');
-
     if (token) {
       this.props.fetchProfile();
     }

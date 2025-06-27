@@ -25,7 +25,6 @@
   "ROLE MEMBER": [
     { "to": "", "name": "Account Details", "prefix": "/dashboard" },
     { "to": "/security", "name": "Account Security", "prefix": "/dashboard" },
-    { "to": "/orders", "name": "My Orders", "prefix": "/dashboard" },
     { "to": "/tickets", "name": "My Tickets", "prefix": "/dashboard" }
   ]
 }
