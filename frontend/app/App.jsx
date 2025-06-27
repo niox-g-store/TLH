@@ -7,7 +7,6 @@ import actions from './actions';
 
 import Header from './components/Common/Header/Header';
 import Footer from './components/Common/Footer/Footer';
-import ScrollToTop from './components/Common/ScrollToTop';
 
 import Home from './containers/HomePage';
 import About from './containers/About';
@@ -41,8 +40,6 @@ function App(props) {
 
   return (
     <>
-      <ScrollToTop />
-
       {showHeaderFooter && <Header />}
 
       <Routes>

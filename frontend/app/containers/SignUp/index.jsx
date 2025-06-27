@@ -14,6 +14,7 @@ const Signup = (props) => {
     isSubscribed,
     signUpSubmit,
     comparePasswords,
+    signupReset
   } = props;
 
   return (

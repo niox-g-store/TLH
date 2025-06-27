@@ -20,6 +20,7 @@ const SignForm = (props) => {
     isSubscribed,
     signUpSubmit,
     comparePasswords,
+    signupReset
   } = props;
 
   const handleSubmit = (e) => {
@@ -30,7 +31,7 @@ const SignForm = (props) => {
   return (
     <div className="n-signup">
       <div className="signup signup-left">
-        <Link className="back-to-home" to="/">
+        <Link className="back-to-home" to="/" onClick={signupReset}>
           <BackIcon />
           <p>Back to Home</p>
         </Link>
