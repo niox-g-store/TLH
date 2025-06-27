@@ -7,7 +7,6 @@ const passport = require('passport');
 
 const auth = require('../../middleware/auth');
 
-// Bring in Models & Helpers
 const User = require('../../models/user');
 const keys = require('../../config/keys');
 const { EMAIL_PROVIDER, JWT_COOKIE } = require('../../utils/constants');
@@ -31,24 +30,39 @@ const verifyGoogleToken = async (token) => {
   return payload;
 };
 
+/**
+ * checkIfEmail - check if input passed is an email or user name
+ * @param {} input 
+ * @returns 
+ */
+const checkIfEmail = (input) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(input) ? true : false
+}
+
 
 router.post('/login', async (req, res) => {
   try {
-    let { email, password } = req.body;
+    let { email, password, rememberMe } = req.body;
 
     if (!email) {
       return res
         .status(400)
-        .json({ error: 'You must enter an email address.' });
+        .json({ error: 'You must enter an email or username' });
     }
 
     if (!password) {
       return res.status(400).json({ error: 'You must enter a password.' });
     }
-
+    const isEmail = checkIfEmail(email);
     email = email.trim().toLowerCase();
+    let user;
+    if (isEmail) {
+      user = await User.findOne({ email })
+    } else {
+      user = await User.findOne({ userName: email })
+    }
 
-    const user = await User.findOne({ email });
     if (!user) {
       return res
         .status(400)
@@ -74,25 +88,25 @@ router.post('/login', async (req, res) => {
       id: user.id
     };
 
-    const token = jwt.sign(payload, secret, { expiresIn: tokenLife });
+    const token = jwt.sign(payload, secret, { expiresIn: rememberMe ? '30d' : tokenLife });
 
     if (!token) {
       throw new Error();
     }
 
-    await mailgun.sendEmail(
+    /*await mailgun.sendEmail(
       user.email,
       'signin',
       user
-    );
+    );*/
 
     return res.status(200).json({
       success: true,
       token: `Bearer ${token}`,
       user: {
         id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
+        name: user.name,
+        companyName: user.companyName,
         email: user.email,
         role: user.role
       }

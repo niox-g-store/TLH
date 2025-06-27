@@ -16,9 +16,7 @@ import Login from './containers/Login';
 import Signup from './containers/SignUp';
 import FAQs from './containers/Faq';
 import Events from './containers/Events';
-import ContactUs from './containers/Contact';
 import TestBack from './pages/TestBack';
-import User from './pages/User';
 import Gallery from './containers/Gallery';
 import OrganizerSignUp from './containers/Organizer/SignUp';
 import Dashboard from './containers/Dashboard';
@@ -65,6 +63,7 @@ function App(props) {
 }
 
 const mapStateToProps = (state) => {
+  console.log(state)
   return {};
 };
 

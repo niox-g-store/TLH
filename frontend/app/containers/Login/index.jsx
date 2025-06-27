@@ -1,10 +1,25 @@
 import React from "react";
-import LoginForm from "../../components/Common/LoginPage/LoginForm";
+import { connect } from 'react-redux';
+import { Navigate } from 'react-router-dom';
+import actions from '../../actions';
+import LoginForm from "../../components/Common/LoginPage";
 
-const Login = () => {
+const Login = (props) => {
+  const {
+      authenticated,
+      loginFormData,
+      loginChange,
+      login,
+      formErrors,
+      isLoading,
+      isSubmitting,
+      rememberMeChange,
+      rememberMe
+  } = props;
+  if (authenticated) return <Navigate to='/dashboard' />;
   return (
     <>
-      <LoginForm />
+      <LoginForm {...props}/>
     </>
   );
 };
@@ -16,6 +31,7 @@ const mapStateToProps = (state) => {
     formErrors: state.login.formErrors,
     isLoading: state.login.isLoading,
     isSubmitting: state.login.isSubmitting,
+    rememberMe: state.login.rememberMe
   };
 };
 

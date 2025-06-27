@@ -5,6 +5,7 @@ import * as signUp from "../app/containers/SignUp/actions";
 import * as notifications from "../app/containers/Notification/actions";
 import * as account from "../app/containers/Account/actions";
 import * as dashboard from "../app/containers/Dashboard/actions";
+import * as login from '../app/containers/Login/actions';
 
 export default function mapDispatchToProps(dispatch) {
     return bindActionCreators(
@@ -14,6 +15,7 @@ export default function mapDispatchToProps(dispatch) {
             ...notifications,
             ...account,
             ...dashboard,
+            ...login,
         },
         dispatch
     );

@@ -9,22 +9,29 @@ import {
   LOGIN_RESET,
   SET_LOGIN_LOADING,
   SET_LOGIN_FORM_ERRORS,
-  SET_LOGIN_SUBMITTING
+  SET_LOGIN_SUBMITTING,
+  REMEMBER_ME
 } from './constants';
 
 const initialState = {
   loginFormData: {
     email: '',
     userName: '',
-    password: ''
+    password: '',
   },
   formErrors: {},
   isSubmitting: false,
-  isLoading: false
+  isLoading: false,
+  rememberMe: false
 };
 
 const loginReducer = (state = initialState, action) => {
   switch (action.type) {
+    case REMEMBER_ME:
+      return {
+        ...state,
+        rememberMe: !state.rememberMe
+      }
     case LOGIN_CHANGE:
       return {
         ...state,
@@ -51,7 +58,7 @@ const loginReducer = (state = initialState, action) => {
         loginFormData: {
           email: '',
           userName: '',
-          password: ''
+          password: '',
         },
         formErrors: {},
         isLoading: false

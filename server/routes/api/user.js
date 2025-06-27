@@ -80,19 +80,16 @@ router.get('/all_users', auth, role.check(ROLES.Admin), async (req, res) => {
 router.get('/me', auth, async (req, res) => {
   try {
     const user = req.user._id;
-    console.log(user)
     const userDoc = await User.findById(user, { password: 0 })
     /*const userDoc = await User.findById(user, { password: 0 }).populate({
       path: 'organizer',
       model: 'Organizer',
     });*/
-    console.log(userDoc)
 
     return res.status(200).json({
       user: userDoc
     });
   } catch (error) {
-    console.log(error)
     return res.status(400).json({
       error: 'Your request could not be processed. Please try again.'
     });

@@ -6,14 +6,15 @@
 
 import axios from 'axios';
 import { showNotification } from '../Notification/actions';
-import { push } from 'connected-react-router';
+import { useNavigate } from 'react-router-dom';
 
 import {
   LOGIN_CHANGE,
   LOGIN_RESET,
   SET_LOGIN_LOADING,
   SET_LOGIN_FORM_ERRORS,
-  SET_LOGIN_SUBMITTING
+  SET_LOGIN_SUBMITTING,
+  REMEMBER_ME
 } from './constants';
 import { setAuth, clearAuth } from '../Authentication/actions';
 import setToken from '../../utils/token';
@@ -33,19 +34,23 @@ export const loginChange = (name, value) => {
   };
 };
 
+export const rememberMeChange = () => {
+  return {
+    type: REMEMBER_ME
+  }
+}
+
 export const login = () => {
   return async (dispatch, getState) => {
     let user = getState().login.loginFormData;
-    const emailOrUsername = user.email ? user.email : user.userName
-    user.input = emailOrUsername
 
     const rules = {
-      input: 'require',
+      email: 'required',
       password: 'required|min:6'
     };
 
     const { isValid, errors } = allFieldsValidation(user, rules, {
-      'required.input': 'Email is required.',
+      'required.email': 'Username or email is requried',
       'required.password': 'Password is required.',
       'min.password': 'Password must be at least 6 characters.'
     });
@@ -133,7 +138,7 @@ export const googleSignin = (credential) => {
       setToken(response.data.token);
 
       dispatch(setAuth());
-      dispatch(success(successfulOptions));
+      dispatch(showNotification('success', 'Welcome Back!'));
 
       dispatch({ type: LOGIN_RESET });
 
@@ -153,7 +158,7 @@ export const signOut = () => {
   return (dispatch, getState) => {
     dispatch(clearAuth());
     dispatch(clearAccount());
-    dispatch(push('/login'));
+    dispatch(useNavigate('/login'));
 
     localStorage.removeItem('token');
 
