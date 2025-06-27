@@ -25,7 +25,6 @@ class Dashboard extends React.PureComponent {
 
   render() {
     const { user, isLoading, isMenuOpen, toggleDashboardMenu } = this.props;
-    console.log(user)
     // if (isDisabledOrganizerAccount(user)) { return <DisabledOrganizerAccount user={user} />; }
 
     return (

@@ -53,7 +53,6 @@ function App(props) {
         <Route path="/signup" element={<Signup />} />
         <Route path="/organizer-signup" element={<OrganizerSignUp />} />
         <Route path="/FAQs" element={<FAQs />} />
-        <Route path="/testapi" element={<TestBack />} />
         <Route path="/dashboard/*" element={<Authentication><Dashboard /></Authentication>} />
       </Routes>
 

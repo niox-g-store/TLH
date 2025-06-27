@@ -6,7 +6,7 @@ const Authentication = ({ children }) => {
   const authenticated = useSelector((state) => state.authentication.authenticated);
 
   if (!authenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/signup" replace />;
   }
 
   return children;
