@@ -190,6 +190,11 @@ select {
   font-size: 12px;
 }
 
+.font-family-default {
+  font-family: 'Bebas Neue', sans-serif !important;
+}
+
+
 @media (max-width: 1024px) {
   h1,
   .h1 {

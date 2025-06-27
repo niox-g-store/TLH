@@ -12,7 +12,6 @@ import Button from '../../Common/HtmlTags/Button';
 
 const AccountMenu = (props) => {
   const { user, isMenuOpen, links, toggleMenu } = props;
-  console.log(links)
 
   const getAllowedProvider = (link) => {
     if (!link.provider) return true;

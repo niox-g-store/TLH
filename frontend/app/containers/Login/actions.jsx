@@ -158,7 +158,6 @@ export const signOut = () => {
   return (dispatch, getState) => {
     dispatch(clearAuth());
     dispatch(clearAccount());
-    dispatch(useNavigate('/login'));
 
     localStorage.removeItem('token');
 

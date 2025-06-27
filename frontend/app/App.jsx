@@ -5,7 +5,6 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import actions from './actions';
 
-import Header from './components/Common/Header/Header';
 import Footer from './components/Common/Footer/Footer';
 
 import Authentication from './containers/Authentication';
@@ -21,6 +20,7 @@ import Gallery from './containers/Gallery';
 import OrganizerSignUp from './containers/Organizer/SignUp';
 import Dashboard from './containers/Dashboard';
 import Page404 from './containers/Page404';
+import Navigation from './containers/Navigation';
 
 function App(props) {
   const location = useLocation();
@@ -42,7 +42,7 @@ function App(props) {
   return (
     <>
       <Notification />
-      {showHeaderFooter && <Header />}
+      {showHeaderFooter && <Navigation />}
       <Routes>
         <Route path="*" element={<Page404 />} />
         <Route path="/" element={<Home />} />

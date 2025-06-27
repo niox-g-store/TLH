@@ -124,7 +124,7 @@ const SignForm = (props) => {
               <Input
                 type="submit"
                 value={isSubmitting ? "Creating Account..." : "Create Account"}
-                className="form-btn"
+                className="form-btn font-family-default"
                 disabled={isLoading || isSubmitting}
               />
             </div>

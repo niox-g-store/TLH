@@ -56,7 +56,9 @@ router.post('/login', async (req, res) => {
     }
     const isEmail = checkIfEmail(email);
     email = email.trim().toLowerCase();
-    let user;
+    console.log((isEmail))
+    let user = null;
+    console.log((email))
     if (isEmail) {
       user = await User.findOne({ email })
     } else {
@@ -66,7 +68,9 @@ router.post('/login', async (req, res) => {
     if (!user) {
       return res
         .status(400)
-        .send({ error: 'No user found for this email address.' });
+        .send({ error: isEmail ?
+                'No user found for this email address.' :
+                'No user found with that username.' });
     }
 
     if (user && user.provider !== EMAIL_PROVIDER.Email) {
