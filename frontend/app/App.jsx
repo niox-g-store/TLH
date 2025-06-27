@@ -8,7 +8,9 @@ import actions from './actions';
 import Header from './components/Common/Header/Header';
 import Footer from './components/Common/Footer/Footer';
 
+import Authentication from './containers/Authentication';
 import Home from './containers/HomePage';
+import Notification from './containers/Notification';
 import About from './containers/About';
 import Login from './containers/Login';
 import Signup from './containers/SignUp';
@@ -19,6 +21,7 @@ import TestBack from './pages/TestBack';
 import User from './pages/User';
 import Gallery from './containers/Gallery';
 import OrganizerSignUp from './containers/Organizer/SignUp';
+import Dashboard from './containers/Dashboard';
 import Page404 from './containers/Page404';
 
 function App(props) {
@@ -40,8 +43,8 @@ function App(props) {
 
   return (
     <>
+      <Notification />
       {showHeaderFooter && <Header />}
-
       <Routes>
         <Route path="*" element={<Page404 />} />
         <Route path="/" element={<Home />} />
@@ -52,11 +55,8 @@ function App(props) {
         <Route path="/signup" element={<Signup />} />
         <Route path="/organizer-signup" element={<OrganizerSignUp />} />
         <Route path="/FAQs" element={<FAQs />} />
-        <Route path="/contact" element={<ContactUs />} />
         <Route path="/testapi" element={<TestBack />} />
-        <Route path="/user" element={<User />}>
-          {/* <Route path="dashboard" element={<UserDb />} /> */}
-        </Route>
+        <Route path="/dashboard/*" element={<Authentication><Dashboard /></Authentication>} />
       </Routes>
 
       {showHeaderFooter && <Footer />}
@@ -65,7 +65,6 @@ function App(props) {
 }
 
 const mapStateToProps = (state) => {
-  console.log(state);
   return {};
 };
 

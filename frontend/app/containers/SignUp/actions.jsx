@@ -5,6 +5,7 @@ import { allFieldsValidation } from '../../utils/validation';
 import { setAuth } from '../Authentication/actions';
 import setToken from '../../utils/token';
 import handleError from '../../utils/error';
+import { showNotification } from '../Notification/actions';
 
 import {
   SIGNUP_CHANGE,
@@ -88,14 +89,11 @@ export const signUpSubmit = () => {
         isSubscribed,
         ...newUser
       };
-
       const response = await axios.post(`${API_URL}/auth/register`, user);
       const userid = response.data.user.id
 
       const successfulOptions = {
-        title: `You have signed up successfully! You will be receiving an email as well. Thank you!`,
-        position: 'tr',
-        autoDismiss: 1
+        title: `You have signed up successfully!`,
       };
 
       localStorage.setItem('token', response.data.token);
@@ -103,7 +101,7 @@ export const signUpSubmit = () => {
       setToken(response.data.token);
 
       dispatch(setAuth());
-      dispatch(success(successfulOptions));
+      dispatch(showNotification('success', successfulOptions.title));
       dispatch({ type: SIGNUP_RESET });
     } catch (error) {
       const title = `Please try to signup again!`;

@@ -90,6 +90,7 @@ const OrganizerSignUp = () => {
                   Already have an account?
                 <span className="h6">
                   <Link to="/login">Log In</Link>
+                  &nbsp; &nbsp; OR &nbsp; <Link to="/signup">Sign up as a user</Link>
                 </span>
               </p>
             </div>
@@ -121,6 +122,7 @@ const OrganizerSignUp = () => {
                   Already have an account? &nbsp;
                 <span className="h6">
                   <Link to="/login">Log In</Link>
+                  &nbsp; &nbsp; OR &nbsp; &nbsp; <Link to="/signup">Sign up as a user</Link>
                 </span>
               </p>
             </div>

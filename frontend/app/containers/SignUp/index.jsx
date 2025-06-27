@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from 'react-redux';
+import { Navigate } from 'react-router-dom';
 import actions from '../../actions';
 import SignForm from "../../components/Common/SignForm/index.jsx";
 
@@ -14,8 +15,11 @@ const Signup = (props) => {
     isSubscribed,
     signUpSubmit,
     comparePasswords,
-    signupReset
+    signupReset,
+    authenticated
   } = props;
+
+  if (authenticated) return <Navigate to='/dashboard' />;
 
   return (
     <SignForm {...props}/>
@@ -25,6 +29,7 @@ const Signup = (props) => {
 
 const mapStateToProps = (state) => {
   return {
+    authenticated: state.authentication.authenticated,
     signupFormData: state.signup.signupFormData,
     formErrors: state.signup.formErrors,
     isLoading: state.signup.isLoading,

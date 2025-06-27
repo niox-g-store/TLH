@@ -8,7 +8,8 @@ Validator.setMessages('en', en);
 Validator.register(
   'confirmed',
   function(value, requirement, attribute) {
-    return value === this.inputs[requirement];
+    const allFields = this.validator?.input || {};
+    return value === allFields[requirement];
   },
   'The :attribute confirmation does not match.'
 );
@@ -19,7 +20,6 @@ export const allFieldsValidation = (data, rules, options) => {
   if (!validationResponse.isValid) {
     validationResponse.errors = validation.errors.all();
   }
-
   return validationResponse;
 };
 

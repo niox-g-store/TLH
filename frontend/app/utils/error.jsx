@@ -1,22 +1,27 @@
+// utils/handleError.js
+
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-// import { signOut } from '../containers/Login/actions';
 
 const handleError = (err, dispatch, title = '') => {
   let message = title || 'Something went wrong';
 
   if (err.response) {
-    if (err.response.status === 400) {
-      message = err.response.data.error || 'Please try again.';
-    } else if (err.response.status === 401) {
-      message = 'Unauthorized Access! Please login again.';
-      // dispatch(signOut());
-    } else if (err.response.status === 403) {
-      message = 'Forbidden! You are not allowed to access this resource.';
-    } else if (err.response.status === 404) {
-      message = 'Not found. Please check your request.';
-    } else {
-      message = err.response.data.message || message;
+    switch (err.response.status) {
+      case 400:
+        message = err.response.data?.error || 'Bad Request';
+        break;
+      case 401:
+        message = 'Unauthorized. Please login again.';
+        // Optional: dispatch(logout()) if needed
+        break;
+      case 403:
+        message = 'Forbidden. You do not have permission.';
+        break;
+      case 404:
+        message = 'Resource not found.';
+        break;
+      default:
+        message = err.response.data?.message || 'Unexpected error occurred.';
     }
   } else if (err.message) {
     message = err.message;
@@ -25,9 +30,8 @@ const handleError = (err, dispatch, title = '') => {
   toast.error(message, {
     position: 'top-right',
     autoClose: 3000,
-    closeOnClick: true,
     pauseOnHover: true,
-    draggable: true,
+    draggable: true
   });
 };
 

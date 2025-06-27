@@ -1,19 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { connect } from 'react-redux';
+import actions from '../../actions';
 
-const Notification = (props) => {
-  // Example: trigger a toast notification anywhere in your app
-  const notifySuccess = () => toast.success('Action was successful!');
-  const notifyError = () => toast.error('Something went wrong.');
+const Notification = ({ notifications, clearNotifications }) => {
+  useEffect(() => {
+    if (notifications && notifications.length > 0) {
+      notifications.forEach(({ type, message }) => {
+        if (type === 'success') toast.success(message);
+        else if (type === 'error') toast.error(message);
+        else toast(message); // fallback
+
+        // Optional: clear notification after showing
+        clearNotifications();
+      });
+    }
+  }, [notifications, clearNotifications]);
 
   return (
     <>
-      {/* Your existing app components */}
-      <button onClick={notifySuccess}>Success Toast</button>
-      <button onClick={notifyError}>Error Toast</button>
-
-      {/* Toast container must be added once in your app */}
       <ToastContainer
         position="top-right"
         autoClose={5000}
@@ -26,6 +32,14 @@ const Notification = (props) => {
       />
     </>
   );
-}
+};
 
-export default Notification;
+const mapStateToProps = (state) => ({
+  notifications: state.notifications
+});
+
+const mapDispatchToProps = {
+  clearNotifications: actions.clearNotifications // <- define this in your actions
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Notification);

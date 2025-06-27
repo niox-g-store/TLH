@@ -13,7 +13,7 @@
     { "to": "/tickets", "name": "All Tickets", "prefix": "/dashboard" },
     { "to": "/scan", "name": "Ticket Scanner", "prefix": "/dashboard" }
   ],
-  "ROLE MERCHANT": [
+  "ROLE ORGANIZER": [
     { "to": "", "name": "Account Details", "prefix": "/dashboard" },
     { "to": "/security", "name": "Account Security", "prefix": "/dashboard", "provider": ["Email"] },
     { "to": "/events", "name": "My Events", "prefix": "/dashboard" },

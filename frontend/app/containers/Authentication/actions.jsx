@@ -6,8 +6,7 @@
 
 import { SET_AUTH, CLEAR_AUTH } from './constants';
 
-export const 
-setAuth = () => {
+export const setAuth = () => {
   return {
     type: SET_AUTH
   };
