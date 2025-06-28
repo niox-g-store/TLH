@@ -1,132 +1,174 @@
-import React, { useState } from "react";
+import './style.css';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import Slider from 'react-slick';
+import actions from '../../../actions';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { BackIcon } from '../../../components/Common/Icons/Back';
+import Input from '../../../components/Common/HtmlTags/Input';
 
-import "./style.css";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import Slider from "react-slick";
-import { Link } from "react-router-dom";
-import { BackIcon } from "../../../components/Common/Icons/Back";
-import Input from "../../../components/Common/HtmlTags/Input";
+const OrganizerSignUp = (props) => {
+  const {
+    organizerSignupFormData, authenticated, organizerSignupSubmit, comparePasswords,
+    formErrors, isLoading, isSubscribed, organizerSignupChange, subscribeChange
+  } = props;
 
-const OrganizerSignUp = () => {
-  const submitted = false;
-  const [inputs, setInputs] = useState({});
-  const [error, setError] = useState("");
-  const [isChecked, setIsChecked] = useState(false);
-  
-  const handleCheckboxChange = (name, value) => {
-    if (name === 'checkbox') {
-      setIsChecked(value);
-    }
-  };
-
-  const handleChange = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
-    setInputs((values) => ({ ...values, [name]: value }));
-  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    organizerSignupSubmit();
+  }
 
   return (
     <>
-      <div className="login sing">
-        <div className="signup">
-            <Link className="back-to-home" to="/">
-              <BackIcon />
-              <p> Back to Home</p>
-            </Link>
-          <div data-aos="fade-up" className={`col-login-form  ${submitted ? "toggle " : " "}`}>
+      <div className='login sing'>
+        <div className='signup'>
+          <Link className='back-to-home' to='/'>
+            <BackIcon />
+            <p> Back to Home</p>
+          </Link>
+          <div data-aos='fade-up' className='col-login-form'>
             <h1>Become an event organizer</h1>
-            <h4 className="p-content p-black">The world’s waiting for your next event. Let’s make it happen.</h4>
-            <form method="post">
+            <h4 className='p-content p-black'>The world’s waiting for your next event. Let’s make it happen.</h4>
+            <form method='post' onSubmit={handleSubmit}>
 
-              <div className="form-field-section">
-              <div className="form-field-left">
-                <div className="first-name form-field">
-                  <Input type={"text"} label={"Username"} />
-              </div>
-                <div className="form-field email">
-                  <Input type={"text"} label={"Company name"} />
-              </div>
+              <div className='form-field-section'>
+                <div className='form-field-left'>
+                  <div className='first-name form-field'>
+                    <Input
+                      type='text'
+                      name='userName'
+                      label='Username'
+                      value={organizerSignupFormData.userName}
+                      error={formErrors?.userName}
+                      onInputChange={(n, v) => organizerSignupChange(n, v)}
+                    />
+                  </div>
+                  <div className='form-field email'>
 
-              <div className="form-field password">
-                  <Input type={"email"} label={"Email"} />
-              </div>
-              </div>
+                    <Input
+                      type='text'
+                      name='companyName'
+                      label='Company name'
+                      value={organizerSignupFormData.companyName}
+                      error={formErrors?.companyName}
+                      onInputChange={(n, v) => organizerSignupChange(n, v)}
+                    />
+                  </div>
 
-
-
-
+                  <div className='form-field password'>
+                    <Input
+                      type='email'
+                      name='email'
+                      label='Email'
+                      value={organizerSignupFormData.email}
+                      error={formErrors?.email}
+                      onInputChange={(n, v) => organizerSignupChange(n, v)}
+                    />
+                  </div>
+                </div>
 
                 {/** */}
-              <div className="form-field-right">
-                <div className="first-name form-field">
-                  <Input type={"text"} label={"Phone Number"} />
-              </div>
-              <div className="form-field email">
-                  <Input type={"password"} label={"Password"} />
-              </div>
+                <div className='form-field-right'>
+                  <div className='first-name form-field'>
+                    <Input
+                      type='text'
+                      name='phoneNumber'
+                      label='Phone Number'
+                      value={organizerSignupFormData.phoneNumber}
+                      error={formErrors?.phoneNumber}
+                      onInputChange={(n, v) => organizerSignupChange(n, v)}
+                    />
+                  </div>
+                  <div className='form-field email'>
+                    <Input
+                      type='password'
+                      label='Password'
+                      name='password'
+                      value={organizerSignupFormData.password}
+                      error={formErrors?.password}
+                      onInputChange={(n, v) => {
+                        organizerSignupChange(n, v);
+                        comparePasswords(v, organizerSignupFormData.confirmPassword);
+                      }}
+                    />
+                  </div>
 
-              <div className="form-field password">
-                  <Input type={"password"} label={"Confirm Password"} />
-              </div>
-              <div className="form-field input create-account-large-screen">
-                <input
-                  type="submit"
-                  value="Create Account"
-                  className="form-btn"
-                />
-              </div>
+                  <div className='form-field password'>
+                    <Input
+                      type='password'
+                      label='Confirm Password'
+                      name='confirmPassword'
+                      value={organizerSignupFormData.confirmPassword}
+                      error={formErrors?.confirmPassword}
+                      onInputChange={(n, v) => {
+                        organizerSignupChange(n, v);
+                        comparePasswords(organizerSignupFormData.password, v);
+                      }}
+                    />
+                  </div>
+                  <div className='form-field input create-account-large-screen'>
+                    <Input
+                      type='submit'
+                      value='Create Account'
+                      className='form-btn font-family-default'
+                    />
+                  </div>
 
-              <div className="forget-pass-sec">
-                <div className="remember-me signup">
-                  <Input name={"checkbox"} checked={isChecked} onInputChange={handleCheckboxChange} type={"checkbox"}/>&nbsp;&nbsp;
-                  <div className="form-label">
-                    <label>I want to recieve updates about The link hangouts</label>
+                  <div className='forget-pass-sec'>
+                    <div className='remember-me signup'>
+                      <Input name='checkbox' checked={isSubscribed} onInputChange={(n, v) => subscribeChange()} type='checkbox' />&nbsp;&nbsp;
+                      <div className='form-label'>
+                        <label>I want to recieve updates about The link hangouts</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='create-account-links'>
+                    <p>
+                      Already have an account?
+                      <span className='h6'>
+                        <Link to='/login'>Log In</Link>
+                  &nbsp; &nbsp; OR &nbsp; <Link to='/signup'>Sign up as a user</Link>
+                      </span>
+                    </p>
                   </div>
                 </div>
               </div>
-              <div className="create-account-links">
-                <p>
-                  Already have an account?
-                <span className="h6">
-                  <Link to="/login">Log In</Link>
-                  &nbsp; &nbsp; OR &nbsp; <Link to="/signup">Sign up as a user</Link>
-                </span>
-              </p>
-            </div>
-              </div>
-              </div>
 
-                {/** */}
+              {/** */}
 
-
-              <div className="form-field input create-account">
+              <div className='form-field input create-account'>
                 <input
-                  type="submit"
-                  value="Create Account"
-                  className="form-btn"
+                  type='submit'
+                  value='Create Account'
+                  className='form-btn font-family-default'
                 />
               </div>
 
-              <div className="large-screens">
-              <div className="forget-pass-sec-large-screen">
-                <div className="remember-me signup">
-                  <Input name={"checkbox"} checked={isChecked} onInputChange={handleCheckboxChange} type={"checkbox"}/>&nbsp;&nbsp;
-                  <div className="form-label">
-                    <label>I want to recieve updates about The link hangouts</label>
+              <div className='large-screens'>
+                <div className='forget-pass-sec-large-screen'>
+                  <div className='remember-me signup'>
+                    <Input
+                      name='checkbox'
+                      checked={isSubscribed}
+                      onInputChange={(n, v) => subscribeChange()}
+                      type='checkbox'
+                    />&nbsp;&nbsp;
+                    <div className='form-label'>
+                      <label>I want to recieve updates about The link hangouts</label>
+                    </div>
                   </div>
                 </div>
+                <div className='create-account-links-large-screen'>
+                  <p>
+                    Already have an account? &nbsp;
+                    <span className='h6'>
+                      <Link to='/login'>Log In</Link>
+                  &nbsp; &nbsp; OR &nbsp; &nbsp; <Link to='/signup'>Sign up as a user</Link>
+                    </span>
+                  </p>
+                </div>
               </div>
-              <div className="create-account-links-large-screen">
-                <p>
-                  Already have an account? &nbsp;
-                <span className="h6">
-                  <Link to="/login">Log In</Link>
-                  &nbsp; &nbsp; OR &nbsp; &nbsp; <Link to="/signup">Sign up as a user</Link>
-                </span>
-              </p>
-            </div>
-            </div>
 
             </form>
           </div>
@@ -135,5 +177,15 @@ const OrganizerSignUp = () => {
     </>
   );
 };
+const mapStateToProps = (state) => {
+  return {
+    authenticated: state.authentication.authenticated,
+    organizerSignupFormData: state.signup.organizerSignupFormData,
+    formErrors: state.signup.formErrors,
+    isLoading: state.signup.isLoading,
+    isSubmitting: state.signup.isSubmitting,
+    isSubscribed: state.signup.isSubscribed
+  };
+};
 
-export default OrganizerSignUp;
+export default connect(mapStateToProps, actions)(OrganizerSignUp);

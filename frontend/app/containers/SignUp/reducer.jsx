@@ -5,7 +5,8 @@ import {
   SET_SIGNUP_SUBMITTING,
   SUBSCRIBE_CHANGE,
   SET_SIGNUP_FORM_ERRORS,
-  COMPARE_PASSWORD
+  COMPARE_PASSWORD,
+  ORGANIZER_SIGNUP_CHANGE
 } from './constants';
 
 const initialState = {
@@ -15,6 +16,15 @@ const initialState = {
     userName: '',
     password: '',
     confirmPassword: '',
+  },
+
+  organizerSignupFormData: {
+    companyName: '',
+    email: '',
+    userName: '',
+    phoneNumber: '',
+    password: '',
+    confirmPassword: ''
   },
   formErrors: {},
   isSubmitting: false,
@@ -29,10 +39,15 @@ const signupReducer = (state = initialState, action) => {
             ...state,
             formErrors: action.payload
         };
+    case ORGANIZER_SIGNUP_CHANGE:
+      return {
+        ...state,
+        organizerSignupFormData: { ...state.organizerSignupFormData, ...action.payload }
+      }
     case SIGNUP_CHANGE:
       return {
         ...state,
-        signupFormData: { ...state.signupFormData, ...action.payload }
+        signupFormData: { ...state.signupFormData, ...action.payload },
       };
     case SUBSCRIBE_CHANGE:
       return {
@@ -58,6 +73,7 @@ const signupReducer = (state = initialState, action) => {
       return {
         ...state,
         signupFormData: initialState.signupFormData,
+        organizerSignupFormData: initialState.organizerSignupFormData,
         formErrors: {},
         isLoading: false
       };

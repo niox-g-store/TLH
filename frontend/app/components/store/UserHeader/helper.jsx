@@ -74,7 +74,7 @@ const UserHeaderHelper = (props) => {
 
               <div className="buttons">
                 <div className="logout-button">
-                  <Link to="/" className="button " onClick={doLogout}>
+                  <Link to="/" className="button " onClick={() => { doLogout(); toggleMenu()}}>
                     Logout
                   </Link>
                 </div>

@@ -6,8 +6,9 @@ const crypto = require('crypto');
 const passport = require('passport');
 
 const auth = require('../../middleware/auth');
-
+const ROLES = require("../../utils/constants")
 const User = require('../../models/user');
+const Organizer = require('../../models/organizer');
 const keys = require('../../config/keys');
 const { EMAIL_PROVIDER, JWT_COOKIE } = require('../../utils/constants');
 // const { OAuth2Client } = require('google-auth-library');
@@ -151,6 +152,11 @@ router.post('/register', async (req, res) => {
         .json({ error: 'That email address is already in use.' });
     }
 
+    const existingUserName = await User.findOne({ userName });
+    if (existingUserName) {
+      return res.status(400).json({ error: 'That username is already in use.' })
+    }
+
     let subscribed = false;
     /*if (isSubscribed) {
       // add user to newsteller as they are subscribed
@@ -201,6 +207,117 @@ router.post('/register', async (req, res) => {
       }
     });
   } catch (error) {
+    return res.status(400).json({
+      error: 'Your request could not be processed. Please try again.'
+    });
+  }
+});
+
+
+router.post('/register/organizer', async (req, res) => {
+  try {
+    let {
+      email, companyName,
+      userName, password,
+      phoneNumber, isSubscribed
+    } = req.body;
+
+    if (!email) {
+      return res
+        .status(400)
+        .json({ error: 'You must enter an email address.' });
+    }
+
+    if (!companyName) {
+      return res.status(400).json({ error: 'You must enter your company name.' });
+    }
+
+    if (!password) {
+      return res.status(400).json({ error: 'You must enter a password.' });
+    }
+    if (!userName) {
+      return res.status(400).json({ error: 'You must enter your username.' });
+    }
+    if (!phoneNumber) {
+      return res.status(400).json({ error: 'You must eneter your phone number' })
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ error: 'That email address is already in use.' });
+    }
+    
+    const existingUserName = await User.findOne({ userName });
+    if (existingUserName) {
+      return res.status(400).json({ error: 'That username is already in use.' })
+    }
+
+    const existingCompanyName = await Organizer.findOne({ companyName });
+    if (existingCompanyName) {
+      return res.status(400).json({ error: 'That company name is already in use' })
+    }
+
+    let subscribed = false;
+    /*if (isSubscribed) {
+      // add user to newsteller as they are subscribed
+      const news = new Newsletter({
+        email
+      })
+      await news.save();
+      // also add user email to mailgun mailing list
+      mailgun.createMember(email, firstName, lastName)
+      subscribed = true;
+    }*/
+
+    const user = new User({
+      email,
+      companyName,
+      userName,
+      password,
+      role: ROLES.Organizer
+    });
+
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(user.password, salt);
+
+    user.password = hash;
+    const registeredUser = await user.save();
+
+    const organizer = new Organizer({
+      email,
+      companyName,
+      phoneNumber
+    });
+    await organizer.save();
+
+    const payload = {
+      id: registeredUser.id
+    };
+
+    /*await mailgun.sendEmail(
+      registeredUser.email,
+      'signup',
+      registeredUser
+    );*/
+
+    const token = jwt.sign(payload, secret, { expiresIn: tokenLife });
+
+    return res.status(200).json({
+      success: true,
+      subscribed,
+      token: `Bearer ${token}`,
+      user: {
+        id: registeredUser.id,
+        companyName: registeredUser.name,
+        userName: registeredUser.userName,
+        email: registeredUser.email,
+        role: registeredUser.role
+      }
+    });
+  } catch (error) {
+    console.log(error)
     return res.status(400).json({
       error: 'Your request could not be processed. Please try again.'
     });
