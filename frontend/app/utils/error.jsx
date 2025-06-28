@@ -1,6 +1,7 @@
 // utils/handleError.js
 
 import { toast } from 'react-toastify';
+import { signOut } from '../containers/Login/actions';
 
 const handleError = (err, dispatch, title = '') => {
   let message = title || 'Something went wrong';
@@ -12,7 +13,7 @@ const handleError = (err, dispatch, title = '') => {
         break;
       case 401:
         message = 'Unauthorized. Please login again.';
-        // Optional: dispatch(logout()) if needed
+        dispatch(signOut())
         break;
       case 403:
         message = 'Forbidden. You do not have permission.';

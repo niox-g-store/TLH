@@ -14,11 +14,10 @@ const OrganizerSchema = new mongoose.Schema({
   phoneNumber: {
     type: String
   },
-  event: {
+  event: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Event',
-    default: null
-  },
+  }],
   created: {
     type: Date,
     default: Date.now

@@ -20,7 +20,7 @@ import LoadingIndicator from '../../components/store/LoadingIndicator';
 
 class Dashboard extends React.PureComponent {
   componentDidMount() {
-    this.props.fetchProfile();
+    // this.props.fetchProfile();
   }
 
   render() {

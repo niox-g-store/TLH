@@ -1,7 +1,9 @@
+import { Navigate } from "react-router-dom";
+import { connect } from "react-redux";
+import actions from "../../actions";
 import HeroBanner from "../../components/store/HeroBanner/HeroBanner";
 import BrandSection from "../../components/store/BrandSection/BrandSection";
 import DevicePage from "../../components/store/DevicePage/DevicePage";
-import Conference from "../../components/store/ConferenceSol/Conference";
 import AllFeatures from "../../components/store/AllFeatures/AllFeatures";
 import Benefits from "../../components/store/Benefits/Benefits";
 import GettingMsg from "../../components/store/GettingMsg/GettingMsg";
@@ -10,13 +12,14 @@ import PButton from "../../components/Common/HtmlTags/PrimaryButton/PButton";
 import SButton from "../../components/Common/HtmlTags/SecondaryButton/SButton";
 import HomeBanner from "./HomeBanner";
 
+const event1 = "./assets/events/event_1.jpeg";
+const event2 = "./assets/events/event_2.jpeg";
+const event3 = "./assets/events/event_3.jpeg";
+const event4 = "./assets/events/event_4.jpeg";
 
-const Home = () => {
-  // events images
-  const event1 = "./assets/events/event_1.jpeg";
-  const event2 = "./assets/events/event_2.jpeg";
-  const event3 = "./assets/events/event_3.jpeg";
-  const event4 = "./assets/events/event_4.jpeg";
+const Home = (props) => {
+  const { authenticated } = props;
+  if (authenticated) return <Navigate to='/dashboard' />;
 
   const eventImages =  [event1, event3, event2, event4];
   return (
@@ -42,4 +45,10 @@ const Home = () => {
   );
 };
 
-export default Home;
+const mapStateToProps = (state) => {
+  return {
+    authenticated: state.authentication.authenticated,
+  };
+};
+
+export default connect(mapStateToProps, actions)(Home);

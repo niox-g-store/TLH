@@ -14,17 +14,18 @@
     { "to": "/scan", "name": "Ticket Scanner", "prefix": "/dashboard" }
   ],
   "ROLE ORGANIZER": [
-    { "to": "", "name": "Account Details", "prefix": "/dashboard" },
-    { "to": "/security", "name": "Account Security", "prefix": "/dashboard", "provider": ["Email"] },
-    { "to": "/events", "name": "My Events", "prefix": "/dashboard" },
+    { "to": "", "name": "My Events", "prefix": "/dashboard" },
+    { "to": "/tickets", "name": "My Tickets", "prefix": "/dashboard" },
     { "to": "/orders", "name": "My Orders", "prefix": "/dashboard" },
     { "to": "/coupons", "name": "My Coupons", "prefix": "/dashboard" },
-    { "to": "/tickets", "name": "My Tickets", "prefix": "/dashboard" },
-    { "to": "/scan", "name": "Ticket Scanner", "prefix": "/dashboard" }
+    { "to": "/scan", "name": "Ticket Scanner", "prefix": "/dashboard" },
+    { "to": "/account", "name": "Account Details", "prefix": "/dashboard" },
+    { "to": "/security", "name": "Account Security", "prefix": "/dashboard", "provider": ["Email"] }
   ],
   "ROLE MEMBER": [
-    { "to": "", "name": "Account Details", "prefix": "/dashboard" },
-    { "to": "/security", "name": "Account Security", "prefix": "/dashboard" },
-    { "to": "/tickets", "name": "My Tickets", "prefix": "/dashboard" }
+    { "to": "", "name": "Discover Events", "prefix": "/dashboard" },
+    { "to": "/tickets", "name": "My Tickets", "prefix": "/dashboard" },
+    { "to": "/account", "name": "Account Details", "prefix": "/dashboard" },
+    { "to": "/security", "name": "Account Security", "prefix": "/dashbard" }
   ]
 }

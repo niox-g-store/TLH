@@ -56,7 +56,7 @@ export const setProfileLoading = value => {
 };
 
 export const fetchProfile = () => {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     try {
       dispatch(setProfileLoading(true));
       const response = await axios.get(`${API_URL}/user/me`);

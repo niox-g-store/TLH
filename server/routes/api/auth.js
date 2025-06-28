@@ -6,11 +6,10 @@ const crypto = require('crypto');
 const passport = require('passport');
 
 const auth = require('../../middleware/auth');
-const ROLES = require("../../utils/constants")
 const User = require('../../models/user');
 const Organizer = require('../../models/organizer');
 const keys = require('../../config/keys');
-const { EMAIL_PROVIDER, JWT_COOKIE } = require('../../utils/constants');
+const { EMAIL_PROVIDER, JWT_COOKIE, ROLES } = require('../../utils/constants');
 // const { OAuth2Client } = require('google-auth-library');
 // const { clientID } = keys.google
 // const client = new OAuth2Client(clientID);
@@ -271,12 +270,20 @@ router.post('/register/organizer', async (req, res) => {
       subscribed = true;
     }*/
 
+    const organizer = new Organizer({
+      email,
+      companyName,
+      phoneNumber
+    });
+    await organizer.save();
+
     const user = new User({
       email,
       companyName,
       userName,
       password,
-      role: ROLES.Organizer
+      role: ROLES.Organizer,
+      organizer
     });
 
     const salt = await bcrypt.genSalt(10);
@@ -285,12 +292,7 @@ router.post('/register/organizer', async (req, res) => {
     user.password = hash;
     const registeredUser = await user.save();
 
-    const organizer = new Organizer({
-      email,
-      companyName,
-      phoneNumber
-    });
-    await organizer.save();
+
 
     const payload = {
       id: registeredUser.id

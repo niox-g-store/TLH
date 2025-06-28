@@ -7,12 +7,15 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { BackIcon } from '../../../components/Common/Icons/Back';
 import Input from '../../../components/Common/HtmlTags/Input';
+import { Navigate } from 'react-router-dom';
 
 const OrganizerSignUp = (props) => {
   const {
     organizerSignupFormData, authenticated, organizerSignupSubmit, comparePasswords,
     formErrors, isLoading, isSubscribed, organizerSignupChange, subscribeChange
   } = props;
+
+  if (authenticated) return <Navigate to='/dashboard' replace/>;
 
   const handleSubmit = (e) => {
     e.preventDefault();
