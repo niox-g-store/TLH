@@ -1,0 +1,30 @@
+.organizer {
+    .sidebar {
+        border-right: none !important;
+    }
+
+    .wrapper {
+        width: 100%;
+        padding-inline: var(--cui-sidebar-occupy-start, 0) var(--cui-sidebar-occupy-end, 0);
+        will-change: auto;
+        transition: padding .15s;
+    }
+}
+
+.sidebarheader {
+    padding: 1.5em 0em 0em .5em;
+
+    .logo-image {
+        height: 45px;
+        width: 115px;
+    }
+
+    .close-icon {
+        margin-top: -40px;
+        margin-right: 10px;
+    }
+}
+
+.sidebar-nav {
+    margin-top: 3em;
+}

@@ -1,14 +1,13 @@
 /*
  *
- * Customer
+ * Organizer Dashboard
  *
  */
 
-import React from 'react';
-
 import { Routes, Route } from 'react-router-dom';
-import { Row, Col } from 'reactstrap';
+import { HomePanel } from './panel';
 import AccountMenu from '../../../components/store/AccountMenu';
+import Account from '../../Account';
 import Page404 from '../../Page404';
 
 /*import AccountMenu from '../AccountMenu';
@@ -21,17 +20,18 @@ import Product from '../../../containers/Product';
 import Brand from '../../../containers/Brand';
 import Order from '../../../containers/Order';
 import Wishlist from '../../../containers/WishList';*/
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '@coreui/coreui/dist/css/coreui.min.css'
 
-const Merchant = props => {
+const OrganizerDashboard = (props) => {
+  const { isMenuOpen } = props;
   return (
-    <div className='merchant'>
-      <Row>
-        <Col xs='12' md='5' xl='3'>
-          <AccountMenu {...props} />
-        </Col>
-        <Col xs='12' md='7' xl='9'>
-          <div className='panel-body'>
+    <div className='organizer'>
+          <AccountMenu {...props}/>
+          <div className='wrapper d-flex flex-column min-vh-100 panel-body bg-black'>
             <Routes>
+              <Route index element={<HomePanel {...props}/>} />
+              <Route path='account' element={<Account />} />
               {/*<Route exact path='/dashboard' component={Account} />
               <Route path='/dashboard/security' component={AccountSecurity} />
               <Route path='/dashboard/address' component={Address} />
@@ -42,10 +42,8 @@ const Merchant = props => {
               <Route path='*' element={<Page404 />} />
             </Routes>
           </div>
-        </Col>
-      </Row>
     </div>
   );
 };
 
-export default Merchant;
+export default OrganizerDashboard;

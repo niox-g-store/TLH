@@ -4,6 +4,7 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import actions from './actions';
+import { ROLES } from './constants';
 
 import Navigation from './containers/Navigation';
 import Footer from './components/Common/Footer/Footer';
@@ -23,7 +24,10 @@ import Page404 from './containers/Page404';
 import ScrollToTop from './components/Common/ScrollToTop';
 
 function App(props) {
+  const { user } = props;
   const location = useLocation();
+  const USER = user ?? user.role;
+  console.log(USER)
 
   useEffect(() => {
     AOS.init({
@@ -36,8 +40,9 @@ function App(props) {
     AOS.refresh();
   }, []);
 
-  const hideHeaderFooterPaths = ['/login', '/signup', '/organizer-signup'];
-  const showHeaderFooter = !hideHeaderFooterPaths.includes(location.pathname);
+  const hideHeaderFooterPaths = ['/login', '/signup', '/organizer-signup', '/dashboard'];
+  const showHeaderFooter = (USER.role === ROLES.Member ||
+                            !hideHeaderFooterPaths.includes(location.pathname));
 
   return (
     <>
@@ -64,7 +69,9 @@ function App(props) {
 
 const mapStateToProps = (state) => {
   console.log(state)
-  return {};
+  return {
+    user: state.account.user,
+  };
 };
 
 export default connect(mapStateToProps, actions)(App);

@@ -1,62 +1,112 @@
-/**
- *
- * AccountMenu
- *
- */
+import {
+  CBadge,
+  CSidebar,
+  CSidebarBrand,
+  CSidebarHeader,
+  CSidebarNav,
+  CSidebarToggler,
+  CNavGroup,
+  CNavItem,
+  CNavTitle,
+} from '@coreui/react'
+import { Link } from 'react-router-dom'
+import {
+  IoTicketOutline, IoBasketOutline,
+  IoScanOutline, IoCloseOutline,
+  IoReceiptOutline
+} from "react-icons/io5";
+import { MdOutlineEventRepeat, MdOutlineAccountCircle, MdOutlineSecurity } from "react-icons/md";
+import { RiCoupon3Line } from "react-icons/ri";
+import { LuLayoutDashboard } from "react-icons/lu";
+import { CiLogout } from "react-icons/ci";
 
-import React from 'react';
 
-import { NavLink } from 'react-router-dom';
-import { Collapse, Navbar } from 'reactstrap';
-import Button from '../../Common/HtmlTags/Button';
+const iconMap = {
+  IoTicketOutline,
+  MdOutlineEventRepeat,
+  IoBasketOutline,
+  RiCoupon3Line,
+  IoScanOutline,
+  MdOutlineAccountCircle,
+  MdOutlineSecurity,
+  IoReceiptOutline,
+  LuLayoutDashboard
+};
 
 const AccountMenu = (props) => {
-  const { user, isMenuOpen, links, toggleMenu } = props;
-
-  const getAllowedProvider = (link) => {
-    if (!link.provider) return true;
-
-    const userProvider = user.provider ?? '';
-    if (!userProvider) return true;
-
-    return link.provider.includes(userProvider);
-  };
-
+  const { links, isMenuOpen, toggleMenu, signOut } = props;
   return (
-    <div className='panel-sidebar'>
-      <Button
-        text='Dashboard Menu'
-        className={`${isMenuOpen ? 'menu-panel' : 'menu-panel collapse'}`}
-        // ariaExpanded={isMenuOpen ? 'true' : 'false'}
-        // ariaLabel={isMenuOpen ? 'dashboard menu expanded' : 'dashboard menu collapse'}
-        // onClick={toggleMenu}
-      />
-      <h3 className='panel-title'>Quick access</h3>
-      <Navbar color='light' light expand='md'>
-        <Collapse isOpen={isMenuOpen} navbar>
-          <ul className='panel-links'>
+    <>
+    <CSidebar className="border-end bg-black" position='fixed' visible={isMenuOpen}>
+      <CSidebarHeader className='sidebarheader'>
+        <CSidebarBrand as={'div'}>
+            <Link to={"/"}>
+            <div className="logo">
+                <div className="logo-image" alt="LogoImage" />
+            </div>
+            </Link>
+        </CSidebarBrand>
+        <IoCloseOutline className={"p-white cursor-pointer d-lg-none"} size={30} onClick={toggleMenu}/>
+      </CSidebarHeader>
+
+      <CSidebarNav data-aos="fade-up">
             {links.map((link, index) => {
               const PREFIX = link.prefix ? link.prefix : '';
-              const isProviderAllowed = getAllowedProvider(link);
-              if (!isProviderAllowed) return;
+                const IconComponent = iconMap[link.icon];
               return (
-                <li key={index}>
-                  <NavLink
-                    onClick={toggleMenu}
-                    to={PREFIX + link.to}
-                    className='active-link'
-                  >
-                    {/*link.icon && <i className={`${link.icon} menu-icon`} aria-hidden="true"></i>*/}
+                <CNavItem key={index} className='p-white item-hover margin-btm-sm' href={PREFIX + link.to}>
+                    {IconComponent && <IconComponent style={{ marginRight: '8px' }} />}
                     {link.name}
-                  </NavLink>
-                </li>
+                </CNavItem>
               );
             })}
-          </ul>
-        </Collapse>
-      </Navbar>
-    </div>
-  );
-};
+            <div onClick={signOut} className='p-white' style={{ padding: '.75em', cursor: 'pointer' }}>
+              <CiLogout className='p-white' size={25}/>&nbsp;&nbsp;Logout
+            </div>
+      </CSidebarNav>
+        <CSidebarHeader>
+          <CSidebarToggler />
+      </CSidebarHeader>
+    </CSidebar>
+
+
+
+
+
+
+    <CSidebar className="border-end bg-black d-lg-none" position='fixed' visible={isMenuOpen}>
+        <CSidebarHeader className='sidebarheader'>
+        <CSidebarBrand as={'div'}>
+            <Link to={"/"}>
+            <div className="logo">
+                <div className="logo-image" alt="LogoImage" />
+            </div>
+            </Link>
+        </CSidebarBrand>
+        <IoCloseOutline className={"p-white cursor-pointer d-lg-none close-icon"} size={30} onClick={toggleMenu}/>
+      </CSidebarHeader>
+
+      <CSidebarNav data-aos="fade-up">
+            {links.map((link, index) => {
+              const PREFIX = link.prefix ? link.prefix : '';
+                const IconComponent = iconMap[link.icon];
+              return (
+                <CNavItem key={index} className='p-white item-hover margin-btm-sm' href={PREFIX + link.to}>
+                    {IconComponent && <IconComponent style={{ marginRight: '8px' }} />}
+                    {link.name}
+                </CNavItem>
+              );
+            })}
+            <div onClick={signOut} className='p-white' style={{ padding: '.75em', cursor: 'pointer' }}>
+              <CiLogout className='p-white' size={25}/>&nbsp;&nbsp;Logout
+            </div>
+        </CSidebarNav>
+            <CSidebarHeader className="border-top">
+        <CSidebarToggler />
+      </CSidebarHeader>
+    </CSidebar>
+    </>
+  )
+}
 
 export default AccountMenu;

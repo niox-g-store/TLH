@@ -7,7 +7,7 @@
 import { TOGGLE_DASHBOARD_MENU } from './constants';
 
 const initialState = {
-  isMenuOpen: false
+  isMenuOpen: true
 };
 
 const dashboardReducer = (state = initialState, action) => {

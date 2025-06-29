@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-
 const { ROLES, EMAIL_PROVIDER } = require('../utils/constants');
 
 // User Schema

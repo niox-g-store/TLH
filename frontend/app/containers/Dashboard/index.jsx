@@ -13,19 +13,20 @@ import { ROLES } from '../../constants';
 import dashboardLinks from './links.json';
 import { isDisabledOrganizerAccount } from '../../utils/app';
 import Admin from '../Admin/Dashboard';
-import Organizer from '../Organizer/Dashboard';
+import OrganizerDashboard from '../Organizer/Dashboard';
 import Customer from '../Customer/Dashboard';
 import DisabledOrganizerAccount from '../Organizer/DisabledAccount';
 import LoadingIndicator from '../../components/store/LoadingIndicator';
 
 class Dashboard extends React.PureComponent {
   componentDidMount() {
-    // this.props.fetchProfile();
+    this.props.fetchProfile();
   }
 
   render() {
-    const { user, isLoading, isMenuOpen, toggleDashboardMenu } = this.props;
+    const { user, isLoading, isMenuOpen, toggleDashboardMenu, signOut } = this.props;
     // if (isDisabledOrganizerAccount(user)) { return <DisabledOrganizerAccount user={user} />; }
+    console.log(user)
 
     return (
       <>
@@ -39,11 +40,12 @@ class Dashboard extends React.PureComponent {
             toggleMenu={toggleDashboardMenu}
           />
         ) : user.role === ROLES.Organizer && user.organizer ? (
-          <Organizer
+          <OrganizerDashboard
             user={user}
             isMenuOpen={isMenuOpen}
             links={dashboardLinks[ROLES.Organizer]}
             toggleMenu={toggleDashboardMenu}
+            signOut={signOut}
           />
         ) : (
           <Customer

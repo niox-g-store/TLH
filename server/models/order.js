@@ -9,11 +9,11 @@ const orderSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Guest'
   },
-  event: {
+  events: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Event',
     required: true
-  },
+  }],
   tickets: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Ticket'

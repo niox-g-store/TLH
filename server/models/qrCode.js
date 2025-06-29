@@ -11,22 +11,37 @@ const qrCodeSchema = new mongoose.Schema({
     ref: 'Event',
     required: true
   },
+  ownedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    refPath: 'ownedByModel'
+  },
+  ownedByModel: {
+    type: String,
+    required: true,
+    enum: ['User', 'Guest']
+  },
   bytes: {
     type: Buffer,
     required: true
   },
   code: {
-    type: String,
+    type: String
   },
   used: {
     type: Boolean,
     default: false
   },
+  order: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Order',
+    required: true
+  },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });
 
-// Optional: Update timestamp automatically
+// Automatically update timestamps
 qrCodeSchema.pre('save', function (next) {
   this.updatedAt = new Date();
   next();

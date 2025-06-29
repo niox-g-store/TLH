@@ -11,6 +11,10 @@ import ScrollToTop from "./components/Common/ScrollToTop/index.jsx";
 import './styles/_index.scss';
 import '../global.css'
 
+import '@coreui/coreui/dist/css/coreui.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
 // Authentication
 const token = localStorage.getItem('token');
 

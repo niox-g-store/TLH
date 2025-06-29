@@ -66,6 +66,9 @@ h4,
   font-size: 20px;
   font-weight: 500;
 }
+a {
+  text-decoration: none;
+}
 video {
   width: 100%;
   height: 100%;
@@ -192,6 +195,28 @@ select {
 
 .font-family-default {
   font-family: 'Bebas Neue', sans-serif !important;
+}
+.bg-black {
+  background: var(--bg-secondary);
+}
+
+.item-hover:hover {
+  background: var(--primary_color);
+}
+
+.item-hover a:hover {
+  background: var(--primary_color) !important;
+}
+
+.margin-btm-sm {
+  margin-bottom: .5em;
+}
+.c-primary {
+  background-color: var(--primary_color) !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 
