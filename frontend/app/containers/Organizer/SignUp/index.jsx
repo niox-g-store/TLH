@@ -28,10 +28,10 @@ const OrganizerSignUp = (props) => {
         <div className='signup'>
           <Link className='back-to-home' to='/'>
             <BackIcon />
-            <p> Back to Home</p>
+            <p className='p-purple'> Back to Home</p>
           </Link>
           <div data-aos='fade-up' className='col-login-form'>
-            <h1>Become an event organizer</h1>
+            <h1 className='p-black'>Become an event organizer</h1>
             <h4 className='p-content p-black'>The world’s waiting for your next event. Let’s make it happen.</h4>
             <form method='post' onSubmit={handleSubmit}>
 
@@ -122,12 +122,12 @@ const OrganizerSignUp = (props) => {
                     <div className='remember-me signup'>
                       <Input name='checkbox' checked={isSubscribed} onInputChange={(n, v) => subscribeChange()} type='checkbox' />&nbsp;&nbsp;
                       <div className='form-label'>
-                        <label>I want to recieve updates about The link hangouts</label>
+                        <label className='p-black'>I want to recieve updates about The link hangouts</label>
                       </div>
                     </div>
                   </div>
                   <div className='create-account-links'>
-                    <p>
+                    <p className="p-black">
                       Already have an account?
                       <span className='h6'>
                         <Link to='/login'>Log In</Link>
@@ -158,16 +158,16 @@ const OrganizerSignUp = (props) => {
                       type='checkbox'
                     />&nbsp;&nbsp;
                     <div className='form-label'>
-                      <label>I want to recieve updates about The link hangouts</label>
+                      <label className="p-black">I want to recieve updates about The link hangouts</label>
                     </div>
                   </div>
                 </div>
                 <div className='create-account-links-large-screen'>
-                  <p>
+                  <p className="p-black">
                     Already have an account? &nbsp;
                     <span className='h6'>
-                      <Link to='/login'>Log In</Link>
-                  &nbsp; &nbsp; OR &nbsp; &nbsp; <Link to='/signup'>Sign up as a user</Link>
+                      <Link to='/login' className='p-purple'>Log In</Link>
+                  &nbsp; &nbsp; OR &nbsp; &nbsp; <Link to='/signup' className='p-purple'>Sign up as a user</Link>
                     </span>
                   </p>
                 </div>

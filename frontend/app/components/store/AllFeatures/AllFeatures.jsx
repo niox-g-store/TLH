@@ -9,13 +9,13 @@ const AllFeatures = () => {
         <div className="container">
           <div className="all-features-row-wrapper">
             <div className="col-features-content">
-              <p className="p-info p-all-features ff h6" data-aos="fade-up">
+              <p className="p-info p-all-features ff h6 p-black" data-aos="fade-up">
                 All Features
               </p>
               <h2 className="h2-content h2-all-features" data-aos="fade-up">
                 Everything You Need to Host Events
               </h2>
-              <p className="p-info p-all-features" data-aos="fade-up">
+              <p className="p-info p-black p-all-features" data-aos="fade-up">
                 From ticketing to promotion, we give you all the tools to host events that sell out and stand out.
               </p>
               <div className="list-tags">

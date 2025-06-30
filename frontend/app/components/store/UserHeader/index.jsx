@@ -25,7 +25,7 @@ const UserHeader = (props) => {
     } else {
     return (
     <>
-           <div className="nav">
+           <div className="nav d-flex align-self-end">
               <ul>
                 <li>
                   <Link to="/events">Discover Events</Link>

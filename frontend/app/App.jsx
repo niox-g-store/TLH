@@ -38,6 +38,9 @@ function App(props) {
       anchorPlacement: 'bottom-center',
     });
     AOS.refresh();
+    const isLight = localStorage.getItem('isLightMode') === 'true';
+    document.body.classList.toggle('light-mode', isLight);
+    document.body.classList.toggle('dark-mode', !isLight);
   }, []);
 
   const hideHeaderFooterPaths = ['/login', '/signup', '/organizer-signup', '/dashboard'];

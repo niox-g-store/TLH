@@ -32,12 +32,13 @@
 .col-benefits-content ul li:before {
   position: absolute;
   content: "";
-  width: 14px;
+  width: auto;
   height: 24px;
   left: 0px;
   right: 0;
   padding-left: 10px;
   background-image: url(../../assets/tick-circle.svg);
+  background-repeat: no-repeat;
   color: var(--primary_color);
   top: -2px;
 }

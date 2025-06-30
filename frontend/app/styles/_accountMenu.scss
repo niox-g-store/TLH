@@ -1,6 +1,10 @@
 .organizer {
     .sidebar {
         border-right: none !important;
+        .switch {
+            width: fit-content;
+            margin: 1em 0 0 1.5em;
+        }
     }
 
     .wrapper {
@@ -12,7 +16,11 @@
 }
 
 .sidebarheader {
-    padding: 1.5em 0em 0em .5em;
+    padding: 2em 0em 0em 0.5em;
+
+    @include media-breakpoint-down(md) {
+        padding: 2.5em 0em 0em 0.5em;
+    }
 
     .logo-image {
         height: 45px;
@@ -21,10 +29,10 @@
 
     .close-icon {
         margin-top: -40px;
-        margin-right: 10px;
+        margin-right: 20px;
     }
 }
 
 .sidebar-nav {
-    margin-top: 3em;
+    margin-top: 2em;
 }

@@ -1,7 +1,7 @@
 export const BackIcon = () => {
     return (
                     <svg
-                      fill="currentColor"
+                      fill="#9172EC"
                       width="15px"
                       height="15px"
                       viewBox="0 0 24 24"

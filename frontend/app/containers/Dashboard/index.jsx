@@ -24,12 +24,17 @@ class Dashboard extends React.PureComponent {
   }
 
   render() {
-    const { user, isLoading, isMenuOpen, toggleDashboardMenu, signOut } = this.props;
+    const {
+      user, isLoading,
+      isMenuOpen, toggleDashboardMenu,
+      signOut, toggleDashboardTheme,
+      isLightMode
+    } = this.props;
     // if (isDisabledOrganizerAccount(user)) { return <DisabledOrganizerAccount user={user} />; }
     console.log(user)
 
     return (
-      <>
+      <div className='dashboard'>
         {isLoading ?  (
           <LoadingIndicator />
         ) : user.role === ROLES.Admin ? (
@@ -46,6 +51,8 @@ class Dashboard extends React.PureComponent {
             links={dashboardLinks[ROLES.Organizer]}
             toggleMenu={toggleDashboardMenu}
             signOut={signOut}
+            toggleDashboardTheme={toggleDashboardTheme}
+            isLightMode={isLightMode}
           />
         ) : (
           <Customer
@@ -55,7 +62,7 @@ class Dashboard extends React.PureComponent {
             toggleMenu={toggleDashboardMenu}
           />
         )}
-      </>
+      </div>
     );
   }
 }
@@ -64,7 +71,8 @@ const mapStateToProps = state => {
   return {
     user: state.account.user,
     isLoading: state.account.isLoading,
-    isMenuOpen: state.dashboard.isMenuOpen
+    isMenuOpen: state.dashboard.isMenuOpen,
+    isLightMode: state.dashboard.isLightMode
   };
 };
 

@@ -29,15 +29,15 @@ const SignForm = (props) => {
   };
 
   return (
-    <div className="n-signup">
+    <div className="n-signup bg-white">
       <div className="signup signup-left">
         <Link className="back-to-home" to="/" onClick={signupReset}>
           <BackIcon />
-          <p>Back to Home</p>
+          <p className="p-purple">Back to Home</p>
         </Link>
 
         <div data-aos="fade-up" className="col-login-form">
-          <h1>Join The Link Hangouts!</h1>
+          <h1 className="p-black">Join The Link Hangouts!</h1>
           <p className="p-content p-black">
             Join our community to discover and attend amazing events near you.
           </p>
@@ -115,7 +115,7 @@ const SignForm = (props) => {
                   />
                 </div>
                 <div className="form-label">
-                  <label>I want to receive updates about The Link Hangouts</label>
+                  <label className="p-black">I want to receive updates about The Link Hangouts</label>
                 </div>
               </div>
             </div>
@@ -143,7 +143,7 @@ const SignForm = (props) => {
         </div>
 
         <div className="create-account-links">
-          <p>
+          <p className="p-black">
             Already have an account?
             <span className="h6">
               <Link to="/login">Log In</Link>

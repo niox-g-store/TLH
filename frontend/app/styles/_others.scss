@@ -20,9 +20,8 @@
   transform: rotate(180deg);
 }
 
-.period-d-md {
-    display: none !important;
-    @include media-breakpoint-down(md) {
-        display: block !important;
+.switch {
+    input {
+        padding: 0 !important;
     }
 }

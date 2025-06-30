@@ -32,12 +32,12 @@ const LoginForm = (props) => {
 
       <div className="right-login">
         <Link className="back-to-home" to="/">
-          <BackIcon />
-          <p>Back to Home</p>
+          <BackIcon color={"purple"}/>
+          <p className="p-purple">Back to Home</p>
         </Link>
 
         <div className="col-login-form" data-aos="fade-up">
-          <h1>Hi there!</h1>
+          <h1 className="p-black">Hi there!</h1>
           <p className="p-content p-black">
             Log in as a User or Access Your Organizer Account
           </p>
@@ -75,7 +75,7 @@ const LoginForm = (props) => {
                 />
                 &nbsp;&nbsp;
                 <div className="form-label">
-                  <label>Remember Me</label>
+                  <label className="p-black">Remember Me</label>
                 </div>
               </div>
 
@@ -114,7 +114,7 @@ const LoginForm = (props) => {
           </div>
 
           <div className="create-account-links">
-            <p>
+            <p className="p-black">
               Haven't signed up?
               <span className="h6">
                 <Link to="/signup">Create Account</Link>

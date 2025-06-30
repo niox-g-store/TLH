@@ -13,7 +13,9 @@ import {
   CPaginationItem,
 } from '@coreui/react'
 
-const AttendeesTable = ({ data = [] }) => {
+const AttendeesTable = (props) => {
+  const { data, isLightMode } = props;
+
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 10
   const totalPages = Math.ceil(data.length / itemsPerPage)
@@ -29,10 +31,10 @@ const AttendeesTable = ({ data = [] }) => {
   }
 
   return (
-    <CCard className="mb-4">
-      <CCardHeader>Attendees</CCardHeader>
+    <CCard className={`${isLightMode ? '' : 'bg-dark-mode'} mb-4`}>
+      <CCardHeader className={`${isLightMode ? 'p-black' : 'p-white'}`} style={{ fontSize: '30px' }}>Attendees</CCardHeader>
       <CCardBody>
-        <CTable align="middle" hover responsive>
+        <CTable align="middle" hover responsive className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} p-white`}>
           <CTableHead>
             <CTableRow>
               <CTableHeaderCell>Name</CTableHeaderCell>

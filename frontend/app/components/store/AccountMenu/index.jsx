@@ -8,6 +8,7 @@ import {
   CNavGroup,
   CNavItem,
   CNavTitle,
+  CFormSwitch
 } from '@coreui/react'
 import { Link } from 'react-router-dom'
 import {
@@ -19,6 +20,7 @@ import { MdOutlineEventRepeat, MdOutlineAccountCircle, MdOutlineSecurity } from 
 import { RiCoupon3Line } from "react-icons/ri";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { CiLogout } from "react-icons/ci";
+import { useDispatch } from 'react-redux';
 
 
 const iconMap = {
@@ -34,7 +36,20 @@ const iconMap = {
 };
 
 const AccountMenu = (props) => {
-  const { links, isMenuOpen, toggleMenu, signOut } = props;
+  const {
+    links, isMenuOpen,
+    toggleMenu, signOut,
+    isLightMode, toggleDashboardTheme
+  } = props;
+
+  const dispatch = useDispatch();
+  const handleThemeToggle = () => {
+    const newMode = !isLightMode;
+    localStorage.setItem('isLightMode', newMode);
+    dispatch(toggleDashboardTheme(newMode));
+    document.body.classList.toggle('light-mode', newMode);
+    document.body.classList.toggle('dark-mode', !newMode);
+  };
   return (
     <>
     <CSidebar className="border-end bg-black" position='fixed' visible={isMenuOpen}>
@@ -86,6 +101,13 @@ const AccountMenu = (props) => {
         <IoCloseOutline className={"p-white cursor-pointer d-lg-none close-icon"} size={30} onClick={toggleMenu}/>
       </CSidebarHeader>
 
+      <CFormSwitch
+                label={isLightMode ? 'Light Mode' : 'Dark Mode'}
+                id='themeToggleSwitch'
+                className='switch me-3 text-white d-flex align-items-center gap-2'
+                checked={isLightMode}
+                onChange={handleThemeToggle}
+              />
       <CSidebarNav data-aos="fade-up">
             {links.map((link, index) => {
               const PREFIX = link.prefix ? link.prefix : '';
@@ -101,7 +123,7 @@ const AccountMenu = (props) => {
               <CiLogout className='p-white' size={25}/>&nbsp;&nbsp;Logout
             </div>
         </CSidebarNav>
-            <CSidebarHeader className="border-top">
+            <CSidebarHeader>
         <CSidebarToggler />
       </CSidebarHeader>
     </CSidebar>

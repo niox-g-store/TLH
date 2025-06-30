@@ -46,7 +46,7 @@
 .col-features-content ul li:before {
   position: absolute;
   content: "";
-  width: 14px;
+  width: auto;
   height: 24px;
   left: 0px;
   right: 0;
@@ -54,6 +54,7 @@
   background-image: url(../../assets/tick-circle.svg);
   color: var(--primary_color);
   top: -2px;
+  background-repeat: no-repeat;
 }
 .col-features-image img {
   width: 100%;

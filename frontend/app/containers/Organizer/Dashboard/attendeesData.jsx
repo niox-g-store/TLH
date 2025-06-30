@@ -182,4 +182,4 @@ export const attendeesData = [
     purchasedDate: 'Jun 17',
     email: 'chris.young@example.com'
   }
-]
+];

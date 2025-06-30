@@ -20,6 +20,8 @@ html {
   --primary_color: #9172EC;
   --bg-secondary: black;
   --white: #ffffff;
+  --linear-bg: linear-gradient(145deg, #3a3a3c, #9172EC, #d1c4e9);
+  --linear-bg-2: linear-gradient(120deg, #1f1f47, #9172EC, #6f42c1);
 }
 
 /*  */
@@ -68,6 +70,11 @@ h4,
 }
 a {
   text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  padding: 0;
 }
 video {
   width: 100%;
@@ -154,6 +161,14 @@ select {
   border-radius: 10px;
 }
 
+.border-15 {
+  border-radius: 10px;
+}
+
+.border-20 {
+  border-radius: 20px;
+}
+
 .p-black {
   color: var(--bg-secondary) !important;
 }
@@ -183,8 +198,21 @@ select {
   font-size: 20px;
 }
 
+.font-size-25 {
+  font-size: 25px;
+}
+
 .font-size-14 {
   font-size: 14px;
+}
+
+.padding-0 {
+  padding: 0;
+  margin: 0;
+}
+
+.p-purple {
+  color: var(--primary_color);
 }
 
 .invalid-message {
@@ -197,7 +225,7 @@ select {
   font-family: 'Bebas Neue', sans-serif !important;
 }
 .bg-black {
-  background: var(--bg-secondary);
+  background-color: var(--bg-secondary) !important;
 }
 
 .item-hover:hover {
@@ -217,6 +245,10 @@ select {
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.purple-bg {
+  background-color: var(--primary_color);
 }
 
 
@@ -250,4 +282,49 @@ select {
   .h2 {
     font-size: 30px;
   }
+}
+
+
+
+
+
+
+/* === Base Theme Tokens === */
+.bg-dark-mode {
+  background-color: var(--bg-secondary) !important;
+}
+.bg-dark-mode table > :not(caption) > * > * {
+  background-color: var(--bg-secondary) !important;
+  color: #fff;
+}
+.bg-light-mode {
+  background-color: #f8f9fa !important;
+}
+
+.text-dark-mode {
+  color: #ffffff !important;
+}
+.text-light-mode {
+  color: #212529 !important;
+}
+
+/* Optional gradient avatar */
+.linear-grad {
+  background: linear-gradient(135deg, #6f42c1, #3a0ca3);
+  border: none;
+}
+.linear-grad-2 {
+  background: var(--linear-bg-2);
+  border: none;
+}
+
+/* Theme container styling */
+.dashboard.dark-mode {
+  background-color: var(--bg-secondary);
+  color: #f1f1f1;
+}
+
+.dashboard.light-mode {
+  background-color: #ffffff;
+  color: #212529;
 }
