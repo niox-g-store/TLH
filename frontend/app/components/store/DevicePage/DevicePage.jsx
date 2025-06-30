@@ -24,11 +24,11 @@ const DevicePage = () => {
             </div>
 
 
-            <div className="col-page-content" data-aos="fade-up" data-aos-delay="800">
+            <div className="col-page-content d-flex flex-column align-items-center" data-aos="fade-up" data-aos-delay="300">
               <h2 className="h2-content p-black">
                 Join the vibe!!
               </h2>
-              <p className="p-black p-info">We host epic games nights, pool parties, chill picnics, group trips, vacations, networking events & so much more. Come for the vibes, stay for the crew!</p>
+              <p className="p-black p-info text-justify">We host epic games nights, pool parties, chill picnics, group trips, vacations, networking events & so much more. Come for the vibes, stay for the crew!</p>
               <Link target={"_blank"} to="https://chat.whatsapp.com/BITMxQSwpFT5x8zjX0v6z2"><Button type={"secondary"} text={"Join the chat room"}/></Link>
             </div>
             <div className={`video-overlay ${state ? "open" : ""}`}></div>

@@ -17,7 +17,7 @@ const HeroBanner = (props) => {
           <div className="row-wrapper-content-with-image">
             <div className="col-banner-content ">
               <h1 className={`${className} p-white`} data-aos="fade-up">{heading}</h1>
-              <p className={`p-info p-white`} data-aos="fade-up" data-aos-delay="600">
+              <p className={`p-info p-white text-justify`} data-aos="fade-up" data-aos-delay="600">
                 {desc}
               </p>
               <div

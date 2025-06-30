@@ -16,16 +16,16 @@
   ],
   "ROLE ORGANIZER": [
     { "to": "", "name": "Dashboard", "prefix": "/dashboard", "icon": "LuLayoutDashboard" },
-    { "to": "/events", "name": "My Events", "prefix": "/dashboard", "icon": "MdOutlineEventRepeat" },
-    { "to": "/tickets", "name": "My Tickets", "prefix": "/dashboard", "icon": "IoTicketOutline" },
-    { "to": "/orders", "name": "My Orders", "prefix": "/dashboard", "icon": "IoReceiptOutline" },
-    { "to": "/coupons", "name": "My Coupons", "prefix": "/dashboard", "icon": "RiCoupon3Line" },
+    { "to": "/events", "name": "Events", "prefix": "/dashboard", "icon": "MdOutlineEventRepeat" },
+    { "to": "/tickets", "name": "Tickets", "prefix": "/dashboard", "icon": "IoTicketOutline" },
+    { "to": "/orders", "name": "Orders", "prefix": "/dashboard", "icon": "IoReceiptOutline" },
+    { "to": "/coupons", "name": "Coupons", "prefix": "/dashboard", "icon": "RiCoupon3Line" },
     { "to": "/scan", "name": "Ticket Scanner", "prefix": "/dashboard", "icon": "IoScanOutline" },
     { "to": "/account", "name": "Account Details", "prefix": "/dashboard", "icon": "MdOutlineAccountCircle" },
     { "to": "/security", "name": "Account Security", "prefix": "/dashboard", "provider": ["Email"], "icon": "MdOutlineSecurity" }
   ],
   "ROLE MEMBER": [
-    { "to": "", "name": "Discover Events", "prefix": "/dashboard" },
+    { "to": "", "name": "My Events", "prefix": "/dashboard" },
     { "to": "/tickets", "name": "My Tickets", "prefix": "/dashboard" },
     { "to": "/account", "name": "Account Details", "prefix": "/dashboard" },
     { "to": "/security", "name": "Account Security", "prefix": "/dashbard" }

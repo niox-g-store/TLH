@@ -11,6 +11,7 @@ import {
 import { tickets } from './ticketData';
 import ResolveImage from '../../store/ResolveImage';
 import AddTicket from './Add';
+import GetTicketPrice from '../../store/GetTicketPricing';
 
 const ManagerTicket = ({ isLightMode, stats = {
   topTicket: 'Regular',
@@ -19,7 +20,7 @@ const ManagerTicket = ({ isLightMode, stats = {
   available: 3
 } }) => {
   return (
-    <div className='container-lg px-4 d-flex flex-column align-items-end'>
+    <div className='container-lg px-4 d-flex flex-column align-items-end mb-custom-5em'>
       <AddTicket />
       <div>
         {/* Ticket Stats Summary */}
@@ -79,7 +80,7 @@ const ManagerTicket = ({ isLightMode, stats = {
                   </CBadge>
                   <CCardText className="mt-2">
                     <strong>Event:</strong> {ticket.event}<br />
-                    <strong>Price:</strong> ₦{ticket.price}<br />
+                    <GetTicketPrice ticket={ticket} />
                     <strong>Sold:</strong> {ticket.quantitySold}
                   </CCardText>
                 </CCardBody>

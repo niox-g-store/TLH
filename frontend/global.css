@@ -30,6 +30,7 @@ body {
   line-height: 1.2;
   font-size: 16px;
   letter-spacing: 1px;
+  background-color: inherit;
 }
 img {
   max-width: 100%;
@@ -42,9 +43,6 @@ h5,
 h6,
 p {
   margin: 0 0 20px 0;
-}
-p {
-  text-align: justify;
 }
 h1,
 .h1 {
@@ -215,6 +213,10 @@ select {
   color: var(--primary_color);
 }
 
+.text-justify {
+  text-align: justify !important;
+}
+
 .invalid-message {
   color: red;
   font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -249,6 +251,10 @@ select {
 
 .purple-bg {
   background-color: var(--primary_color);
+}
+
+.mb-custom-5em {
+  margin-bottom: 5em !important;
 }
 
 

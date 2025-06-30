@@ -21,7 +21,7 @@ const ManagerEvent = (props) => {
             isLightMode
           } = props;
   return (
-    <div className='container-lg px-4 d-flex flex-column align-items-end'>
+    <div className='container-lg px-4 d-flex flex-column align-items-end mb-custom-5em'>
         <AddEvent />
         <div>
       {/* Event Stats Summary */}

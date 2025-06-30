@@ -37,7 +37,7 @@ const BodyPanel = (props) => {
 
   return (
     <div className='body-panel'>
-      <div className='container-lg px-4'>
+      <div className='container-lg px-4 mb-custom-5em'>
         <div data-aos='fade-up' className='d-flex gap-3 flex-wrap mb-4' style={{ alignItems: 'stretch' }}>
           <div className='d-flex flex-column gap-3' style={{ maxWidth: '100%', flexShrink: 0 }}>
 

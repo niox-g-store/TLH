@@ -183,14 +183,16 @@ header.scrolled {
   transform: rotate(-45deg);
   transition-delay: 0, 0.2s;
 }
+
 @media (max-width: 1024px) {
-  .navigation .nav,
-  .navigation .buttons {
-    display: none;
+  .navigation .header-lg,
+  .navigation .header-lg-buttons {
+    display: none !important;
   }
   .menu-toggle {
     display: block;
   }
+  
   .navigation .header-menu-mobile.show .nav,
   .navigation .header-menu-mobile.show .buttons {
     display: block;

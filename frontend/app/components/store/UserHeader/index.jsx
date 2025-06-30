@@ -25,7 +25,7 @@ const UserHeader = (props) => {
     } else {
     return (
     <>
-           <div className="nav d-flex align-self-end">
+           <div className="nav d-lg-flex align-self-end header-lg">
               <ul>
                 <li>
                   <Link to="/events">Discover Events</Link>
@@ -54,10 +54,7 @@ const UserHeader = (props) => {
                 </li>
               </ul>
             </div>
-
-
-
-              <div className="buttons">
+              <div className="buttons header-lg-buttons">
                 <Link to="/login" className="button">
                   Log In
                 </Link>
@@ -65,6 +62,21 @@ const UserHeader = (props) => {
                   Create event
                 </Link>
               </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
             <div className="menu-toggle" onClick={toggleMenu}>

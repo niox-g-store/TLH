@@ -8,15 +8,21 @@ const couponSchema = new mongoose.Schema({
     uppercase: true,
     trim: true
   },
+  percentage: {
+    type: Number
+  },
   discountPrice: {
     type: Number,
     required: true
   },
-  event: {
+  event: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Event',
-    default: null
-  },
+  }],
+  ticket: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Ticket',
+  }],
   quantity: {
     type: Number,
     default: null
@@ -36,6 +42,9 @@ const couponSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
+  },
+  image: {
+    type: String
   },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }

@@ -3,6 +3,8 @@ const ResolveImage = (type = null, image) => {
     switch (type) {
       case 'ticket':
         return '/assets/ticket-icon.png';
+      case 'coupon':
+        return '/assets/ticket-icon.png';
       default:
         break;
     }
