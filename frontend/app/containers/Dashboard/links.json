@@ -1,7 +1,6 @@
 {
   "ROLE ADMIN": [
-    { "to": "", "name": "Account Details", "prefix": "/dashboard" },
-    { "to": "/security", "name": "Account Security", "prefix": "/dashboard", "provider": ["Email"] },
+    { "to": "", "name": "Dashboard", "prefix": "/dashboard", "icon": "LuLayoutDashboard" },
     { "to": "/events", "name": "Events", "prefix": "/dashboard" },
     { "to": "/organizers", "name": "Organizers", "prefix": "/dashboard" },
     { "to": "/users", "name": "Users", "prefix": "/dashboard" },
@@ -11,7 +10,9 @@
     { "to": "/coupons", "name": "Coupons", "prefix": "/dashboard" },
     { "to": "/guests", "name": "Guest Buyers", "prefix": "/dashboard" },
     { "to": "/tickets", "name": "All Tickets", "prefix": "/dashboard" },
-    { "to": "/scan", "name": "Ticket Scanner", "prefix": "/dashboard" }
+    { "to": "/scan", "name": "Ticket Scanner", "prefix": "/dashboard" },
+    { "to": "/account", "name": "Account Details", "prefix": "/dashboard" },
+    { "to": "/security", "name": "Account Security", "prefix": "/dashboard", "provider": ["Email"] }
   ],
   "ROLE ORGANIZER": [
     { "to": "", "name": "Dashboard", "prefix": "/dashboard", "icon": "LuLayoutDashboard" },

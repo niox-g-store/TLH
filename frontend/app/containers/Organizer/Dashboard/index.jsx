@@ -6,8 +6,11 @@
 
 import { Routes, Route } from 'react-router-dom';
 import { HomePanel } from './panel';
+import HeaderPanel from './Header';
 import AccountMenu from '../../../components/store/AccountMenu';
-import Account from '../../Account';
+import ManagerAccount from '../../../components/Manager/Account';
+import ManagerEvent from '../../../components/Manager/Event';
+import ManagerTicket from '../../../components/Manager/Ticket';
 import Page404 from '../../Page404';
 
 /* import AccountMenu from '../AccountMenu';
@@ -29,9 +32,11 @@ const OrganizerDashboard = (props) => {
     <div className='organizer'>
       <AccountMenu {...props} />
       <div className={`${isLightMode ? 'bg-light-mode' : 'bg-dark-mode'} wrapper d-flex flex-column min-vh-100 panel-body bg-black`}>
+        <HeaderPanel {...props} />
         <Routes>
           <Route index element={<HomePanel {...props} />} />
-          <Route path='account' element={<Account />} />
+          <Route path='events' element={<ManagerEvent {...props}/>} />
+          <Route path='tickets' element={<ManagerTicket {...props}/>} />
           {/* <Route exact path='/dashboard' component={Account} />
               <Route path='/dashboard/security' component={AccountSecurity} />
               <Route path='/dashboard/address' component={Address} />
@@ -39,6 +44,7 @@ const OrganizerDashboard = (props) => {
               <Route path='/dashboard/brand' component={Brand} />
               <Route path='/dashboard/orders' component={Order} />
               <Route path='/dashboard/wishlist' component={Wishlist} /> */}
+          <Route path='account' element={<ManagerAccount {...props}/>} />
           <Route path='*' element={<Page404 />} />
         </Routes>
       </div>

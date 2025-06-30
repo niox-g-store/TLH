@@ -5,7 +5,7 @@ const RowOurTeam = () => {
   const team1 = "./assets/team/team_1.JPG";
   const team2 = "./assets/team/team_2.JPG";
   const team3 = "./assets/team/team_3.JPG";
-  const team4 = "./assets/team/team_2.JPG";
+  const team4 = "./assets/team/team_4.JPG";
   return (
     <>
       <section className="row-our-team">
@@ -71,23 +71,22 @@ const RowOurTeam = () => {
                   </div>
                 </div>
               </div>
-              {/*<div className="col-our-team-item items-2">
+              <div className="col-our-team-item items-2">
                 <div className="item-img" data-aos="zoom-in-up">
                   <img src={team4} alt="item4" width="320" height="322" />
                 </div>
                 <div className="item-content">
                   <div className="item-inner">
                     <h2 className="font-size-30" data-aos="fade-up">
-                      Berry Syam
+                      Daniel Adewoye
                     </h2>
-                    <p className="font-size-20" data-aos="fade-up">VP of Engineering</p>
+                    <p className="font-size-20" data-aos="fade-up">Media Director</p>
                     <p className="font-size-14" data-aos="fade-up">
-                      Getting the best out of the dev squad and building solid
-                      products together is what puts a smile on my face
+                      leads all cinematic and visual storytelling for our events, capturing each moment with creativity and precision. With a passion for impactful content, he ensures every frame reflects the energy, emotion, and essence of the experience.
                     </p>
                   </div>
                 </div>
-              </div>*/}
+              </div>
             </div>
           </div>
         </div>

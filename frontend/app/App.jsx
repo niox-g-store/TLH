@@ -43,9 +43,11 @@ function App(props) {
     document.body.classList.toggle('dark-mode', !isLight);
   }, []);
 
-  const hideHeaderFooterPaths = ['/login', '/signup', '/organizer-signup', '/dashboard'];
+  const hideHeaderFooterPaths = [ '/login', '/signup',
+                                  '/organizer-signup', '/dashboard'
+                                ];
   const showHeaderFooter = (USER.role === ROLES.Member ||
-                            !hideHeaderFooterPaths.includes(location.pathname));
+                            !hideHeaderFooterPaths.some(path => location.pathname.startsWith(path)));
 
   return (
     <>

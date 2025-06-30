@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const ticketSchema = new mongoose.Schema({
-  name: {
+  type: {
     type: String,
     required: true
   },
