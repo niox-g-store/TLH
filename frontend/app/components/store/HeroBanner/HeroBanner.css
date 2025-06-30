@@ -59,7 +59,8 @@
 
 @media (max-width: 767px) {
   .hero-banner .row-banner-btns {
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: center;
     gap: 1em;
   }
   .row-wrapper-content-with-image {

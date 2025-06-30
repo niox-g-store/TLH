@@ -48,13 +48,13 @@ const logoData = [
 const GettingMsg = () => {
   return (
     <>
-      <section className="getting-msg">
+      <section className="getting-msg bg-white">
         <div className="container">
           <div className="getting-msg-row-wrapper">
             <div className="col-getting-msg-profile">
 
               <div className="founder-name">
-                <h2 className="align-middle display-flex display-middle" data-aos="fade-up">
+                <h2 className="p-black align-middle display-flex display-middle" data-aos="fade-up">
                   Reputable organizations we have worked with
                 </h2>
                 <BrandSection images={logoData} slidesToShow={2}/>

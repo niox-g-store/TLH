@@ -12,6 +12,7 @@ import ManagerAccount from '../../../components/Manager/Account';
 import ManagerEvent from '../../../components/Manager/Event';
 import ManagerTicket from '../../../components/Manager/Ticket';
 import ManagerCoupon from '../../../components/Manager/Coupons';
+import OrderList from '../../../components/Manager/Orders';
 import Page404 from '../../Page404';
 
 /* import AccountMenu from '../AccountMenu';
@@ -39,6 +40,7 @@ const OrganizerDashboard = (props) => {
           <Route path='events' element={<ManagerEvent {...props}/>} />
           <Route path='tickets' element={<ManagerTicket {...props}/>} />
           <Route path='coupons' element={<ManagerCoupon {...props}/>} />
+          <Route path='orders' element={<OrderList {...props}/>} />
           
           {/* <Route exact path='/dashboard' component={Account} />
               <Route path='/dashboard/security' component={AccountSecurity} />

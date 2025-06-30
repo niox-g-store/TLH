@@ -31,6 +31,15 @@
     color: white;
 }
 
+.pagination .active span {
+  background-color: var(--primary_color);
+  border: none;
+}
+
+.pagination li a {
+  color: black;
+}
+
 
 /* Medium screens: 3 per row */
 @media (max-width: 1200px) {

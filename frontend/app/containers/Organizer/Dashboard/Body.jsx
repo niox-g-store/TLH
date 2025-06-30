@@ -38,8 +38,10 @@ const BodyPanel = (props) => {
   return (
     <div className='body-panel'>
       <div className='container-lg px-4 mb-custom-5em'>
+        <h2 style={{ margin: 0 }} className={`${isLightMode ? 'p-black': 'p-white'}`}>Dashboard</h2>
+        <hr className={`${isLightMode ? 'p-black': 'p-white'}`}></hr>
         <div data-aos='fade-up' className='d-flex gap-3 flex-wrap mb-4' style={{ alignItems: 'stretch' }}>
-          <div className='d-flex flex-column gap-3' style={{ maxWidth: '100%', flexShrink: 0 }}>
+          <div className='dashboard-analytics d-flex flex-column gap-3' style={{ maxWidth: '100%', flexShrink: 0 }}>
 
             <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white c-primary border-15`}>
               <CCardBody>

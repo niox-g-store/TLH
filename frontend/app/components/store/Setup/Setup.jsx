@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const Setup = () => {
   return (
     <>
-      <section className="setup">
+      <section className="setup bg-white">
         <div className="container">
           <div className="setup-row-wrapper" data-aos="fade-up">
             <div className="col-setup-content">

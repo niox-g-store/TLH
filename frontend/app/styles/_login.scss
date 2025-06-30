@@ -1,4 +1,7 @@
 .login {
+    @include media-breakpoint-down(md) {
+        height: 100vh;
+    }
     .left-login {
         @include media-breakpoint-down(md) {
             display: none;

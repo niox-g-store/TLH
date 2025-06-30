@@ -30,7 +30,7 @@ body {
   line-height: 1.2;
   font-size: 16px;
   letter-spacing: 1px;
-  background-color: inherit;
+  background-color: var(--bg-secondary);
 }
 img {
   max-width: 100%;
@@ -316,11 +316,13 @@ select {
 
 /* Optional gradient avatar */
 .linear-grad {
-  background: linear-gradient(135deg, #6f42c1, #3a0ca3);
+  /*background: linear-gradient(135deg, #6f42c1, #3a0ca3);*/
+  background: var(--primary_color);
   border: none;
 }
 .linear-grad-2 {
-  background: var(--linear-bg-2);
+  /*background: var(--linear-bg-2);*/
+  background: var(--primary_color);
   border: none;
 }
 

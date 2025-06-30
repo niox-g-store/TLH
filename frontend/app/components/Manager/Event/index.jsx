@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   CRow,
   CCol,
@@ -7,6 +8,8 @@ import {
   CCardText,
   CBadge,
   CImage,
+  CPagination,
+  CPaginationItem
 } from '@coreui/react';
 import { events } from './eventData';
 import ResolveImage from '../../store/ResolveImage';
@@ -20,9 +23,21 @@ const ManagerEvent = (props) => {
                     },
             isLightMode
           } = props;
+    const [currentPage, setCurrentPage] = useState(1);
+    const eventsPerPage = 10;
+    
+    const totalPages = Math.ceil(events.length / eventsPerPage);
+    const startIndex = (currentPage - 1) * eventsPerPage;
+    const endIndex = startIndex + eventsPerPage;
+    const currentEvents = events.slice(startIndex, endIndex);
+    
   return (
-    <div className='container-lg px-4 d-flex flex-column align-items-end mb-custom-5em'>
+    <div data-aos="fade-up" className='container-lg px-4 d-flex flex-column mb-custom-5em'>
+      <div className='d-flex justify-content-between'>
+        <h2 style={{ margin: 0 }} className={`${isLightMode ? 'p-black': 'p-white'}`}>Events</h2>
         <AddEvent />
+      </div>
+      <hr className={`${isLightMode ? 'p-black': 'p-white'}`}></hr>
         <div>
       {/* Event Stats Summary */}
       <CRow className="mb-4 g-2">
@@ -62,7 +77,7 @@ const ManagerEvent = (props) => {
 
       {/* Event List */}
       <CRow className="gy-4">
-        {events.map((event, idx) => (
+        {currentEvents.map((event, idx) => (
           <CCol md={6} key={idx}>
             <CCard className="flex-row overflow-hidden">
               <CImage
@@ -90,6 +105,31 @@ const ManagerEvent = (props) => {
           </CCol>
         ))}
       </CRow>
+
+<div className='mt-4'>
+      <div className='w-100 d-flex justify-content-center align-items-center mb-3'>
+        <span className={`${isLightMode ? 'p-black': 'p-white'} fw-bold`}>
+          Page {currentPage} of {totalPages} — Viewing {startIndex + 1}-{
+            endIndex > events.length ? events.length : endIndex
+          } of {events.length} entries
+        </span>
+      </div>
+  <CPagination align='center'>
+    {[...Array(totalPages)].map((_, index) => (
+      <CPaginationItem
+        key={index + 1}
+        active={index + 1 === currentPage}
+        onClick={() => {
+          setCurrentPage(index + 1);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        style={{ cursor: 'pointer' }}
+      >
+        {index + 1}
+      </CPaginationItem>
+    ))}
+  </CPagination>
+  </div>
       </div>
     </div>
   );

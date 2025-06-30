@@ -1,3 +1,9 @@
 .body-panel {
     flex-grow: 1 !important;
 }
+
+.dashboard-analytics {
+    @include media-breakpoint-down(md) {
+        width: 100% !important;
+    }
+}

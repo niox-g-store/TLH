@@ -64,8 +64,8 @@ const AttendeesTable = (props) => {
         </CTable>
 
         {/* Pagination Controls */}
-        <div className="d-flex justify-content-end mt-3">
-          <CPagination align="end">
+        <div className="d-flex justify-content-center mt-3">
+          <CPagination align="center">
             <CPaginationItem
               disabled={currentPage === 1}
               onClick={() => handlePageChange(currentPage - 1)}

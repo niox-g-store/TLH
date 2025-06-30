@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   CRow,
   CCol,
@@ -6,22 +7,40 @@ import {
   CCardTitle,
   CCardText,
   CBadge,
-  CImage
+  CImage,
+  CPagination,
+  CPaginationItem
 } from '@coreui/react';
 import { tickets } from './ticketData';
 import ResolveImage from '../../store/ResolveImage';
 import AddTicket from './Add';
 import GetTicketPrice from '../../store/GetTicketPricing';
 
-const ManagerTicket = ({ isLightMode, stats = {
-  topTicket: 'Regular',
-  expired: 1,
-  total: 4,
-  available: 3
-} }) => {
+const ManagerTicket = (props) => {
+  const { isLightMode,
+          stats = {
+            topTicket: 'Regular',
+            expired: 1,
+            total: 4,
+            available: 3
+          }
+  } = props;
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const ticketsPerPage = 10;
+  
+  const totalPages = Math.ceil(tickets.length / ticketsPerPage);
+  const startIndex = (currentPage - 1) * ticketsPerPage;
+  const endIndex = startIndex + ticketsPerPage;
+  const currentTickets = tickets.slice(startIndex, endIndex);
+
   return (
-    <div className='container-lg px-4 d-flex flex-column align-items-end mb-custom-5em'>
+    <div data-aos="fade-up" className='container-lg px-4 d-flex flex-column mb-custom-5em'>
+      <div className='d-flex justify-content-between'>
+        <h2 style={{ margin: 0 }} className={`${isLightMode ? 'p-black': 'p-white'}`}>Tickets</h2>
       <AddTicket />
+      </div>
+      <hr className={`${isLightMode ? 'p-black': 'p-white'}`}></hr>
       <div>
         {/* Ticket Stats Summary */}
         <CRow className="mb-4 g-2">
@@ -61,7 +80,7 @@ const ManagerTicket = ({ isLightMode, stats = {
 
         {/* Ticket List */}
         <CRow className="gy-4">
-          {tickets.map((ticket, idx) => (
+          {currentTickets.map((ticket, idx) => (
             <CCol md={6} key={idx}>
               <CCard className="flex-row overflow-hidden">
                 <CImage
@@ -88,6 +107,31 @@ const ManagerTicket = ({ isLightMode, stats = {
             </CCol>
           ))}
         </CRow>
+      </div>
+
+      <div className='mt-4'>
+      <div className='w-100 d-flex justify-content-center align-items-center mb-3'>
+        <span className={`${isLightMode ? 'p-black': 'p-white'} fw-bold`}>
+          Page {currentPage} of {totalPages} — Viewing {startIndex + 1}-{
+            endIndex > tickets.length ? tickets.length : endIndex
+          } of {tickets.length} entries
+        </span>
+      </div>
+  <CPagination align='center'>
+    {[...Array(totalPages)].map((_, index) => (
+      <CPaginationItem
+        key={index + 1}
+        active={index + 1 === currentPage}
+        onClick={() => {
+          setCurrentPage(index + 1);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        style={{ cursor: 'pointer' }}
+      >
+        {index + 1}
+      </CPaginationItem>
+    ))}
+  </CPagination>
       </div>
     </div>
   );
