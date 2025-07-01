@@ -15,6 +15,8 @@ import { tickets } from '../../Data/ticketData';
 import ResolveImage from '../../store/ResolveImage';
 import AddTicket from './Add';
 import GetTicketPrice from '../../store/GetTicketPricing';
+import AdminTicket from './AdminTicket';
+import { ROLES } from '../../../constants';
 
 const ManagerTicket = (props) => {
   const { isLightMode,
@@ -23,7 +25,8 @@ const ManagerTicket = (props) => {
             expired: 1,
             total: 4,
             available: 3
-          }
+          },
+          user
   } = props;
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -40,6 +43,9 @@ const ManagerTicket = (props) => {
         <h2 style={{ margin: 0 }} className={`${isLightMode ? 'p-black': 'p-white'}`}>Tickets</h2>
       <AddTicket />
       </div>
+      {
+        user.role === ROLES.Admin && <AdminTicket {...props}/>
+      }
       <hr className={`${isLightMode ? 'p-black': 'p-white'}`}></hr>
       <div>
         {/* Ticket Stats Summary */}

@@ -27,7 +27,6 @@ function App(props) {
   const { user } = props;
   const location = useLocation();
   const USER = user ?? user.role;
-  console.log(USER)
 
   useEffect(() => {
     AOS.init({

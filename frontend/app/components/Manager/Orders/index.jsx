@@ -14,9 +14,10 @@ import { useState } from 'react';
 import ResolveImage from '../../store/ResolveImage';
 import { orders } from '../../Data/ordersData';
 import ViewOrders from './View';
+import { ROLES } from '../../../constants';
 
-const OrderList = (props) => {
-  const { isLightMode } = props;
+const ManagerOrder = (props) => {
+  const { isLightMode, user } = props;
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 10;
 
@@ -29,7 +30,9 @@ const OrderList = (props) => {
     <div data-aos="fade-up" className='container-lg px-4 d-flex flex-column mb-custom-5em'>
         <div className='d-flex justify-content-between'>
         <h2 style={{ margin: 0 }} className={`${isLightMode ? 'p-black': 'p-white'}`}>Orders</h2>
-        <ViewOrders />
+        {
+          user.role === ROLES.Admin && <ViewOrders {...props}/>
+        }
         </div>
         <hr className={`${isLightMode ? 'p-black': 'p-white'}`} style={{ margin: '.5em' }}></hr>
         <h2 className={`${isLightMode ? 'p-black': 'p-white'} font-size-20`}>50 Orders</h2>
@@ -119,4 +122,4 @@ const OrderList = (props) => {
   );
 };
 
-export default OrderList;
+export default ManagerOrder;

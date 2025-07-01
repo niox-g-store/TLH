@@ -11,9 +11,13 @@ import {
   CPagination,
   CPaginationItem
 } from '@coreui/react';
+import Button from '../../Common/HtmlTags/Button';
 import { events } from '../../Data/eventData';
 import ResolveImage from '../../store/ResolveImage';
 import AddEvent from './Add';
+import { ROLES } from '../../../constants';
+import AdminEvent from './AdminEvent';
+import { useNavigate } from 'react-router-dom';
 
 const ManagerEvent = (props) => {
     const { stats = { topSelling: 'Bash Party',
@@ -21,8 +25,10 @@ const ManagerEvent = (props) => {
                       expired: 2,
                       total: 12
                     },
-            isLightMode
+            isLightMode,
+            user
           } = props;
+    const navigate = useNavigate()
     const [currentPage, setCurrentPage] = useState(1);
     const eventsPerPage = 10;
     
@@ -35,10 +41,15 @@ const ManagerEvent = (props) => {
     <div data-aos="fade-up" className='container-lg px-4 d-flex flex-column mb-custom-5em'>
       <div className='d-flex justify-content-between'>
         <h2 style={{ margin: 0 }} className={`${isLightMode ? 'p-black': 'p-white'}`}>Events</h2>
-        <AddEvent />
+        <Button onClick={() => navigate("/dashboard/events/add")} type={"third-btn"} text={"Create Event +"}/>
+        
       </div>
+                {
+            user.role === ROLES.Admin && <AdminEvent {...props}/>
+          }
       <hr className={`${isLightMode ? 'p-black': 'p-white'}`}></hr>
         <div>
+
       {/* Event Stats Summary */}
       <CRow className="mb-4 g-2">
         <CCol sm={3}>

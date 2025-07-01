@@ -12,8 +12,8 @@ import actions from '../../actions';
 import { ROLES } from '../../constants';
 import dashboardLinks from './links.json';
 import { isDisabledOrganizerAccount } from '../../utils/app';
-import Admin from '../Admin/Dashboard';
-import OrganizerDashboard from '../Organizer/Dashboard';
+import Admin from '../Admin';
+import Organizer from '../Organizer';
 import Customer from '../Customer/Dashboard';
 import DisabledOrganizerAccount from '../Organizer/DisabledAccount';
 import LoadingIndicator from '../../components/store/LoadingIndicator';
@@ -36,19 +36,13 @@ class Dashboard extends React.PureComponent {
     return (
       <div className='dashboard'>
         {isLoading ?  (
-          <LoadingIndicator />
+          <LoadingIndicator isLightMode={isLightMode}/>
         ) : user.role === ROLES.Admin ? (
           <Admin
-            user={user}
-            isMenuOpen={isMenuOpen}
-            links={dashboardLinks[ROLES.Admin]}
-            toggleMenu={toggleDashboardMenu}
-            signOut={signOut}
-            toggleDashboardTheme={toggleDashboardTheme}
-            isLightMode={isLightMode}
+          {...props}
           />
         ) : user.role === ROLES.Organizer && user.organizer ? (
-          <OrganizerDashboard
+          <Organizer
             user={user}
             isMenuOpen={isMenuOpen}
             links={dashboardLinks[ROLES.Organizer]}

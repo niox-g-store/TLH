@@ -16,8 +16,11 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import AddCoupon from './Add';
 import { coupons } from '../../Data/couponData';
 import ResolveImage from '../../store/ResolveImage';
+import AdminCoupon from './AdminCoupon';
+import { ROLES } from '../../../constants';
 
-const ManagerCoupon = ({ isLightMode }) => {
+const ManagerCoupon = (props) => {
+  const { user, isLightMode } = props;
   const [visibleCodes, setVisibleCodes] = useState({});
 
   const toggleCodeVisibility = (idx) => {
@@ -44,6 +47,9 @@ const ManagerCoupon = ({ isLightMode }) => {
         <h2 style={{ margin: 0 }} className={`${isLightMode ? 'p-black': 'p-white'}`}>Coupons</h2>
       <AddCoupon />
       </div>
+      {
+        user.role === ROLES.Admin && <AdminCoupon {...props}/>
+      }
       <hr className={`${isLightMode ? 'p-black': 'p-white'}`}></hr>
 
       {/* Coupon Stats */}

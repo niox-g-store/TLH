@@ -1,0 +1,19 @@
+.loading-indicator {
+  height: 100vh;
+  top: 0;
+  width: 100%;
+  left: 0;
+  background: var(--bg-secondary);
+
+  .pulsate-rli-bounding-box {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 25%;
+    z-index: 1022;
+    width: 40px;
+    height: 40px;
+    margin: 100px auto;
+  }
+}

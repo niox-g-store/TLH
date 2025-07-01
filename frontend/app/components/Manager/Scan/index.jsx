@@ -34,7 +34,7 @@ const mockScannedTickets = Array.from({ length: 34 }, (_, i) => ({
   scannedAt: new Date().toLocaleString()
 }));
 
-const TicketScanner = (props) => {
+const ManagerSanner = (props) => {
   const { isLightMode } = props;
   const [code, setCode] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -169,4 +169,4 @@ const TicketScanner = (props) => {
   );
 };
 
-export default TicketScanner;
+export default ManagerSanner;

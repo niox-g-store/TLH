@@ -1,49 +1,188 @@
-/*
- *
- * Admin
- *
- */
-
-import React from 'react';
-
-import { Routes, Route } from 'react-router-dom';
-import { HomePanel } from './home';
-import HeaderPanel from '../../../components/Manager/Header';
-import AccountMenu from '../../../components/store/AccountMenu';
-import ManagerAccount from '../../../components/Manager/Account';
-import ManagerEvent from '../../../components/Manager/Event';
-import ManagerTicket from '../../../components/Manager/Ticket';
-import ManagerCoupon from '../../../components/Manager/Coupons';
-import OrderList from '../../../components/Manager/Orders';
-import TicketScanner from '../../../components/Manager/Scan';
-import AccountSecurity from '../../../components/Manager/Security';
-import ManagerNewsletter from '../../../components/Manager/Newsletter';
-import Page404 from '../../Page404';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useState } from 'react';
+import {
+  CRow,
+  CCol,
+  CCard,
+  CCardBody,
+  CCardHeader,
+  CCardTitle,
+  CCardText,
+  CProgressBar,
+  CProgress,
+  CAvatar,
+  CTable,
+  CTableHead,
+  CTableRow,
+  CTableHeaderCell,
+  CTableBody,
+  CTableDataCell
+} from '@coreui/react';
 import '@coreui/coreui/dist/css/coreui.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import ChartLine from '../../../components/store/Core/chartLine';
+import ChartBar from '../../../components/store/Core/chartBar';
+import ChartBubble from '../../../components/store/Core/chartBubble';
+import ChartArea from '../../../components/store/Core/chartArea';
+import BarChart from '../../../components/store/Core/barChart';
+import { IoBasketOutline, IoReceiptOutline } from 'react-icons/io5';
+import { MdOutlineEventRepeat } from 'react-icons/md';
+import DropdownConfirm from '../../../components/store/DropdownConfirm';
+import { attendeesData } from '../../../components/Data/attendeesData';
+import AttendeesTable from '../../../components/store/AttendeesTable';
+import PeriodDropdown from '../../../components/store/PeriodPicker';
+import { Link } from 'react-router-dom';
 
-const Admin = (props) => {
-  const { isLightMode } = props;
+const AdminDashboard = (props) => {
+  const { toggleDashboardTheme, isLightMode } = props;
+
   return (
-    <div className='admin'>
-      <AccountMenu {...props} />
-      <div className={`${isLightMode ? 'bg-light-mode' : 'bg-dark-mode'} wrapper d-flex flex-column min-vh-100 panel-body bg-black`}>
-        <HeaderPanel {...props} />
-        <Routes>
-          <Route index element={<HomePanel {...props} />} />
-          <Route path='events' element={<ManagerEvent {...props}/>} />
-          <Route path='tickets' element={<ManagerTicket {...props}/>} />
-          <Route path='coupons' element={<ManagerCoupon {...props}/>} />
-          <Route path='orders' element={<OrderList {...props}/>} />
-          <Route path='scan' element={<TicketScanner {...props}/>} />
-          <Route path='account' element={<ManagerAccount {...props}/>} />
-          <Route path='security' element={<AccountSecurity {...props}/>} />
-          <Route path='newsletter' element={<ManagerNewsletter {...props}/>} />
-          <Route path='*' element={<Page404 />} />
-        </Routes>
+    <div className='body-panel'>
+      <div className='container-lg px-4 mb-custom-5em'>
+        <h2 style={{ margin: 0 }} className={`${isLightMode ? 'p-black': 'p-white'}`}>Dashboard</h2>
+        <hr className={`${isLightMode ? 'p-black': 'p-white'}`}></hr>
+        <div data-aos='fade-up' className='d-flex gap-3 flex-wrap mb-4' style={{ alignItems: 'stretch' }}>
+          <div className='dashboard-analytics d-flex flex-column gap-3' style={{ maxWidth: '100%', flexShrink: 0 }}>
+
+            <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white c-primary border-15`}>
+              <CCardBody>
+                <div className='d-flex justify-content-between align-items-start mb-2'>
+                  <CCardTitle>2,000 Ticket Sold</CCardTitle>
+                  <PeriodDropdown />
+                </div>
+                <CCardText>June 1st - June 30th</CCardText>
+                <ChartLine />
+              </CCardBody>
+            </CCard>
+
+            {/* Event Created + Orders */}
+            <div className='d-flex gap-3'>
+              <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white c-primary border-15`} style={{ flex: 1 }}>
+                <CCardBody>
+                  <div className='d-flex justify-content-between align-items-start mb-2'>
+                    <CCardTitle>Events Created</CCardTitle>
+                  </div>
+
+                  <CCardText className='d-flex justify-content-between align-items-center font-size-20'>10 <MdOutlineEventRepeat size={30} /></CCardText>
+                  <CCardText>June 1st - June 30th</CCardText>
+                  <PeriodDropdown className='period-d-md' />
+                </CCardBody>
+              </CCard>
+
+              <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white c-primary border-15 `} style={{ flex: 1 }}>
+                <CCardBody>
+                  <div className='d-flex justify-content-between align-items-start mb-2'>
+                    <CCardTitle>Orders</CCardTitle>
+                  </div>
+                  <CCardText className='d-flex justify-content-between align-items-center font-size-20'>50 <IoReceiptOutline size={30} /></CCardText>
+                  <CCardText>June 1st - June 30th</CCardText>
+                  <PeriodDropdown className='period-d-md' />
+                </CCardBody>
+              </CCard>
+            </div>
+          </div>
+
+          {/* RIGHT COLUMN - Income card */}
+          <div style={{ flex: 1, minWidth: '280px' }}>
+            <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white c-primary h-100 border-15 `}>
+              <CCardBody className='d-flex flex-column justify-content-between'>
+                <div className='d-flex justify-content-between align-items-start mb-2'>
+                  <CCardTitle>NGN 620,000 Income</CCardTitle>
+                  <PeriodDropdown />
+                </div>
+                <CCardText>June 1st - June 30th</CCardText>
+                <div style={{ height: '14em' }}>
+                  <BarChart />
+                </div>
+              </CCardBody>
+            </CCard>
+          </div>
+        </div>
+
+
+
+        {/* Social Cards */}
+<CRow className='mb-4 g-3'>
+  <CCol xs={6} md={3}>
+    <CCard className='purple-bg p-white border-15 linear-grad-2'>
+      <CCardBody>
+        <CCardTitle>Top Selling Event</CCardTitle>
+        <CCardText>
+          <Link to='/dashboard/event/white-house-party'>White House Party</Link>
+        </CCardText>
+      </CCardBody>
+    </CCard>
+  </CCol>
+
+  <CCol xs={6} md={3}>
+    <CCard className='purple-bg p-white border-15 linear-grad-2'>
+      <CCardBody>
+        <CCardTitle>Upcoming Events</CCardTitle>
+        <CCardText>2</CCardText>
+      </CCardBody>
+    </CCard>
+  </CCol>
+
+  <CCol xs={6} md={3}>
+    <CCard className='purple-bg p-white border-15 linear-grad-2'>
+      <CCardBody>
+        <CCardTitle>Past Event</CCardTitle>
+        <CCardText>8</CCardText>
+      </CCardBody>
+    </CCard>
+  </CCol>
+
+  <CCol xs={6} md={3}>
+    <CCard className='purple-bg p-white border-15 linear-grad-2'>
+      <CCardBody>
+        <CCardTitle>Events</CCardTitle>
+        <CCardText>Null</CCardText>
+      </CCardBody>
+    </CCard>
+  </CCol>
+
+  <CCol xs={6} md={3}>
+    <CCard className='purple-bg p-white border-15 linear-grad-2'>
+      <CCardBody>
+        <CCardTitle>Guest Users</CCardTitle>
+        <CCardText>12</CCardText>
+      </CCardBody>
+    </CCard>
+  </CCol>
+
+  <CCol xs={6} md={3}>
+    <CCard className='purple-bg p-white border-15 linear-grad-2'>
+      <CCardBody>
+        <CCardTitle>Total Users</CCardTitle>
+        <CCardText>200</CCardText>
+      </CCardBody>
+    </CCard>
+  </CCol>
+
+  <CCol xs={6} md={3}>
+    <CCard className='purple-bg p-white border-15 linear-grad-2'>
+      <CCardBody>
+        <CCardTitle>Organizers</CCardTitle>
+        <CCardText>3</CCardText>
+      </CCardBody>
+    </CCard>
+  </CCol>
+
+  <CCol xs={6} md={3}>
+    <CCard className='purple-bg p-white border-15 linear-grad-2'>
+      <CCardBody>
+        <CCardTitle>Admins</CCardTitle>
+        <CCardText>1</CCardText>
+      </CCardBody>
+    </CCard>
+  </CCol>
+</CRow>
+
+
+        <AttendeesTable {...props} data={attendeesData} />
+
       </div>
     </div>
   );
 };
 
-export default Admin;
+export default AdminDashboard;
