@@ -28,13 +28,14 @@ const ManagerNewsletter = ({ isLightMode }) => {
   const currentNewsletters = newsletters.slice(startIndex, endIndex);
 
   return (
-    <div className='container-lg px-4 d-flex flex-column mb-custom-5em'>
+    <div data-aos="fade-up" className='container-lg px-4 d-flex flex-column mb-custom-5em'>
       <div className='d-flex justify-content-between'>
-        <h2 className={`${isLightMode ? 'p-black' : 'p-white'}`}>Newsletter Subscribers</h2>
+        <h2 className={`${isLightMode ? 'p-black' : 'p-white'}`}>Newsletter</h2>
       </div>
+        <h3 className={`${isLightMode ? 'p-black': 'p-white'}`}>Send reminders, newsletters, and campaign emails to users </h3>  
       <hr className={`${isLightMode ? 'p-black' : 'p-white'}`} />
 
-      <CRow className='gy-4'>
+      {/*<CRow className='gy-4'>
         {currentNewsletters.map((subscriber, idx) => (
           <CCol md={6} key={idx}>
             <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'}`}>
@@ -50,7 +51,7 @@ const ManagerNewsletter = ({ isLightMode }) => {
             </CCard>
           </CCol>
         ))}
-      </CRow>
+      </CRow>*/}
 
       <div className='mt-4'>
         <div className='w-100 d-flex justify-content-center align-items-center mb-3'>
