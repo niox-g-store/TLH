@@ -13,7 +13,6 @@ import {
 import { useState } from 'react';
 import ResolveImage from '../../store/ResolveImage';
 import { orders } from './ordersData';
-import { ScrollTop } from '../../../pages/ScrollTop';
 import ViewOrders from './View';
 
 const OrderList = (props) => {
@@ -39,7 +38,7 @@ const OrderList = (props) => {
       <CRow className='gy-4 w-100'>
         {currentOrders.map((order, idx) => (
           <CCol md={6} key={idx}>
-            <CCard className='flex-row overflow-hidden'>
+            <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}>
               <div style={{ width: '40%' }}>
                 <CImage
                   src={ResolveImage(order.image || '')}

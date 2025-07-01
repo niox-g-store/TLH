@@ -4,9 +4,18 @@
  *
  */
 
+import {
+  CCard,
+  CCardBody,
+  CCardHeader,
+  CCardTitle,
+  CForm,
+  CFormInput,
+  CRow,
+  CCol,
+  CButton,
+} from '@coreui/react';
 import React, { useState } from 'react';
-import { Modal, ModalBody, ModalFooter } from 'reactstrap';
-import { Row, Col } from 'reactstrap';
 // import BankSelector from '../../Common/Banks';
 
 import { EMAIL_PROVIDER, ROLES } from '../../../constants';
@@ -70,7 +79,7 @@ import Button from '../../Common/HtmlTags/Button';
       {banks && banks.length > 0 ? (
         banks.map((bank, index) => (
           <Row key={index}>
-            <Col className='display_banks'>
+            <div className='display_banks'>
             <div style={{ textAlign: 'left' }}>
               <p><b>Account name: </b>{bank.name}</p>
               <p><b>Bank: </b>{getBankNameByCode(bank.bank_name)}</p>
@@ -81,7 +90,7 @@ import Button from '../../Common/HtmlTags/Button';
               icon={<TrashIcon />}
               onClick={() => deleteBank(bank._id)}
             />
-            </Col>
+            </div>
           </Row>
         ))
       ) : (
@@ -140,74 +149,92 @@ import Button from '../../Common/HtmlTags/Button';
 
 const ManagerAccount = (props) => {
   const {
-    user, accountChange, updateProfile,
-    banks, deleteBank, formErrors, createBank } = props;
+    user,
+    accountChange,
+    updateProfile,
+    banks,
+    deleteBank,
+    formErrors,
+    createBank,
+    isLightMode,
+  } = props;
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
     updateProfile();
   };
 
   return (
-    <div className="account-details">
-      <div className="info">
-        <div className="desc">
-          <Col xs="12" md="6">
-            <Input
-              type="text"
-              label="Email"
-              name="email"
-              value={user.email || ''}
-              disabled={true}
-            />
-          </Col>
-          <UserRole user={user} />
-        </div>
-      </div>
-      <form onSubmit={handleSubmit}>
-        <Row>
-          <Col xs="12" md="6">
-            <Input
-              type="text"
-              label="First Name"
-              name="firstName"
-              placeholder="Enter Your Name"
-              value={user.name || ''}
-              onInputChange={(name, value) => accountChange(name, value)}
-            />
-          </Col>
-          <Col xs="12" md="6">
-            <Input
-              type="text"
-              label="Last Name"
-              name="lastName"
-              placeholder="Enter a new username"
-              value={user.userName || ''}
-              onInputChange={(name, value) => accountChange(name, value)}
-            />
-          </Col>
-          {/*<Col xs="12" md="12">
-            <PhoneNumberInput
-              val={user.phoneNumber || ''}
-              onPhoneChange={(phoneNumber) => accountChange('phoneNumber', phoneNumber)}
-            />
-          </Col>*/}
-        </Row>
-        <hr />
-        <div className="profile-actions">
-          <Button type="secondary" text="Save changes" />
-        </div>
-
-        {/*user.role === ROLES.Admin  && (
-            <Col>
-              <BankAccountComponent
-                banks={banks} createBank={createBank}
-                formErrors={formErrors}
-                deleteBank={deleteBank}
+    <div data-aos="fade-up" className='container-lg px-4 d-flex flex-column mb-custom-5em'>
+      <CCard className={`${isLightMode ? 'bg-white': 'bg-black'}  w-100`}>
+        <CCardHeader>
+          <CCardTitle className={`${isLightMode ? 'p-black': 'p-white'} font-size-30`}>Account Details</CCardTitle>
+        </CCardHeader>
+        <CCardBody>
+          <CRow className="mb-3 g-3">
+            <CCol className={`${isLightMode ? 'p-black': 'p-white'}`} md={6}>
+              <CFormInput
+                type="email"
+                label="Email"
+                value={user.email || ''}
+                disabled
               />
-            </Col>
-          )*/}
-      </form>
+            </CCol>
+
+              <CCol className={`${isLightMode ? 'p-black': 'p-white'}`} md={6}>
+                <CFormInput
+                  type="text"
+                  label="User Name"
+                  name="userName"
+                  placeholder="Enter a new username"
+                  value={user.userName || ''}
+                  onChange={(e) => accountChange('userName', e.target.value)}
+                />
+              </CCol>
+          </CRow>
+
+          <CForm onSubmit={handleSubmit}>
+            <CRow className="mb-3 g-3">
+              <CCol className={`${isLightMode ? 'p-black': 'p-white'}`} md={6}>
+                <CFormInput
+                  type="text"
+                  label="Company Name"
+                  name="companyName"
+                  placeholder="Enter your company name"
+                  value={user.organizer.companyName || ''}
+                  onChange={(e) => accountChange('name', e.target.value)}
+                />
+              </CCol>
+
+              <CCol className={`${isLightMode ? 'p-black': 'p-white'}`} md={6}>
+                <Input type={"phone"}
+                       val={user.organizer.phoneNumber || ''}
+                       onPhoneChange={(v) => accountChange('phoneNumber', v)}
+                />
+              </CCol>
+            </CRow>
+
+            <div className="d-flex justify-content-end mt-3">
+              <CButton type="submit" className={`p-white linear-grad`}>
+                Save Changes
+              </CButton>
+            </div>
+          </CForm>
+        </CCardBody>
+      </CCard>
+
+      {/* Uncomment this if Admins can manage bank accounts
+      {user.role === ROLES.Admin && (
+        <div className='mt-4 w-100'>
+          <BankAccountComponent
+            banks={banks}
+            createBank={createBank}
+            formErrors={formErrors}
+            deleteBank={deleteBank}
+          />
+        </div>
+      )}
+      */}
     </div>
   );
 };

@@ -13,18 +13,10 @@ import ManagerEvent from '../../../components/Manager/Event';
 import ManagerTicket from '../../../components/Manager/Ticket';
 import ManagerCoupon from '../../../components/Manager/Coupons';
 import OrderList from '../../../components/Manager/Orders';
+import TicketScanner from '../../../components/Manager/Scan';
+import AccountSecurity from '../../../components/Manager/Security';
+import ManagerNewsletter from '../../../components/Manager/Newsletter';
 import Page404 from '../../Page404';
-
-/* import AccountMenu from '../AccountMenu';
-import Page404 from '../../Common/Page404';
-
-import Account from '../../../containers/Account';
-import AccountSecurity from '../../../containers/AccountSecurity';
-import Address from '../../../containers/Address';
-import Product from '../../../containers/Product';
-import Brand from '../../../containers/Brand';
-import Order from '../../../containers/Order';
-import Wishlist from '../../../containers/WishList'; */
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@coreui/coreui/dist/css/coreui.min.css';
 
@@ -41,15 +33,10 @@ const OrganizerDashboard = (props) => {
           <Route path='tickets' element={<ManagerTicket {...props}/>} />
           <Route path='coupons' element={<ManagerCoupon {...props}/>} />
           <Route path='orders' element={<OrderList {...props}/>} />
-          
-          {/* <Route exact path='/dashboard' component={Account} />
-              <Route path='/dashboard/security' component={AccountSecurity} />
-              <Route path='/dashboard/address' component={Address} />
-              <Route path='/dashboard/product' component={Product} />
-              <Route path='/dashboard/brand' component={Brand} />
-              <Route path='/dashboard/orders' component={Order} />
-              <Route path='/dashboard/wishlist' component={Wishlist} /> */}
+          <Route path='scan' element={<TicketScanner {...props}/>} />
           <Route path='account' element={<ManagerAccount {...props}/>} />
+          <Route path='security' element={<AccountSecurity {...props}/>} />
+          <Route path='newsletter' element={<ManagerNewsletter {...props}/>} />
           <Route path='*' element={<Page404 />} />
         </Routes>
       </div>

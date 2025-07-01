@@ -1,0 +1,83 @@
+import { useState } from 'react';
+import {
+  CRow,
+  CCol,
+  CCard,
+  CCardBody,
+  CCardTitle,
+  CCardText,
+  CPagination,
+  CPaginationItem,
+  CBadge
+} from '@coreui/react';
+
+// Sample newsletter data
+const newsletters = Array.from({ length: 25 }, (_, i) => ({
+  email: `user${i + 1}@example.com`,
+  subscribedAt: new Date(Date.now() - i * 100000000).toLocaleDateString(),
+  status: i % 3 === 0 ? 'unsubscribed' : 'subscribed'
+}));
+
+const ManagerNewsletter = ({ isLightMode }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const newslettersPerPage = 10;
+
+  const totalPages = Math.ceil(newsletters.length / newslettersPerPage);
+  const startIndex = (currentPage - 1) * newslettersPerPage;
+  const endIndex = startIndex + newslettersPerPage;
+  const currentNewsletters = newsletters.slice(startIndex, endIndex);
+
+  return (
+    <div className='container-lg px-4 d-flex flex-column mb-custom-5em'>
+      <div className='d-flex justify-content-between'>
+        <h2 className={`${isLightMode ? 'p-black' : 'p-white'}`}>Newsletter Subscribers</h2>
+      </div>
+      <hr className={`${isLightMode ? 'p-black' : 'p-white'}`} />
+
+      <CRow className='gy-4'>
+        {currentNewsletters.map((subscriber, idx) => (
+          <CCol md={6} key={idx}>
+            <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'}`}>
+              <CCardBody>
+                <CCardTitle className='mb-2'>{subscriber.email}</CCardTitle>
+                <CBadge color={subscriber.status === 'subscribed' ? 'success' : 'danger'} className='mb-2'>
+                  {subscriber.status}
+                </CBadge>
+                <CCardText>
+                  <strong>Subscribed At:</strong> {subscriber.subscribedAt}
+                </CCardText>
+              </CCardBody>
+            </CCard>
+          </CCol>
+        ))}
+      </CRow>
+
+      <div className='mt-4'>
+        <div className='w-100 d-flex justify-content-center align-items-center mb-3'>
+          <span className={`${isLightMode ? 'p-black' : 'p-white'} fw-bold`}>
+            Page {currentPage} of {totalPages} — Viewing {startIndex + 1}-{
+              endIndex > newsletters.length ? newsletters.length : endIndex
+            } of {newsletters.length} entries
+          </span>
+        </div>
+        <CPagination align='center'>
+          {[...Array(totalPages)].map((_, index) => (
+            <CPaginationItem
+              key={index + 1}
+              active={index + 1 === currentPage}
+              onClick={() => {
+                setCurrentPage(index + 1);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              style={{ cursor: 'pointer' }}
+            >
+              {index + 1}
+            </CPaginationItem>
+          ))}
+        </CPagination>
+      </div>
+    </div>
+  );
+};
+
+export default ManagerNewsletter;

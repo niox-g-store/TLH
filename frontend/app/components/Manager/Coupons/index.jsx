@@ -78,7 +78,7 @@ const ManagerCoupon = ({ isLightMode }) => {
       <CRow className="gy-4">
         {currentCoupons.map((coupon, idx) => (
           <CCol md={6} key={idx}>
-            <CCard className="flex-row overflow-hidden">
+            <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}>
                 <CImage
                   src={ResolveImage('coupon', coupon.image)}
                   alt={coupon.event}

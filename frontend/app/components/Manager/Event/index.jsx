@@ -79,13 +79,13 @@ const ManagerEvent = (props) => {
       <CRow className="gy-4">
         {currentEvents.map((event, idx) => (
           <CCol md={6} key={idx}>
-            <CCard className="flex-row overflow-hidden">
+            <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}>
               <CImage
                 src={ResolveImage(event.image)}
                 alt={event.title}
                 style={{ width: '40%', objectFit: 'cover' }}
               />
-              <CCardBody>
+              <CCardBody> 
                 <CCardTitle className="mb-2">{event.title}</CCardTitle>
 <CBadge color={
   event.status === 'expired' ? 'danger' :

@@ -37,6 +37,13 @@ const UserSchema = new mongoose.Schema({
   googleId: {
     type: String
   },
+  twoFactor: {
+    type: String
+  },
+  isTwoFactorActive: {
+    type: Boolean,
+    default: false
+  },
   role: {
     type: String,
     default: ROLES.Member,

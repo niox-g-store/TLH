@@ -4,8 +4,39 @@
  *
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { IoIosSearch } from "react-icons/io";
+import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
+
+const PhoneNumberInput = ({ onPhoneChange, val }) => {
+  const [value, setValue] = useState(val);
+
+  const handleChange = (phoneNumber) => {
+    setValue(phoneNumber);
+    if (onPhoneChange) {
+      onPhoneChange(phoneNumber);
+    }
+  };
+
+  return (
+    <div>
+      <label htmlFor="phone-input" style={{ marginBottom: '10px', display: 'block' }}>
+        Phone Number
+      </label>
+      <PhoneInput
+        id="phone-input"
+        placeholder="Enter phone number"
+        defaultCountry="NG"
+        value={value}
+        onChange={handleChange}
+        international
+        countryCallingCodeEditable={true}
+        className="phone-input"
+      />
+    </div>
+  );
+};
 
 const Input = props => {
   const {
@@ -25,7 +56,9 @@ const Input = props => {
     onInputChange,
     inlineElement = null,
     className,
-    checked = false
+    checked = false,
+    onPhoneChange,
+    val
   } = props;
 
   const handleIncrement = () => {
@@ -57,7 +90,13 @@ const Input = props => {
     }
   };
 
-  if (type === 'textarea') {
+  if (type === 'phone') {
+    return (
+      <>
+      <PhoneNumberInput {...props}/>
+      </>
+    )
+  } else if (type === 'textarea') {
     const styles = `input-box${error ? ' invalid' : ''}`;
 
     return (

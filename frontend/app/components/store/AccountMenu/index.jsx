@@ -16,7 +16,12 @@ import {
   IoScanOutline, IoCloseOutline,
   IoReceiptOutline
 } from "react-icons/io5";
-import { MdOutlineEventRepeat, MdOutlineAccountCircle, MdOutlineSecurity } from "react-icons/md";
+import {
+  MdOutlineEventRepeat, MdOutlineAccountCircle,
+  MdOutlineSecurity, MdOutlineCampaign,
+  MdOutlinePersonSearch, MdOutlinePhotoLibrary,
+  MdOutlinePermMedia, MdOutlinePeople,
+  MdOutlineGroups2 } from "react-icons/md";
 import { RiCoupon3Line } from "react-icons/ri";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { CiLogout } from "react-icons/ci";
@@ -32,7 +37,13 @@ const iconMap = {
   MdOutlineAccountCircle,
   MdOutlineSecurity,
   IoReceiptOutline,
-  LuLayoutDashboard
+  LuLayoutDashboard,
+  MdOutlineCampaign,
+  MdOutlinePersonSearch,
+  MdOutlinePhotoLibrary,
+  MdOutlinePermMedia,
+  MdOutlinePeople,
+  MdOutlineGroups2
 };
 
 const AccountMenu = (props) => {

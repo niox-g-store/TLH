@@ -10,7 +10,7 @@ import { ROLES } from '../../../constants';
 import Badge from '../Badge';
 
 const UserRole = (props) => {
-  const { className, user } = props;
+  const { className = '', user } = props;
 
   return (
     <>
@@ -29,10 +29,6 @@ const UserRole = (props) => {
       )}
     </>
   );
-};
-
-UserRole.defaultProps = {
-  className: ''
 };
 
 export default UserRole;
