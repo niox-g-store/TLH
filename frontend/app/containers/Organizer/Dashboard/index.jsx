@@ -5,8 +5,8 @@
  */
 
 import { Routes, Route } from 'react-router-dom';
-import { HomePanel } from './panel';
-import HeaderPanel from './Header';
+import { HomePanel } from './home';
+import HeaderPanel from '../../../components/Manager/Header';
 import AccountMenu from '../../../components/store/AccountMenu';
 import ManagerAccount from '../../../components/Manager/Account';
 import ManagerEvent from '../../../components/Manager/Event';

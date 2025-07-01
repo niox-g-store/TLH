@@ -43,6 +43,9 @@ class Dashboard extends React.PureComponent {
             isMenuOpen={isMenuOpen}
             links={dashboardLinks[ROLES.Admin]}
             toggleMenu={toggleDashboardMenu}
+            signOut={signOut}
+            toggleDashboardTheme={toggleDashboardTheme}
+            isLightMode={isLightMode}
           />
         ) : user.role === ROLES.Organizer && user.organizer ? (
           <OrganizerDashboard

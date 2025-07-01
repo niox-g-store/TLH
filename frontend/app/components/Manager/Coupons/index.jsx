@@ -14,7 +14,7 @@ import {
 import { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import AddCoupon from './Add';
-import { coupons } from './couponData';
+import { coupons } from '../../Data/couponData';
 import ResolveImage from '../../store/ResolveImage';
 
 const ManagerCoupon = ({ isLightMode }) => {

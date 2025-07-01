@@ -27,7 +27,7 @@ import BarChart from '../../../components/store/Core/barChart';
 import { IoBasketOutline, IoReceiptOutline } from 'react-icons/io5';
 import { MdOutlineEventRepeat } from 'react-icons/md';
 import DropdownConfirm from '../../../components/store/DropdownConfirm';
-import { attendeesData } from './attendeesData';
+import { attendeesData } from '../../../components/Data/attendeesData';
 import AttendeesTable from '../../../components/store/AttendeesTable';
 import PeriodDropdown from '../../../components/store/PeriodPicker';
 import { Link } from 'react-router-dom';

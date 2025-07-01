@@ -12,7 +12,7 @@ import {
 } from '@coreui/react';
 import { useState } from 'react';
 import ResolveImage from '../../store/ResolveImage';
-import { orders } from './ordersData';
+import { orders } from '../../Data/ordersData';
 import ViewOrders from './View';
 
 const OrderList = (props) => {

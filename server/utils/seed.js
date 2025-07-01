@@ -26,7 +26,8 @@ const seedDB = async () => {
 
     if (!email || !password) throw new Error('Missing arguments');
     const existingUser = await User.findOne({ email });
-    if (!existingUser) {
+    const existingUserName = await User.findOne({ userName });
+    if (!existingUser && !existingUserName) {
       console.log(`${chalk.yellow('!')} ${chalk.yellow('Seeding admin user...')}`);
       const user = new User({
         email,

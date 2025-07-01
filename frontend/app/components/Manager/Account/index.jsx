@@ -201,14 +201,14 @@ const ManagerAccount = (props) => {
                   label="Company Name"
                   name="companyName"
                   placeholder="Enter your company name"
-                  value={user.organizer.companyName || ''}
+                  value={user.organizer && user.organizer.companyName || ''}
                   onChange={(e) => accountChange('name', e.target.value)}
                 />
               </CCol>
 
               <CCol className={`${isLightMode ? 'p-black': 'p-white'}`} md={6}>
                 <Input type={"phone"}
-                       val={user.organizer.phoneNumber || ''}
+                       val={user.organizer && user.organizer.phoneNumber || ''}
                        onPhoneChange={(v) => accountChange('phoneNumber', v)}
                 />
               </CCol>

@@ -11,7 +11,7 @@ import {
   CPagination,
   CPaginationItem
 } from '@coreui/react';
-import { events } from './eventData';
+import { events } from '../../Data/eventData';
 import ResolveImage from '../../store/ResolveImage';
 import AddEvent from './Add';
 

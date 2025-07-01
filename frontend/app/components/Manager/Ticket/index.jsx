@@ -11,7 +11,7 @@ import {
   CPagination,
   CPaginationItem
 } from '@coreui/react';
-import { tickets } from './ticketData';
+import { tickets } from '../../Data/ticketData';
 import ResolveImage from '../../store/ResolveImage';
 import AddTicket from './Add';
 import GetTicketPrice from '../../store/GetTicketPricing';

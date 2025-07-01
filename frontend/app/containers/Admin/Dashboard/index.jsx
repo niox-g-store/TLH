@@ -7,55 +7,41 @@
 import React from 'react';
 
 import { Routes, Route } from 'react-router-dom';
-import { Row, Col } from 'reactstrap';
-
-/*import AccountMenu from '../AccountMenu';
-import Page404 from '../../Common/Page404';*/
-
-/*import Account from '../../../containers/Account';
-import AccountSecurity from '../../../containers/AccountSecurity';
-import AdminDashboard from '../../../containers/AdminDashboard';
-import Address from '../../../containers/Address';
-import Order from '../../../containers/Order';
-import Users from '../../../containers/Users';
-import Category from '../../../containers/Category';
-import Product from '../../../containers/Product';
-import Brand from '../../../containers/Brand';
-import Merchant from '../../../containers/Merchant';
-import Review from '../../../containers/Review';
-import Wishlist from '../../../containers/WishList';
-import Banner from '../../../containers/Banner';
-import Campaign from '../../../containers/Campaign';*/
+import { HomePanel } from './home';
+import HeaderPanel from '../../../components/Manager/Header';
+import AccountMenu from '../../../components/store/AccountMenu';
+import ManagerAccount from '../../../components/Manager/Account';
+import ManagerEvent from '../../../components/Manager/Event';
+import ManagerTicket from '../../../components/Manager/Ticket';
+import ManagerCoupon from '../../../components/Manager/Coupons';
+import OrderList from '../../../components/Manager/Orders';
+import TicketScanner from '../../../components/Manager/Scan';
+import AccountSecurity from '../../../components/Manager/Security';
+import ManagerNewsletter from '../../../components/Manager/Newsletter';
+import Page404 from '../../Page404';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '@coreui/coreui/dist/css/coreui.min.css';
 
 const Admin = (props) => {
+  const { isLightMode } = props;
   return (
     <div className='admin'>
-      <Row>
-        <Col className='leftNav' xs='12' md='3' xl='2'>
-          <AccountMenu {...props} />
-        </Col>
-        <Col className='rightMain' xs='12' md='7' xl='10'>
-          <div className='panel-body'>
-            <Routes>
-              <Route exact path='/dashboard' component={AdminDashboard} />
-              <Route path='/dashboard/details' component={Account} />
-              <Route path='/dashboard/security' component={AccountSecurity} />
-              <Route path='/dashboard/address' component={Address} />
-              <Route path='/dashboard/product' component={Product} />
-              <Route path='/dashboard/category' component={Category} />
-              <Route path='/dashboard/brand' component={Brand} />
-              <Route path='/dashboard/users' component={Users} />
-              <Route path='/dashboard/merchant' component={Merchant} />
-              <Route path='/dashboard/orders' component={Order} />
-              <Route path='/dashboard/review' component={Review} />
-              <Route path='/dashboard/banner' component={Banner} />
-              <Route path='/dashboard/campaigns' component={Campaign} />
-              <Route path='/dashboard/wishlist' component={Wishlist} />
-              <Route path='*' component={Page404} />
-            </Routes>
-          </div>
-        </Col>
-      </Row>
+      <AccountMenu {...props} />
+      <div className={`${isLightMode ? 'bg-light-mode' : 'bg-dark-mode'} wrapper d-flex flex-column min-vh-100 panel-body bg-black`}>
+        <HeaderPanel {...props} />
+        <Routes>
+          <Route index element={<HomePanel {...props} />} />
+          <Route path='events' element={<ManagerEvent {...props}/>} />
+          <Route path='tickets' element={<ManagerTicket {...props}/>} />
+          <Route path='coupons' element={<ManagerCoupon {...props}/>} />
+          <Route path='orders' element={<OrderList {...props}/>} />
+          <Route path='scan' element={<TicketScanner {...props}/>} />
+          <Route path='account' element={<ManagerAccount {...props}/>} />
+          <Route path='security' element={<AccountSecurity {...props}/>} />
+          <Route path='newsletter' element={<ManagerNewsletter {...props}/>} />
+          <Route path='*' element={<Page404 />} />
+        </Routes>
+      </div>
     </div>
   );
 };
