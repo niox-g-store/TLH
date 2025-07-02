@@ -2,7 +2,7 @@ import React from "react";
 import "./Footer.css";
 
 const Footer = () => {
-  const ftrlogo = "./assets/logo.png";
+  const ftrlogo = "/logo.png";
   return (
     <>
       <footer>

@@ -4,7 +4,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import "./BrandSection.css";
 
-const blogo1 = "./assets/logo.png";
+const blogo1 = "/logo.png";
 
 export const logoData = [
   {
