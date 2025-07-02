@@ -1,0 +1,35 @@
+/* quillCustom.css */
+
+/* Dark mode styles */
+.quill-dark .ql-toolbar,
+.quill-dark .ql-container,
+.quill-dark .ql-toolbar .ql-formats {
+  background-color: var(--bg-secondary);
+  color: #fff;
+  border-color: #fff;
+}
+
+.quill-dark .ql-editor {
+  background-color: var(--bg-secondary);
+  color: #fff;
+}
+
+.quill-dark .ql-editor.ql-blank::before {
+    color: #fff;
+}
+
+.quill-dark .ql-toolbar button,
+.quill-dark .ql-toolbar .ql-picker {
+  color: #fff;
+}
+
+.quill-dark .ql-toolbar .ql-picker-label,
+.quill-dark .ql-toolbar .ql-picker-item {
+  color: #ffff;
+}
+
+/* Light mode optional override (default is snow) */
+.quill-light .ql-container {
+  background-color: white;
+  color: black;
+}

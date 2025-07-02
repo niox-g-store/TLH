@@ -1,0 +1,16 @@
+.select-box {
+  margin: 10px 0px;
+
+  label {
+    margin-bottom: 5px;
+    color: $font-custom-color;
+    font-size: $font-size-medium;
+  }
+
+  .select-container {
+    .select-option__multi-value__label {
+      font-weight: $font-weight-normal;
+      font-size: $font-size-small;
+    }
+  }
+}

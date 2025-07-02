@@ -141,6 +141,13 @@ select {
   padding: 13px 10px;
   border: 1px solid #c9c9c9;
   border-radius: 8px;
+  color: black;
+}
+
+input[type="date"] {
+  font-family: inherit;
+  padding: 5px 15px;
+
 }
 
 .form-field {
@@ -169,6 +176,10 @@ select {
 
 .p-black {
   color: var(--bg-secondary) !important;
+}
+
+.pp-black {
+  /*color: var(--bg-secondary);*/
 }
 
 .align-middle {

@@ -4,8 +4,6 @@
  *
  */
 
-import React from 'react';
-
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 
@@ -56,7 +54,7 @@ const dropdownStyles = {
     return {
       ...styles,
       color: '#323232',
-      fontFamily: 'Poppins',
+      fontFamily: 'inherit',
       backgroundColor: 'white',
       transition: '0.3s',
       boxShadow: 'none',
@@ -79,7 +77,7 @@ const dropdownStyles = {
     return {
       ...styles,
       color: '#323232',
-      fontFamily: 'Poppins',
+      fontFamily: 'inherit',
       backgroundColor: isDisabled
         ? undefined
         : isSelected
@@ -122,6 +120,6 @@ const dropdownStyles = {
   singleValue: styles => ({
     ...styles,
     color: '#323232',
-    fontFamily: 'Poppins'
+    fontFamily: 'inherit'
   })
 };

@@ -2,7 +2,7 @@ import React from "react";
 import "./Benefits.css";
 
 const Benefits = () => {
-  const benefitsIMG = "./assets/events/event_7.jpg";
+  const benefitsIMG = "./assets/events/event_7.jpeg";
   return (
     <>
       <section className="benefits">

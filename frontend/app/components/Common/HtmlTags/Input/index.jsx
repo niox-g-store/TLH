@@ -101,7 +101,7 @@ const Input = props => {
 
     return (
       <div className={styles}>
-        {label && <label className="p-black">{label}</label>}
+        {label && <label className="pp-black">{label}</label>}
         <textarea
           type={'textarea'}
           onChange={e => {
@@ -122,7 +122,7 @@ const Input = props => {
     return (
       <div className={styles} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         <div style={{display: 'flex', alignItems: 'baseline', gap: '5px'}}>
-        {label && <label className="p-black">{label}</label>}
+        {label && <label className="pp-black">{label}</label>}
         <button
           type="button"
           onClick={handleDecrement}
@@ -165,7 +165,7 @@ const Input = props => {
     };
     return (
       <div className={styles}>
-        {label && <label className="p-black">{label}</label>}
+        {label && <label style={{ marginBottom: '10px' }} className="pp-black">{label}</label>}
         <input
           autoComplete={autoComplete}
           step='step'
@@ -223,7 +223,7 @@ const Input = props => {
           disabled={disabled}
           className={className}
         />
-        {label && <label className="p-black" htmlFor={name}>{label}</label>}
+        {label && <label className="pp-black" htmlFor={name}>{label}</label>}
       </div>
     )
   } else {
@@ -233,7 +233,7 @@ const Input = props => {
 
     return (
       <div className={styles}>
-        {label && <p className='p-black' style={{ marginBottom: '10px' }}>{label}</p>}
+        {label && <p className='pp-black' style={{ marginBottom: '10px' }}>{label}</p>}
         <div className='input-text-block'>
           <input
             className={className && `${className} input-text` || 'input-text'}

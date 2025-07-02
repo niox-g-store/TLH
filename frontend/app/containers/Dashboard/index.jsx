@@ -28,10 +28,13 @@ class Dashboard extends React.PureComponent {
       user, isLoading,
       isMenuOpen, toggleDashboardMenu,
       signOut, toggleDashboardTheme,
-      isLightMode
+      isLightMode, eventFormData,
+      eventFormErrors, eventCategories,
+      eventIsLoading,
+
+      eventChange, addEvent
     } = this.props;
     // if (isDisabledOrganizerAccount(user)) { return <DisabledOrganizerAccount user={user} />; }
-    console.log(user)
 
     return (
       <div className='dashboard'>
@@ -39,17 +42,15 @@ class Dashboard extends React.PureComponent {
           <LoadingIndicator isLightMode={isLightMode}/>
         ) : user.role === ROLES.Admin ? (
           <Admin
-          {...props}
+            {...this.props}
+            links={dashboardLinks[ROLES.Admin]}
+            toggleMenu={toggleDashboardMenu}
           />
         ) : user.role === ROLES.Organizer && user.organizer ? (
           <Organizer
-            user={user}
-            isMenuOpen={isMenuOpen}
+            {...this.props}
             links={dashboardLinks[ROLES.Organizer]}
             toggleMenu={toggleDashboardMenu}
-            signOut={signOut}
-            toggleDashboardTheme={toggleDashboardTheme}
-            isLightMode={isLightMode}
           />
         ) : (
           <Customer
@@ -69,7 +70,11 @@ const mapStateToProps = state => {
     user: state.account.user,
     isLoading: state.account.isLoading,
     isMenuOpen: state.dashboard.isMenuOpen,
-    isLightMode: state.dashboard.isLightMode
+    isLightMode: state.dashboard.isLightMode,
+    eventFormData: state.event.eventFormData,
+    eventFormErrors: state.event.formErrors,
+    eventCategories: state.event.eventCategories,
+    eventIsLoading: state.event.isLoading,
   };
 };
 

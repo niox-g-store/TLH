@@ -17,6 +17,8 @@ import ManagerSanner from '../../components/Manager/Scan';
 import AccountSecurity from '../../components/Manager/Security';
 import ManagerNewsletter from '../../components/Manager/Newsletter';
 import Page404 from '../Page404';
+
+import AddEvent from '../../components/Manager/Event/Add';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@coreui/coreui/dist/css/coreui.min.css';
 
@@ -37,6 +39,7 @@ const Organizer = (props) => {
           <Route path='account' element={<ManagerAccount {...props}/>} />
           <Route path='security' element={<AccountSecurity {...props}/>} />
           <Route path='newsletter' element={<ManagerNewsletter {...props}/>} />
+          <Route exact path='events/add' element={<AddEvent {...props}/>} />
           <Route path='*' element={<Page404 />} />
         </Routes>
       </div>

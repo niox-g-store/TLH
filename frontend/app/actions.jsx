@@ -7,6 +7,7 @@ import * as account from "../app/containers/Account/actions";
 import * as dashboard from "../app/containers/Dashboard/actions";
 import * as login from "../app/containers/Login/actions";
 import * as navigation from "../app/containers/Navigation/actions";
+import * as event from "../app/containers/Events/actions";
 
 export default function mapDispatchToProps(dispatch) {
     return bindActionCreators(
@@ -18,6 +19,7 @@ export default function mapDispatchToProps(dispatch) {
             ...dashboard,
             ...login,
             ...navigation,
+            ...event,
         },
         dispatch
     );

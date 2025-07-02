@@ -88,7 +88,7 @@ const LoginForm = (props) => {
               <Input
                 type="submit"
                 value={isSubmitting ? "Logging In..." : "Log in"}
-                className="form-btn font-family-default"
+                className="p-white form-btn font-family-default"
                 disabled={isSubmitting || isLoading}
               />
             </div>

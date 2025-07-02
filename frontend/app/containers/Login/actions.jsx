@@ -6,7 +6,6 @@
 
 import axios from 'axios';
 import { showNotification } from '../Notification/actions';
-import { useNavigate } from 'react-router-dom';
 
 import {
   LOGIN_CHANGE,

@@ -42,10 +42,10 @@ const eventSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   }],
-  unregisteredAttendees: {
+  unregisteredAttendees: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: "Guest"
-  },
+  }],
   category: {
     type: String,
     enum: Object.values(EVENT_CATEGORIES),
@@ -56,10 +56,12 @@ const eventSchema = new mongoose.Schema({
     enum: Object.values(EVENT_STATUS),
     default: 'Upcoming'
   },
+  isActive: {
+    type: Boolean
+  },
   imageUrl: {
     type: String
   },
-  price: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });
