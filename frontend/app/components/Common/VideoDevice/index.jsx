@@ -17,13 +17,13 @@ const VideoDevice = (props) => {
   return (
     <>
       <section className="device-page">
-        <div className="container">
+        <div className="container p-0">
           <div className="device-page-row-wrapper">
             <div
               className="col-page-image"
               id="col-page-image"
               data-aos="fade-up">
-              <img src={ConfImg} alt="conference-image" />
+              <img style={{ borderRadius: '10px' }} src={ConfImg} alt="conference-image" />
               <div className="video-play-button" onClick={toggleClick}>
                 <svg
                   onClick={toggleClick}

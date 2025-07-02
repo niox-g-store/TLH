@@ -2,10 +2,10 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items: center;
   padding: 3.74rem 0;
   max-width: 1220px;
   margin: 0 auto;
+  flex-direction: row;
 }
 
 .col-about-us-h2 {
@@ -34,9 +34,21 @@
   color: #57585d;
 }
 
+.row-wrapper-about-us-text {
+  width: 50%;
+}
+.row-about-us-img {
+  width: 40%;
+}
+.row-about-us-img img {
+  width: 100%;
+  border-radius: 10px;
+}
+
 @media (max-width: 768px) {
   .row-wrapper-about-us {
     padding: 1.74rem 0;
+    flex-direction: column;
   }
   .col-about-us-h2 {
     flex: 0 0 100%;
@@ -45,5 +57,8 @@
   .col-about-us-p {
     flex: 0 0 100%;
     max-width: 100%;
+  }
+  .row-about-us-img {
+    width: 100%;
   }
 }

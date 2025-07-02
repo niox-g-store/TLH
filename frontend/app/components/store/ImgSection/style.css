@@ -1,0 +1,14 @@
+.slider-img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  margin: 0 auto;
+}
+
+/* Reduce size on large screens */
+@media screen and (min-width: 992px) {
+  #image-section .slider-img {
+    width: 100% !important;
+    height: auto !important;
+  }
+}
