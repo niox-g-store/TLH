@@ -1,7 +1,7 @@
 .setup-row-wrapper {
   display: flex;
   justify-content: space-between;
-  background-image: url(../../assets/Maskgroup3.png);
+  background-image: url(./assets/Maskgroup3.png);
   background-color: var(--bg-secondary);
   border-radius: 20px;
   padding: 70px;

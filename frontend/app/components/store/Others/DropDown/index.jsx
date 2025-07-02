@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import "./styles.css";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { useState } from "react";
