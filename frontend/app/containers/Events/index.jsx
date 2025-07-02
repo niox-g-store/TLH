@@ -7,7 +7,7 @@ import { mockEvents } from "./data";
 const Events = () => {
   const events = mockEvents
   return (
-    <section className="events">
+    <section className="events bg-white">
       <HeroBanner
         heading="Our Events"
         desc="Discover our events"

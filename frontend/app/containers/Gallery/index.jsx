@@ -9,7 +9,7 @@ class Gallery extends React.PureComponent {
         const firstImage = galleries[0];
         return (
             <>
-            <section className="gallery-page">
+            <section className="gallery-page bg-white">
                 <HeroBanner
                     heading="The link hangouts gallery"
                     desc="PARTY ENTERTAINMENT SERVICE"
