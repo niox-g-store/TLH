@@ -1,6 +1,6 @@
 .all-featuers {
   background-color: var(--primary_color);
-  background-image: url("./assets/Maskgroup.svg");
+  background-image: url("assets/Maskgroup.svg");
   padding: 6.593rem 0;
 }
 .all-features-row-wrapper {
@@ -51,7 +51,7 @@
   left: 0px;
   right: 0;
   padding-left: 10px;
-  background-image: url(./assets/tick-circle.svg);
+  background-image: url(assets/tick-circle.svg);
   color: var(--primary_color);
   top: -2px;
   background-repeat: no-repeat;
