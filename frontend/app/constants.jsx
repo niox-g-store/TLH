@@ -7,5 +7,5 @@ export const ROLES = {
 };
 export const EMAIL_PROVIDER = {
   Email: 'Email',
-  Google: 'Google',
+  Google: 'Google'
 };

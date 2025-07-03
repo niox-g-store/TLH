@@ -7,7 +7,7 @@ const blogo3 = "./assets/partner/partner_3.png";
 const blogo4 = "./assets/partner/partner_4.png";
 const blogo5 = "./assets/partner/partner_5.PNG";
 const blogo6 = "./assets/partner/partner_6.PNG";
-const blogo7 = "./assets/partner/partner_3.png";
+const blogo7 = "./assets/partner/partner_7.png";
 const blogo8 = "./assets/partner/partner_4.png";
 
 const logoData = [

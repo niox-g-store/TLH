@@ -1,7 +1,7 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import path from "path";
-import dotenv from "dotenv";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
+import dotenv from 'dotenv';
 import sass from 'sass';
 
 dotenv.config();
@@ -9,18 +9,18 @@ dotenv.config();
 export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
-    include: ['redux-thunk'],
+    include: ['redux-thunk']
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "src"),
-    },
+      '@': path.resolve(__dirname, 'src')
+    }
   },
   server: {
-    host: "0.0.0.0",
+    host: '0.0.0.0',
     port: 8000,
     open: true,
-    strictPort: true,
+    strictPort: true
   },
   css: {
     preprocessorOptions: {
@@ -34,17 +34,17 @@ export default defineConfig({
               if (!deprecation) {
                 console.warn(message);
               }
-            },
-          },
-        },
-      },
-    },
+            }
+          }
+        }
+      }
+    }
   },
   build: {
-    outDir: "dist",
+    outDir: 'dist',
     sourcemap: true,
     rollupOptions: {
-      input: path.resolve(__dirname, "index.html"),
-    },
-  },
+      input: path.resolve(__dirname, 'index.html')
+    }
+  }
 });

@@ -6,7 +6,9 @@ const eventSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+    lowercase: true,
+    trim: true,
   },
   description: {
     type: String
@@ -32,7 +34,7 @@ const eventSchema = new mongoose.Schema({
   },
   capacity: {
     type: Number,
-    default: null
+    default: 0
   },
   attendees: {
     type: Number,
@@ -59,9 +61,9 @@ const eventSchema = new mongoose.Schema({
   isActive: {
     type: Boolean
   },
-  imageUrl: {
+  imageUrls: [{
     type: String
-  },
+  }],
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });

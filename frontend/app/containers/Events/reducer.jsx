@@ -12,7 +12,8 @@ import {
   FETCH_EVENTS_SELECT,
   SET_EVENTS_LOADING,
   SET_ADVANCED_FILTERS,
-  RESET_ADVANCED_FILTERS
+  RESET_ADVANCED_FILTERS,
+  IMAGE_TO_REMOVE,
 } from './constants';
 
 const initialState = {
@@ -30,19 +31,13 @@ const initialState = {
     endDate: '',
     category: '',
     capacity: '',
-    image: {},
+    image: '',
     isActive: true,
   },
+  imageToRemove: [],
   isLoading: false,
   formErrors: {},
   editFormErrors: {},
-  advancedFilters: {
-    totalPages: 1,
-    currentPage: 1,
-    count: 0,
-    limit: 10,
-    page: 1,
-  },
   eventCategories: [
   { value: "CONCERT", label: "Concert" },
   { value: "CONFERENCE", label: "Conference" },
@@ -70,6 +65,11 @@ const initialState = {
 
 const eventReducer = (state = initialState, action) => {
   switch (action.type) {
+    case IMAGE_TO_REMOVE:
+      return {
+        ...state,
+        imageToRemove: [...state.imageToRemove, action.payload]
+      };
     case FETCH_EVENTS:
       return {
         ...state,
@@ -143,13 +143,15 @@ const eventReducer = (state = initialState, action) => {
           endDate: '',
           category: '',
           capacity: '',
-          image: {},
+          image: '',
           isActive: true,
+          imageToRemove: []
         },
         event: {
           _id: ''
         },
-        formErrors: {}
+        formErrors: {},
+        imageToRemove: []
       };
     case SET_ADVANCED_FILTERS:
       return {

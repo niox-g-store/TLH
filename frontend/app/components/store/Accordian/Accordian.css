@@ -98,3 +98,11 @@
     padding: 30px 0;
   }
 }
+
+.acordion-img {
+  background: url("arc_file.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 15px;
+  height: 15px;
+}

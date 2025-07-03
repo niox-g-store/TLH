@@ -4,7 +4,7 @@ import rootReducer from './reducers';
 
 const store = configureStore({
   reducer: rootReducer,
-  devTools: process.env.NODE_ENV !== 'production',
+  devTools: process.env.NODE_ENV !== 'production'
 });
 
 // reducer Hot Module Replacement (HMR) with Vite

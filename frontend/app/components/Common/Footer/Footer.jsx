@@ -13,7 +13,7 @@ const Footer = () => {
                 <img className="width-90 height-130" src={ftrlogo} alt="logo" />
               </a>
             </div>
-            <div className="col-ftr-links">
+            <div className="col-ftr-links footer-links">
               <div className="col-links-p">
                 <h4 className="p-white">Quick Links</h4>
                 <ul>
@@ -70,7 +70,7 @@ const Footer = () => {
           </div>
           <div className="ftr-copyright">
             <div className="ftr-copyright-links">
-              <p className="ftr-copyright-symbol">&copy; {new Date().getFullYear()} The Link Hangouts</p>
+              <p className="p-white ftr-copyright-symbol">&copy; {new Date().getFullYear()} The Link Hangouts</p>
             </div>
 
           </div>

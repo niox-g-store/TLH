@@ -9,8 +9,8 @@ const FAQs = () => {
       <div className="faq-section">
         <HeroBanner
           heading="What can we help you find?"
-          desc="Welcome to EventUp Help Center"
-          bannerImage={faq}
+          desc="Welcome to The Link Hangouts Help Center"
+          bannerImage={[faq]}
         />
         <Accordian />
       </div>

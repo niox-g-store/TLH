@@ -21,6 +21,7 @@ import ManagerNewsletter from '../../components/Manager/Newsletter';
 import Page404 from '../Page404';
 
 import AddEvent from '../../components/Manager/Event/Add';
+import EditEvent from '../../components/Manager/Event/Edit';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@coreui/coreui/dist/css/coreui.min.css';
 
@@ -33,22 +34,21 @@ const Admin = (props) => {
         <HeaderPanel {...props} />
         <Routes>
           <Route index element={<AdminDashboard {...props} />} />
-          <Route path='events' element={<ManagerEvent {...props}/>} />
-          <Route path='tickets' element={<ManagerTicket {...props}/>} />
-          <Route path='coupons' element={<ManagerCoupon {...props}/>} />
-          <Route path='orders' element={<ManagerOrder {...props}/>} />
-          <Route path='scan' element={<ManagerScanner {...props}/>} />
-          <Route path='account' element={<ManagerAccount {...props}/>} />
-          <Route path='security' element={<AccountSecurity {...props}/>} />
-          <Route path='newsletter' element={<ManagerNewsletter {...props}/>} />
-          <Route exact path='events/add' element={<AddEvent {...props}/>} />
+          <Route path='events' element={<ManagerEvent {...props} />} />
+          <Route path='tickets' element={<ManagerTicket {...props} />} />
+          <Route path='coupons' element={<ManagerCoupon {...props} />} />
+          <Route path='orders' element={<ManagerOrder {...props} />} />
+          <Route path='scan' element={<ManagerScanner {...props} />} />
+          <Route path='account' element={<ManagerAccount {...props} />} />
+          <Route path='security' element={<AccountSecurity {...props} />} />
+          <Route path='newsletter' element={<ManagerNewsletter {...props} />} />
+          <Route path='events/add' element={<AddEvent {...props} />} />
+          <Route path='events/edit/:id' element={<EditEvent {...props} />} />
           <Route path='*' element={<Page404 />} />
         </Routes>
       </div>
     </div>
   );
 };
-
-
 
 export default Admin;

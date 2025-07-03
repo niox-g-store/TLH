@@ -1,9 +1,4 @@
-/**
- *
- * SelectOption
- *
- */
-
+import React, { useState } from 'react';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 
@@ -16,15 +11,18 @@ const SelectOption = props => {
     options,
     defaultValue,
     value,
-    handleSelectChange
+    handleSelectChange,
+    prevValue
   } = props;
 
-  const _handleSelectChange = value => {
-    handleSelectChange(value);
+  const [hasChanged, setHasChanged] = useState(false);
+
+  const _handleSelectChange = selected => {
+    setHasChanged(true);
+    handleSelectChange(selected);
   };
 
   const animatedComponents = makeAnimated();
-
   const styles = `select-box${error ? ' invalid' : ''}`;
 
   return (
@@ -38,7 +36,7 @@ const SelectOption = props => {
         isMulti={multi}
         options={options}
         defaultValue={defaultValue}
-        value={value}
+        value={hasChanged ? value : prevValue}
         onChange={_handleSelectChange}
         styles={dropdownStyles}
       />

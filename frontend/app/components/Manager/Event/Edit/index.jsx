@@ -1,9 +1,3 @@
-/**
- *
- * AddEventView
- *
- */
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Row from '../../../Common/Row';
@@ -16,27 +10,38 @@ import LoadingIndicator from '../../../store/LoadingIndicator';
 import DescriptionBox from '../../../store/DescriptionBox';
 import SelectOption from '../../../store/SelectOption';
 import { GoBack } from '../../../../containers/goBack/inedx';
-import AddEventTicket from './ticket';
+import { withRouter } from '../../../../withRouter';
+import { connect } from 'react-redux';
+import actions from '../../../../actions';
+import { formatDateForInput } from '../../../../utils/formatDate';
+import { eventCategoryFinder } from '../../../../utils/eventCategories';
 import AdvancedUpload from '../../../store/AdanceFileUpload';
+import { API_URL } from '../../../../constants';
+import AdvancedUploadHelper from '../../../store/AdanceFileUpload/updateFileUpload';
 
-const AddEvent = (props) => {
+const EditEventForm = (props) => {
   const {
-    eventFormData,
-    eventFormErrors,
-    eventChange,
-    addEvent,
+    event,
+    eventEditFormErrors,
+    eventEditChange,
+    updateEvent,
     eventIsLoading,
     isLightMode,
     image,
-    eventCategories
+    eventCategories,
+    deleteEvent,
+    eventImageToRemove,
+    eventChange,
   } = props;
 
   const navigate = useNavigate();
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    addEvent(navigate);
+    updateEvent(navigate);
   };
+
+  const imageUrls = event.imageUrls?.map((url) => `${API_URL}${url}`) || [];
 
   return (
     <div className='add-event d-flex flex-column mb-custom-5em'>
@@ -49,7 +54,7 @@ const AddEvent = (props) => {
         }}
         className='d-flex'
       >
-        <h2 className={`${isLightMode ? 'p-black' : 'p-white'} font-size-25`}>Create Event</h2>
+        <h2 className={`${isLightMode ? 'p-black' : 'p-white'} font-size-25`}>Event details</h2>
         <GoBack navigate={navigate} />
       </div>
       <form onSubmit={handleSubmit} noValidate>
@@ -58,12 +63,12 @@ const AddEvent = (props) => {
           <Col className={`${isLightMode ? 'p-black' : 'p-white'}`} xs='12' lg='6'>
             <Input
               type='text'
-              error={eventFormErrors.name}
+              error={eventEditFormErrors.name}
               label='Event Name'
               name='name'
               placeholder='Enter event name'
-              value={eventFormData.name}
-              onInputChange={eventChange}
+              value={event.name || ''}
+              onInputChange={eventEditChange}
             />
           </Col>
 
@@ -71,12 +76,12 @@ const AddEvent = (props) => {
           <Col className={`${isLightMode ? 'p-black' : 'p-white'}`} xs='12' lg='6'>
             <Input
               type='text'
-              error={eventFormErrors.location}
+              error={eventEditFormErrors.location}
               label='Venue'
               name='location'
               placeholder='Enter event Venue'
-              value={eventFormData.location}
-              onInputChange={eventChange}
+              value={event.location || ''}
+              onInputChange={eventEditChange}
             />
           </Col>
 
@@ -84,11 +89,11 @@ const AddEvent = (props) => {
           <Col className={`${isLightMode ? 'p-black' : 'p-white'}`} xs='12' lg='6'>
             <Input
               type='date'
-              error={eventFormErrors.startDate}
+              error={eventEditFormErrors.startDate}
               label='Start Date'
               name='startDate'
-              value={eventFormData.startDate}
-              onInputChange={eventChange}
+              value={formatDateForInput(event.startDate) || ''}
+              onInputChange={eventEditChange}
             />
           </Col>
 
@@ -96,11 +101,11 @@ const AddEvent = (props) => {
           <Col className={`${isLightMode ? 'p-black' : 'p-white'}`} xs='12' lg='6'>
             <Input
               type='date'
-              error={eventFormErrors.endDate}
+              error={eventEditFormErrors.endDate}
               label='End Date'
               name='endDate'
-              value={eventFormData.endDate}
-              onInputChange={eventChange}
+              value={formatDateForInput(event.endDate) || ''}
+              onInputChange={eventEditChange}
             />
           </Col>
 
@@ -108,52 +113,60 @@ const AddEvent = (props) => {
           <Col className={`${isLightMode ? 'p-black' : 'p-white'}`} xs='12' lg='6'>
             <Input
               type='number'
-              error={eventFormErrors.capacity}
+              error={eventEditFormErrors.capacity}
               label='Capacity'
               name='capacity'
               placeholder='Enter no. of attendees (Optional)'
-              value={eventFormData.capacity}
-              onInputChange={eventChange}
+              value={event.capacity || ''}
+              onInputChange={eventEditChange}
             />
           </Col>
 
           {/* Event Category */}
           <Col className={`${isLightMode ? 'p-black' : 'p-white'}`} xs='12' lg='6'>
             <SelectOption
-              error={eventFormErrors.category}
+              error={eventEditFormErrors.category}
               label='Category'
               placeholder='Select category (e.g., Conference)'
-              value={eventFormData.category}
+              prevValue={eventCategoryFinder(eventCategories, event.category) || ''}
+              value={event.category || ''}
               multi={false}
               options={eventCategories}
-              handleSelectChange={(v) => eventChange('category', v)}
+              handleSelectChange={(v) => eventEditChange('category', v)}
             />
           </Col>
 
           {/* Description */}
           <Col className={`${isLightMode ? 'p-black' : 'p-white'}`} xs='12'>
             <DescriptionBox
-              error={eventFormErrors.description}
-              formData={eventFormData}
+              error={eventEditFormErrors.description}
+              formData={event}
               placeholder='Enter event description...'
               isLightMode={isLightMode}
-              onChange={eventChange}
+              onChange={eventEditChange}
             />
           </Col>
 
           {/* Image Upload */}
           <Col className={`${isLightMode ? 'p-black' : 'p-white'}`} xs='12'>
+            <h5 style={{ paddingTop: '1em' }}>Upload new Event images</h5>
           <AdvancedUpload
-            error={eventFormErrors.image}
-            onFilesChange={(files) => eventChange('image', files)} />
+            error={eventEditFormErrors.image}
+            onFilesChange={(files) => eventEditChange('image', files)} />
+            <h5 style={{ paddingTop: '1em' }}>Event images</h5>
+          <AdvancedUploadHelper
+            error={eventEditFormErrors.image}
+            initialUrls={imageUrls}
+            onRemoveUrlChange={(url) => eventImageToRemove(url)}
+            />
             {/*<Input
               type='file'
-              error={eventFormErrors.image}
+              error={eventEditFormErrors.image}
               name='image'
               label='Upload Event Image'
               placeholder='Please upload an image'
-              value={image}
-              onInputChange={(n, v) => eventChange(n, v)}
+              value={image || ''}
+              onInputChange={(n, v) => eventEditChange(n, v)}
             />*/}
           </Col>
 
@@ -163,26 +176,55 @@ const AddEvent = (props) => {
               id='active-event'
               name='status'
               label='Is Active?'
-              checked={eventFormData.isActive}
+              checked={event.isActive || ''}
               toggleCheckboxChange={(value) =>
-                eventChange('isActive', value)}
+                eventEditChange('isActive', value)}
             />
           </Col>
         </Row>
 
         <Row>
-          <div className='add-event-actions'>
-            <p className={`${isLightMode ? 'p-black' : 'p-white'}`}>Save event to add tickets</p>
+          <div className='edit-event-actions'>
             <Button style={{ padding: '10px 20px' }} text='Save Event' />
+            <Button
+              onClick={() => deleteEvent(event._id, navigate)}
+              style={{ padding: '10px 20px' }}
+              text='Delete Event'
+            />
           </div>
         </Row>
-
-        <hr className={`${isLightMode ? 'p-black' : 'p-white'}`} />
-
-        <AddEventTicket {...props} />
       </form>
     </div>
   );
 };
 
-export default AddEvent;
+class EditEvent extends React.PureComponent {
+  componentDidMount () {
+    this.props.resetEvent();
+    const eventId = this.props.match.params.id;
+    this.props.fetchEvent(eventId);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.match.params.id !== prevProps.match.params.id) {
+      this.props.resetEvent();
+      const eventId = this.props.match.params.id;
+      this.props.fetchEvent(eventId);
+    }
+  }
+
+  render () {
+    const { deleteEvent } = this.props;
+    return (
+      <EditEventForm {...this.props} />
+    );
+  }
+}
+
+const mapStateToProps = state => ({
+  event: state.event.event,
+  eventEditFormErrors: state.event.editFormErrors,
+  eventIsLoading: state.event.isLoading
+});
+
+export default connect(mapStateToProps, actions)(withRouter(EditEvent));

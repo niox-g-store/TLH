@@ -6,7 +6,7 @@ const auth = require('./auth');
 const user = require('./user');
 const event = require('./event');
 
-// api status
+// for static file uploads
 router.use('/uploads', express.static(process.cwd() + "/file_manager/uploads", {
   setHeaders: (res, path) => {
     res.set('Cross-Origin-Resource-Policy', 'cross-origin');

@@ -1,5 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import signup from './containers/SignUp/reducer'
+import signup from './containers/SignUp/reducer';
 import authentication from './containers/Authentication/reducer';
 import account from './containers/Account/reducer';
 import dashboard from './containers/Dashboard/reducer';
@@ -8,16 +8,14 @@ import navigation from './containers/Navigation/reducer';
 import event from './containers/Events/reducer';
 import ticket from './containers/Ticket/reducer';
 
-
 const rootReducer = combineReducers({
-    account,
-    authentication,
-    signup,
-    dashboard,
-    login,
-    navigation,
-    event,
-    ticket,
-})
+  account,
+  authentication,
+  signup,
+  dashboard,
+  login,
+  navigation,
+  event,
+  ticket
+});
 export default rootReducer;
-

@@ -23,7 +23,7 @@ import Dashboard from './containers/Dashboard';
 import Page404 from './containers/Page404';
 import ScrollToTop from './components/Common/ScrollToTop';
 
-function App(props) {
+function App (props) {
   const { user } = props;
   const location = useLocation();
   const USER = user ?? user.role;
@@ -34,7 +34,7 @@ function App(props) {
       duration: 1200,
       easing: 'ease-out-cubic',
       mirror: true,
-      anchorPlacement: 'bottom-center',
+      anchorPlacement: 'bottom-center'
     });
     AOS.refresh();
     const isLight = localStorage.getItem('isLightMode') === 'true';
@@ -42,9 +42,9 @@ function App(props) {
     document.body.classList.toggle('dark-mode', !isLight);
   }, []);
 
-  const hideHeaderFooterPaths = [ '/login', '/signup',
-                                  '/organizer-signup', '/dashboard'
-                                ];
+  const hideHeaderFooterPaths = ['/login', '/signup',
+    '/organizer-signup', '/dashboard'
+  ];
   const showHeaderFooter = (USER.role === ROLES.Member ||
                             !hideHeaderFooterPaths.some(path => location.pathname.startsWith(path)));
 
@@ -54,16 +54,16 @@ function App(props) {
       <Notification />
       {showHeaderFooter && <Navigation />}
       <Routes>
-        <Route path="*" element={<Page404 />} />
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/events" element={<Events />} />
-        <Route path="/gallery" element={<Gallery />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/organizer-signup" element={<OrganizerSignUp />} />
-        <Route path="/FAQs" element={<FAQs />} />
-        <Route path="/dashboard/*" element={<Authentication><Dashboard /></Authentication>} />
+        <Route path='*' element={<Page404 />} />
+        <Route path='/' element={<Home />} />
+        <Route path='/about' element={<About />} />
+        <Route path='/events' element={<Events />} />
+        <Route path='/gallery' element={<Gallery />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/signup' element={<Signup />} />
+        <Route path='/organizer-signup' element={<OrganizerSignUp />} />
+        <Route path='/faq' element={<FAQs />} />
+        <Route path='/dashboard/*' element={<Authentication><Dashboard /></Authentication>} />
       </Routes>
 
       {showHeaderFooter && <Footer />}
@@ -72,9 +72,9 @@ function App(props) {
 }
 
 const mapStateToProps = (state) => {
-  console.log(state)
+  console.log(state);
   return {
-    user: state.account.user,
+    user: state.account.user
   };
 };
 

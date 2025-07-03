@@ -22,6 +22,7 @@ import {
   SET_EVENTS_LOADING,
   SET_ADVANCED_FILTERS,
   RESET_ADVANCED_FILTERS,
+  IMAGE_TO_REMOVE,
 } from './constants';
 
 import { API_URL } from '../../constants';
@@ -37,10 +38,16 @@ export const eventChange = (name, value) => {
   };
 };
 
+export const eventImageToRemove = (value) => {
+  return {
+    type: IMAGE_TO_REMOVE,
+    payload: value
+  }
+}
+
 export const eventEditChange = (name, value) => {
   let formData = {};
   formData[name] = value;
-
   return {
     type: EVENT_EDIT_CHANGE,
     payload: formData
@@ -179,6 +186,10 @@ export const addEvent = (navigate) => {
         if (newEvent.hasOwnProperty(key)) {
           if (key === 'category') {
             formData.set(key, newEvent[key].label)
+          } else if (key === 'image') {
+            for (const file of newEvent.image) {
+              formData.append('images', file);
+            }
           } else {
             formData.set(key, newEvent[key]);
           }
@@ -211,45 +222,68 @@ export const updateEvent = (navigate) => {
     try {
       const rules = {
         name: 'required',
-        slug: 'required|alpha_dash',
         description: 'required|max:5000',
-        date: 'required',
+        startDate: 'required',
+        endDate: 'required',
         location: 'required',
+        category: 'required',
       };
 
       const event = getState().event.event;
+      const removeImage = getState().event.imageToRemove || [];
 
       const updatedEvent = {
         name: event.name,
-        slug: event.slug,
         description: event.description,
-        date: event.date,
+        startDate: event.startDate,
+        endDate: event.endDate,
+        capacity: event.capacity || 0,
+        category: event.category,
         location: event.location,
+        image: event.image || [],
         isActive: event.isActive,
       };
-
+      console.log(updatedEvent)
       const { isValid, errors } = allFieldsValidation(updatedEvent, rules, {
         'required.name': 'Name is required.',
-        'required.slug': 'Slug is required.',
-        'alpha_dash.slug': 'Slug may have alpha-numeric characters, dashes, and underscores only.',
         'required.description': 'Description is required.',
         'max.description': 'Description may not be greater than 5000 characters.',
-        'required.date': 'Date is required.',
-        'required.location': 'Location is required.'
+        'required.startDate': 'Start Date is required.',
+        'required.endDate': 'End Date is required.',
+        'required.location': 'Location is required.',
+        'required.category': 'Category is required.',
       });
 
       if (!isValid) {
         return dispatch({ type: SET_EVENT_FORM_EDIT_ERRORS, payload: errors });
       }
 
-      const response = await axios.put(`${API_URL}/event/${event._id}`, {
-        event: updatedEvent
+      const formData = new FormData();
+      for (const key in updatedEvent) {
+        if (updatedEvent.hasOwnProperty(key)) {
+          if (key === 'category') {
+            formData.set(key, updatedEvent[key].label || updatedEvent[key]);
+          } else if (key === 'image') {
+            for (const file of updatedEvent.image) {
+              formData.append('images', file);
+            }
+          } else {
+            formData.set(key, updatedEvent[key]);
+          }
+        }
+      }
+      removeImage.forEach((str) => {
+        formData.append('removeImage', str);
+      });
+
+      const response = await axios.put(`${API_URL}/event/${event._id}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
       });
 
       if (response.data.success === true) {
         dispatch(showNotification('success', response.data.message));
         dispatch(resetEvent());
-        dispatch(navigate(-1));
+        navigate(-1);
       }
     } catch (error) {
       handleError(error, dispatch, 'Error updating event, try again!');
@@ -259,19 +293,20 @@ export const updateEvent = (navigate) => {
   };
 };
 
+
 // Delete event
 export const deleteEvent = (id, navigate) => {
   return async (dispatch) => {
     try {
-      const response = await axios.delete(`${API_URL}/event/delete/${id}`);
+      const response = await axios.delete(`${API_URL}/event/${id}`);
 
       if (response.data.success === true) {
         dispatch(showNotification('success', response.data.message));
         dispatch({ type: REMOVE_EVENT, payload: id });
-        dispatch(navigate(-1));
+        navigate(-1);
       }
     } catch (error) {
-      handleError(error, dispatch);
+      handleError(error, dispatch, 'error');
     }
   };
 };

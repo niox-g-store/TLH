@@ -157,3 +157,9 @@ footer {
     margin-bottom: 30px;
   }
 }
+
+@media (min-width: 1024px) {
+  .footer-links {
+    gap: 3em;
+  }
+}

@@ -58,7 +58,8 @@ const Input = props => {
     className,
     checked = false,
     onPhoneChange,
-    val
+    val,
+    multiple
   } = props;
 
   const handleIncrement = () => {
@@ -84,7 +85,12 @@ const Input = props => {
     if (e.target.type === 'checkbox') {
       onInputChange(e.target.name, e.target.checked);
     } else if (e.target.name === 'image') {
-      onInputChange(e.target.name, e.target.files[0]);
+      const files = Array.from(e.target.files);
+      if (files) {
+        onInputChange(e.target.name, files);
+      } else {
+        onInputChange(e.target.name, e.target.files[0])
+      }
     } else {
       onInputChange(e.target.name, e.target.value);
     }
@@ -247,6 +253,7 @@ const Input = props => {
             value={value}
             placeholder={placeholder}
             checked={checked}
+            multiple
           />
           {inlineElement}
         </div>
@@ -254,7 +261,34 @@ const Input = props => {
       </div>
     );
 
-  }else {
+  } else if (type === "submit") {
+    const styles = `input-box${inlineElement ? ` inline-btn-box` : ''} ${
+      error ? 'invalid' : ''
+    }`;
+
+    return (
+      <div className={styles}>
+        {label && <p className='pp-black' style={{ marginBottom: '10px' }}>{label}</p>}
+        <div className='input-text-block'>
+          <input
+            className={`${className && `${className} input-text` || 'input-text'}`}
+            autoComplete={autoComplete}
+            type={type}
+            onChange={e => {
+              _onChange(e);
+            }}
+            disabled={disabled}
+            name={name}
+            value={value}
+            placeholder={placeholder}
+            checked={checked}
+          />
+          {inlineElement}
+        </div>
+        <span className='invalid-message'>{error && error}</span>
+      </div>
+    );
+  } else {
     const styles = `input-box${inlineElement ? ` inline-btn-box` : ''} ${
       error ? 'invalid' : ''
     }`;
