@@ -114,7 +114,7 @@ const OrganizerSignUp = (props) => {
                     <Input
                       type='submit'
                       value='Create Account'
-                      className='form-btn font-family-default'
+                      className='form-btn font-family-default p-white'
                     />
                   </div>
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   CRow,
   CCol,
@@ -18,7 +18,10 @@ import GetTicketPrice from '../../store/GetTicketPricing';
 import AdminTicket from './AdminTicket';
 import { ROLES } from '../../../constants';
 
-const ManagerTicket = (props) => {
+class ManagerTicket extends React.PureComponent {
+
+
+  render() {
   const { isLightMode,
           stats = {
             topTicket: 'Regular',
@@ -27,7 +30,7 @@ const ManagerTicket = (props) => {
             available: 3
           },
           user
-  } = props;
+  } = this.props;
 
   const [currentPage, setCurrentPage] = useState(1);
   const ticketsPerPage = 10;
@@ -90,7 +93,7 @@ const ManagerTicket = (props) => {
             <CCol md={6} key={idx}>
               <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}>
                 <CImage
-                  src={ResolveImage('ticket', ticket.image)}
+                  src={ResolveImage(ticket.image, 'ticket')}
                   alt={ticket.type}
                   style={{ width: '40%', objectFit: 'cover' }}
                 />
@@ -103,7 +106,7 @@ const ManagerTicket = (props) => {
                   }>
                     {ticket.status}
                   </CBadge>
-                  <CCardText className="mt-2">
+                  <CCardText as={'div'} className="mt-2">
                     <strong>Event:</strong> {ticket.event}<br />
                     <GetTicketPrice ticket={ticket} />
                     <strong>Sold:</strong> {ticket.quantitySold}
@@ -141,6 +144,7 @@ const ManagerTicket = (props) => {
       </div>
     </div>
   );
+}
 };
 
 export default ManagerTicket;

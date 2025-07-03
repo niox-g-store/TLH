@@ -37,15 +37,10 @@ const initialState = {
   formErrors: {},
   editFormErrors: {},
   advancedFilters: {
-    name: 'all',
-    category: 'all',
-    min: 1,
-    max: 1000000,
-    order: 0,
     totalPages: 1,
     currentPage: 1,
     count: 0,
-    limit: 12,
+    limit: 10,
     page: 1,
   },
   eventCategories: [

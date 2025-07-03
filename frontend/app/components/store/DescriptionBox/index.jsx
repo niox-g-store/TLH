@@ -22,7 +22,9 @@ const DescriptionBox = (props) => {
         }}
         placeholder={placeholder}
       />
-      <span style={{color: 'red'}} className='invalid-message'>{error && error[0]}</span>
+      <span style={{ color: 'red',
+                     position: 'relative',
+                     bottom: '-70px'}} className='invalid-message'>{error && error}</span>
       </div>
   );
 };

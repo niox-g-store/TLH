@@ -42,6 +42,6 @@
   }
 
   .switch-checkbox-input:checked + .switch-label .switch-label-toggle {
-    background: $theme-green;
+    background: var(--primary_color);
   }
 }

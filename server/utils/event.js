@@ -1,12 +1,12 @@
-exports.getEventStatus = (startDate, endDate) => {
+const getEventStatus = (startDate, endDate) => {
   const now = new Date();
 
   if (now < startDate) {
-    return "upcoming";
+    return "Upcoming";
   } else if (now >= startDate && now <= endDate) {
-    return "ongoing";
+    return "Ongoing";
   } else {
-    return "ended";
+    return "Ended";
   }
 }
 

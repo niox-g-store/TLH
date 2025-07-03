@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   CRow,
   CCol,
@@ -12,21 +12,23 @@ import {
   CPaginationItem
 } from '@coreui/react';
 import Button from '../../Common/HtmlTags/Button';
-import { events } from '../../Data/eventData';
 import ResolveImage from '../../store/ResolveImage';
 import AddEvent from './Add';
 import { ROLES } from '../../../constants';
 import AdminEvent from './AdminEvent';
 import { useNavigate } from 'react-router-dom';
+import { formatDate } from '../../../utils/formatDate';
 
-const ManagerEvent = (props) => {
+const ManagerEventHelper = (props) => {
     const { stats = { topSelling: 'Bash Party',
                       upcoming: 5,
                       expired: 2,
                       total: 12
                     },
             isLightMode,
-            user
+            user,
+            events = [],
+            fetchEvents
           } = props;
     const navigate = useNavigate()
     const [currentPage, setCurrentPage] = useState(1);
@@ -92,23 +94,24 @@ const ManagerEvent = (props) => {
           <CCol md={6} key={idx}>
             <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}>
               <CImage
-                src={ResolveImage(event.image)}
+src={ResolveImage(event.imageUrl ? `http://localhost:3030/api/uploads/${event.imageUrl.split('/').pop()}` : '')}
                 alt={event.title}
                 style={{ width: '40%', objectFit: 'cover' }}
               />
               <CCardBody> 
-                <CCardTitle className="mb-2">{event.title}</CCardTitle>
+                <CCardTitle className="mb-2">{event.name}</CCardTitle>
 <CBadge color={
-  event.status === 'expired' ? 'danger' :
-  event.status === 'upcoming' ? 'primary' :
-  event.status === 'ongoing' ? 'success' :
+  event.status === 'Ended' ? 'danger' :
+  event.status === 'Upcoming' ? 'primary' :
+  event.status === 'Ongoing' ? 'success' :
   'secondary'
 }>
   {event.status}
 </CBadge>
                 <CCardText className="mt-2">
-                  <strong>Date:</strong> {event.date}<br />
-                  <strong>Venue:</strong> {event.venue}<br />
+                  <strong>Start Date:</strong> {formatDate(event.startDate)}<br />
+                  <strong>End Date:</strong> {formatDate(event.endDate)}<br />
+                  <strong>Venue:</strong> {event.location}<br />
                   <strong>Tickets Sold:</strong> {event.ticketsSold}
                 </CCardText>
               </CCardBody>
@@ -145,5 +148,18 @@ const ManagerEvent = (props) => {
     </div>
   );
 };
+
+
+class ManagerEvent extends React.PureComponent {
+  componentDidMount() {
+    this.props.fetchEvents();
+  }
+  render () {
+    const { } = this.props;
+    return (
+      <ManagerEventHelper {...this.props}/>
+    )
+  }
+}
 
 export default ManagerEvent;

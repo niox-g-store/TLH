@@ -1,4 +1,4 @@
-const ResolveImage = (type = null, image) => {
+const ResolveImage = (image, type = null) => {
   if (type) {
     switch (type) {
       case 'ticket':

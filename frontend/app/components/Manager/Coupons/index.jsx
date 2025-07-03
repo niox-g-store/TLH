@@ -86,7 +86,7 @@ const ManagerCoupon = (props) => {
           <CCol md={6} key={idx}>
             <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}>
                 <CImage
-                  src={ResolveImage('coupon', coupon.image)}
+                  src={ResolveImage(coupon.image, 'coupon')}
                   alt={coupon.event}
                   style={{ width: '40%', objectFit: 'cover' }}
                 />

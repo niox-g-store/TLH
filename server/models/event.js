@@ -26,7 +26,7 @@ const eventSchema = new mongoose.Schema({
     type: String,
     unique: true
   },
-  organizer: {
+  user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },

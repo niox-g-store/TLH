@@ -18,6 +18,11 @@ module.exports = {
     secret: process.env.JWT_SECRET,
     tokenLife: '7d'
   },
+  FileManager: {
+    apiUrl: process.env.FILE_MANAGER_API_URL,
+    user: process.env.FILE_MANAGER_USER,
+    pwd: process.env.FILE_MANAGER_PASSWORD
+  },
   /*mailchimp: {
     key: process.env.MAILCHIMP_KEY,
     listKey: process.env.MAILCHIMP_LIST_KEY

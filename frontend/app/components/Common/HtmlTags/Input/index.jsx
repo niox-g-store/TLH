@@ -226,7 +226,7 @@ const Input = props => {
         {label && <label className="pp-black" htmlFor={name}>{label}</label>}
       </div>
     )
-  } else {
+  } else if (type === "file") {
     const styles = `input-box${inlineElement ? ` inline-btn-box` : ''} ${
       error ? 'invalid' : ''
     }`;
@@ -236,7 +236,35 @@ const Input = props => {
         {label && <p className='pp-black' style={{ marginBottom: '10px' }}>{label}</p>}
         <div className='input-text-block'>
           <input
-            className={className && `${className} input-text` || 'input-text'}
+            className={`${className && `${className} input-text` || 'input-text'}`}
+            autoComplete={autoComplete}
+            type={type}
+            onChange={e => {
+              _onChange(e);
+            }}
+            disabled={disabled}
+            name={name}
+            value={value}
+            placeholder={placeholder}
+            checked={checked}
+          />
+          {inlineElement}
+        </div>
+        <span className='invalid-message'>{error && error}</span>
+      </div>
+    );
+
+  }else {
+    const styles = `input-box${inlineElement ? ` inline-btn-box` : ''} ${
+      error ? 'invalid' : ''
+    }`;
+
+    return (
+      <div className={styles}>
+        {label && <p className='pp-black' style={{ marginBottom: '10px' }}>{label}</p>}
+        <div className='input-text-block'>
+          <input
+            className={`${className && `${className} input-text` || 'input-text'} p-black`}
             autoComplete={autoComplete}
             type={type}
             onChange={e => {

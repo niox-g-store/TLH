@@ -16,6 +16,7 @@ import LoadingIndicator from '../../../store/LoadingIndicator';
 import DescriptionBox from '../../../store/DescriptionBox';
 import SelectOption from '../../../store/SelectOption';
 import { GoBack } from '../../../../containers/goBack/inedx';
+import AddEventTicket from './ticket';
 
 const AddEvent = (props) => {
   const {
@@ -66,9 +67,9 @@ const AddEvent = (props) => {
             <Input
               type='text'
               error={eventFormErrors['location']}
-              label='Location'
+              label='Venue'
               name='location'
-              placeholder='Enter event location'
+              placeholder='Enter event Venue'
               value={eventFormData.location}
               onInputChange={eventChange}
             />
@@ -105,7 +106,7 @@ const AddEvent = (props) => {
               error={eventFormErrors['capacity']}
               label='Capacity'
               name='capacity'
-              placeholder='Enter event capacity'
+              placeholder='Enter no. of attendees (Optional)'
               value={eventFormData.capacity}
               onInputChange={eventChange}
             />
@@ -163,17 +164,16 @@ const AddEvent = (props) => {
           </Col>
         </Row>
 
-        <hr className={`${isLightMode ? 'p-black' : 'p-white'}`}/>
-
-        <Row>
-        <h2 className={`${isLightMode ? 'p-black' : 'p-white'} font-size-25`}>Event Tickets</h2>
-        </Row>
-
         <Row>
           <div className='add-event-actions'>
-            <Button style={{ padding: '10px 20px' }} text='Add Event' />
+            <p className={`${isLightMode ? 'p-black' : 'p-white'}`}>Save event to add tickets</p>
+            <Button style={{ padding: '10px 20px' }} text='Save Event' />
           </div>
         </Row>
+
+        <hr className={`${isLightMode ? 'p-black' : 'p-white'}`}/>
+
+          <AddEventTicket {...props}/>
       </form>
     </div>
   );

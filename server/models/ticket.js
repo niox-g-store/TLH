@@ -26,10 +26,6 @@ const ticketSchema = new mongoose.Schema({
   discountPrice: {
     type: Number,
   },
-  expireDate: {
-    type: Date,
-    required: true
-  },
   qrCode: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'QRCode'

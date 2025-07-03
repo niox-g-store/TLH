@@ -134,20 +134,14 @@ export const fetchStoreEvents = () => {
 export const addEvent = (navigate) => {
   return async (dispatch, getState) => {
     dispatch(setEventLoading(true));
-    /*
-      const data = new FormData();
-  data.append('name', eventFormData.name);
-  data.append('description', eventFormData.description);
-  // ...append other fields
-  data.append('image', imageFile); 
-  */
-
     try {
       const rules = {
         name: 'required',
         description: 'required|max:5000',
-        date: 'required',
+        startDate: 'required',
+        endDate: 'required',
         location: 'required',
+        category: 'required',
         image: 'required'
       };
 
@@ -156,7 +150,10 @@ export const addEvent = (navigate) => {
       const newEvent = {
         name: event.name,
         description: event.description,
-        date: event.date,
+        startDate: event.startDate,
+        endDate: event.endDate,
+        capacity: event.capacity,
+        category: event.category,
         location: event.location,
         image: event.image,
         isActive: event.isActive,
@@ -166,7 +163,9 @@ export const addEvent = (navigate) => {
         'required.name': 'Name is required.',
         'required.description': 'Description is required.',
         'max.description': 'Description may not be greater than 5000 characters.',
-        'required.date': 'Date is required.',
+        'required.startDate': 'A Date is required.',
+        'required.endDate': 'A Date is required.',
+        'required.category': 'Select a category',
         'required.location': 'Location is required.',
         'required.image': 'Image is required.'
       });
@@ -178,7 +177,11 @@ export const addEvent = (navigate) => {
       const formData = new FormData();
       for (const key in newEvent) {
         if (newEvent.hasOwnProperty(key)) {
-          formData.set(key, newEvent[key]);
+          if (key === 'category') {
+            formData.set(key, newEvent[key].label)
+          } else {
+            formData.set(key, newEvent[key]);
+          }
         }
       }
 
@@ -190,10 +193,10 @@ export const addEvent = (navigate) => {
         dispatch(showNotification('success', response.data.message));
         dispatch({ type: ADD_EVENT, payload: response.data.event });
         dispatch(resetEvent());
-        dispatch(navigate(-1));
+        navigate(-1);
       }
     } catch (error) {
-      handleError(error, dispatch);
+      handleError(error, dispatch, 'Error saving event, try again!');
     } finally {
       dispatch(setEventLoading(false));
     }
@@ -249,7 +252,7 @@ export const updateEvent = (navigate) => {
         dispatch(navigate(-1));
       }
     } catch (error) {
-      handleError(error, dispatch);
+      handleError(error, dispatch, 'Error updating event, try again!');
     } finally {
       dispatch(setEventLoading(false));
     }

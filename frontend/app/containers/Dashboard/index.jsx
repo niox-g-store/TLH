@@ -30,9 +30,12 @@ class Dashboard extends React.PureComponent {
       signOut, toggleDashboardTheme,
       isLightMode, eventFormData,
       eventFormErrors, eventCategories,
-      eventIsLoading,
+      eventIsLoading, ticketFormData,
+      ticketFormErrors, events,
 
-      eventChange, addEvent
+      eventChange, addEvent,
+      ticketChange, addTicket,
+      fetchEvents,
     } = this.props;
     // if (isDisabledOrganizerAccount(user)) { return <DisabledOrganizerAccount user={user} />; }
 
@@ -71,10 +74,15 @@ const mapStateToProps = state => {
     isLoading: state.account.isLoading,
     isMenuOpen: state.dashboard.isMenuOpen,
     isLightMode: state.dashboard.isLightMode,
+
+    events: state.event.events,
     eventFormData: state.event.eventFormData,
     eventFormErrors: state.event.formErrors,
     eventCategories: state.event.eventCategories,
     eventIsLoading: state.event.isLoading,
+
+    ticketFormData: state.ticket.ticketForm,
+    ticketFormErrors: state.ticket.ticketFormErrors,
   };
 };
 
