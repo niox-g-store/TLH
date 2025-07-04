@@ -203,7 +203,6 @@ export const addEvent = (navigate) => {
   };
 };
 
-
 // Add new event and its tickets
 export const addEventTicket = (navigate) => {
   return async (dispatch, getState) => {
@@ -242,7 +241,6 @@ export const addEventTicket = (navigate) => {
       };
 
       const event = getState().event.eventFormData;
-
       const newEvent = {
         name: event.name,
         description: event.description,
@@ -308,9 +306,6 @@ export const addEventTicket = (navigate) => {
     }
   };
 };
-
-
-
 
 // Update existing event
 export const updateEvent = (navigate) => {
@@ -391,7 +386,6 @@ export const updateEvent = (navigate) => {
   };
 };
 
-
 // Delete event
 export const deleteEvent = (id, navigate) => {
   return async (dispatch) => {
@@ -423,20 +417,3 @@ export const getUserEvent = () => {
     }
   }
 }
-
-// Activate/Deactivate event
-export const activateEvent = (id, value) => {
-  return async (dispatch) => {
-    try {
-      const response = await axios.put(`${API_URL}/event/${id}/active`, {
-        event: { isActive: value }
-      });
-
-      if (response.data.success === true) {
-        dispatch(showNotification('success', response.data.message));
-      }
-    } catch (error) {
-      handleError(error, dispatch);
-    }
-  };
-};

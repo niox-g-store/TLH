@@ -1,9 +1,98 @@
 const express = require('express');
 const router = express.Router();
 const Ticket = require('../../models/ticket');
+const Coupon = require('../../models/coupon');
 const auth = require('../../middleware/auth');
 const role = require('../../middleware/role');
 const { ROLES } = require('../../utils/constants');
+
+// GET /ticket/me - return tickets based on user role
+router.get(
+  '/me',
+  auth,
+  role.check(ROLES.Admin),
+  async (req, res) => {
+    try {
+      const user = req.user;
+
+      let tickets;
+
+      if (user.role === ROLES.Admin) {
+        // Admin: get events created by the user
+        tickets = await Ticket.find({ user: user._id }).sort('-createdAt');
+      }
+      return res.status(200).json({ tickets });
+    } catch (error) {
+      return res.status(400).json({
+        error: 'Your request could not be processed. Please try again.'
+      });
+    }
+  }
+);
+
+// GET /events
+router.get(
+  '/',
+  auth,
+  role.check(ROLES.Admin, ROLES.Organizer),
+  async (req, res) => {
+    try {
+      let tickets;
+
+      if (req.user.role === ROLES.Organizer) {
+        // Organizer: only return their own tickets
+        tickets = await Ticket.find({ user: req.user._id }).sort('-createdAt');
+      } else {
+        // Admin: return all tickets
+        tickets = await Ticket.find()
+          .populate({
+            path: 'user',
+            populate: {
+              path: 'organizer',
+              model: 'Organizer',
+            }
+          }
+        )
+        .sort('-createdAt');
+      }
+      return res.status(200).json({ tickets });
+    } catch (error) {
+      return res.status(400).json({
+        error: 'Your request could not be processed. Please try again.'
+      });
+    }
+  }
+);
+
+router.get(
+  '/:id',
+  auth,
+  role.check(ROLES.Admin, ROLES.Organizer),
+  async (req, res) => {
+    try {
+      const ticketId = req.params.id;
+      const ticket = await Ticket.findById(ticketId)
+      .populate('coupons')
+      .populate('user');
+
+      // Optional: If Organizer, only allow access to their own ticket
+      if (req.user.role === ROLES.Organizer && !ticket.user.equals(req.user._id)) {
+        return res.status(403).json({ error: 'Access denied.' });
+      }
+
+      if (!ticket) {
+        return res.status(404).json({ error: 'Ticket not found.' });
+      }
+
+      return res.status(200).json({ ticket });
+    } catch (error) {
+      console.log(error)
+      return res.status(400).json({
+        error: 'Your request could not be processed. Please try again.'
+      });
+    }
+  }
+);
 
 // POST /ticket - Add a single ticket
 router.post(
@@ -12,7 +101,7 @@ router.post(
   role.check(ROLES.Admin, ROLES.Organizer),
   async (req, res) => {
     try {
-      const { type, price, discount, discountPrice } = req.body;
+      const { type, price, discount, discountPrice, coupons } = req.body;
       const user = req.user._id;
 
       const ticket = new Ticket({
@@ -21,6 +110,7 @@ router.post(
         price,
         discount: discount || false,
         discountPrice: discountPrice || 0,
+        coupons: coupons || []
       });
 
       const savedTicket = await ticket.save();
@@ -69,7 +159,7 @@ router.put(
         return res.status(404).json({ success: false, message: 'Ticket not found' });
       }
 
-      return res.status(200).json({ success: true, ticket: updatedTicket });
+      return res.status(200).json({ success: true, message: 'Ticket updated successfully' });
     } catch (err) {
       return res.status(500).json({ success: false, message: 'Failed to update ticket', error: err.message });
     }

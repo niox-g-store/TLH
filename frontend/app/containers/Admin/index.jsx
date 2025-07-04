@@ -22,12 +22,14 @@ import Page404 from '../Page404';
 
 import AddEvent from '../../components/Manager/Event/Add';
 import EditEvent from '../../components/Manager/Event/Edit';
+import AdminEvent from '../../components/Manager/Event/AdminEvent';
 
 import AddTicket from '../../components/Manager/Ticket/Add';
+import EditTicket from "../../components/Manager/Ticket/Edit";
+import AdminTicket from '../../components/Manager/Ticket/AdminTicket';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@coreui/coreui/dist/css/coreui.min.css';
-import AdminEvent from '../../components/Manager/Event/AdminEvent';
 
 const Admin = (props) => {
   const { isLightMode } = props;
@@ -43,6 +45,8 @@ const Admin = (props) => {
           <Route path='coupons' element={<ManagerCoupon {...props} />} />
           <Route path='orders' element={<ManagerOrder {...props} />} />
           <Route path='scan' element={<ManagerScanner {...props} />} />
+          {/*<Route path='media' element={<AddCoupon {...props}/>} />*/}
+          {/*<Route path='gallery' element={<AddCoupon {...props}/>} />*/}
           <Route path='account' element={<ManagerAccount {...props} />} />
           <Route path='security' element={<AccountSecurity {...props} />} />
           <Route path='newsletter' element={<ManagerNewsletter {...props} />} />
@@ -50,6 +54,16 @@ const Admin = (props) => {
           <Route path='events/edit/:id' element={<EditEvent {...props} />} />
           <Route path='events/my-events' element={<AdminEvent />} />
           <Route path='tickets/add' element={<AddTicket {...props}/>} />
+          <Route path='tickets/edit/:id' element={<EditTicket {...props}/>} />
+          <Route path='tickets/my-tickets' element={<AdminTicket {...props}/>} />*
+          {/*<Route path='coupons/add' element={<AddCoupon {...props}/>} />
+          <Route path='coupons/edit/:id' element={<EditCoupon {...props}/>} />*/}
+          {/*<Route path='coupons/my-coupons' element={<AdminCoupon {...props}/>} />*/}
+
+          {/*<Route path='media/add' element={<AddCoupon {...props}/>} />*/}
+          {/*<Route path='gallery/add' element={<AddCoupon {...props}/>} />*/}
+          {/*<Route path='gallery/edit/:id' element={<AddCoupon {...props}/>} />*/}
+          
           <Route path='*' element={<Page404 />} />
         </Routes>
       </div>

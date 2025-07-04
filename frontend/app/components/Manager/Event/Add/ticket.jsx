@@ -17,6 +17,7 @@ const AddEventTicket = ({
   editEventTicket,
   deleteEventTicket,
   addEventTicket,
+  eventEditChange,
   addEvent,
 }) => {
   const navigate = useNavigate();
@@ -30,9 +31,9 @@ const AddEventTicket = ({
     const baseTicket =
       eventTickets.length === 0 ? ticketFormData : {
         type: '',
-        price: 0,
+        price: '',
         discount: false,
-        discountPrice: 0
+        discountPrice: ''
       };
 
     createEventTicket({ ...baseTicket });
@@ -67,9 +68,8 @@ const RenderDiscountInfo = ({ price, discountPrice, discount }) => {
 }
 
   const renderTicketFields = (ticket, index) => (
-    <React.Fragment key={ticket.id}>
-      {/* ttoggle visiblity if ticket has been clicked */}
-      <Row>
+    <>
+    {index === 0 && <Row>
 
         <div className="alert alert-info" role="alert">
           By default, your event is visible and can be found in the <strong>Discover Events</strong> section.  
@@ -87,9 +87,8 @@ const RenderDiscountInfo = ({ price, discountPrice, discount }) => {
                 eventEditChange('visibility', value)}
             />
           </Col>
-      </Row>
-
-
+      </Row>}
+    <React.Fragment key={ticket.id}>
       {/* Ticket Type */}
       <Row>
       <Col className={isLightMode ? 'p-black' : 'p-white'} xs='12' lg='6'>
@@ -162,6 +161,7 @@ const RenderDiscountInfo = ({ price, discountPrice, discount }) => {
       )}
       </Row>
     </React.Fragment>
+    </>
   );
 
   return (

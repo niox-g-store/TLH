@@ -7,7 +7,7 @@ import Switch from '../../../store/Switch';
 import SelectOption from '../../../store/SelectOption';
 import LoadingIndicator from "../../../store/LoadingIndicator";
 import { GoBack } from "../../../../containers/goBack/inedx";
-import { useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 const RenderDiscountInfo = ({ price, discountPrice, discount }) => {
   const priceNum = parseFloat(price);
@@ -25,27 +25,29 @@ const RenderDiscountInfo = ({ price, discountPrice, discount }) => {
   return null;
 };
 
-const AddTicket = ({
-  isLightMode,
-  ticketFormData,
-  ticketChange,
-  couponsOptions = [],
-  ticketIsLoading,
-  addTicket,
-  ticketFormErrors
-}) => {
+const AddTicket = (props) => {
+  const { isLightMode,
+          ticketFormData,
+          ticketChange,
+          couponsOptions = [],
+          ticketIsLoading,
+          addTicket,
+          ticketFormErrors,
+          addTicketToEvent
+        } = props;
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const eventIdFromQuery = searchParams.get('event');
+  console.log(eventIdFromQuery)
 
   const handleSubmit = (e) =>  {
     e.preventDefault();
-    addTicket(navigate);
+    eventIdFromQuery ? addTicketToEvent(eventIdFromQuery, navigate) : addTicket(navigate);
   }
 
   return (
-    <form onSubmit={handleSubmit} className="add-ticket">
-      {ticketIsLoading && <LoadingIndicator isLightMode={isLightMode} />}
-
-      <Row
+    <>
+    <Row
         style={{
           marginBottom: '-1em',
           justifyContent: 'space-between',
@@ -56,7 +58,8 @@ const AddTicket = ({
         <h2 className={`${isLightMode ? 'p-black' : 'p-white'} font-size-25`}>Create Ticket</h2>
         <GoBack navigate={navigate} />
       </Row>
-
+    <form onSubmit={handleSubmit} className="add-ticket">
+      {ticketIsLoading && <LoadingIndicator isLightMode={isLightMode} />}
       <Row>
         {/* Ticket Type */}
         <Col className={isLightMode ? 'p-black' : 'p-white'} xs='12' lg='6'>
@@ -130,12 +133,13 @@ const AddTicket = ({
       <Row className='mt-4'>
         <Col xs='12' className='d-flex justify-content-center'>
           <Button
-            text="Submit Ticket"
+            text="Save Ticket"
             style={{ padding: '10px 25px' }}
           />
         </Col>
       </Row>
     </form>
+    </>
   );
 };
 

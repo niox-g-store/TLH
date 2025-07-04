@@ -34,13 +34,14 @@ class Dashboard extends React.PureComponent {
       ticketFormErrors, events,
       eventEditFormErrors, event,
       eventTickets, tickets,
-      ticket,
+      ticket, ticketEditFormErrors,
 
       eventChange, addEvent,
       ticketChange, addTicket,
       fetchEvents, updateEvent,
       createEventTicket, editEventTicket,
-      deleteEventTicket, addEventTicket
+      deleteEventTicket, addEventTicket,
+      editTicketChange,
     } = this.props;
     // if (isDisabledOrganizerAccount(user)) { return <DisabledOrganizerAccount user={user} />; }
 
@@ -91,6 +92,8 @@ const mapStateToProps = state => {
 
     ticketFormData: state.ticket.ticketForm,
     ticketFormErrors: state.ticket.ticketFormErrors,
+    ticketEditFormErrors: state.ticket.editFormErrors,
+    ticketIsLoading: state.ticket.isLoading,
     tickets: state.ticket.tickets,
     ticket: state.ticket.ticket,
 

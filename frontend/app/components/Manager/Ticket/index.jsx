@@ -12,27 +12,31 @@ import {
   CPaginationItem
 } from '@coreui/react';
 import Button from '../../Common/HtmlTags/Button';
-import { tickets } from '../../Data/ticketData';
 import ResolveImage from '../../store/ResolveImage';
-import AddTicket from './Add';
 import GetTicketPrice from '../../store/GetTicketPricing';
-import AdminTicket from './AdminTicket';
 import { ROLES } from '../../../constants';
 import { useNavigate } from 'react-router-dom';
 import actions from "../../../actions";
 import { withRouter } from '../../../withRouter';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { GoBack } from '../../../containers/goBack/inedx';
 
-const ManagerTicketHelper = (props) => {
-  const { isLightMode,
-          stats = {
-            topTicket: 'Regular',
-            expired: 1,
-            total: 4,
-            available: 3
-          },
-          user
-  } = props;
+const statsFunc = (events) => {
+  const statuses = {
+    topTicket: 'Regular',
+    total: 0,
+  };
+  for (const items of events) {
+    if (Object.keys(statuses).includes(items.status)) {
+      statuses[items.status] += 1;
+    }
+  }
+  return statuses;
+};
+
+export const ManagerTicketHelper = (props) => {
+  const { isLightMode, user, tickets, adminGoBack } = props;
 
   const navigate = useNavigate()
 
@@ -48,11 +52,18 @@ const ManagerTicketHelper = (props) => {
     <div data-aos="fade-up" className='container-lg px-4 d-flex flex-column mb-custom-5em'>
       <div className='d-flex justify-content-between'>
         <h2 style={{ margin: 0 }} className={`${isLightMode ? 'p-black': 'p-white'}`}>Tickets</h2>
-        <Button onClick={() => navigate('/dashboard/tickets/add')} type={"third-btn"} text={"Create Ticket +"}/>
+        {adminGoBack
+          ?
+          < GoBack text={"Go back"} navigate={navigate}/>
+          :
+          <Button onClick={() => navigate('/dashboard/tickets/add')} type={"third-btn"} text={"Create Ticket +"} />
+        }
       </div>
       {
-        user.role === ROLES.Admin && <AdminTicket {...props}/>
+        user.role === ROLES.Admin && !adminGoBack &&
+        <Button onClick={() => navigate("/dashboard/tickets/my-tickets")} cls={`${isLightMode ? 'bg-white p-black': 'bg-black p-white'} align-self-end`} type={"third-btn"} text={"My Tickets"}/>
       }
+
       <hr className={`${isLightMode ? 'p-black': 'p-white'}`}></hr>
       <div>
         {/* Ticket Stats Summary */}
@@ -61,23 +72,7 @@ const ManagerTicketHelper = (props) => {
             <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white`}>
               <CCardBody>
                 <CCardTitle>Most bought ticket type</CCardTitle>
-                <CCardText>{stats.topTicket}</CCardText>
-              </CCardBody>
-            </CCard>
-          </CCol>
-          <CCol sm={3}>
-            <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white`}>
-              <CCardBody>
-                <CCardTitle>Available Tickets</CCardTitle>
-                <CCardText>{stats.available}</CCardText>
-              </CCardBody>
-            </CCard>
-          </CCol>
-          <CCol sm={3}>
-            <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white`}>
-              <CCardBody>
-                <CCardTitle>Expired Tickets</CCardTitle>
-                <CCardText>{stats.expired}</CCardText>
+                <CCardText>Regular</CCardText>
               </CCardBody>
             </CCard>
           </CCol>
@@ -85,7 +80,7 @@ const ManagerTicketHelper = (props) => {
             <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white`}>
               <CCardBody>
                 <CCardTitle>Total Tickets</CCardTitle>
-                <CCardText>{stats.total}</CCardText>
+                <CCardText>{tickets.length || 0}</CCardText>
               </CCardBody>
             </CCard>
           </CCol>
@@ -95,6 +90,7 @@ const ManagerTicketHelper = (props) => {
         <CRow className="gy-4">
           {currentTickets.map((ticket, idx) => (
             <CCol md={6} key={idx}>
+            <Link to={`/dashboard/tickets/edit/${ticket._id}`}>
               <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}>
                 <CImage
                   src={ResolveImage(ticket.image, 'ticket')}
@@ -103,20 +99,14 @@ const ManagerTicketHelper = (props) => {
                 />
                 <CCardBody>
                   <CCardTitle className="mb-2">{ticket.type}</CCardTitle>
-                  <CBadge color={
-                    ticket.status === 'expired' ? 'danger' :
-                    ticket.status === 'available' ? 'success' :
-                    'secondary'
-                  }>
-                    {ticket.status}
-                  </CBadge>
+
                   <CCardText as={'div'} className="mt-2">
-                    <strong>Event:</strong> {ticket.event}<br />
                     <GetTicketPrice ticket={ticket} />
-                    <strong>Sold:</strong> {ticket.quantitySold}
+                    <strong>Sold:</strong> {ticket.quantitySold || 0}
                   </CCardText>
                 </CCardBody>
               </CCard>
+              </Link>
             </CCol>
           ))}
         </CRow>
@@ -152,7 +142,7 @@ const ManagerTicketHelper = (props) => {
 
 class ManagerTicket extends React.PureComponent {
   componentDidMount () {
-    //this.props.fetchTickets();
+    this.props.fetchTickets();
   }
 
   render () {

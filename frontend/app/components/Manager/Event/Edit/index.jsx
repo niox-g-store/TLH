@@ -69,7 +69,8 @@ const EditEventForm = (props) => {
         <h2 className={`${isLightMode ? 'p-black' : 'p-white'} font-size-25`}>Event details</h2>
         <GoBack navigate={navigate} />
       </div>
-      <form onSubmit={handleSubmit} noValidate>
+      
+      <form noValidate>
         <Row>
           {/* Event Name */}
           <Col className={`${isLightMode ? 'p-black' : 'p-white'}`} xs='12' lg='6'>
@@ -212,7 +213,7 @@ const EditEventForm = (props) => {
           <Col className='d-flex flex-column' style={{ marginTop: '1em', width: '100%' }}>
             {Array.isArray(event.tickets) && event.tickets.length > 0 ? (
               <>
-                          <h4 style={{ textAlign: 'center' }}>Event tickets</h4>
+                          <h4 className={`${isLightMode ? 'p-black' : 'p-white'}`} style={{ textAlign: 'center' }}>Event tickets</h4>
 <CTable bordered striped hover responsive>
   <CTableHead color="dark">
     <CTableRow>
@@ -233,11 +234,12 @@ const EditEventForm = (props) => {
             className="purple-bg p-white"
             variant="outline"
             size="sm"
-            onClick={() => navigate(`/ticket/edit/${ticket._id}`)}
+            onClick={() => navigate(`/dashboard/tickets/edit/${ticket._id}`)}
           >
-            <CIcon icon={cilPencil} className="me-2" />
+            <CIcon icon={cilPencil} className="sm-2" />
             Edit
           </CButton>
+
         </CTableDataCell>
         <CTableDataCell>{`₦${ticket.price.toLocaleString()}`}</CTableDataCell>
         <CTableDataCell>
@@ -254,18 +256,24 @@ const EditEventForm = (props) => {
   </CTableBody>
 </CTable>
 <Col style={{ alignSelf: 'center'  }}>
-    <Button style={{ padding: '10px 20px'}} text={"Add more Tickets"} />
+    <Button onClick={() => navigate(`/dashboard/tickets/add?event=${event._id}`)} style={{ padding: '10px 20px'}} text={"Add more Tickets"} />
 </Col>
   </>
 ) : (
+  <>
   <p className={`${isLightMode ? 'p-black' : 'p-white'}`}>No tickets found for this event.</p>
+  <Col style={{ alignSelf: 'center'  }}>
+    <Button onClick={() => navigate(`/dashboard/tickets/add?event=${event._id}`)} style={{ padding: '10px 20px'}} text={"Add Tickets"} />
+</Col>
+  </>
 )}
           </Col>
         </Row>
 
-        <Row>
+      </form>
+      <Row>
           <div className='edit-event-actions'>
-            <Button style={{ padding: '10px 20px' }} text='Save Event' />
+            <Button onClick={handleSubmit} style={{ padding: '10px 20px' }} text='Save Event' />
             <Button
               onClick={() => deleteEvent(event._id, navigate)}
               style={{ padding: '10px 20px' }}
@@ -273,7 +281,6 @@ const EditEventForm = (props) => {
             />
           </div>
         </Row>
-      </form>
     </div>
   );
 };

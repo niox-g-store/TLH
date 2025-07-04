@@ -5,7 +5,6 @@ import { signOut } from '../containers/Login/actions';
 
 const handleError = (err, dispatch, title = '') => {
   let message = title || 'Something went wrong';
-
   if (err.response) {
     switch (err.response.status) {
       case 400:

@@ -192,7 +192,7 @@ const AddEvent = (props) => {
 
         <Row>
         {!isFormComplete() && (
-          <div className="text-muted mt-4">
+          <div className="text-muted mt-4 alert alert-info" role='alert'>
             <em>Fill out all event details above to add tickets.</em>
           </div>
         )}

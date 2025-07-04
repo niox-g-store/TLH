@@ -2,6 +2,7 @@
   "ROLE ADMIN": [
     { "to": "", "name": "Dashboard", "prefix": "/dashboard", "icon": "LuLayoutDashboard" },
     { "to": "/events", "name": "Events", "prefix": "/dashboard", "icon": "MdOutlineEventRepeat" },
+    { "to": "/tickets", "name": "All Tickets", "prefix": "/dashboard", "icon": "IoTicketOutline" },
     { "to": "/organizers", "name": "Organizers", "prefix": "/dashboard", "icon": "MdOutlineGroups2" },
     { "to": "/users", "name": "Users", "prefix": "/dashboard", "icon": "MdOutlinePeople" },
     { "to": "/guests", "name": "Guest Buyers", "prefix": "/dashboard", "icon": "MdOutlinePersonSearch" },
@@ -9,7 +10,6 @@
     { "to": "/media", "name": "Media Manager", "prefix": "/dashboard", "icon": "MdOutlinePermMedia" },
     { "to": "/gallery", "name": "Gallery", "prefix": "/dashboard", "icon": "MdOutlinePhotoLibrary" },
     { "to": "/coupons", "name": "Coupons", "prefix": "/dashboard", "icon": "RiCoupon3Line" },
-    { "to": "/tickets", "name": "All Tickets", "prefix": "/dashboard", "icon": "IoTicketOutline" },
     { "to": "/newsletter", "name": "Newsletter", "prefix": "/dashboard", "icon": "MdOutlineCampaign" },
     { "to": "/scan", "name": "Ticket Scanner", "prefix": "/dashboard", "icon": "IoScanOutline" },
     { "to": "/account", "name": "Account Details", "prefix": "/dashboard", "icon": "MdOutlineAccountCircle" },

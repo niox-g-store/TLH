@@ -7,6 +7,7 @@ const auth = require('../../middleware/auth');
 const role = require('../../middleware/role');
 const { ROLES } = require('../../utils/constants');
 const Event = require('../../models/event');
+const Ticket = require('../../models/ticket');
 const { updateEventStatus } = require("../../utils/event");
 const { deleteFilesFromPath } = require("../../utils/deleteFiles");
 
@@ -282,6 +283,62 @@ router.put(
     }
   }
 );
+
+router.post(
+  '/add-ticket',
+  auth,
+  role.check(ROLES.Admin, ROLES.Organizer),
+  async (req, res) => {
+    try {
+      const { event, type, price, discount, discountPrice, coupons } = req.body;
+      const user = req.user._id;
+
+      if (!event || !type || price == null) {
+        return res.status(400).json({
+          success: false,
+          message: 'Event, ticket type, and price are required.'
+        });
+      }
+
+      const eventExists = await Event.findById(event);
+
+      if (!eventExists) {
+        return res.status(404).json({
+          success: false,
+          message: 'Event not found'
+        });
+      }
+
+
+      if (eventExists) {
+
+       const ticket = new Ticket({
+          type,
+          user,
+          price,
+          discount: discount || false,
+          discountPrice: discountPrice || 0,
+          coupons: coupons || []
+        });
+      
+        const savedTicket = await ticket.save();
+        eventExists.tickets.push(ticket._id);
+        await eventExists.save()
+
+        return res.status(200).json({
+        success: true,
+        message: 'Ticket has been added to event',
+        ticket: savedTicket
+      }); 
+    }
+
+    } catch (error) {
+      return res.status(400).json({
+        error: 'Your request could not be processed. Please try again.'
+      });
+    }
+  }
+)
 
 
 router.delete(
