@@ -14,6 +14,10 @@ import {
   SET_ADVANCED_FILTERS,
   RESET_ADVANCED_FILTERS,
   IMAGE_TO_REMOVE,
+
+  CREATE_EVENT_TICKET,
+  DELETE_EVENT_TICKET,
+  EDIT_EVENT_TICKET,
 } from './constants';
 
 const initialState = {
@@ -38,6 +42,7 @@ const initialState = {
   isLoading: false,
   formErrors: {},
   editFormErrors: {},
+  eventTickets: [],
   eventCategories: [
   { value: "CONCERT", label: "Concert" },
   { value: "CONFERENCE", label: "Conference" },
@@ -65,6 +70,29 @@ const initialState = {
 
 const eventReducer = (state = initialState, action) => {
   switch (action.type) {
+    case CREATE_EVENT_TICKET:
+      return {
+        ...state,
+        eventTickets: [...state.eventTickets, action.payload],
+      };
+
+    case EDIT_EVENT_TICKET:
+      return {
+        ...state,
+        eventTickets: state.eventTickets.map((ticket) =>
+          ticket.id === action.payload.id
+            ? { ...ticket, ...action.payload.updatedFields }
+            : ticket
+        ),
+      };
+
+    case DELETE_EVENT_TICKET:
+      return {
+        ...state,
+        eventTickets: state.eventTickets.filter(
+          (ticket) => ticket.id !== action.payload
+        ),
+      };
     case IMAGE_TO_REMOVE:
       return {
         ...state,
@@ -151,7 +179,8 @@ const eventReducer = (state = initialState, action) => {
           _id: ''
         },
         formErrors: {},
-        imageToRemove: []
+        imageToRemove: [],
+        eventTickets: []
       };
     case SET_ADVANCED_FILTERS:
       return {

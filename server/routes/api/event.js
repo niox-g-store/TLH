@@ -36,6 +36,33 @@ const removeImagesFromEvent = (event, removeImageUrls) => {
   return event;
 }
 
+// GET /event/me - return events based on user role
+router.get(
+  '/me',
+  auth,
+  async (req, res) => {
+    try {
+      const user = req.user;
+
+      let events;
+
+      if (user.role === ROLES.Admin) {
+        // Admin: get events created by the user
+        events = await Event.find({ user: user._id }).sort('-createdAt');
+      } else if (user.role === ROLES.Member) {
+        // Normal user: get events where they're an attendee
+        events = await Event.find({
+          registeredAttendees: user._id
+        }).sort('-createdAt');
+      }
+      return res.status(200).json({ events });
+    } catch (error) {
+      return res.status(400).json({
+        error: 'Your request could not be processed. Please try again.'
+      });
+    }
+  }
+);
 
 router.post(
   '/add',
@@ -52,7 +79,8 @@ router.post(
         location,
         category,
         capacity,
-        isActive
+        isActive,
+        tickets = []
       } = req.body;
 
       const user = req.user._id;
@@ -84,7 +112,8 @@ router.post(
         capacity: capacity || null,
         isActive: isActive !== undefined ? isActive : true,
         imageUrls,
-        user
+        user,
+        tickets
       });
 
       updateEventStatus(event);
@@ -97,7 +126,6 @@ router.post(
         event
       });
     } catch (error) {
-      console.error(error);
       return res.status(400).json({
         error: 'Your request could not be processed. Please try again.'
       });
@@ -139,25 +167,20 @@ router.get(
     try {
       const eventId = req.params.id;
 
-      // Validate ObjectId format if you want (optional)
-      if (!eventId.match(/^[0-9a-fA-F]{24}$/)) {
-        return res.status(400).json({ error: 'Invalid event ID.' });
-      }
-
-      const event = await Event.findById(eventId);
-
-      if (!event) {
-        return res.status(404).json({ error: 'Event not found.' });
-      }
-
       // Optional: If Organizer, only allow access to their own event
       if (req.user.role === ROLES.Organizer && !event.user.equals(req.user._id)) {
         return res.status(403).json({ error: 'Access denied.' });
       }
 
+      const event = await Event.findById(eventId)
+      .populate('tickets');
+
+      if (!event) {
+        return res.status(404).json({ error: 'Event not found.' });
+      }
+
       return res.status(200).json({ event });
     } catch (error) {
-      console.error(error);
       return res.status(400).json({
         error: 'Your request could not be processed. Please try again.'
       });
@@ -241,7 +264,6 @@ router.put(
         event
       });
     } catch (error) {
-      console.error(error);
       return res.status(400).json({
         error: 'Your request could not be processed. Please try again.'
       });
@@ -276,7 +298,6 @@ router.delete(
         message: 'Event deleted successfully!'
       });
     } catch (error) {
-      console.error(error);
       return res.status(400).json({
         error: 'Your request could not be processed. Please try again.'
       });

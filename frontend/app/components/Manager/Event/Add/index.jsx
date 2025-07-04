@@ -28,7 +28,8 @@ const AddEvent = (props) => {
     eventIsLoading,
     isLightMode,
     image,
-    eventCategories
+    eventCategories,
+    eventTickets
   } = props;
 
   const navigate = useNavigate();
@@ -37,6 +38,12 @@ const AddEvent = (props) => {
     event.preventDefault();
     addEvent(navigate);
   };
+
+  const isFormComplete = () => {
+    const requiredFields = ['name', 'location', 'startDate', 'endDate', 'category', 'description', 'image'];
+    return requiredFields.every(field => eventFormData[field] && eventFormData[field].toString().trim() !== '');
+  };
+
 
   return (
     <div className='add-event d-flex flex-column mb-custom-5em'>
@@ -172,14 +179,31 @@ const AddEvent = (props) => {
 
         <Row>
           <div className='add-event-actions'>
-            <p className={`${isLightMode ? 'p-black' : 'p-white'}`}>Save event to add tickets</p>
+            <div className="alert alert-info" role="alert">
+              Please complete all event details before proceeding. Once the form is fully filled out,
+              you’ll be able to add one or more tickets during the event creation process.
+              <br />
+              <br />
+              Alternatively, you can choose to save the event without adding any ticket for now.
+            </div>
             <Button style={{ padding: '10px 20px' }} text='Save Event' />
           </div>
         </Row>
 
-        <hr className={`${isLightMode ? 'p-black' : 'p-white'}`} />
+        <Row>
+        {!isFormComplete() && (
+          <div className="text-muted mt-4">
+            <em>Fill out all event details above to add tickets.</em>
+          </div>
+        )}
+        </Row>
 
-        <AddEventTicket {...props} />
+        {isFormComplete() && (
+          <>
+            <hr className={`${isLightMode ? 'p-black' : 'p-white'}`} />
+            <AddEventTicket {...props} />
+          </>
+        )}
       </form>
     </div>
   );

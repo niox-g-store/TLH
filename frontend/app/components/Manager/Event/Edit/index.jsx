@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Row from '../../../Common/Row';
 import Col from '../../../Common/Col';
 
@@ -18,6 +18,18 @@ import { eventCategoryFinder } from '../../../../utils/eventCategories';
 import AdvancedUpload from '../../../store/AdanceFileUpload';
 import { API_URL } from '../../../../constants';
 import AdvancedUploadHelper from '../../../store/AdanceFileUpload/updateFileUpload';
+
+import {
+  CTable,
+  CTableBody,
+  CTableHead,
+  CTableHeaderCell,
+  CTableRow,
+  CTableDataCell
+} from '@coreui/react';
+import { CButton } from '@coreui/react';
+import { cilPencil } from '@coreui/icons';
+import CIcon from '@coreui/icons-react';
 
 const EditEventForm = (props) => {
   const {
@@ -180,6 +192,56 @@ const EditEventForm = (props) => {
               toggleCheckboxChange={(value) =>
                 eventEditChange('isActive', value)}
             />
+          </Col>
+
+          <Col style={{ marginTop: '1em' }}>
+            {Array.isArray(event.tickets) && event.tickets.length > 0 ? (
+              <>
+                          <h4 style={{ textAlign: 'center' }}>Event tickets</h4>
+<CTable bordered striped hover responsive>
+  <CTableHead color="dark">
+    <CTableRow>
+      <CTableHeaderCell scope="col">Type</CTableHeaderCell>
+      <CTableHeaderCell scope="col">Has Discount</CTableHeaderCell>
+      <CTableHeaderCell scope="col">Price</CTableHeaderCell>
+      <CTableHeaderCell scope="col">Discount Price</CTableHeaderCell>
+      <CTableHeaderCell scope="col">Coupon</CTableHeaderCell>
+      <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
+    </CTableRow>
+  </CTableHead>
+  <CTableBody>
+    {event.tickets.map((ticket, index) => (
+      <CTableRow key={index}>
+        <CTableDataCell>{ticket.type}</CTableDataCell>
+        <CTableDataCell>{ticket.discount ? 'Yes' : 'No'}</CTableDataCell>
+        <CTableDataCell>{`₦${ticket.price.toLocaleString()}`}</CTableDataCell>
+        <CTableDataCell>
+          {ticket.discountPrice ? `₦${ticket.discountPrice.toLocaleString()}` : '—'}
+        </CTableDataCell>
+        <CTableDataCell>
+          {Array.isArray(ticket.coupon) && ticket.coupon.length > 0
+            ? ticket.coupon.join(', ')
+            : 'No coupon'}
+        </CTableDataCell>
+        <CTableDataCell>
+          <CButton
+            className="purple-bg p-white"
+            variant="outline"
+            size="sm"
+            onClick={() => navigate(`/ticket/edit/${ticket._id}`)}
+          >
+            <CIcon icon={cilPencil} className="me-2" />
+            Edit
+          </CButton>
+        </CTableDataCell>
+      </CTableRow>
+    ))}
+  </CTableBody>
+</CTable>
+  </>
+) : (
+  <p>No tickets found for this event.</p>
+)}
           </Col>
         </Row>
 

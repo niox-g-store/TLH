@@ -10,6 +10,7 @@ import {
   RESET_TICKET_FORM,
   ADD_TICKET,
   SET_TICKETS_LOADING,
+  SET_EVENT_TICKET
 } from './constants';
 
 /**
@@ -22,6 +23,7 @@ export const ticketChange = (name, value) => {
     value,
   };
 };
+
 
 /**
  * Add a new ticket
@@ -64,7 +66,7 @@ export const addTicket = (navigate) => {
         if (navigate) dispatch(navigate(-1));
       }
     } catch (error) {
-      handleError(error, dispatch);
+      handleError(error, dispatch, 'Error adding ticket, try agian!');
     } finally {
       dispatch({ type: SET_TICKETS_LOADING, payload: false });
     }

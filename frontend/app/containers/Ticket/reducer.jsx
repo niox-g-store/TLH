@@ -9,6 +9,7 @@ import {
   EDIT_TICKET,
   DELETE_TICKET,
   SET_TICKETS_LOADING,
+  SET_EVENT_TICKET,
 } from './constants';
 
 const initialState = {
@@ -24,11 +25,17 @@ const initialState = {
     expireDate: '',
   },
   ticketFormErrors: {},
+  createdEventTicket: [],
   isLoading: false,
 };
 
 const ticketReducer = (state = initialState, action) => {
   switch (action.type) {
+    case SET_EVENT_TICKET:
+      return {
+        ...state,
+        createdEventTicket: action.payload
+      };
     case SET_TICKETS_LOADING:
       return {
         ...state,

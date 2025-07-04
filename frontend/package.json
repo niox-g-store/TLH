@@ -50,6 +50,7 @@
     "redux-thunk": "^3.1.0",
     "sass": "^1.85.1",
     "slick-carousel": "^1.8.1",
+    "uuid": "^11.1.0",
     "validatorjs": "^3.22.1"
   },
   "devDependencies": {

@@ -5,16 +5,15 @@ const ticketSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  event: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Event',
-    required: true
-  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
   },
+  coupons: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Coupon'
+  }],
   price: {
     type: Number,
     required: true

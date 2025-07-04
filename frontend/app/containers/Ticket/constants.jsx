@@ -8,3 +8,4 @@ export const ADD_TICKET = 'src/TICKET/ADD_TICKET';
 export const EDIT_TICKET = 'src/TICKET/EDIT_TICKET';
 export const DELETE_TICKET = 'src/TICKET/DELETE_TICKET';
 export const SET_TICKETS_LOADING = 'src/TICKET/SET_TICKETS_LOADING';
+export const SET_EVENT_TICKET = 'src/Event/SET_EVENT_TICKET';

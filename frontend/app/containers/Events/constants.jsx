@@ -1,7 +1,6 @@
 // constants/eventConstants.js
 export const FETCH_EVENT = 'src/Event/FETCH_EVENT';
 export const FETCH_EVENTS = 'src/Event/FETCH_EVENTS';
-export const FETCH_USER_EVENT = 'src/EVENT/FETCH_USER_EVENT';
 export const EVENT_CHANGE = 'src/EVENT/EVENT_CHANGE';
 export const EVENT_EDIT_CHANGE = 'src/EVENT/EVENT_EDIT_CHANGE';
 export const SET_EVENT_FORM_ERRORS = 'src/EVENT/SET_EVENT_FORM_ERRORS';
@@ -14,3 +13,7 @@ export const SET_EVENTS_LOADING = 'src/EVENT/SET_EVENTS_LOADING';
 export const SET_ADVANCED_FILTERS = 'src/EVENT/SET_ADVANCED_FILTERS';
 export const RESET_ADVANCED_FILTERS = 'src/EVENT/RESET_ADVANCED_FILTERS';
 export const IMAGE_TO_REMOVE = 'src/Event/IMAGE_TO_REMOVE';
+export const CREATE_EVENT_TICKET = 'src/Event/CREATE_EVENT_TICKET';
+export const DELETE_EVENT_TICKET = 'src/Event/DELETE_EVENT_TICKET';
+export const EDIT_EVENT_TICKET = 'src/Event/EDIT_EVENT_TICKET';
+export const FETCH_USER_EVENT = 'src/Event/FETCH_USER_EVENT';

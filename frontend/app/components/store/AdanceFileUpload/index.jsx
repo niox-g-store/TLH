@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { AiOutlineUpload } from 'react-icons/ai';
 import { FaFileVideo } from 'react-icons/fa';
 
@@ -10,6 +10,16 @@ const AdvancedUpload = (props) => {
   const [files, setFiles] = useState([]);
   const [errors, setErrors] = useState([]);
   const inputRef = useRef();
+
+  useEffect(() => {
+  return () => {
+    files.forEach(file => {
+      if (file.previewUrl) {
+        URL.revokeObjectURL(file.previewUrl);
+      }
+    });
+  };
+  }, [files]);
 
   const validateFile = (file) => {
     if (file.type.startsWith('image/')) {
@@ -38,11 +48,18 @@ const handleFiles = (selectedFiles) => {
       newErrors.push(error);
     } else {
       const isImage = file.type.startsWith('image/');
+      const isVideo = file.type.startsWith('video/');
       if (isImage && currentImageCount + newFiles.filter(f => f.type?.startsWith('image/')).length >= 5) {
         newErrors.push(`Cannot upload more than 5 images.`);
         return; // skip this file
       }
-      newFiles.push(file);
+      const currentVideoCount = files.filter(f => f.type?.startsWith('video/')).length;
+      if (isVideo && currentVideoCount >= 1) {
+        newErrors.push('Only 1 video is allowed.');
+        return;
+      }
+      newFiles.push(Object.assign(file, { previewUrl: URL.createObjectURL(file) }));
+      // newFiles.push(file);
     }
   });
 
@@ -97,7 +114,7 @@ const handleFiles = (selectedFiles) => {
           ref={inputRef}
           type="file"
           multiple
-          accept="image/*,video/*"
+          accept="image/jpeg,image/png,image/gif,image/webp,video/mp4,video/webm,video/quicktime"
           style={{ display: 'none' }}
           onChange={onInputChange}
         />
@@ -112,6 +129,12 @@ const handleFiles = (selectedFiles) => {
       )}
 
       {files.length > 0 && (
+        <div>
+          <div style={{ marginTop: 10, fontSize: 14, color: '#333' }}>
+            {`${files.filter(f => f.type.startsWith('image/')).length} / 5 images`}
+            {' • '}
+            {`${files.filter(f => f.type.startsWith('video/')).length} / 1 video`}
+          </div>
         <div
           style={{
             marginTop: '15px',
@@ -123,11 +146,11 @@ const handleFiles = (selectedFiles) => {
           {files.map((file, i) => {
             if (file.type.startsWith('image/')) {
               // Show image thumbnail
-              const url = URL.createObjectURL(file);
+              // const url = URL.createObjectURL(file);
               return (
                 <div key={i} style={{ position: 'relative' }}>
                   <img
-                    src={url}
+                    src={file.previewUrl}
                     alt={file.name}
                     style={{ width: 120, height: 120, objectFit: 'cover', borderRadius: 6 }}
                   />
@@ -210,6 +233,7 @@ const handleFiles = (selectedFiles) => {
             }
             return null;
           })}
+        </div>
         </div>
       )}
     <span className='invalid-message'>{error && error[0]}</span>

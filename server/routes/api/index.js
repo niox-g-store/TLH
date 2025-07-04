@@ -5,6 +5,7 @@ const getServerStatus = require('./status');
 const auth = require('./auth');
 const user = require('./user');
 const event = require('./event');
+const ticket = require('./ticket');
 
 // for static file uploads
 router.use('/uploads', express.static(process.cwd() + "/file_manager/uploads", {
@@ -19,5 +20,6 @@ router.use('/status', getServerStatus);
 router.use('/auth', auth);
 router.use('/user', user);
 router.use('/event', event);
+router.use('/ticket', ticket);
 
 module.exports = router;

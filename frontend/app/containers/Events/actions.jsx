@@ -6,6 +6,7 @@
 import { useState } from 'react';
 import { showNotification } from '../Notification/actions';
 import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid';
 
 import {
   FETCH_EVENT,
@@ -23,11 +24,35 @@ import {
   SET_ADVANCED_FILTERS,
   RESET_ADVANCED_FILTERS,
   IMAGE_TO_REMOVE,
+
+  CREATE_EVENT_TICKET,
+  DELETE_EVENT_TICKET,
+  EDIT_EVENT_TICKET,
 } from './constants';
 
 import { API_URL } from '../../constants';
 import handleError from '../../utils/error';
 import { allFieldsValidation } from '../../utils/validation';
+
+export const createEventTicket = (ticket) => ({
+  type: CREATE_EVENT_TICKET,
+
+  payload: {
+    ...ticket,
+    id: uuidv4(),
+  },
+});
+
+export const editEventTicket = (id, updatedFields) => ({
+  type: EDIT_EVENT_TICKET,
+  payload: { id, updatedFields },
+});
+
+export const deleteEventTicket = (id) => ({
+  type: DELETE_EVENT_TICKET,
+  payload: id,
+});
+
 
 export const eventChange = (name, value) => {
   let formData = {};
@@ -101,41 +126,6 @@ export const fetchEvent = (id) => {
   };
 };
 
-// Fetch single event by slug
-export const fetchStoreEvent = (slug) => {
-  return async (dispatch) => {
-    dispatch(setEventLoading(true));
-    try {
-      const response = await axios.get(`${API_URL}/event/item/${slug}`);
-      dispatch({
-        type: FETCH_STORE_EVENT,
-        payload: response.data.event
-      });
-    } catch (error) {
-      handleError(error, dispatch);
-    } finally {
-      dispatch(setEventLoading(false));
-    }
-  };
-};
-
-// Fetch all events for store listing
-export const fetchStoreEvents = () => {
-  return async (dispatch) => {
-    dispatch(setEventLoading(true));
-    try {
-      const response = await axios.get(`${API_URL}/event/list`);
-      dispatch({
-        type: FETCH_STORE_EVENTS,
-        payload: response.data.events
-      });
-    } catch (error) {
-      handleError(error, dispatch);
-    } finally {
-      dispatch(setEventLoading(false));
-    }
-  };
-};
 
 // Add new event
 export const addEvent = (navigate) => {
@@ -151,7 +141,6 @@ export const addEvent = (navigate) => {
         category: 'required',
         image: 'required'
       };
-
       const event = getState().event.eventFormData;
 
       const newEvent = {
@@ -214,6 +203,114 @@ export const addEvent = (navigate) => {
   };
 };
 
+
+// Add new event and its tickets
+export const addEventTicket = (navigate) => {
+  return async (dispatch, getState) => {
+    dispatch(setEventLoading(true));
+    try {
+      const eventTickets = getState().event.eventTickets;
+
+      if (!eventTickets || eventTickets.length === 0) {
+        return handleError("error", dispatch, 'Error adding ticket, try agian!');
+      }
+
+      // Format tickets with the eventId
+      const ticketsPayload = eventTickets.map((ticket) => ({
+        type: ticket.type,
+        price: parseFloat(ticket.price),
+        discount: ticket.discount || false,
+        discountPrice: parseFloat(ticket.discountPrice) || 0,
+      }));
+
+      let response = await axios.post(`${API_URL}/ticket/add`, {
+        tickets: ticketsPayload
+      });
+
+      // Optional: You can dispatch here if you want to store the new ticket objects
+      let tickets = response.data.tickets;
+      tickets = tickets.map(ticket => ticket._id);
+
+      const rules = {
+        name: 'required',
+        description: 'required|max:5000',
+        startDate: 'required',
+        endDate: 'required',
+        location: 'required',
+        category: 'required',
+        image: 'required',
+      };
+
+      const event = getState().event.eventFormData;
+
+      const newEvent = {
+        name: event.name,
+        description: event.description,
+        startDate: event.startDate,
+        endDate: event.endDate,
+        capacity: event.capacity,
+        category: event.category,
+        location: event.location,
+        image: event.image,
+        isActive: event.isActive,
+      };
+
+      const { isValid, errors } = allFieldsValidation(newEvent, rules, {
+        'required.name': 'Name is required.',
+        'required.description': 'Description is required.',
+        'max.description': 'Description may not be greater than 5000 characters.',
+        'required.startDate': 'A Date is required.',
+        'required.endDate': 'A Date is required.',
+        'required.category': 'Select a category',
+        'required.location': 'Location is required.',
+        'required.image': 'Image is required.',
+      });
+
+      if (!isValid) {
+        return dispatch({ type: SET_EVENT_FORM_ERRORS, payload: errors });
+      }
+
+      const formData = new FormData();
+      for (const key in newEvent) {
+        if (newEvent.hasOwnProperty(key)) {
+          if (key === 'category') {
+            formData.set(key, newEvent[key].label);
+          } else if (key === 'image') {
+            for (const file of newEvent.image) {
+              formData.append('images', file);
+            }
+          } else {
+            formData.set(key, newEvent[key]);
+          }
+        }
+      }
+
+      tickets.forEach((ticket) => {
+        formData.append('tickets', ticket);
+      });
+
+      // Create the event
+      response = await axios.post(`${API_URL}/event/add`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      const createdEvent = response.data.event;
+
+      dispatch(showNotification('success', 'Event and tickets saved successfully!'));
+      dispatch({ type: ADD_EVENT, payload: createdEvent });
+      dispatch(resetEvent());
+      navigate(-1);
+    } catch (error) {
+      handleError(error, dispatch, 'Error saving event or tickets. Try again!');
+    } finally {
+      dispatch(setEventLoading(false));
+    }
+  };
+};
+
+
+
+
 // Update existing event
 export const updateEvent = (navigate) => {
   return async (dispatch, getState) => {
@@ -243,7 +340,6 @@ export const updateEvent = (navigate) => {
         image: event.image || [],
         isActive: event.isActive,
       };
-      console.log(updatedEvent)
       const { isValid, errors } = allFieldsValidation(updatedEvent, rules, {
         'required.name': 'Name is required.',
         'required.description': 'Description is required.',
@@ -310,6 +406,21 @@ export const deleteEvent = (id, navigate) => {
     }
   };
 };
+
+export const getUserEvent = () => {
+  return async (dispatch) => {
+    try {
+      const res = await axios.get(`${API_URL}/event/me`);
+
+      dispatch({
+        type: FETCH_USER_EVENT,
+        payload: res.data.events
+      });
+    } catch (error) {
+      handleError(error, dispatch, 'error fetching user event');
+    }
+  }
+}
 
 // Activate/Deactivate event
 export const activateEvent = (id, value) => {

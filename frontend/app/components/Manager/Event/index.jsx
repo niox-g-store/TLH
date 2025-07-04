@@ -62,7 +62,8 @@ const ManagerEventHelper = (props) => {
 
       </div>
       {
-        user.role === ROLES.Admin && <AdminEvent {...props} />
+        user.role === ROLES.Admin && 
+        <Button onClick={() => navigate("/dashboard/events/my-events")} cls={`${isLightMode ? 'bg-white p-black': 'bg-black p-white'} align-self-end`} type={"third-btn"} text={"My Events"}/>
       }
       <hr className={`${isLightMode ? 'p-black' : 'p-white'}`} />
       <div>

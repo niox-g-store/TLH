@@ -18,10 +18,7 @@ import GetTicketPrice from '../../store/GetTicketPricing';
 import AdminTicket from './AdminTicket';
 import { ROLES } from '../../../constants';
 
-class ManagerTicket extends React.PureComponent {
-
-
-  render() {
+const ManagerTicket = (props) => {
   const { isLightMode,
           stats = {
             topTicket: 'Regular',
@@ -30,7 +27,7 @@ class ManagerTicket extends React.PureComponent {
             available: 3
           },
           user
-  } = this.props;
+  } = props;
 
   const [currentPage, setCurrentPage] = useState(1);
   const ticketsPerPage = 10;
@@ -144,7 +141,6 @@ class ManagerTicket extends React.PureComponent {
       </div>
     </div>
   );
-}
 };
 
 export default ManagerTicket;

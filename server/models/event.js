@@ -32,6 +32,14 @@ const eventSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
+  tickets: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Ticket'
+  }],
+  coupons: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Coupon'
+  }],
   capacity: {
     type: Number,
     default: 0
