@@ -7,6 +7,7 @@ import sass from 'sass';
 dotenv.config();
 
 export default defineConfig({
+  base: '/',
   plugins: [react()],
   optimizeDeps: {
     include: ['redux-thunk']
