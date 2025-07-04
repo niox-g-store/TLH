@@ -194,7 +194,7 @@ const EditEventForm = (props) => {
             />
           </Col>
           <Col className={`${isLightMode ? 'p-black' : 'p-white'}`} xs='12'>
-            <div class="alert alert-info" role="alert">
+            <div className="alert alert-info" role="alert">
                 By default, your event is visible and can be found in the <strong>Discover Events</strong> section.  
                 <br />
                 If you toggle visibility <strong>on</strong>, your event will also appear in <strong>homepage popover ads</strong>, giving it more exposure.

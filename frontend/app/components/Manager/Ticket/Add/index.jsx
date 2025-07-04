@@ -31,12 +31,14 @@ const AddTicket = ({
   ticketChange,
   couponsOptions = [],
   ticketIsLoading,
+  addTicket,
+  ticketFormErrors
 }) => {
   const navigate = useNavigate();
 
   const handleSubmit = (e) =>  {
     e.preventDefault();
-    ticketChange();
+    addTicket(navigate);
   }
 
   return (
@@ -62,6 +64,7 @@ const AddTicket = ({
             type='text'
             label='Ticket Type'
             name='type'
+            error={ticketFormErrors['type']}
             placeholder='e.g. VIP, General'
             value={ticketFormData.type || ''}
             onInputChange={(name, value) => ticketChange(name, value)}
@@ -74,6 +77,7 @@ const AddTicket = ({
             type='number'
             label='Price'
             name='price'
+            error={ticketFormErrors['price']}
             placeholder='Enter ticket price'
             value={ticketFormData.price || ''}
             onInputChange={(name, value) => ticketChange(name, value)}

@@ -71,7 +71,7 @@ const RenderDiscountInfo = ({ price, discountPrice, discount }) => {
       {/* ttoggle visiblity if ticket has been clicked */}
       <Row>
 
-        <div class="alert alert-info" role="alert">
+        <div className="alert alert-info" role="alert">
           By default, your event is visible and can be found in the <strong>Discover Events</strong> section.  
           <br />
             If you toggle visibility <strong>on</strong>, your event will also appear in <strong>homepage popover ads</strong>, giving it more exposure.

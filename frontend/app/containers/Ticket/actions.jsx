@@ -38,20 +38,13 @@ export const addTicket = (navigate) => {
 
       const rules = {
         type: 'required',
-        event: 'required',
-        user: 'required',
         price: 'required|numeric',
-        expireDate: 'required|date',
       };
 
       const { isValid, errors } = allFieldsValidation(ticketForm, rules, {
         'required.type': 'Ticket type is required.',
-        'required.event': 'Event ID is required.',
-        'required.user': 'User ID is required.',
         'required.price': 'Price is required.',
         'numeric.price': 'Price must be a number.',
-        'required.expireDate': 'Expire date is required.',
-        'date.expireDate': 'Expire date must be a valid date.',
       });
 
       if (!isValid) {
@@ -64,7 +57,7 @@ export const addTicket = (navigate) => {
         dispatch({ type: ADD_TICKET, payload: response.data.ticket });
         dispatch(showNotification('success', response.data.message));
         dispatch({ type: RESET_TICKET_FORM });
-        if (navigate) dispatch(navigate(-1));
+        navigate(-1);
       }
     } catch (error) {
       handleError(error, dispatch, 'Error adding ticket, try agian!');
