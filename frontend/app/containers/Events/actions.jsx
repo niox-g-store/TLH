@@ -253,6 +253,7 @@ export const addEventTicket = (navigate) => {
         location: event.location,
         image: event.image,
         isActive: event.isActive,
+        visibility: event.visibility
       };
 
       const { isValid, errors } = allFieldsValidation(newEvent, rules, {
@@ -339,6 +340,7 @@ export const updateEvent = (navigate) => {
         location: event.location,
         image: event.image || [],
         isActive: event.isActive,
+        visibility: event.visibility
       };
       const { isValid, errors } = allFieldsValidation(updatedEvent, rules, {
         'required.name': 'Name is required.',

@@ -33,7 +33,8 @@ class Dashboard extends React.PureComponent {
       eventIsLoading, ticketFormData,
       ticketFormErrors, events,
       eventEditFormErrors, event,
-      eventTickets,
+      eventTickets, tickets,
+      ticket,
 
       eventChange, addEvent,
       ticketChange, addTicket,
@@ -90,6 +91,10 @@ const mapStateToProps = state => {
 
     ticketFormData: state.ticket.ticketForm,
     ticketFormErrors: state.ticket.ticketFormErrors,
+    tickets: state.ticket.tickets,
+    ticket: state.ticket.ticket,
+
+    //coupons: state.coupon.coupons,
   };
 };
 

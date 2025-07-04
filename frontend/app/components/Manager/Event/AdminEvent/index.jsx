@@ -124,8 +124,8 @@ const AdminEventView = (props) => {
                       <strong>Start Date:</strong> {formatDate(event.startDate)}<br />
                       <strong>End Date:</strong> {formatDate(event.endDate)}<br />
                       <strong>Venue:</strong> {event.location}<br />
-                      <strong>Tickets Sold:</strong> {event.ticketsSold}
-                    </CCardText>
+                      <strong>Tickets Sold:</strong> {event.attendees || 0}<br />
+                      </CCardText>
                   </CCardBody>
                 </CCard>
               </Link>

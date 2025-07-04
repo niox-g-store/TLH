@@ -80,7 +80,8 @@ router.post(
         category,
         capacity,
         isActive,
-        tickets = []
+        tickets = [],
+        visibility
       } = req.body;
 
       const user = req.user._id;
@@ -111,6 +112,7 @@ router.post(
         category,
         capacity: capacity || null,
         isActive: isActive !== undefined ? isActive : true,
+        visibility: visibility !== undefined ? visibility : false,
         imageUrls,
         user,
         tickets
@@ -147,9 +149,17 @@ router.get(
         events = await Event.find({ user: req.user._id }).sort('-createdAt');
       } else {
         // Admin: return all events
-        events = await Event.find({}).sort('-createdAt');
+        events = await Event.find()
+          .populate({
+            path: 'user',
+            populate: {
+              path: 'organizer',
+              model: 'Organizer',
+            }
+          }
+        )
+        .sort('-createdAt');
       }
-
       return res.status(200).json({ events });
     } catch (error) {
       return res.status(400).json({
@@ -166,14 +176,14 @@ router.get(
   async (req, res) => {
     try {
       const eventId = req.params.id;
+      const event = await Event.findById(eventId)
+      .populate('tickets')
+      .populate('user');
 
       // Optional: If Organizer, only allow access to their own event
       if (req.user.role === ROLES.Organizer && !event.user.equals(req.user._id)) {
         return res.status(403).json({ error: 'Access denied.' });
       }
-
-      const event = await Event.findById(eventId)
-      .populate('tickets');
 
       if (!event) {
         return res.status(404).json({ error: 'Event not found.' });
@@ -206,7 +216,8 @@ router.put(
         category,
         capacity,
         isActive,
-        removeImage
+        removeImage,
+        visibility
       } = req.body;
 
       const files = req.files;
@@ -237,6 +248,7 @@ router.put(
       event.category = category;
       event.capacity = capacity || null;
       event.isActive = isActive !== undefined ? isActive : event.isActive;
+      event.visibility = visibility !== undefined ? visibility : event.visibility
 
       if (!removeImage.includes(undefined) && removeImage.length > 0) {
         removeImagesFromEvent(event, removeImage);

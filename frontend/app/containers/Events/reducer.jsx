@@ -37,6 +37,7 @@ const initialState = {
     capacity: '',
     image: '',
     isActive: true,
+    visibility: false,
   },
   imageToRemove: [],
   isLoading: false,
@@ -173,6 +174,7 @@ const eventReducer = (state = initialState, action) => {
           capacity: '',
           image: '',
           isActive: true,
+          visibility: false,
           imageToRemove: []
         },
         event: {

@@ -5,7 +5,7 @@ const Button = (props) => {
     const { text, style, type="btn-primary", size, cls, onClick } = props;
     return (
         <div className={`${cls ? cls : ''} button-container`}>
-            <button style={{...style}} className={type} onClick={onClick}>{text}</button>
+            <button style={{...style}} className={`${type} p-black`} onClick={onClick}>{text}</button>
         </div>
     )
 }

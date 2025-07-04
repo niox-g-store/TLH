@@ -20,6 +20,9 @@ import Page404 from '../Page404';
 
 import AddEvent from '../../components/Manager/Event/Add';
 import EditEvent from "../../components/Manager/Event/Edit";
+
+import AddTicket from '../../components/Manager/Ticket/Add';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@coreui/coreui/dist/css/coreui.min.css';
 
@@ -42,6 +45,8 @@ const Organizer = (props) => {
           <Route path='newsletter' element={<ManagerNewsletter {...props}/>} />
           <Route path='events/add' element={<AddEvent {...props}/>} />
           <Route path='events/edit/:id' element={<EditEvent {...props}/>} />
+          <Route path='tickets/add' element={<AddTicket {...props}/>} />
+          <Route path='tickets/edit/:id' element={<EditEvent {...props}/>} />
           <Route path='*' element={<Page404 />} />
         </Routes>
       </div>

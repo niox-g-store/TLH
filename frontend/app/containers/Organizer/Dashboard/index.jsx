@@ -108,6 +108,16 @@ const OrganizerDashboard = (props) => {
               </CCardBody>
             </CCard>
           </CCol>
+
+          <CCol sm={3}>
+            <CCard className='purple-bg p-white border-15 linear-grad-2'>
+              <CCardBody>
+                <CCardTitle>Ongoing Events</CCardTitle>
+                <CCardText>12</CCardText>
+              </CCardBody>
+            </CCard>
+          </CCol>
+          
           <CCol sm={3}>
             <CCard className='purple-bg p-white border-15 linear-grad-2'>
               <CCardBody>
@@ -119,16 +129,8 @@ const OrganizerDashboard = (props) => {
           <CCol sm={3}>
             <CCard className='purple-bg p-white border-15 linear-grad-2'>
               <CCardBody>
-                <CCardTitle>Past Event</CCardTitle>
+                <CCardTitle>Expired Events</CCardTitle>
                 <CCardText>8</CCardText>
-              </CCardBody>
-            </CCard>
-          </CCol>
-          <CCol sm={3}>
-            <CCard className='purple-bg p-white border-15 linear-grad-2'>
-              <CCardBody>
-                <CCardTitle>Events</CCardTitle>
-                <CCardText>12+ Events, 4 Meetings</CCardText>
               </CCardBody>
             </CCard>
           </CCol>

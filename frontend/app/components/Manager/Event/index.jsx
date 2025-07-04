@@ -70,7 +70,7 @@ const ManagerEventHelper = (props) => {
 
         {/* Event Stats Summary */}
         <CRow className='mb-4 g-2'>
-          <CCol sm={3}>
+          <CCol sm={2}>
             <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white`}>
               <CCardBody>
                 <CCardTitle>Top Selling</CCardTitle>
@@ -78,7 +78,15 @@ const ManagerEventHelper = (props) => {
               </CCardBody>
             </CCard>
           </CCol>
-          <CCol sm={3}>
+          <CCol sm={2}>
+            <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white`}>
+              <CCardBody>
+                <CCardTitle>Ongoing Events</CCardTitle>
+                <CCardText>{stats.Ongoing || 0}</CCardText>
+              </CCardBody>
+            </CCard>
+          </CCol>
+          <CCol sm={2}>
             <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white`}>
               <CCardBody>
                 <CCardTitle>Upcoming Events</CCardTitle>
@@ -86,7 +94,7 @@ const ManagerEventHelper = (props) => {
               </CCardBody>
             </CCard>
           </CCol>
-          <CCol sm={3}>
+          <CCol sm={2}>
             <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white`}>
               <CCardBody>
                 <CCardTitle>Expired Events</CCardTitle>
@@ -94,7 +102,8 @@ const ManagerEventHelper = (props) => {
               </CCardBody>
             </CCard>
           </CCol>
-          <CCol sm={3}>
+
+          <CCol sm={2}>
             <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white`}>
               <CCardBody>
                 <CCardTitle>Total Events</CCardTitle>
@@ -132,7 +141,8 @@ const ManagerEventHelper = (props) => {
                       <strong>Start Date:</strong> {formatDate(event.startDate)}<br />
                       <strong>End Date:</strong> {formatDate(event.endDate)}<br />
                       <strong>Venue:</strong> {event.location}<br />
-                      <strong>Tickets Sold:</strong> {event.ticketsSold}
+                      <strong>Tickets Sold:</strong> {event.attendees || 0}<br />
+                      { event.user.organizer && <strong>Created By: {event.user.organizer.companyName}</strong> }
                     </CCardText>
                   </CCardBody>
                 </CCard>

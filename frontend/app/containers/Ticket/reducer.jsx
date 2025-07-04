@@ -14,15 +14,13 @@ import {
 
 const initialState = {
   tickets: [],
-  ticket: null,
+  ticket: {},
   ticketForm: {
     type: '',
-    event: '',
-    user: '',
     price: '',
     discount: false,
     discountPrice: '',
-    expireDate: '',
+    coupon: ''
   },
   ticketFormErrors: {},
   createdEventTicket: [],

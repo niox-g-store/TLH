@@ -11,14 +11,19 @@ import {
   CPagination,
   CPaginationItem
 } from '@coreui/react';
+import Button from '../../Common/HtmlTags/Button';
 import { tickets } from '../../Data/ticketData';
 import ResolveImage from '../../store/ResolveImage';
 import AddTicket from './Add';
 import GetTicketPrice from '../../store/GetTicketPricing';
 import AdminTicket from './AdminTicket';
 import { ROLES } from '../../../constants';
+import { useNavigate } from 'react-router-dom';
+import actions from "../../../actions";
+import { withRouter } from '../../../withRouter';
+import { connect } from 'react-redux';
 
-const ManagerTicket = (props) => {
+const ManagerTicketHelper = (props) => {
   const { isLightMode,
           stats = {
             topTicket: 'Regular',
@@ -28,6 +33,8 @@ const ManagerTicket = (props) => {
           },
           user
   } = props;
+
+  const navigate = useNavigate()
 
   const [currentPage, setCurrentPage] = useState(1);
   const ticketsPerPage = 10;
@@ -41,7 +48,7 @@ const ManagerTicket = (props) => {
     <div data-aos="fade-up" className='container-lg px-4 d-flex flex-column mb-custom-5em'>
       <div className='d-flex justify-content-between'>
         <h2 style={{ margin: 0 }} className={`${isLightMode ? 'p-black': 'p-white'}`}>Tickets</h2>
-      <AddTicket />
+        <Button onClick={() => navigate('/dashboard/tickets/add')} type={"third-btn"} text={"Create Ticket +"}/>
       </div>
       {
         user.role === ROLES.Admin && <AdminTicket {...props}/>
@@ -143,4 +150,21 @@ const ManagerTicket = (props) => {
   );
 };
 
-export default ManagerTicket;
+class ManagerTicket extends React.PureComponent {
+  componentDidMount () {
+    //this.props.fetchTickets();
+  }
+
+  render () {
+    return (
+      <ManagerTicketHelper {...this.props} />
+    );
+  }
+}
+
+const mapStateToProps = state => ({
+  tickets: state.ticket.tickets,
+  ticketIsLoading: state.ticket.isLoading
+});
+
+export default connect(mapStateToProps, actions)(withRouter(ManagerTicket));

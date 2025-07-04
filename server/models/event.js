@@ -69,6 +69,10 @@ const eventSchema = new mongoose.Schema({
   isActive: {
     type: Boolean
   },
+  visibility: {
+    type: Boolean,
+    default: false
+  },
   imageUrls: [{
     type: String
   }],

@@ -65,8 +65,6 @@ export const login = () => {
       const response = await axios.post(`${API_URL}/auth/login`, user);
       const userid = response.data.user.id
 
-      const name = response.data.user.name;
-
       localStorage.setItem('token', response.data.token);
 
       setToken(response.data.token);

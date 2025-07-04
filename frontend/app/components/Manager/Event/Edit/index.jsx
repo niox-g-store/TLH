@@ -193,8 +193,18 @@ const EditEventForm = (props) => {
                 eventEditChange('isActive', value)}
             />
           </Col>
+          <Col className={`${isLightMode ? 'p-black' : 'p-white'}`} xs='12'>
+            <Switch
+              id='event-visibility'
+              name='visibiliy'
+              label='Visibilitty'
+              checked={event.visibility || ''}
+              toggleCheckboxChange={(value) =>
+                eventEditChange('visibility', value)}
+            />
+          </Col>
 
-          <Col style={{ marginTop: '1em' }}>
+          <Col className='d-flex flex-column' style={{ marginTop: '1em', width: '100%' }}>
             {Array.isArray(event.tickets) && event.tickets.length > 0 ? (
               <>
                           <h4 style={{ textAlign: 'center' }}>Event tickets</h4>
@@ -202,27 +212,17 @@ const EditEventForm = (props) => {
   <CTableHead color="dark">
     <CTableRow>
       <CTableHeaderCell scope="col">Type</CTableHeaderCell>
-      <CTableHeaderCell scope="col">Has Discount</CTableHeaderCell>
+      <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
       <CTableHeaderCell scope="col">Price</CTableHeaderCell>
       <CTableHeaderCell scope="col">Discount Price</CTableHeaderCell>
       <CTableHeaderCell scope="col">Coupon</CTableHeaderCell>
-      <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
+      <CTableHeaderCell scope="col">Has Discount</CTableHeaderCell>
     </CTableRow>
   </CTableHead>
   <CTableBody>
     {event.tickets.map((ticket, index) => (
       <CTableRow key={index}>
         <CTableDataCell>{ticket.type}</CTableDataCell>
-        <CTableDataCell>{ticket.discount ? 'Yes' : 'No'}</CTableDataCell>
-        <CTableDataCell>{`₦${ticket.price.toLocaleString()}`}</CTableDataCell>
-        <CTableDataCell>
-          {ticket.discountPrice ? `₦${ticket.discountPrice.toLocaleString()}` : '—'}
-        </CTableDataCell>
-        <CTableDataCell>
-          {Array.isArray(ticket.coupon) && ticket.coupon.length > 0
-            ? ticket.coupon.join(', ')
-            : 'No coupon'}
-        </CTableDataCell>
         <CTableDataCell>
           <CButton
             className="purple-bg p-white"
@@ -234,13 +234,26 @@ const EditEventForm = (props) => {
             Edit
           </CButton>
         </CTableDataCell>
+        <CTableDataCell>{`₦${ticket.price.toLocaleString()}`}</CTableDataCell>
+        <CTableDataCell>
+          {ticket.discountPrice ? `₦${ticket.discountPrice.toLocaleString()}` : '—'}
+        </CTableDataCell>
+        <CTableDataCell>
+          {Array.isArray(ticket.coupon) && ticket.coupon.length > 0
+            ? ticket.coupon.join(', ')
+            : 'No coupon'}
+        </CTableDataCell>
+        <CTableDataCell>{ticket.discount ? 'Yes' : 'No'}</CTableDataCell>
       </CTableRow>
     ))}
   </CTableBody>
 </CTable>
+<Col style={{ alignSelf: 'center'  }}>
+    <Button style={{ padding: '10px 20px'}} text={"Add more Tickets"} />
+</Col>
   </>
 ) : (
-  <p>No tickets found for this event.</p>
+  <p className={`${isLightMode ? 'p-black' : 'p-white'}`}>No tickets found for this event.</p>
 )}
           </Col>
         </Row>

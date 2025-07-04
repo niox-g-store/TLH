@@ -68,6 +68,19 @@ const RenderDiscountInfo = ({ price, discountPrice, discount }) => {
 
   const renderTicketFields = (ticket, index) => (
     <React.Fragment key={ticket.id}>
+      {/* ttoggle visiblity if ticket has been clicked */}
+      <Row>
+          <Col className={`${isLightMode ? 'p-black' : 'p-white'}`} xs='12'>
+            <Switch
+              id='event-visibility'
+              name='visibiliy'
+              label='Visibilitty'
+              checked={eventTickets.visibility || ''}
+              toggleCheckboxChange={(value) =>
+                eventEditChange('visibility', value)}
+            />
+          </Col>
+      </Row>
       {/* Ticket Type */}
       <Row>
       <Col className={isLightMode ? 'p-black' : 'p-white'} xs='12' lg='6'>
