@@ -3,6 +3,9 @@ import "./style.css";
 import { getCurrentUserDetail } from "../../../../../Backend/auth";
 import { getRegistrationStatus, formatDateRange, formatReadableDate } from "./fucntions";
 import { useNavigate } from "react-router-dom";
+import ResolveImage from "../ResolveImage";
+import { API_URL } from "../../../constants";
+import { Link } from "react-router-dom";
 
 const Card = ({ event, type = "event" }) => {
   const navigate = useNavigate();
@@ -29,10 +32,11 @@ const Card = ({ event, type = "event" }) => {
 
   // Default: Event Card
   return (
+    <Link to={`/event/${event.slug}`}>
     <div className="card-wrapper" userid={userID}>
       <div className="card-body">
         <img
-          src={event.image}
+          src={ResolveImage(`${API_URL}${event.imageUrls[0]}` || '')}
           alt="Event"
           width={100}
           height={100}
@@ -60,6 +64,7 @@ const Card = ({ event, type = "event" }) => {
           : "Register Now"}
       </button>
     </div>
+    </Link>
   );
 };
 

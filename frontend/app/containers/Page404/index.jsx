@@ -3,7 +3,7 @@ import PButton from "../../components/Common/HtmlTags/PrimaryButton/PButton";
 import SButton from "../../components/Common/HtmlTags/SecondaryButton/SButton";
 
 const Page404 = () => {
-    const image404 = "assets/events/event_7.jpeg"
+    const image404 = "./assets/events/event_7.jpeg";
     return (
         <div className="page-404">
             <HeroBanner

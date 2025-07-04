@@ -28,6 +28,8 @@ import {
   CREATE_EVENT_TICKET,
   DELETE_EVENT_TICKET,
   EDIT_EVENT_TICKET,
+  FETCH_ALL_EVENTS,
+  SELECT_EVENT
 } from './constants';
 
 import { API_URL } from '../../constants';
@@ -414,6 +416,34 @@ export const getUserEvent = () => {
       });
     } catch (error) {
       handleError(error, dispatch, 'error fetching user event');
+    }
+  }
+}
+
+export const fetchAllEvents = () => {
+  return async(dispatch) => {
+    try {
+      const response = await axios.get(`${API_URL}/event/all_event`);
+      dispatch({
+        type: FETCH_ALL_EVENTS,
+        payload: response.data.events
+      })
+    } catch (error) {
+      handleError(error, dispatch, 'error fetching events!!')
+    }
+  }
+}
+
+export const fetchEventSlug = (slug) => {
+  return async(dispatch) => {
+    try {
+      const response = await axios.get(`${API_URL}/event/fetch_slug/${slug}`);
+      dispatch({
+        type: SELECT_EVENT,
+        payload: response.data.event
+      })
+    } catch (error) {
+      handleError(error, dispatch, 'error fetching events!!')
     }
   }
 }

@@ -22,6 +22,7 @@ import OrganizerSignUp from './containers/Organizer/SignUp';
 import Dashboard from './containers/Dashboard';
 import Page404 from './containers/Page404';
 import ScrollToTop from './components/Common/ScrollToTop';
+import EventView from './containers/Events/view';
 
 function App (props) {
   const { user } = props;
@@ -58,6 +59,7 @@ function App (props) {
         <Route path='/' element={<Home />} />
         <Route path='/about' element={<About />} />
         <Route path='/events' element={<Events />} />
+        <Route path='/event/:slug' element={<EventView />} />
         <Route path='/gallery' element={<Gallery />} />
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<Signup />} />

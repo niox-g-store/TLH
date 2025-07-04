@@ -37,6 +37,53 @@ const removeImagesFromEvent = (event, removeImageUrls) => {
   return event;
 }
 
+// fetch all events for everyone
+router.get('/all_event', async (req, res) => {
+  try {
+    const events = await Event.find()
+      .populate('tickets')
+      .populate({
+        path: 'user',
+        populate: {
+          path: 'organizer',
+        },
+      })
+      .sort('-createdAt');
+
+    return res.status(200).json({ events });
+  } catch (error) {
+    return res.status(400).json({
+      error: 'Your request could not be processed. Please try again.',
+    });
+  }
+});
+
+router.get('/fetch_slug/:slug', async(req, res) => {
+  try {
+    const slug = req.params.slug;
+    if (!slug) {
+      return res.status(404).json({
+        error: "event doesn't exist"
+      })
+    }
+    const event = await Event.findOne({slug})
+      .populate('tickets')
+      .populate({
+        path: 'user',
+        populate: {
+          path: 'organizer',
+        },
+      });
+
+    return res.status(200).json({ event });
+  } catch (error) {
+    return res.status(400).json({
+      error: 'Your request could not be processed. Please try again.',
+    });
+  }
+})
+
+
 // GET /event/me - return events based on user role
 router.get(
   '/me',

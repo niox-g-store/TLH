@@ -17,3 +17,5 @@ export const CREATE_EVENT_TICKET = 'src/Event/CREATE_EVENT_TICKET';
 export const DELETE_EVENT_TICKET = 'src/Event/DELETE_EVENT_TICKET';
 export const EDIT_EVENT_TICKET = 'src/Event/EDIT_EVENT_TICKET';
 export const FETCH_USER_EVENT = 'src/Event/FETCH_USER_EVENT';
+export const FETCH_ALL_EVENTS = 'src/Event/FETCH_ALL_EVENTS';
+export const SELECT_EVENT = 'src/Event/SELECT_EVENT';

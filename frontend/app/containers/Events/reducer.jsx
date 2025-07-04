@@ -18,6 +18,8 @@ import {
   CREATE_EVENT_TICKET,
   DELETE_EVENT_TICKET,
   EDIT_EVENT_TICKET,
+  FETCH_ALL_EVENTS,
+  SELECT_EVENT,
 } from './constants';
 
 const initialState = {
@@ -44,6 +46,8 @@ const initialState = {
   formErrors: {},
   editFormErrors: {},
   eventTickets: [],
+  allEvents: [],
+  selectEvent: {},
   eventCategories: [
   { value: "CONCERT", label: "Concert" },
   { value: "CONFERENCE", label: "Conference" },
@@ -71,6 +75,16 @@ const initialState = {
 
 const eventReducer = (state = initialState, action) => {
   switch (action.type) {
+    case SELECT_EVENT:
+      return {
+        ...state,
+        selectEvent: action.payload
+      }
+    case FETCH_ALL_EVENTS:
+      return {
+        ...state,
+        allEvents: action.payload
+      };
     case CREATE_EVENT_TICKET:
       return {
         ...state,
