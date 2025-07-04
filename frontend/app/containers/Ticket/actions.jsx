@@ -17,10 +17,11 @@ import {
  * Update ticket form fields
  */
 export const ticketChange = (name, value) => {
+  let formData = {};
+  formData[name] = value;
   return {
     type: TICKET_CHANGE,
-    name,
-    value,
+    payload: formData
   };
 };
 

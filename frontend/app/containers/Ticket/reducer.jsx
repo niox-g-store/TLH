@@ -20,7 +20,7 @@ const initialState = {
     price: '',
     discount: false,
     discountPrice: '',
-    coupon: ''
+    coupons: []
   },
   ticketFormErrors: {},
   createdEventTicket: [],
@@ -83,7 +83,7 @@ const ticketReducer = (state = initialState, action) => {
         ...state,
         ticketForm: {
           ...state.ticketForm,
-          [action.name]: action.value,
+          ...action.payload,
         },
       };
 

@@ -27,16 +27,24 @@ const RenderDiscountInfo = ({ price, discountPrice, discount }) => {
 
 const AddTicket = ({
   isLightMode,
-  ticket,
+  ticketFormData,
   ticketChange,
   couponsOptions = [],
-  ticketIsLoading
+  ticketIsLoading,
 }) => {
-    const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) =>  {
+    e.preventDefault();
+    ticketChange();
+  }
+
   return (
-    <div className="add-ticket">
+    <form onSubmit={handleSubmit} className="add-ticket">
       {ticketIsLoading && <LoadingIndicator isLightMode={isLightMode} />}
-    <Row style={{
+
+      <Row
+        style={{
           marginBottom: '-1em',
           justifyContent: 'space-between',
           padding: '0em 1em'
@@ -44,8 +52,8 @@ const AddTicket = ({
         className='d-flex'
       >
         <h2 className={`${isLightMode ? 'p-black' : 'p-white'} font-size-25`}>Create Ticket</h2>
-      <GoBack navigate={navigate}/>
-    </Row>
+        <GoBack navigate={navigate} />
+      </Row>
 
       <Row>
         {/* Ticket Type */}
@@ -55,8 +63,8 @@ const AddTicket = ({
             label='Ticket Type'
             name='type'
             placeholder='e.g. VIP, General'
-            value={ticket.type}
-            onInputChange={(name, value) => onChange(name, value)}
+            value={ticketFormData.type || ''}
+            onInputChange={(name, value) => ticketChange(name, value)}
           />
         </Col>
 
@@ -67,8 +75,8 @@ const AddTicket = ({
             label='Price'
             name='price'
             placeholder='Enter ticket price'
-            value={ticket.price}
-            onInputChange={(name, value) => onChange(name, value)}
+            value={ticketFormData.price || ''}
+            onInputChange={(name, value) => ticketChange(name, value)}
           />
         </Col>
 
@@ -78,26 +86,26 @@ const AddTicket = ({
             id='ticket-discount'
             name='discount'
             label='Has Discount?'
-            checked={ticket.discount}
-            toggleCheckboxChange={(value) => onChange('discount', value)}
+            checked={ticketFormData.discount || false}
+            toggleCheckboxChange={(value) => ticketChange('discount', value)}
           />
         </Col>
 
         {/* Discount Price + Percentage */}
-        {ticket.discount && (
+        {ticketFormData.discount && (
           <Col className={isLightMode ? 'p-black' : 'p-white'} xs='12' lg='6'>
             <Input
               type='number'
               label='Discount Price'
               name='discountPrice'
               placeholder='Enter discounted price'
-              value={ticket.discountPrice}
-              onInputChange={(name, value) => onChange(name, value)}
+              value={ticketFormData.discountPrice || ''}
+              onInputChange={(name, value) => ticketChange(name, value)}
             />
             <RenderDiscountInfo
-              price={ticket.price}
-              discountPrice={ticket.discountPrice}
-              discount={ticket.discount}
+              price={ticketFormData.price}
+              discountPrice={ticketFormData.discountPrice}
+              discount={ticketFormData.discount}
             />
           </Col>
         )}
@@ -105,16 +113,25 @@ const AddTicket = ({
         {/* Coupons */}
         <Col className={isLightMode ? 'p-black' : 'p-white'} xs='12' lg='6'>
           <SelectOption
-            label='Apply Coupon(s)'
+            label='Apply Coupon(s)... (Optional)'
             placeholder='Select coupon(s)'
-            value={ticket.coupons || []}
+            value={ticketFormData.coupons || []}
             options={couponsOptions}
             multi={true}
-            handleSelectChange={(value) => onCouponSelect('coupons', value)}
+            handleSelectChange={(value) => ticketChange('coupons', value)}
           />
         </Col>
       </Row>
-    </div>
+
+      <Row className='mt-4'>
+        <Col xs='12' className='d-flex justify-content-center'>
+          <Button
+            text="Submit Ticket"
+            style={{ padding: '10px 25px' }}
+          />
+        </Col>
+      </Row>
+    </form>
   );
 };
 
