@@ -70,6 +70,13 @@ const RenderDiscountInfo = ({ price, discountPrice, discount }) => {
     <React.Fragment key={ticket.id}>
       {/* ttoggle visiblity if ticket has been clicked */}
       <Row>
+
+        <div class="alert alert-info" role="alert">
+          By default, your event is visible and can be found in the <strong>Discover Events</strong> section.  
+          <br />
+            If you toggle visibility <strong>on</strong>, your event will also appear in <strong>homepage popover ads</strong>, giving it more exposure.
+        </div>
+
           <Col className={`${isLightMode ? 'p-black' : 'p-white'}`} xs='12'>
             <Switch
               id='event-visibility'
@@ -81,6 +88,8 @@ const RenderDiscountInfo = ({ price, discountPrice, discount }) => {
             />
           </Col>
       </Row>
+
+
       {/* Ticket Type */}
       <Row>
       <Col className={isLightMode ? 'p-black' : 'p-white'} xs='12' lg='6'>
