@@ -162,6 +162,13 @@ input[type="date"] {
   color: #fff !important;
 }
 
+.p-red {
+  color: red !important;
+}
+.p-gray {
+  color: gray !important;
+}
+
 .border-10 {
   border-radius: 10px;
 }

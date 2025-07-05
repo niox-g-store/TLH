@@ -46,8 +46,11 @@ function App (props) {
   const hideHeaderFooterPaths = ['/login', '/signup',
     '/organizer-signup', '/dashboard'
   ];
+  const hideFooter = ['/event/']
   const showHeaderFooter = (USER.role === ROLES.Member ||
-                            !hideHeaderFooterPaths.some(path => location.pathname.startsWith(path)));
+                            !hideHeaderFooterPaths.some(path => location.pathname.startsWith(path))
+                            );
+  const showFooter = (USER.role === ROLES.Member || !hideFooter.some(path => location.pathname.startsWith(path)))
 
   return (
     <>
@@ -68,7 +71,7 @@ function App (props) {
         <Route path='/dashboard/*' element={<Authentication><Dashboard /></Authentication>} />
       </Routes>
 
-      {showHeaderFooter && <Footer />}
+      {showHeaderFooter && showFooter && <Footer />}
     </>
   );
 }

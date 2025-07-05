@@ -61,7 +61,7 @@ const EventViewer = (props) => {
                 From {formatReadableDate(event && event.startDate)} <b className='p-black'>to</b> {formatReadableDate(event && event.endDate)}
               </p>
               <p className='event-host'>Your host: {event && event.user && event.user.organizer && event.user.organizer.companyName || 'The link hangouts'}</p>
-              <div className="event-tickets">
+              {event && event.status !== "Ended" ? <div className="event-tickets">
                 {event && event.tickets && event.tickets.length > 0 ? (
                   <ul className='view-event-ticket view-event-ticket-lg'>
                     {event && event.tickets.map((ticket) => (
@@ -86,7 +86,7 @@ const EventViewer = (props) => {
                 ) : (
                   <p className='font-size-20'>No tickets available</p>
                 )}
-              </div>
+              </div> : <p className='text-center font-size-20 p-gray'>Registration closed</p>}
             </div>
       </div>
 
@@ -123,7 +123,7 @@ const EventViewer = (props) => {
                 From {formatReadableDate(event && event.startDate)} <b className='p-black'>to</b> {formatReadableDate(event && event.endDate)}
               </p>
               <p className='event-host'>Your host: {event && event.user && event.user.organizer && event.user.organizer.companyName || 'The link hangouts'}</p>
-              <div className="event-tickets">
+              {event && event.status !== "Ended" ? <div className="event-tickets">
                 {event && event.tickets && event.tickets.length > 0 ? (
                   <ul className='view-event-ticket'>
                     {event.tickets.map((ticket) => (
@@ -148,7 +148,7 @@ const EventViewer = (props) => {
                 ) : (
                   <p className='font-size-20'>No tickets available</p>
                 )}
-              </div>
+              </div> : <p className='text-center font-size-20 p-gray'>Registration closed</p>}
             </div>
       </div>
       

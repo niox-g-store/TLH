@@ -49,7 +49,10 @@ router.get('/all_event', async (req, res) => {
         },
       })
       .sort('-createdAt');
-
+    for (let event of events) {
+      updateEventStatus(event);
+      await event.save();
+    }
     return res.status(200).json({ events });
   } catch (error) {
     return res.status(400).json({
@@ -75,6 +78,8 @@ router.get('/fetch_slug/:slug', async(req, res) => {
         },
       });
       if (event) {
+        updateEventStatus(event);
+        await event.save(); 
         return res.status(200).json({ event });
       }
       else {
@@ -107,6 +112,10 @@ router.get(
         events = await Event.find({
           registeredAttendees: user._id
         }).sort('-createdAt');
+      }
+      for (let event of events) {
+        updateEventStatus(event);
+        await event.save();
       }
       return res.status(200).json({ events });
     } catch (error) {
@@ -213,6 +222,10 @@ router.get(
         )
         .sort('-createdAt');
       }
+      for (let event of events) {
+        updateEventStatus(event);
+        await event.save();
+      }
       return res.status(200).json({ events });
     } catch (error) {
       return res.status(400).json({
@@ -241,7 +254,8 @@ router.get(
       if (!event) {
         return res.status(404).json({ error: 'Event not found.' });
       }
-
+      updateEventStatus(event);
+      await event.save(); 
       return res.status(200).json({ event });
     } catch (error) {
       return res.status(400).json({
