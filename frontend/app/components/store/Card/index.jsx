@@ -1,7 +1,7 @@
 import React from "react";
 import "./style.css";
 import { getCurrentUserDetail } from "../../../../../Backend/auth";
-import { getRegistrationStatus, formatDateRange, formatReadableDate } from "./fucntions";
+import { getRegistrationStatus, formatDateRange, formatReadableDate } from "./functions";
 import { useNavigate } from "react-router-dom";
 import ResolveImage from "../ResolveImage";
 import { API_URL } from "../../../constants";

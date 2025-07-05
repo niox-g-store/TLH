@@ -16,7 +16,8 @@ const Header = (props) => {
     signOut,
     isMenuOpen,
     toggleMenu,
-    links
+    links,
+    isViewingEvent
   } = props;
   const [scrolled, setScrolled] = useState(false);
 
@@ -36,7 +37,7 @@ const Header = (props) => {
 
   return (
     <>
-      <header className={scrolled ? "scrolled" : ""} data-aos={scrolled ?? "fade-down"} data-aos-delay={scrolled ?? "50"}>
+      <header className={`${scrolled ? "scrolled" : ""} ${isViewingEvent ? 'bg-black' : ''}`} data-aos={scrolled ?? "fade-down"} data-aos-delay={scrolled ?? "50"}>
         <div className="container">
           <div className="navigation">
             <div className="logo">

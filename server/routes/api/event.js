@@ -40,7 +40,7 @@ const removeImagesFromEvent = (event, removeImageUrls) => {
 // fetch all events for everyone
 router.get('/all_event', async (req, res) => {
   try {
-    const events = await Event.find()
+    const events = await Event.find({ isActive: true })
       .populate('tickets')
       .populate({
         path: 'user',
@@ -74,8 +74,13 @@ router.get('/fetch_slug/:slug', async(req, res) => {
           path: 'organizer',
         },
       });
+      if (event) {
+        return res.status(200).json({ event });
+      }
+      else {
+        return res.status(201).json()
+      }
 
-    return res.status(200).json({ event });
   } catch (error) {
     return res.status(400).json({
       error: 'Your request could not be processed. Please try again.',

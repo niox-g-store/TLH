@@ -15,7 +15,6 @@ const EventsView = (props) => {
         desc="Discover our events"
         bannerImage={[]}
       />
-
       <EventsWrap events={events}/>
     </section>
   );
@@ -28,8 +27,11 @@ class Events extends React.PureComponent {
   }
 
   render () {
+    const { events } = this.props;
     return (
-      <EventsView {...this.props} />
+      <>
+        <EventsView {...this.props} />
+      </>
     );
   }
 }

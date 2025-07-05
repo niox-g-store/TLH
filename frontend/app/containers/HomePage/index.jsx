@@ -1,3 +1,4 @@
+import React from "react";
 import { Navigate } from "react-router-dom";
 import { connect } from "react-redux";
 import actions from "../../actions";
@@ -17,8 +18,9 @@ const event2 = "./assets/events/event_2.jpeg";
 const event3 = "./assets/events/event_3.jpeg";
 const event4 = "./assets/events/event_4.jpeg";
 
-const Home = (props) => {
-  const { authenticated } = props;
+class Home extends React.PureComponent {
+  render () {
+  const { authenticated } = this.props;
   if (authenticated) return <Navigate to='/dashboard' />;
 
   const eventImages =  [event1, event3, event2, event4];
@@ -43,6 +45,7 @@ const Home = (props) => {
       <Setup />
     </>
   );
+}
 };
 
 const mapStateToProps = (state) => {

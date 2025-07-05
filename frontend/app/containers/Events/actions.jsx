@@ -29,12 +29,21 @@ import {
   DELETE_EVENT_TICKET,
   EDIT_EVENT_TICKET,
   FETCH_ALL_EVENTS,
-  SELECT_EVENT
+  SELECT_EVENT,
+  VIEWING_EVENT,
+  EVENT_CHANGED
 } from './constants';
 
 import { API_URL } from '../../constants';
 import handleError from '../../utils/error';
 import { allFieldsValidation } from '../../utils/validation';
+
+export const vewingEventToggler = (v) => {
+  return {
+    type: VIEWING_EVENT,
+    payload: v
+  }
+}
 
 export const createEventTicket = (ticket) => ({
   type: CREATE_EVENT_TICKET,
@@ -434,16 +443,33 @@ export const fetchAllEvents = () => {
   }
 }
 
+export const resetEventSlugChange = () => {
+  return {
+    type: EVENT_CHANGED,
+    paylaod: false
+  }
+}
+
 export const fetchEventSlug = (slug) => {
   return async(dispatch) => {
+    dispatch(setEventLoading(true))
+    dispatch(vewingEventToggler(true))
     try {
       const response = await axios.get(`${API_URL}/event/fetch_slug/${slug}`);
+      if (response.status === 201) {
+        dispatch({
+          type: EVENT_CHANGED,
+          payload: true
+        })
+      }
       dispatch({
         type: SELECT_EVENT,
         payload: response.data.event
       })
     } catch (error) {
-      handleError(error, dispatch, 'error fetching events!!')
+      handleError(error, dispatch, 'error fetching events!!');
+    } finally {
+      dispatch(setEventLoading(false));
     }
   }
 }

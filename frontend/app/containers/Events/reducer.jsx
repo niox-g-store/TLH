@@ -20,6 +20,8 @@ import {
   EDIT_EVENT_TICKET,
   FETCH_ALL_EVENTS,
   SELECT_EVENT,
+  VIEWING_EVENT,
+  EVENT_CHANGED
 } from './constants';
 
 const initialState = {
@@ -48,6 +50,8 @@ const initialState = {
   eventTickets: [],
   allEvents: [],
   selectEvent: {},
+  isViewingEvent: false,
+  eventSlugChange: false,
   eventCategories: [
   { value: "CONCERT", label: "Concert" },
   { value: "CONFERENCE", label: "Conference" },
@@ -75,6 +79,16 @@ const initialState = {
 
 const eventReducer = (state = initialState, action) => {
   switch (action.type) {
+    case EVENT_CHANGED:
+      return {
+        ...state,
+        eventSlugChange: action.payload
+      }
+    case VIEWING_EVENT:
+      return {
+        ...state,
+        isViewingEvent: action.payload
+      };
     case SELECT_EVENT:
       return {
         ...state,

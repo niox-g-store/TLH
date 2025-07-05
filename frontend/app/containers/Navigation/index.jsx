@@ -32,7 +32,8 @@ class Navigation extends React.PureComponent {
         signOut,
         isMenuOpen,
         toggleMenu,
-        links
+        links,
+        isViewingEvent
       } = this.props;
 
       return (
@@ -48,7 +49,8 @@ const mapStateToProps = (state) => {
     authenticated: state.authentication.authenticated,
     user: state.account.user,
     isMenuOpen: state.navigation.isMenuOpen,
-    links: filterLinks
+    links: filterLinks,
+    isViewingEvent: state.event.isViewingEvent,
   };
 };
 

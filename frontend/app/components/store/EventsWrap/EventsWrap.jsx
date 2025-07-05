@@ -7,6 +7,7 @@ const EventsWrap = (props) => {
   const { events } = props;
   return (
     <>
+    {events.length > 0 ?
       <div className="container">
         <div className="event-heading">
           <h2 className="head1" data-aos="fade-up">Discover our Events</h2>
@@ -24,6 +25,14 @@ const EventsWrap = (props) => {
           </div>
         </div>
       </div>
+      :
+      <div className="container">
+        <div className="event-heading">
+          <h2 className="head1" data-aos="fade-up">Discover our Events</h2>
+          <h2 style={{ textAlign: 'center', padding: '1em 0em' }} className="font-size-25">No events to show</h2>
+        </div>
+      </div>
+     }
     </>
   );
 };

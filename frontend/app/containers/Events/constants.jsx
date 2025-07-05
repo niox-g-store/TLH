@@ -19,3 +19,5 @@ export const EDIT_EVENT_TICKET = 'src/Event/EDIT_EVENT_TICKET';
 export const FETCH_USER_EVENT = 'src/Event/FETCH_USER_EVENT';
 export const FETCH_ALL_EVENTS = 'src/Event/FETCH_ALL_EVENTS';
 export const SELECT_EVENT = 'src/Event/SELECT_EVENT';
+export const VIEWING_EVENT = 'src/Event/VIEWING_EVENT';
+export const EVENT_CHANGED = 'src/Event/EVENT_CHANGED';
