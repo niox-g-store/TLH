@@ -77,13 +77,6 @@ const EventViewer = (props) => {
                           <h4 className='font-size-25' style={{ padding: '0', margin: '0' }}>{ticket.type}</h4>
                             <b style={{ fontSize: '15px', textDecoration: 'line-through', color: 'black' }}>₦{ticket.price}</b>&nbsp;&nbsp;
                             <span className="font-size-20">₦{ticket.discountPrice}</span>
-                            <span className="badge badge-success percent-off">
-                              {(
-                                ((ticket.price - ticket.discountPrice) / ticket.price) *
-                                100
-                              ).toFixed(1)}
-                              % off
-                            </span>
                           </div>
                         )}
                         <MdOutlineAddShoppingCart size={30}/>
@@ -146,13 +139,6 @@ const EventViewer = (props) => {
                           <h4 className='font-size-25' style={{ padding: '0', margin: '0' }}>{ticket.type}</h4>
                             <b style={{ fontSize: '15px', textDecoration: 'line-through', color: 'black' }}>₦{ticket.price}</b>&nbsp;&nbsp;
                             <span className="font-size-20">₦{ticket.discountPrice}</span>
-                            <span className="badge badge-success percent-off">
-                              {(
-                                ((ticket.price - ticket.discountPrice) / ticket.price) *
-                                100
-                              ).toFixed(1)}
-                              % off
-                            </span>
                           </div>
                         )}
                         <MdOutlineAddShoppingCart size={30}/>
