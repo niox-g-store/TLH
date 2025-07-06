@@ -6,7 +6,8 @@ const RowOurTeam = () => {
   const team2 = "./assets/team/team_2.JPG";
   const team3 = "./assets/team/team_3.JPG";
   const team4 = "./assets/team/team_4.JPG";
-  const team5 = "./assets/team/team_5.jpg"
+  const team5 = "./assets/team/team_5.jpg";
+  const team6 = "./assets/team/team_6.jpg";
   return (
     <>
       <section className="row-our-team">
@@ -102,6 +103,23 @@ const RowOurTeam = () => {
                     <p className="font-size-14" data-aos="fade-up">
                       supports the hospitality team in delivering smooth, guest focused experiences at every event. From coordinating logistics to ensuring client comfort, she plays a key role in making every moment feel seamless and welcoming.                    </p>
                   </div>
+                </div>
+              </div>
+
+              <div className="col-our-team-item items-2">
+                <div className="item-img" data-aos="zoom-in-up">
+                  <img src={team6} alt="item4" width="320" height="322" />
+                </div>
+                <div className="item-content">
+                  <div className="item-inner">
+                    <h2 className="font-size-30" data-aos="fade-up">
+                      Adedoyin Mary
+                    </h2>
+                    <p className="font-size-20" data-aos="fade-up">Event Setup Coordinator</p>
+                    <p className="font-size-14" data-aos="fade-up">
+                      She ensures every event space is perfectly prepared, from layout and décor to technical readiness. With a keen eye for detail and a hands on approach, she makes sure each venue is event ready, visually stunning, and aligned with the client’s vision.
+                    </p>
+                    </div>
                 </div>
               </div>
             </div>
