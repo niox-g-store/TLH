@@ -100,7 +100,7 @@
 }
 
 .acordion-img {
-  background: url("arc_file.svg");
+  background: url("../../public/arc_file.svg");
   background-repeat: no-repeat;
   background-size: contain;
   width: 15px;
