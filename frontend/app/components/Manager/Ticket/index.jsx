@@ -97,8 +97,8 @@ export const ManagerTicketHelper = (props) => {
                   alt={ticket.type}
                   style={{ width: '40%', objectFit: 'cover' }}
                 />
-                <CCardBody>
-                  <CCardTitle style={{ width: 'fit-content' }} className="mb-2">{ticket.type}</CCardTitle>
+                <CCardBody style={{ padding: '.5em 0em .5em 1em', margin: '0' }}>
+                  <CCardTitle style={{ width: 'fit-content', padding: '0' }} className="mb-2">{ticket.type}</CCardTitle>
 
                   <CCardText style={{ width: 'fit-content' }} as={'div'} className="mt-2">
                     <GetTicketPrice style={{ width: 'fit-content' }} ticket={ticket} />
