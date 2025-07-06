@@ -11,6 +11,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import actions from "../../../../actions";
 import { withRouter } from "../../../../withRouter";
 import { connect } from "react-redux";
+import { ticketCouponFinder } from "../../../../utils/eventCategories";
 
 const RenderDiscountInfo = ({ price, discountPrice, discount }) => {
   const priceNum = parseFloat(price);
@@ -128,8 +129,9 @@ const EditTicketForm = (props) => {
           <SelectOption
             label='Apply Coupon(s)... (Optional)'
             placeholder='Select coupon(s)'
-            value={ticket.coupons || []}
             options={coupons}
+            prevValue={ticketCouponFinder(coupons, ticket.coupons) || ''}
+            value={ticket.coupons || ''}
             multi={true}
             handleSelectChange={(value) => editTicketChange('coupons', value)}
           />
@@ -159,6 +161,7 @@ class EditTicket extends React.PureComponent {
     //this.props.resetTicket();
     const ticketId = this.props.match.params.id;
     this.props.fetchTicket(ticketId);
+    this.props.fetchCouponsSelect();
   }
 
   componentDidUpdate(prevProps) {
@@ -170,7 +173,7 @@ class EditTicket extends React.PureComponent {
   }
 
   render () {
-    const { deleteTicket, ticketEditFormErrors } = this.props;
+    const { deleteTicket, ticketEditFormErrors, coupons } = this.props;
     return (
       <EditTicketForm {...this.props} />
     );
@@ -180,7 +183,8 @@ class EditTicket extends React.PureComponent {
 const mapStateToProps = state => ({
   ticket: state.ticket.ticket,
   ticketEditFormErrors: state.ticket.editFormErrors,
-  ticketIsLoading: state.ticket.isLoading
+  ticketIsLoading: state.ticket.isLoading,
+  coupons: state.coupon.couponsSelect
 });
 
 export default connect(mapStateToProps, actions)(withRouter(EditTicket));

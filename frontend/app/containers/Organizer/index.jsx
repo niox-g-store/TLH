@@ -11,7 +11,7 @@ import AccountMenu from '../../components/store/AccountMenu';
 import ManagerAccount from '../../components/Manager/Account';
 import ManagerEvent from '../../components/Manager/Event';
 import ManagerTicket from '../../components/Manager/Ticket';
-import ManagerCoupon from '../../components/Manager/Coupons';
+import ManagerCoupon from '../../components/Manager/Coupon';
 import ManagerOrder from '../../components/Manager/Orders';
 import ManagerSanner from '../../components/Manager/Scan';
 import AccountSecurity from '../../components/Manager/Security';
@@ -23,6 +23,9 @@ import EditEvent from "../../components/Manager/Event/Edit";
 
 import AddTicket from '../../components/Manager/Ticket/Add';
 import EditTicket from '../../components/Manager/Ticket/Edit';
+
+import AddCoupon from '../../components/Manager/Coupon/Add';
+import EditCoupon from '../../components/Manager/Coupon/Edit';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@coreui/coreui/dist/css/coreui.min.css';
@@ -48,8 +51,8 @@ const Organizer = (props) => {
           <Route path='events/edit/:id' element={<EditEvent {...props}/>} />
           <Route path='tickets/add' element={<AddTicket {...props}/>} />
           <Route path='tickets/edit/:id' element={<EditTicket {...props}/>} />
-          {/*<Route path='coupons/add' element={<AddCoupon {...props}/>} />
-          <Route path='coupons/edit/:id' element={<EditCoupon {...props}/>} />*/}
+          <Route path='coupons/add' element={<AddCoupon {...props}/>} />
+          <Route path='coupons/edit/:id' element={<EditCoupon {...props}/>} />
           <Route path='*' element={<Page404 />} />
         </Routes>
       </div>

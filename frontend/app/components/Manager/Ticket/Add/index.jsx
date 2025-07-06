@@ -1,5 +1,5 @@
+import React from "react";
 import Button from "../../../Common/HtmlTags/Button";
-import React from 'react';
 import Row from '../../../Common/Row';
 import Col from '../../../Common/Col';
 import Input from '../../../Common/HtmlTags/Input';
@@ -8,6 +8,10 @@ import SelectOption from '../../../store/SelectOption';
 import LoadingIndicator from "../../../store/LoadingIndicator";
 import { GoBack } from "../../../../containers/goBack/inedx";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import actions from "../../../../actions";
+import { connect } from "react-redux";
+import { withRouter } from "../../../../withRouter";
+import { ticketCouponFinder } from "../../../../utils/eventCategories";
 
 const RenderDiscountInfo = ({ price, discountPrice, discount }) => {
   const priceNum = parseFloat(price);
@@ -25,7 +29,7 @@ const RenderDiscountInfo = ({ price, discountPrice, discount }) => {
   return null;
 };
 
-const AddTicket = (props) => {
+const AddTicketForm = (props) => {
   const { isLightMode,
           ticketFormData,
           ticketChange,
@@ -38,7 +42,6 @@ const AddTicket = (props) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const eventIdFromQuery = searchParams.get('event');
-  console.log(eventIdFromQuery)
 
   const handleSubmit = (e) =>  {
     e.preventDefault();
@@ -122,8 +125,9 @@ const AddTicket = (props) => {
           <SelectOption
             label='Apply Coupon(s)... (Optional)'
             placeholder='Select coupon(s)'
-            value={ticketFormData.coupons || []}
             options={couponsOptions}
+            prevValue={ticketCouponFinder(couponsOptions, ticketFormData.coupons) || ''}
+            value={ticketFormData.coupons || []}
             multi={true}
             handleSelectChange={(value) => ticketChange('coupons', value)}
           />
@@ -143,4 +147,43 @@ const AddTicket = (props) => {
   );
 };
 
-export default AddTicket;
+class AddTicket extends React.PureComponent {
+  componentDidMount () {
+    this.props.fetchCouponsSelect();
+  }
+
+render () {
+  const {
+    isLightMode,
+    ticket,
+    ticketEditFormErrors,
+    ticketIsLoading,
+    coupons,
+    ticketChange,
+    addTicket,
+    addTicketToEvent
+  } = this.props;
+
+  return (
+    <AddTicketForm
+      isLightMode={isLightMode}
+      ticketFormData={ticket}
+      ticketFormErrors={ticketEditFormErrors}
+      ticketIsLoading={ticketIsLoading}
+      couponsOptions={coupons}
+      ticketChange={ticketChange}
+      addTicket={addTicket}
+      addTicketToEvent={addTicketToEvent}
+    />
+  );
+}
+}
+
+const mapStateToProps = state => ({
+  ticket: state.ticket.ticketForm,
+  ticketEditFormErrors: state.ticket.editFormErrors,
+  ticketIsLoading: state.ticket.isLoading,
+  coupons: state.coupon.couponsSelect
+});
+
+export default connect(mapStateToProps, actions)(withRouter(AddTicket));

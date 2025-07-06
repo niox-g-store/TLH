@@ -35,13 +35,21 @@ class Dashboard extends React.PureComponent {
       eventEditFormErrors, event,
       eventTickets, tickets,
       ticket, ticketEditFormErrors,
+      couponFormData, couponFormErrors,
+      couponEditFormErrors, coupons,
+      coupon, couponIsLoading,
 
       eventChange, addEvent,
       ticketChange, addTicket,
+      couponChange, addCoupon,
       fetchEvents, updateEvent,
       createEventTicket, editEventTicket,
       deleteEventTicket, addEventTicket,
-      editTicketChange,
+      editTicketChange, couponEditChange,
+      updateCoupon, fetchCoupons,
+      deleteCoupon, resetCoupon,
+      fetchCoupon, getUserCoupons,
+      couponsOptions
     } = this.props;
     // if (isDisabledOrganizerAccount(user)) { return <DisabledOrganizerAccount user={user} />; }
 
@@ -97,7 +105,13 @@ const mapStateToProps = state => {
     tickets: state.ticket.tickets,
     ticket: state.ticket.ticket,
 
-    //coupons: state.coupon.coupons,
+    couponFormData: state.coupon.couponFormData,
+    couponFormErrors: state.coupon.formErrors,
+    couponEditFormErrors: state.coupon.editFormErrors,
+    couponIsLoading: state.coupon.isLoading,
+    coupons: state.coupon.coupons,
+    coupon: state.coupon.coupon,
+    couponsOptions: state.coupon.couponsSelect
   };
 };
 

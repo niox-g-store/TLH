@@ -9,11 +9,12 @@ const couponSchema = new mongoose.Schema({
     trim: true
   },
   percentage: {
-    type: Number
+    type: Number,
+    required: true
   },
   discountPrice: {
     type: Number,
-    required: true
+    default: 0
   },
   event: [{
     type: mongoose.Schema.Types.ObjectId,
@@ -42,9 +43,6 @@ const couponSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
-  },
-  image: {
-    type: String
   },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }

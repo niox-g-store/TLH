@@ -26,7 +26,6 @@ const Accordian = () => {
   const [openIndex, setOpenIndex] = useState(-1);
 
   const toggleAccordion = (index) => {
-    console.log(index, "index");
     setOpenIndex((prevIndex) => (prevIndex === index ? -1 : index));
   };
   return (

@@ -86,7 +86,6 @@ router.get(
 
       return res.status(200).json({ ticket });
     } catch (error) {
-      console.log(error)
       return res.status(400).json({
         error: 'Your request could not be processed. Please try again.'
       });
@@ -101,7 +100,8 @@ router.post(
   role.check(ROLES.Admin, ROLES.Organizer),
   async (req, res) => {
     try {
-      const { type, price, discount, discountPrice, coupons } = req.body;
+      const { type, price, discount, discountPrice } = req.body;
+      const coupons = req.body.coupons.length > 0 ? req.body.coupons.map(coupon => coupon.value) : [];
       const user = req.user._id;
 
       const ticket = new Ticket({
@@ -147,10 +147,15 @@ router.put(
   role.check(ROLES.Admin, ROLES.Organizer),
   async (req, res) => {
     try {
+      const { type, discount, discountPrice } = req.body;
+      const coupons = req.body.coupons.length > 0 ? req.body.coupons.map(coupon => coupon.value) : [];
       const updatedTicket = await Ticket.findByIdAndUpdate(
         req.params.id,
         {
-          ...req.body,
+          coupons,
+          type,
+          discount,
+          discountPrice
         },
         { new: true }
       );
@@ -176,10 +181,17 @@ router.post(
       let { tickets } = req.body;
       const user = req.user._id;
 
-      tickets = tickets.map(ticket => ({
+      tickets = tickets.map(ticket => {
+      const couponIds = Array.isArray(ticket.coupons)
+        ? ticket.coupons.map(c => c.value)
+        : [];
+
+      return {
         ...ticket,
+        coupons: couponIds,
         user
-      }));
+      };
+      });
 
       if (!Array.isArray(tickets) || tickets.length === 0) {
         return res.status(400).json({ success: false, message: 'Tickets is required' });

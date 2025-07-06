@@ -91,18 +91,19 @@ export const ManagerTicketHelper = (props) => {
           {currentTickets.map((ticket, idx) => (
             <CCol md={6} key={idx}>
             <Link to={`/dashboard/tickets/edit/${ticket._id}`}>
-              <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}>
+              <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden card-for-mobile`}>
                 <CImage
                   src={ResolveImage(ticket.image, 'ticket')}
                   alt={ticket.type}
                   style={{ width: '40%', objectFit: 'cover' }}
                 />
                 <CCardBody>
-                  <CCardTitle className="mb-2">{ticket.type}</CCardTitle>
+                  <CCardTitle style={{ width: 'fit-content' }} className="mb-2">{ticket.type}</CCardTitle>
 
-                  <CCardText as={'div'} className="mt-2">
-                    <GetTicketPrice ticket={ticket} />
-                    <strong>Sold:</strong> {ticket.quantitySold || 0}
+                  <CCardText style={{ width: 'fit-content' }} as={'div'} className="mt-2">
+                    <GetTicketPrice style={{ width: 'fit-content' }} ticket={ticket} />
+                      <strong style={{ width: 'fit-content' }}>Coupons included: {ticket.coupons.length || 0}</strong><br />
+                      <strong style={{ width: 'fit-content' }}>Sold:</strong> {ticket.quantitySold || 0}
                   </CCardText>
                 </CCardBody>
               </CCard>

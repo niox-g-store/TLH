@@ -18,8 +18,11 @@ import SelectOption from '../../../store/SelectOption';
 import { GoBack } from '../../../../containers/goBack/inedx';
 import AddEventTicket from './ticket';
 import AdvancedUpload from '../../../store/AdanceFileUpload';
+import { connect } from 'react-redux';
+import { withRouter } from '../../../../withRouter';
+import actions from "../../../../actions";
 
-const AddEvent = (props) => {
+const AddEventForm = (props) => {
   const {
     eventFormData,
     eventFormErrors,
@@ -29,7 +32,8 @@ const AddEvent = (props) => {
     isLightMode,
     image,
     eventCategories,
-    eventTickets
+    eventTickets,
+    couponsOptions
   } = props;
 
   const navigate = useNavigate();
@@ -209,4 +213,39 @@ const AddEvent = (props) => {
   );
 };
 
-export default AddEvent;
+
+class AddEvent extends React.PureComponent {
+  componentDidMount () {
+    this.props.fetchCouponsSelect();
+  }
+
+  render () {
+    const {
+      eventFormData,
+      eventFormErrors,
+      eventChange,
+      addEvent,
+      eventIsLoading,
+      isLightMode,
+      image,
+      eventCategories,
+      eventTickets,
+      couponsOptions
+    } = this.props;
+    return (
+      <AddEventForm {...this.props} />
+    );
+  }
+}
+
+const mapStateToProps = state => ({
+  eventFormData: state.event.eventFormData,
+  eventFormErrors: state.event.formErrors,
+  eventIsLoading: state.event.isLoading,
+  isLightMode: state.dashboard.isLightMode,
+  eventCategories: state.event.eventCategories,
+  eventIsLoading: state.event.isLoading,
+  couponsOptions: state.coupon.couponsSelect
+});
+
+export default connect(mapStateToProps, actions)(withRouter(AddEvent));

@@ -213,7 +213,7 @@ const EditEventForm = (props) => {
           <Col className='d-flex flex-column' style={{ marginTop: '1em', width: '100%' }}>
             {Array.isArray(event.tickets) && event.tickets.length > 0 ? (
               <>
-                          <h4 className={`${isLightMode ? 'p-black' : 'p-white'}`} style={{ textAlign: 'center' }}>Event tickets</h4>
+              <h4 className={`${isLightMode ? 'p-black' : 'p-white'}`} style={{ textAlign: 'center' }}>Event tickets</h4>
 <CTable bordered striped hover responsive>
   <CTableHead color="dark">
     <CTableRow>
@@ -246,8 +246,8 @@ const EditEventForm = (props) => {
           {ticket.discountPrice ? `₦${ticket.discountPrice.toLocaleString()}` : '—'}
         </CTableDataCell>
         <CTableDataCell>
-          {Array.isArray(ticket.coupon) && ticket.coupon.length > 0
-            ? ticket.coupon.join(', ')
+          {Array.isArray(ticket.coupons) && ticket.coupons.length > 0
+            ? 'YES' 
             : 'No coupon'}
         </CTableDataCell>
         <CTableDataCell>{ticket.discount ? 'Yes' : 'No'}</CTableDataCell>

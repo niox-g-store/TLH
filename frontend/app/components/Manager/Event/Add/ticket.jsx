@@ -5,6 +5,8 @@ import Input from '../../../Common/HtmlTags/Input';
 import Button from '../../../Common/HtmlTags/Button';
 import Switch from '../../../store/Switch';
 import { useNavigate } from 'react-router-dom';
+import SelectOption from '../../../store/SelectOption';
+import { ticketCouponFinder } from '../../../../utils/eventCategories';
 
 const AddEventTicket = ({
   ticketFormData,
@@ -19,6 +21,7 @@ const AddEventTicket = ({
   addEventTicket,
   eventEditChange,
   addEvent,
+  couponsOptions
 }) => {
   const navigate = useNavigate();
 
@@ -33,7 +36,8 @@ const AddEventTicket = ({
         type: '',
         price: '',
         discount: false,
-        discountPrice: ''
+        discountPrice: '',
+        coupons: '',
       };
 
     createEventTicket({ ...baseTicket });
@@ -117,6 +121,18 @@ const RenderDiscountInfo = ({ price, discountPrice, discount }) => {
           }
         />
       </Col>
+      {/* Coupons */}
+        <Col className={isLightMode ? 'p-black' : 'p-white'} xs='12' lg='6'>
+          <SelectOption
+            label='Apply Coupon(s)... (Optional)'
+            placeholder='Select coupon(s)'
+            options={couponsOptions}
+            prevValue={ticketCouponFinder(couponsOptions, ticket.coupons) || ''}
+            value={ticket.coupons || []}
+            multi={true}
+            handleSelectChange={(value) => handleEditTicket(ticket.id, {'coupons': value})}
+          />
+        </Col>
 
       {/* Delete Button */}
       <Col xs='1' className='d-flex align-items-center'>
@@ -157,6 +173,8 @@ const RenderDiscountInfo = ({ price, discountPrice, discount }) => {
             discountPrice={ticket.discountPrice}
             discount={ticket.discount}
           />
+          <br />
+          <br />
         </Col>
       )}
       </Row>

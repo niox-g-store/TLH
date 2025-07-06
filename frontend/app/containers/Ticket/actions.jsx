@@ -77,7 +77,6 @@ export const addTicket = (navigate) => {
       if (!isValid) {
         return dispatch({ type: SET_TICKET_FORM_ERRORS, payload: errors });
       }
-
       const response = await axios.post(`${API_URL}/ticket`, ticketForm);
 
       if (response.data.success === true) {
@@ -115,8 +114,8 @@ export const editTicket = (navigate, id) => {
       if (!isValid) {
         return dispatch({ type: SET_TICKET_FORM_EDIT_ERRORS, payload: errors });
       }
-
-      const response = await axios.put(`${API_URL}/ticket/${id}`, ticketForm);
+      let ticketForms = ticketForm;
+      const response = await axios.put(`${API_URL}/ticket/${id}`, ticketForms);
 
       if (response.data.success === true) {
         dispatch(showNotification('success', response.data.message));
