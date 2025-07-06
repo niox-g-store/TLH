@@ -113,7 +113,7 @@ const RowOurTeam = () => {
                 <div className="item-content">
                   <div className="item-inner">
                     <h2 className="font-size-30" data-aos="fade-up">
-                      Adedoyin Mary
+                      Aderemi Adedoyin
                     </h2>
                     <p className="font-size-20" data-aos="fade-up">Event Setup Coordinator</p>
                     <p className="font-size-14" data-aos="fade-up">
