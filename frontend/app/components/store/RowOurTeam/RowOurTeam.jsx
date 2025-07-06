@@ -6,6 +6,7 @@ const RowOurTeam = () => {
   const team2 = "./assets/team/team_2.JPG";
   const team3 = "./assets/team/team_3.JPG";
   const team4 = "./assets/team/team_4.JPG";
+  const team5 = "./assets/team/team_5.jpg"
   return (
     <>
       <section className="row-our-team">
@@ -84,6 +85,22 @@ const RowOurTeam = () => {
                     <p className="font-size-14" data-aos="fade-up">
                       leads all cinematic and visual storytelling for our events, capturing each moment with creativity and precision. With a passion for impactful content, he ensures every frame reflects the energy, emotion, and essence of the experience.
                     </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="col-our-team-item items-2">
+                <div className="item-img" data-aos="zoom-in-up">
+                  <img src={team5} alt="item4" width="320" height="322" />
+                </div>
+                <div className="item-content">
+                  <div className="item-inner">
+                    <h2 className="font-size-30" data-aos="fade-up">
+                      Blessing Ngozi
+                    </h2>
+                    <p className="font-size-20" data-aos="fade-up">Hospitality Management Assistant</p>
+                    <p className="font-size-14" data-aos="fade-up">
+                      supports the hospitality team in delivering smooth, guest focused experiences at every event. From coordinating logistics to ensuring client comfort, she plays a key role in making every moment feel seamless and welcoming.                    </p>
                   </div>
                 </div>
               </div>
