@@ -1,4 +1,8 @@
 .faq-section {
+    @include media-breakpoint-up(lg) {
+        padding: 5em 0em;
+    }
+    padding: 7em 1.5em 3em 1.5em;
     .hero-banner {
         background: black;
 

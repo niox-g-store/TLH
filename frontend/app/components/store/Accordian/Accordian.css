@@ -40,7 +40,7 @@
 
 .accordion-icon {
   border-radius: 100px;
-  background: #e14817;
+  background: var(--primary_color);
   color: white;
   width: 34px;
   height: 34px;
@@ -53,14 +53,14 @@
 .accordion-item:hover,
 .accordion-item.open:hover,
 .accordion-item.open {
-  background: #e14817;
+  background: var(--primary_color);
   color: #fff;
   border-radius: 8px;
 }
 .according-items:hover .accordion-icon,
 .accordion-icon.open {
   background: #fff;
-  color: #e14817;
+  color: var(--primary_color);
 }
 
 .accordion-question {

@@ -23,6 +23,8 @@ import Dashboard from './containers/Dashboard';
 import Page404 from './containers/Page404';
 import ScrollToTop from './components/Common/ScrollToTop';
 import EventView from './containers/Events/view';
+import Terms from './containers/Terms';
+import PrivacyPolicy from './containers/Policy';
 
 function App (props) {
   const { user } = props;
@@ -46,7 +48,7 @@ function App (props) {
   const hideHeaderFooterPaths = ['/login', '/signup',
     '/organizer-signup', '/dashboard'
   ];
-  const hideFooter = ['/event/']
+  const hideFooter = ['/event/', '/terms', '/privacy', '/faq']
   const showHeaderFooter = (USER.role === ROLES.Member ||
                             !hideHeaderFooterPaths.some(path => location.pathname.startsWith(path))
                             );
@@ -68,6 +70,8 @@ function App (props) {
         <Route path='/signup' element={<Signup />} />
         <Route path='/organizer-signup' element={<OrganizerSignUp />} />
         <Route path='/faq' element={<FAQs />} />
+        <Route path='/terms' element={<Terms />} />
+        <Route path='/privacy' element={<PrivacyPolicy />} />
         <Route path='/dashboard/*' element={<Authentication><Dashboard /></Authentication>} />
       </Routes>
 

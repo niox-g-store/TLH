@@ -58,7 +58,7 @@ const Card = ({ event, type = "event" }) => {
         }
       >
         {getRegistrationStatus(event.startDate, event.endDate) === "closed"
-          ? "Registration Closed"
+          ? "Sold out"
           : getRegistrationStatus(event.startDate, event.endDate) === "soon"
           ? "Coming Soon"
           : "Register Now"}

@@ -86,7 +86,7 @@ const EventViewer = (props) => {
                 ) : (
                   <p className='font-size-20'>No tickets available</p>
                 )}
-              </div> : <p className='text-center font-size-20 p-gray'>Registration closed</p>}
+              </div> : <p className='text-center font-size-20 p-gray'>Sold out</p>}
             </div>
       </div>
 
@@ -148,7 +148,7 @@ const EventViewer = (props) => {
                 ) : (
                   <p className='font-size-20'>No tickets available</p>
                 )}
-              </div> : <p className='text-center font-size-20 p-gray'>Registration closed</p>}
+              </div> : <p className='text-center font-size-20 p-gray'>Sold out</p>}
             </div>
       </div>
       
