@@ -105,7 +105,7 @@ const Terms = () => {
           For questions or concerns about these terms, please contact us at:
           <br />
           <br />
-          <p>Email: info@thelinkhangout.com</p>
+          <p>Email: contact@thelinkhangout.com</p>
           Location: Lagos, Nigeria
         </p>
       </div>

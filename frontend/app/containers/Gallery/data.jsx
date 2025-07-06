@@ -3,7 +3,7 @@ export const galleries = [
     id: 1,
     name: "Nature Wonders",
     desc: "A collection of breathtaking natural landscapes.",
-    image: "./assets/gallery/g_1.png",
+    image: "./assets/gallery/g_3.JPG",
     slug: "nature-wonders",
     images: Array(10).fill("./assets/gallery/g_1.png"),
     date: "2025-06-01",

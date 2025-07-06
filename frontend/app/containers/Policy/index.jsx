@@ -91,7 +91,7 @@ const PrivacyPolicy = () => {
         <p className='p-white'>
           If you have questions about this policy or how your information is handled, please contact:
           <br />
-          <strong>Email:</strong> info@thelinkhangout.com
+          <strong>Email:</strong> contact@thelinkhangout.com
           <br />
           <strong>Location:</strong> Lagos, Nigeria
         </p>

@@ -18,13 +18,16 @@ const Footer = () => {
                 <h4 className="p-white">Quick Links</h4>
                 <ul>
                   <li>
-                    <a className="p-white" href="#">Terms & Conditions</a>
+                    <a className="p-white" target="_blank" href="/about">About us</a>
                   </li>
                   <li>
-                    <a className="p-white" href="#">Privacy Policy</a>
+                    <a className="p-white" target="_blank" href="/terms">Terms & Conditions</a>
                   </li>
                   <li>
-                    <a className="p-white" href="#">FAQs</a>
+                    <a className="p-white" target="_blank" href="/privacy">Privacy Policy</a>
+                  </li>
+                  <li>
+                    <a className="p-white" target="_blank" href="/faq">FAQs</a>
                   </li>
                 </ul>
               </div>
@@ -32,16 +35,13 @@ const Footer = () => {
                 <h4 className="p-white">Socials</h4>
                 <ul>
                   <li>
-                    <a className="p-white" href="#">Whatsapp</a>
+                    <a className="p-white" target="_blank" href="https://chat.whatsapp.com/BITMxQSwpFT5x8zjX0v6z2">Whatsapp</a>
                   </li>
                   <li>
-                    <a className="p-white" href="#">Tiktok</a>
+                    <a className="p-white" target="_blank" href="https://www.tiktok.com/@linkhangouts?_t=ZN-8xRsHnS1ygY&_r=1">Tiktok</a>
                   </li>
                   <li>
-                    <a className="p-white" href="#">Instagram</a>
-                  </li>
-                  <li>
-                    <a className="p-white" href="#">Blog</a>
+                    <a className="p-white" target="_blank" href="https://www.instagram.com/thelinkhangouts?igsh=MThybGJsMDA3bW50ZA%3D%3D&utm_source=qr">Instagram</a>
                   </li>
                 </ul>
               </div>
@@ -49,10 +49,10 @@ const Footer = () => {
                 <h4 className="p-white">Support</h4>
                 <ul>
                   <li>
-                    <a className="p-white" href="#">Contact Us</a>
+                    <a className="p-white" href="mailto:contact@thelinkhangout.com">Contact Us</a>
                   </li>
                   <li>
-                    <a className="p-white" href="#">Join the chat room</a>
+                    <a className="p-white" target="_blank" href="https://chat.whatsapp.com/BITMxQSwpFT5x8zjX0v6z2">Join the chat room</a>
                   </li>
                 </ul>
               </div>

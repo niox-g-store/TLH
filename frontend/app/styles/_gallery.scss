@@ -5,12 +5,14 @@
 
     .hero-banner {
         background-repeat: no-repeat !important;
-        background-size: 100% !important;
+        background-size: cover !important;
         background-position: center !important;
-        padding-top: 25%;
+        padding-top: 35%;
         @include media-breakpoint-down(md){
-            padding-top: 56%;
+            padding-top: 60%;
+            height: 58vh;
         }
+
     }
 
     .gallery-wrapper {
