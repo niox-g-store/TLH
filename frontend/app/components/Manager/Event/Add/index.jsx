@@ -241,7 +241,6 @@ class AddEvent extends React.PureComponent {
 const mapStateToProps = state => ({
   eventFormData: state.event.eventFormData,
   eventFormErrors: state.event.formErrors,
-  eventIsLoading: state.event.isLoading,
   isLightMode: state.dashboard.isLightMode,
   eventCategories: state.event.eventCategories,
   eventIsLoading: state.event.isLoading,
