@@ -10,7 +10,7 @@ const EventsWrap = (props) => {
     {events.length > 0 ?
       <div className="container">
         <div className="event-heading">
-          <h2 className="head1" data-aos="fade-up">Discover our Events</h2>
+          <h2 className="head1">Discover our Events</h2>
 
           <Input placeholder={"Search events by name"} type={"search"} />
         </div>

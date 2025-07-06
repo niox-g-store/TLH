@@ -5,7 +5,7 @@ import Card from "../Card";
 const GalleryWrapper = ({ galleries }) => {
   return (
     <div className="gallery-wrapper">
-      <h2 data-aos="fade-up">Explore our gallery</h2>
+      <h2>Explore our gallery</h2>
       <div className="upcoming-events">
         <Pagination
           items={galleries}
