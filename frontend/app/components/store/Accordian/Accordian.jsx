@@ -105,7 +105,7 @@ const Accordian = () => {
   return (
     <div className="container">
       <div className="app" data-aos="fade-up">
-        <h1 className="font-size-25">Frequently asked questions (FAQs)</h1>
+        <h1 className="font-size-30">Frequently asked questions (FAQs)</h1>
         <p style={{ fontSize: "11px" }}>Last updated 9th July 2025</p>
 
         <div className="acorddion-wrapper">

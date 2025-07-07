@@ -16,7 +16,7 @@ module.exports = {
   },
   jwt: {
     secret: process.env.JWT_SECRET,
-    tokenLife: '7d'
+    tokenLife: '1d'
   },
   FileManager: {
     apiUrl: process.env.FILE_MANAGER_API_URL,
