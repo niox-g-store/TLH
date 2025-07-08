@@ -12,6 +12,7 @@ import Setup from "../../components/store/Setup/Setup";
 import PButton from "../../components/Common/HtmlTags/PrimaryButton/PButton";
 import SButton from "../../components/Common/HtmlTags/SecondaryButton/SButton";
 import HomeBanner from "./HomeBanner";
+import { API_URL } from "../../constants";
 
 const event1 = "./assets/events/event_1.jpeg";
 const event2 = "./assets/events/event_2.jpeg";
@@ -19,18 +20,41 @@ const event3 = "./assets/events/event_3.jpeg";
 const event4 = "./assets/events/event_4.jpeg";
 
 class Home extends React.PureComponent {
+  componentDidMount() {
+    this.props.fetchHomeMedia();
+  }
   render () {
-  const { authenticated } = this.props;
+  const { authenticated, homeMedia } = this.props;
   if (authenticated) return <Navigate to='/dashboard' />;
 
-  const eventImages =  [event1, event3, event2, event4];
+  let video, images = null
+  const eventImages = [event1, event3, event2, event4];
+
+  if (homeMedia.length >= 5) {
+    const defaultMedia = homeMedia.find(media => media.default === true);
+
+    if (defaultMedia) {
+      video = defaultMedia.mediaUrl;
+    }
+    
+    images = homeMedia
+      .filter(media => {
+        if (video && media.mediaUrl === video) {
+          return false;
+        }
+        return media.mediaUrl
+      })
+      .map(media => API_URL + media.mediaUrl);
+  }
+  console.log(images, video)
+
   return (
     <>
-    <HomeBanner />
+    <HomeBanner video={video}/>
       <HeroBanner
         heading="Discover The Link Hangouts Experience"
         desc="We are a vibrant lifestyle company based in Lagos, Nigeria, dedicated to curating and orchestrating exceptional events, parties, and hangouts that bring people together to create lasting memories."
-        bannerImage={eventImages}
+        bannerImage={images && images.length > 0 ? images : eventImages}
         PButton={<PButton link={"/events"} content="Discover Events" />}
         SButton={<SButton link={"/gallery"} content="See Gallery" />}
         className={"border-10"}
@@ -50,6 +74,7 @@ class Home extends React.PureComponent {
 
 const mapStateToProps = (state) => {
   return {
+    homeMedia: state.media.homeMedia,
     authenticated: state.authentication.authenticated,
   };
 };

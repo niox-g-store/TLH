@@ -4,7 +4,7 @@ const router = express.Router();
 const auth = require('../../middleware/auth');
 const role = require('../../middleware/role');
 const { ROLES } = require('../../utils/constants');
-const Media = require('../../models/media'); // Your Mongoose Media model
+const Media = require('../../models/media');
 const multer = require('multer');
 const crypto = require('crypto');
 const path = require("path");
@@ -23,6 +23,23 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+router.get(
+  '/fetch_all',
+  async(req, res) => {
+    try {
+      const medias = await Media.find({ active: true })
+        .sort('-createdAt')
+        .limit(5);
+      return res.status(200).json({ medias });
+    } catch (error) {
+      console.log(error)
+      return res.status(400).json({
+        error: 'Your request could not be processed. Please try again.'
+      });
+    }
+  }
+)
+
 // GET /api/media - Get all medias
 router.get(
   '/',
@@ -33,7 +50,6 @@ router.get(
       const medias = await Media.find().sort('-createdAt');
       return res.status(200).json({ medias });
     } catch (error) {
-      console.error(error); // Log the error for debugging
       return res.status(400).json({
         error: 'Your request could not be processed. Please try again.'
       });
@@ -77,7 +93,6 @@ router.post(
         media
       });
     } catch (error) {
-      console.error(error);
       // If there's an error after file upload but before save, delete the uploaded file
       if (req.file) {
         deleteFilesFromPath([`/uploads/media/${req.file.filename}`]);
@@ -128,7 +143,6 @@ router.put(
         media // Return the updated media object
       });
     } catch (error) {
-      console.error(error);
       return res.status(400).json({
         error: 'Your request could not be processed. Please try again.'
       });
@@ -165,7 +179,6 @@ router.delete(
         message: 'Media deleted successfully!'
       });
     } catch (error) {
-      console.error(error);
       return res.status(400).json({
         error: 'Your request could not be processed. Please try again.'
       });

@@ -7,7 +7,7 @@ import {
   CImage,
 } from '@coreui/react';
 import Button from '../../Common/HtmlTags/Button';
-import ResolveImage from '../../store/ResolveImage';
+import ResolveImage from '../../store/ResolveImage'; // Assuming this handles image paths
 import { API_URL } from '../../../constants';
 import { useNavigate, Link } from 'react-router-dom';
 import { formatDate } from '../../../utils/formatDate';
@@ -24,6 +24,7 @@ const ManagerMediaHelper = (props) => {
     medias = [],
     deleteMedia,
     updateMedia,
+    defaultWarning,
     isLoading
   } = props;
   const navigate = useNavigate();
@@ -44,15 +45,20 @@ const ManagerMediaHelper = (props) => {
   const handleDefaultToggle = (mediaId, currentDefaultStatus) => {
     // Prevent setting to default if another media is already default
     if (!currentDefaultStatus && defaultMedia && defaultMedia._id !== mediaId) {
-      // alert('Only one media can be set as default. Please unmark the current default media first.');
-      return;
+      return defaultWarning();
     }
-    // Dispatch updateMedia action with new default status
-    //updateMedia(mediaId, { default: !currentDefaultStatus }, navigate);
+    updateMedia(mediaId, { default: !currentDefaultStatus }, navigate);
   };
 
   const handleDeleteMedia = (mediaId) => {
       deleteMedia(mediaId, navigate);
+  };
+
+  // Helper function to determine if a URL is a video
+  const isVideo = (url) => {
+    const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi', '.flv', '.wmv'];
+    const lowerCaseUrl = url.toLowerCase();
+    return videoExtensions.some(ext => lowerCaseUrl.endsWith(ext));
   };
 
   return (
@@ -71,16 +77,33 @@ const ManagerMediaHelper = (props) => {
           {currentMedias.map((media, idx) => (
             <CCol md={6} lg={4} key={media._id || idx}>
               <CCard style={{ height: '100%' }} className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} d-flex flex-column`}>
-                <div style={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '150px' }}>
+                <div style={{ position: 'relative', flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '150px' }}>
                   {media.mediaUrl ? (
-                    <CImage
-                      src={ResolveImage(`${API_URL}${media.mediaUrl}`)}
-                      alt={`Media ${media._id}`}
-                      style={{ maxWidth: '100%', maxHeight: '200px', objectFit: 'contain' }}
-                    />
+                    isVideo(media.mediaUrl) ? (
+                      <video
+                        src={`${API_URL}${media.mediaUrl}`}
+                        style={{ maxWidth: '100%', maxHeight: '200px', objectFit: 'contain' }}
+                      >
+                        Your browser does not support the video tag.
+                      </video>
+                    ) : (
+                      <CImage
+                        src={ResolveImage(`${API_URL}${media.mediaUrl}`)}
+                        alt={`Media ${media._id}`}
+                        style={{ maxWidth: '100%', maxHeight: '200px', objectFit: 'contain' }}
+                      />
+                    )
                   ) : (
-                    <div className='text-muted'>No Image</div>
+                    <div className='text-muted'>No Media</div>
                   )}
+                 <div style={{ position: 'absolute', right: '0', top: '0' }} className='d-flex justify-content-end'>
+                    <Button
+                      style={{ padding: '.5em 1em' }}
+                      onClick={() => handleDeleteMedia(media._id)}
+                      text={<FaTrash />}
+                      cls='p-2'
+                    />
+                  </div>
                 </div>
                 <CCardBody className='d-flex flex-column justify-content-between'>
                   <div>
@@ -104,14 +127,6 @@ const ManagerMediaHelper = (props) => {
                       />
                     </div>
                   </div>
-                  <div className='d-flex justify-content-end'>
-                    <Button
-                      onClick={() => handleDeleteMedia(media._id)}
-                      type='danger-btn'
-                      text={<FaTrash />}
-                      cls='p-2'
-                    />
-                  </div>
                 </CCardBody>
               </CCard>
             </CCol>
@@ -124,8 +139,7 @@ const ManagerMediaHelper = (props) => {
           totalPages={totalPages}
           startIndex={startIndex}
           endIndex={endIndex}
-          // Assuming ManagerPagination can handle setCurrentPage internally or via prop
-          onPageChange={setCurrentPage} // Pass setCurrentPage to your pagination component
+          onPageChange={setCurrentPage}
         />
       </div>
     </div>
@@ -145,9 +159,9 @@ class ManagerMedia extends React.PureComponent {
 }
 
 const mapStateToProps = state => ({
-  medias: state.media.medias, // Map to new media state
-  isLoading: state.media.isLoading, // Map to new media isLoading state
-  isLightMode: state.dashboard.isLightMode, // Assuming dashboard state exists
+  medias: state.media.medias,
+  isLoading: state.media.isLoading,
+  isLightMode: state.dashboard.isLightMode,
 });
 
 export default connect(mapStateToProps, actions)(withRouter(ManagerMedia));

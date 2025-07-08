@@ -85,8 +85,7 @@ const ManagerGalleryHelper = (props) => {
                     <CCardTitle className='mb-2'>{gallery.name}</CCardTitle>
                     <CCardText className='mt-2'>
                       <strong dangerouslySetInnerHTML={{ __html: gallery.description || 'N/A<br />' }}></strong>
-                      <strong>Date Created:</strong> {formatDate(gallery.createdAt)}<br />
-                      <strong>Party Date:</strong> {formatDate(gallery.date)}<br />
+                      <strong>Date:</strong> {formatDate(gallery.date)}<br />
                       <span className="d-flex align-items-center">
                         <FaEye className='me-1' /> <strong>Views:</strong> {gallery.views || 0}
                       </span>

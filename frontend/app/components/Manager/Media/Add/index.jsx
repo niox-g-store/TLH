@@ -54,8 +54,12 @@ const AddMediaForm = (props) => {
           <Col className={`${isLightMode ? 'p-black' : 'p-white'}`} xs='12'>
             <h5 style={{ paddingTop: '1em' }}>Upload Media File</h5>
             <AdvancedUpload
-              error={mediaFormErrors.mediaUrl} // Assuming 'mediaUrl' is the field for the file
-              onFilesChange={(files) => mediaChange('mediaUrl', files[0])} // Assuming single file upload for a media item
+              error={mediaFormErrors.mediaUrl}
+              onFilesChange={(files) => mediaChange('mediaUrl', files[0])}
+              vLimit={1}
+              limit={1}
+              videoLimit={20 * 1024 * 1024}
+              imageLimit={10 * 1024 * 1024}
             />
             {mediaFormErrors.mediaUrl && (
               <div className='input-field-error'>{mediaFormErrors.mediaUrl}</div>
@@ -74,7 +78,7 @@ const AddMediaForm = (props) => {
           </Col>
 
           {/* Default Switch */}
-          <Col className={`${isLightMode ? 'p-black' : 'p-white'}`} xs='12'>
+          <Col style={{ marginBottom: '1em' }} className={`${isLightMode ? 'p-black' : 'p-white'}`} xs='12'>
             <Switch
               id='default-media'
               name='default'

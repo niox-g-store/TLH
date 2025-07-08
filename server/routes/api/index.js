@@ -8,6 +8,10 @@ const event = require('./event');
 const ticket = require('./ticket');
 const coupon = require('./coupon');
 const gallery = require('./gallery');
+const media = require('./media');
+//const cart = require('./cart');
+//const order = requrie('./order');
+//const newsletter = require('./newsletter')
 
 // for static file uploads
 router.use('/uploads', express.static(process.cwd() + "/file_manager/uploads", {
@@ -25,5 +29,6 @@ router.use('/event', event);
 router.use('/ticket', ticket);
 router.use('/coupon', coupon);
 router.use('/gallery', gallery);
+router.use('/media', media);
 
 module.exports = router;

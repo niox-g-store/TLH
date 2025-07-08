@@ -18,7 +18,15 @@ import {
   UPDATE_MEDIA,
   SET_MEDIA_LOADING,
   SET_MEDIA_EDIT_FORM_ERRORS,
+  HOME_MEDIA,
 } from './constants';
+
+export const defaultWarning = () => {
+  return (dispatch) => {
+    resetMedia()
+    handleError({ message: 'Only one media can be set as default. Please unmark the current default media first.' },
+                dispatch)}
+}
 
 // --- Form Data Handling ---
 export const mediaChange = (name, value) => {
@@ -42,6 +50,20 @@ export const setMediaLoading = (value) => {
 };
 
 // --- API Calls ---
+
+export const fetchHomeMedia = () => {
+    return async (dispatch) => {
+    try {
+      const response = await axios.get(`${API_URL}/media/fetch_all`);
+      dispatch({
+        type: HOME_MEDIA,
+        payload: response.data.medias
+      });
+    } catch (error) {
+      handleError(error, dispatch, 'Failed to fetch medias.');
+    }
+  };
+}
 
 export const fetchMedias = () => {
   return async (dispatch) => {

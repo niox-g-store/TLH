@@ -12,23 +12,30 @@ import {
   UPDATE_MEDIA,
   SET_MEDIA_LOADING,
   SET_MEDIA_EDIT_FORM_ERRORS,
-} from '../actions/media/constants'; // Adjust path if needed
+  HOME_MEDIA
+} from './constants'; // Adjust path if needed
 
 const initialState = {
   medias: [],
-  media: null, // For single media if you ever needed it (not for this spec)
+  media: null,
   mediaFormData: {
-    mediaUrl: null, // Holds the File object
+    mediaUrl: null,
     default: false,
     active: true
   },
   isLoading: false,
   formErrors: {},
-  editFormErrors: {}
+  editFormErrors: {},
+  homeMedia: []
 };
 
 const mediaReducer = (state = initialState, action) => {
   switch (action.type) {
+    case HOME_MEDIA:
+      return {
+        ...state,
+        homeMedia: action.payload
+      };
     case SET_MEDIA_LOADING:
       return { ...state, isLoading: action.payload };
 
