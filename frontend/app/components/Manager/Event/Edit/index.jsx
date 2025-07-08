@@ -165,22 +165,15 @@ const EditEventForm = (props) => {
             <h5 style={{ paddingTop: '1em' }}>Upload new Event images</h5>
           <AdvancedUpload
             error={eventEditFormErrors.image}
-            onFilesChange={(files) => eventEditChange('image', files)} />
+            onFilesChange={(files) => eventEditChange('image', files)}
+          />
+            
             <h5 style={{ paddingTop: '1em' }}>Event images</h5>
           <AdvancedUploadHelper
             error={eventEditFormErrors.image}
             initialUrls={imageUrls}
             onRemoveUrlChange={(url) => eventImageToRemove(url)}
             />
-            {/*<Input
-              type='file'
-              error={eventEditFormErrors.image}
-              name='image'
-              label='Upload Event Image'
-              placeholder='Please upload an image'
-              value={image || ''}
-              onInputChange={(n, v) => eventEditChange(n, v)}
-            />*/}
           </Col>
 
           {/* Event Status Switch */}

@@ -1,0 +1,13 @@
+export const FETCH_GALLERY = 'src/Gallery/FETCH_GALLERY';
+export const FETCH_GALLERIES = 'src/Gallery/FETCH_GALLERIES';
+export const GALLERY_CHANGE = 'src/Gallery/GALLERY_CHANGE';
+export const GALLERY_EDIT_CHANGE = 'src/Gallery/GALLERY_EDIT_CHANGE';
+export const SET_GALLERY_FORM_ERRORS = 'src/Gallery/SET_GALLERY_FORM_ERRORS';
+export const SET_GALLERY_FORM_EDIT_ERRORS = 'src/Gallery/SET_GALLERY_FORM_EDIT_ERRORS';
+export const RESET_GALLERY = 'src/Gallery/RESET_GALLERY';
+export const ADD_GALLERY = 'src/Gallery/ADD_GALLERY';
+export const REMOVE_GALLERY = 'src/Gallery/REMOVE_GALLERY';
+export const SET_GALLERY_LOADING = 'src/Gallery/SET_GALLERY_LOADING';
+export const SELECT_GALLERY = 'src/Gallery/SELECT_GALLERY';
+export const GALLERY_CHANGED = 'src/Gallery/GALLERY_CHANGED';
+export const IMAGE_TO_REMOVE = 'src/Gallery/IMAGE_TO_REMOVE';

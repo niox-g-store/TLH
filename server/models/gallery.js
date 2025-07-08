@@ -6,8 +6,15 @@ const gallerySchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  description: {
+    type: String,
+  },
   date: {
     type: Date,
+  },
+  views: {
+    type: Number,
+    default: 0
   },
   slug: {
     type: String,
@@ -17,16 +24,33 @@ const gallerySchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
-  media: [{
+  user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Media',
-  }],
+    ref: 'User'
+  },
+  media: [
+    {
+      mediaUrl: {
+        type: String,
+      },
+      mediaType: {
+        type: String,
+        enum: ['image', 'video'],
+      },
+      blurhash: {
+        type: String,
+      },
+    },
+  ],
+  bannerUrl: {
+    type: String
+  },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });
 
 // Automatically update `updatedAt` on save
-eventSchema.pre('save', function(next) {
+gallerySchema.pre('save', function(next) {
   this.updatedAt = new Date();
   if (this.isModified('name') || !this.slug) {
     this.slug = slugify(this.name, {

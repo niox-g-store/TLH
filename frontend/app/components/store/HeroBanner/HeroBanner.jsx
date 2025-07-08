@@ -40,12 +40,12 @@ const HeroBanner = (props) => {
   );
 };
 
-HeroBanner.propTypes = {
+/*HeroBanner.propTypes = {
   heading: PropTypes.string.isRequired,
   desc: PropTypes.string.isRequired,
   bannerImage: PropTypes.arrayOf(PropTypes.string),
   imgMaxWidth: PropTypes.string,
   PButton: PropTypes.node,
   SButton: PropTypes.node,
-};
+};*/
 export default HeroBanner;

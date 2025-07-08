@@ -18,6 +18,7 @@ import ManagerOrder from '../../components/Manager/Orders';
 import ManagerScanner from '../../components/Manager/Scan';
 import AccountSecurity from '../../components/Manager/Security';
 import ManagerNewsletter from '../../components/Manager/Newsletter';
+import ManagerGallery from '../../components/Manager/Gallery';
 import Page404 from '../Page404';
 
 import AddEvent from '../../components/Manager/Event/Add';
@@ -31,6 +32,9 @@ import AdminTicket from '../../components/Manager/Ticket/AdminTicket';
 import AddCoupon from '../../components/Manager/Coupon/Add';
 import EditCoupon from '../../components/Manager/Coupon/Edit';
 import AdminCoupon from '../../components/Manager/Coupon/AdminCoupon';
+
+import AddGallery from '../../components/Manager/Gallery/Add';
+import EditGallery from '../../components/Manager/Gallery/Edit';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@coreui/coreui/dist/css/coreui.min.css';
@@ -50,7 +54,7 @@ const Admin = (props) => {
           <Route path='orders' element={<ManagerOrder {...props} />} />
           <Route path='scan' element={<ManagerScanner {...props} />} />
           {/*<Route path='media' element={<AddCoupon {...props}/>} />*/}
-          {/*<Route path='gallery' element={<AddCoupon {...props}/>} />*/}
+          <Route path='gallery' element={<ManagerGallery {...props}/>} />
           <Route path='account' element={<ManagerAccount {...props} />} />
           <Route path='security' element={<AccountSecurity {...props} />} />
           <Route path='newsletter' element={<ManagerNewsletter {...props} />} />
@@ -64,9 +68,10 @@ const Admin = (props) => {
           <Route path='coupons/edit/:id' element={<EditCoupon {...props}/>} />
           <Route path='coupons/my-coupons' element={<AdminCoupon {...props}/>} />
 
+          <Route path='gallery/add' element={<AddGallery {...props}/>} />
+          <Route path='gallery/edit/:id' element={<EditGallery {...props}/>} />
+
           {/*<Route path='media/add' element={<AddCoupon {...props}/>} />*/}
-          {/*<Route path='gallery/add' element={<AddCoupon {...props}/>} />*/}
-          {/*<Route path='gallery/edit/:id' element={<AddCoupon {...props}/>} />*/}
           
           <Route path='*' element={<Page404 />} />
         </Routes>

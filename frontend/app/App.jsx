@@ -18,6 +18,7 @@ import Signup from './containers/SignUp';
 import FAQs from './containers/Faq';
 import Events from './containers/Events';
 import Gallery from './containers/Gallery';
+import GalleryView from './containers/Gallery/view';
 import OrganizerSignUp from './containers/Organizer/SignUp';
 import Dashboard from './containers/Dashboard';
 import Page404 from './containers/Page404';
@@ -48,7 +49,7 @@ function App (props) {
   const hideHeaderFooterPaths = ['/login', '/signup',
     '/organizer-signup', '/dashboard'
   ];
-  const hideFooter = ['/event/', '/terms', '/privacy', '/faq']
+  const hideFooter = ['/event/', '/terms', '/privacy', '/faq', '/gallery']
   const showHeaderFooter = (USER.role === ROLES.Member ||
                             !hideHeaderFooterPaths.some(path => location.pathname.startsWith(path))
                             );
@@ -66,6 +67,7 @@ function App (props) {
         <Route path='/events' element={<Events />} />
         <Route path='/event/:slug' element={<EventView />} />
         <Route path='/gallery' element={<Gallery />} />
+        <Route path='/gallery/:slug' element={<GalleryView />} />
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<Signup />} />
         <Route path='/organizer-signup' element={<OrganizerSignUp />} />

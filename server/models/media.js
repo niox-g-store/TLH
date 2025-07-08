@@ -4,17 +4,13 @@ const mediaSchema = new mongoose.Schema({
   mediaUrl: {
     type: String,
   },
-  type: {
-    type: String,
-    required: true
+  default: {
+    type: Boolean,
+    required: false
   },
   active: {
     type: Boolean,
     default: true
-  },
-  gallery: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Gallery'
   },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }

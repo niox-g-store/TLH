@@ -10,6 +10,7 @@ import * as navigation from '../app/containers/Navigation/actions';
 import * as event from '../app/containers/Events/actions';
 import * as ticket from '../app/containers/Ticket/actions';
 import * as coupon from '../app/containers/Coupon/actions';
+import * as gallery from '../app/containers/Gallery/actions';
 
 export default function mapDispatchToProps (dispatch) {
   return bindActionCreators(
@@ -23,7 +24,8 @@ export default function mapDispatchToProps (dispatch) {
       ...navigation,
       ...event,
       ...ticket,
-      ...coupon
+      ...coupon,
+      ...gallery,
     },
     dispatch
   );
