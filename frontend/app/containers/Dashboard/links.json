@@ -12,7 +12,7 @@
     { "to": "/gallery", "name": "Gallery", "prefix": "/dashboard", "icon": "MdOutlinePhotoLibrary" },
     { "to": "/newsletter", "name": "Newsletter", "prefix": "/dashboard", "icon": "MdOutlineCampaign" },
     { "to": "/scan", "name": "Ticket Scanner", "prefix": "/dashboard", "icon": "IoScanOutline" },
-    { "to": "/withdrawals", "name": "Withdrawals", "prefix": "/dashboard", "icon": "MdOutlineAccountCircle" },
+    { "to": "/withdrawals", "name": "Withdrawals", "prefix": "/dashboard", "icon": "MdOutlinePayment" },
     { "to": "/account", "name": "Account Details", "prefix": "/dashboard", "icon": "MdOutlineAccountCircle" },
     { "to": "/security", "name": "Account Security", "prefix": "/dashboard", "provider": ["Email"], "icon": "MdOutlineSecurity" }
   ],
