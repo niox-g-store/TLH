@@ -64,7 +64,7 @@ const ManagerMediaHelper = (props) => {
   return (
     <div data-aos='fade-up' className='container-lg px-4 d-flex flex-column mb-custom-5em'>
       <div className='d-flex justify-content-between'>
-        <h2 style={{ margin: 0 }} className={`${isLightMode ? 'p-black' : 'p-white'}`}>Medias</h2>
+        <h2 style={{ margin: 0 }} className={`${isLightMode ? 'p-black' : 'p-white'}`}>Media</h2>
         <Button onClick={() => navigate('/dashboard/media/add')} type='third-btn' text='Add Media +' />
       </div>
       <hr className={`${isLightMode ? 'p-black' : 'p-white'}`} />
