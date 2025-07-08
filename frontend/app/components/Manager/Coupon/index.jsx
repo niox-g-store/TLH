@@ -15,13 +15,13 @@ import {
 import { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import Button from '../../Common/HtmlTags/Button';
-import { coupons } from '../../Data/couponData';
 import ResolveImage from '../../store/ResolveImage';
 import { ROLES } from '../../../constants';
 import { useNavigate, Link } from 'react-router-dom';
 import { withRouter } from '../../../withRouter';
 import { connect } from 'react-redux';
 import actions from '../../../actions';
+import ManagerPagination from '../Pagination';
 
 const ManagerCouponHelper = (props) => {
   const { user, isLightMode, coupons = [] } = props;
@@ -147,30 +147,13 @@ const ManagerCouponHelper = (props) => {
       </CRow>
 
       {totalPages > 1 && (
-        <div className='mt-4'>
-          <div className='w-100 d-flex justify-content-center align-items-center mb-3'>
-            <span className={`${isLightMode ? 'p-black': 'p-white'} fw-bold`}>
-              Page {currentPage} of {totalPages} — Viewing {startIndex + 1}-{
-                endIndex > coupons.length ? coupons.length : endIndex
-              } of {coupons.length} entries
-            </span>
-          </div>
-          <CPagination align='center'>
-            {[...Array(totalPages)].map((_, index) => (
-              <CPaginationItem
-                key={index + 1}
-                active={index + 1 === currentPage}
-                onClick={() => {
-                  setCurrentPage(index + 1);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                style={{ cursor: 'pointer' }}
-              >
-                {index + 1}
-              </CPaginationItem>
-            ))}
-          </CPagination>
-        </div>
+        <ManagerPagination
+          isLightMode={isLightMode}
+          data={coupons}
+          totalPages={totalPages}
+          startIndex={startIndex}
+          endIndex={endIndex}
+        />
       )}
     </div>
   );

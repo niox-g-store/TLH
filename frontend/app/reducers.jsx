@@ -8,6 +8,8 @@ import navigation from './containers/Navigation/reducer';
 import event from './containers/Events/reducer';
 import ticket from './containers/Ticket/reducer';
 import coupon from './containers/Coupon/reducer';
+import gallery from './containers/Gallery/reducer';
+import media from './containers/Media/reducer';
 
 const rootReducer = combineReducers({
   account,
@@ -18,6 +20,8 @@ const rootReducer = combineReducers({
   navigation,
   event,
   ticket,
-  coupon
+  coupon,
+  gallery,
+  media
 });
 export default rootReducer;

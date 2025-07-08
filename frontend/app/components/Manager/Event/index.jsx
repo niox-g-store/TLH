@@ -13,14 +13,13 @@ import {
 } from '@coreui/react';
 import Button from '../../Common/HtmlTags/Button';
 import ResolveImage from '../../store/ResolveImage';
-import AddEvent from './Add';
 import { ROLES, API_URL } from '../../../constants';
-import AdminEvent from './AdminEvent';
 import { useNavigate, Link } from 'react-router-dom';
 import { formatDate } from '../../../utils/formatDate';
 import { withRouter } from '../../../withRouter';
 import actions from '../../../actions';
 import { connect } from 'react-redux';
+import ManagerPagination from '../Pagination';
 
 const statsFunc = (events) => {
   const statuses = {
@@ -151,30 +150,13 @@ const ManagerEventHelper = (props) => {
           ))}
         </CRow>
 
-        <div className='mt-4'>
-          <div className='w-100 d-flex justify-content-center align-items-center mb-3'>
-            <span className={`${isLightMode ? 'p-black' : 'p-white'} fw-bold`}>
-              Page {currentPage} of {totalPages} — Viewing {startIndex + 1}-{
-            endIndex > events.length ? events.length : endIndex
-          } of {events.length} entries
-            </span>
-          </div>
-          <CPagination align='center'>
-            {[...Array(totalPages)].map((_, index) => (
-              <CPaginationItem
-                key={index + 1}
-                active={index + 1 === currentPage}
-                onClick={() => {
-                  setCurrentPage(index + 1);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-                style={{ cursor: 'pointer' }}
-              >
-                {index + 1}
-              </CPaginationItem>
-            ))}
-          </CPagination>
-        </div>
+        <ManagerPagination
+          isLightMode={isLightMode}
+          data={events}
+          totalPages={totalPages}
+          startIndex={startIndex}
+          endIndex={endIndex}
+        />
       </div>
     </div>
   );

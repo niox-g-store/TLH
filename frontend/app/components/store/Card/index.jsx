@@ -16,7 +16,7 @@ const Card = ({ event, type = "event" }) => {
     return (
       <div className="card-wrapper" userid={userID}>
         <div className="card-body">
-          <img src={event.image} alt={event.name} width={100} height={100} />
+          <img loading="lazy" src={ResolveImage(API_URL + event.bannerUrl)} alt={event.name} width={100} height={100} />
           <h3 className="card-title">{event.name}</h3>
           <p className="card-desc">{formatReadableDate(event.date)}</p>
         </div>
@@ -40,6 +40,7 @@ const Card = ({ event, type = "event" }) => {
           alt="Event"
           width={100}
           height={100}
+          loading="lazy"
         />
         <h3 className="card-title">{event.name}</h3>
         <p className="card-desc">{event.desc}</p>

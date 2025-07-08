@@ -30,7 +30,7 @@ const HeroBanner = (props) => {
             </div>
             <div className="col-banner-image" data-aos="fade-up">
               {bannerImage.map((element, index) => (
-                <img className={`banner-image-${index} ${className}`} data-aos="fade-up" data-aos-delay="600" key={index} src={element} style={{ maxWidth }} alt="banner-image" />
+                <img loading="lazy" className={`banner-image-${index} ${className}`} data-aos="fade-up" data-aos-delay="600" key={index} src={element} style={{ maxWidth }} alt="banner-image" />
               ))}
             </div>
           </div>
@@ -40,12 +40,12 @@ const HeroBanner = (props) => {
   );
 };
 
-HeroBanner.propTypes = {
+/*HeroBanner.propTypes = {
   heading: PropTypes.string.isRequired,
   desc: PropTypes.string.isRequired,
   bannerImage: PropTypes.arrayOf(PropTypes.string),
   imgMaxWidth: PropTypes.string,
   PButton: PropTypes.node,
   SButton: PropTypes.node,
-};
+};*/
 export default HeroBanner;

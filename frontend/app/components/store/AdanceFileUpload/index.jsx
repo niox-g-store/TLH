@@ -6,7 +6,12 @@ const MAX_IMAGE_SIZE = 2 * 1024 * 1024;  // 2MB
 const MAX_VIDEO_SIZE = 20 * 1024 * 1024; // 20MB
 
 const AdvancedUpload = (props) => {
-  const { error, onFilesChange } = props;
+  const { error,
+          onFilesChange,
+          imageLimit = MAX_IMAGE_SIZE,
+          videoLimit = MAX_VIDEO_SIZE,
+          vLimit = 1, limit = 5
+  } = props;
   const [files, setFiles] = useState([]);
   const [errors, setErrors] = useState([]);
   const inputRef = useRef();
@@ -23,11 +28,11 @@ const AdvancedUpload = (props) => {
 
   const validateFile = (file) => {
     if (file.type.startsWith('image/')) {
-      if (file.size > MAX_IMAGE_SIZE) {
+      if (file.size > imageLimit) {
         return `Image "${file.name}" exceeds 2MB limit.`;
       }
     } else if (file.type.startsWith('video/')) {
-      if (file.size > MAX_VIDEO_SIZE) {
+      if (file.size > videoLimit) {
         return `Video "${file.name}" exceeds 20MB limit.`;
       }
     } else {
@@ -49,13 +54,13 @@ const handleFiles = (selectedFiles) => {
     } else {
       const isImage = file.type.startsWith('image/');
       const isVideo = file.type.startsWith('video/');
-      if (isImage && currentImageCount + newFiles.filter(f => f.type?.startsWith('image/')).length >= 5) {
-        newErrors.push(`Cannot upload more than 5 images.`);
+      if (isImage && currentImageCount + newFiles.filter(f => f.type?.startsWith('image/')).length >= limit) {
+        newErrors.push(`Cannot upload more than ${limit} images.`);
         return; // skip this file
       }
       const currentVideoCount = files.filter(f => f.type?.startsWith('video/')).length;
-      if (isVideo && currentVideoCount >= 1) {
-        newErrors.push('Only 1 video is allowed.');
+      if (isVideo && currentVideoCount >= vLimit) {
+        newErrors.push(`Only ${vLimit} video is allowed.`);
         return;
       }
       newFiles.push(Object.assign(file, { previewUrl: URL.createObjectURL(file) }));
@@ -108,7 +113,7 @@ const handleFiles = (selectedFiles) => {
       >
         <AiOutlineUpload size={40} />
         <p style={{ marginTop: '10px' }}>
-          Upload images (max 2MB) or videos (max 20MB)
+          Upload images (max {imageLimit / 1024 / 1024}mb) or videos (max {videoLimit / 1024 / 1024}mb)
         </p>
         <input
           ref={inputRef}
@@ -131,9 +136,9 @@ const handleFiles = (selectedFiles) => {
       {files.length > 0 && (
         <div>
           <div style={{ marginTop: 10, fontSize: 14, color: '#333' }}>
-            {`${files.filter(f => f.type.startsWith('image/')).length} / 5 images`}
+            {`${files.filter(f => f.type.startsWith('image/')).length} / ${limit} images`}
             {' • '}
-            {`${files.filter(f => f.type.startsWith('video/')).length} / 1 video`}
+            {`${files.filter(f => f.type.startsWith('video/')).length} / ${vLimit} video`}
           </div>
         <div
           style={{
