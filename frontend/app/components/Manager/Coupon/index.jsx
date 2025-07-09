@@ -110,6 +110,17 @@ const ManagerCouponHelper = (props) => {
         </CCol>
       </CRow>
 
+      {/* Search Input */}
+      <div className="mb-4">
+        <Input
+          type="search"
+          placeholder="Search coupons by code or percentage..."
+          name="searchCoupons"
+          value={searchTerm}
+          onInputChange={handleSearch}
+        />
+      </div>
+
       {/* Coupon List */}
       {currentCoupons.length > 0 ? (
       <CRow className="gy-4">
