@@ -8,10 +8,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { FaShoppingCart, FaTrash, FaMinus, FaPlus } from 'react-icons/fa';
 import { IoMdClose } from 'react-icons/io';
+import { Navigate } from 'react-router-dom';
 import actions from '../../actions';
+import GuestCheckout from '../Guest/checkout';
+import LoadingIndicator from '../../components/store/LoadingIndicator';
+import Input from '../../components/Common/HtmlTags/Input';
 
 class Cart extends React.PureComponent {
-
   componentDidMount() {
     this.props.initializeCart();
   }
@@ -41,8 +44,18 @@ class Cart extends React.PureComponent {
       removeFromCart,
       clearCart,
       handleCheckout,
-      authenticated
+      authenticated,
+      addGuest,
+      setGuestForm,
+      showGuestForm,
+      guestInfo,
+      handleGuestInputChange,
+      guestErrors,
+      coupon
     } = this.props;
+
+    const handleUserCheckout = () => {
+    };
 
     return (
       <>
@@ -57,21 +70,19 @@ class Cart extends React.PureComponent {
         {/* Cart Sidebar */}
         <div className={`cart-sidebar ${isOpen ? 'open' : ''}`}>
           <div className="cart-header">
-            <h3>Your Cart</h3>
+            <h3>{!showGuestForm ? 'Your Cart' : 'Guest Checkout'}</h3>
             <button className="close-cart" onClick={toggleCart}>
               <IoMdClose size={24} />
             </button>
           </div>
 
           {loading ? (
-            <div className="cart-loading">
-              <p>Loading cart...</p>
-            </div>
+            <LoadingIndicator />
           ) : items.length === 0 ? (
             <div className="empty-cart">
               <p>Your cart is empty</p>
             </div>
-          ) : (
+          ) : !showGuestForm ? (
             <>
               <div className="cart-items">
                 {items.map((item) => (
@@ -123,12 +134,38 @@ class Cart extends React.PureComponent {
                   <span>Total:</span>
                   <span>₦{(total || this.calculateTotal()).toLocaleString()}</span>
                 </div>
+
+                {/* coupon */}
+                {/*<div className="cart-coupon-container">
+                  <Input
+                    value={coupon || ''}
+                    type="text"
+                    className="cart-coupon"
+                    placeholder='Coupon Code Here'>
+                    onInputChange={}
+                  </>
+                  <button onClick={""}>Apply</button>
+                </div>*/}
+
+
                 <div className="cart-actions">
                   <button className="clear-cart" onClick={clearCart}>Clear Cart</button>
-                  <button className="checkout-btn" onClick={handleCheckout}>{authenticated ?  'Checkout' : 'Continue as guest'}</button>
+                  {authenticated ? (
+                    <button className="checkout-btn" onClick={handleUserCheckout}>Checkout</button>
+                  ) : (
+                    <button 
+                      className="checkout-btn" 
+                      onClick={() => setGuestForm(true)}
+                    >
+                      Continue as guest
+                    </button>
+                  )}
                 </div>
               </div>
             </>
+          )
+          : (
+            <GuestCheckout {...this.props}/>
           )}
         </div>
         
@@ -146,7 +183,11 @@ const mapStateToProps = (state) => {
     items: state.cart.items,
     total: state.cart.total,
     loading: state.cart.loading,
-    error: state.cart.error
+    error: state.cart.error,
+    showGuestForm: state.cart.showGuestForm,
+    guestInfo: state.cart.guestInfo,
+    guestErrors: state.cart.guestErrors,
+    coupon: state.cart.coupon
   };
 };
 

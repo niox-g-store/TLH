@@ -7,7 +7,9 @@
 import axios from 'axios';
 import { API_URL } from '../../constants';
 import { showNotification } from '../Notification/actions';
+import { allFieldsValidation } from '../../utils/validation';
 import handleError from '../../utils/error';
+import { payStackHelper } from '../../components/Paystack';
 
 import {
   TOGGLE_CART,
@@ -20,8 +22,15 @@ import {
   HANDLE_CART_TOTAL,
   SET_CART_ID,
   CART_ERROR,
-  CART_ID
+  CART_ID,
+  SET_GUEST_INFO,
+  SELECTED_TICKETS,
+  DELETE_SELECTED_TICKETS,
+  SET_GUEST_FORM_ERRORS,
+  SHOW_GUEST_FORM,
+  SET_CART_COUPON
 } from './constants';
+import { ticketStatusChecker } from '../Ticket/actions';
 
 // Toggle cart visibility
 export const toggleCart = () => {
@@ -29,6 +38,22 @@ export const toggleCart = () => {
     type: TOGGLE_CART
   };
 };
+
+export const handleCouponChange = (value) => {
+  return {
+    type: SET_CART_COUPON,
+    payload: { coupon: value }
+  }
+}
+
+export const handleGuestInputChange = (name, value) => {
+  let formData = {};
+  formData[name] = value;
+  return {
+    type: SET_GUEST_INFO,
+    payload: formData
+  }
+}
 
 // Set cart loading state
 export const setCartLoading = (loading) => {
@@ -46,6 +71,14 @@ export const setCartError = (error) => {
   };
 };
 
+// Set guest information
+export const setGuestInfo = (guestInfo) => {
+  return {
+    type: SET_GUEST_INFO,
+    payload: guestInfo
+  };
+};
+
 // Set cart ID in localStorage and state
 export const setCartId = cartId => {
   return (dispatch) => {
@@ -56,6 +89,13 @@ export const setCartId = cartId => {
     });
   };
 };
+
+export const setGuestForm = (v) => {
+  return {
+    type: SHOW_GUEST_FORM,
+    payload: v
+  }
+}
 
 // Initialize cart from database using cart ID from localStorage
 export const initializeCart = () => {
@@ -88,11 +128,67 @@ export const initializeCart = () => {
   };
 };
 
+export const addGuest = (navigate) => {
+  return async (dispatch, getState) => {
+    dispatch(setCartLoading(true))
+    try {
+      const { name, email } = getState().cart.guestInfo;
+      const cart = getState().cart;
+      const { eventId, ticketId, } = cart.items[0]
+      const rules = {
+        name: 'required',
+        email: 'required',
+      }
+      const guestForm = {
+        name,
+        email,
+        eventId,
+        ticketId
+      }
+      const { isValid, errors } = allFieldsValidation(guestForm, rules, {
+       'required.name': 'Name is required.',
+        'required.email': 'Email is required.',
+      })
+      if (!isValid) {
+        return dispatch({ type: SET_GUEST_FORM_ERRORS, payload: errors });
+      }
+      // add guest
+      const guest = await axios.post(`${API_URL}/guest/add`, guestForm);
+      if (guest.status === 200) {
+        Promise.all([]).then(() => {
+          dispatch(checkout(navigate, guest.data.guest));
+        });
+      }
+    } catch (error) {
+      dispatch(handleError(error, 'Error checking out as guest! Try again later'))
+    } finally {
+      dispatch(setCartLoading(false))
+    }
+  }
+};
+
 // Add item to cart
 export const addToCart = (item) => {
   return async (dispatch, getState) => {
     try {
       dispatch(setCartLoading(true));
+      
+      const { authenticated, items } = getState().cart;
+      
+      // Check if user is guest and already has an item in cart
+      if (!authenticated && items.length > 0) {
+        dispatch(showNotification('info', 'As a guest, you can only add one ticket. Please sign in to add more.'));
+        dispatch(toggleCart());
+        return;
+      }
+      
+      // Check if this ticket is already in the cart
+      const existingItem = items.find(cartItem => cartItem.ticketId === item.ticketId);
+      if (existingItem) {
+        dispatch(showNotification('info', 'This ticket is already in your cart'));
+        dispatch(toggleCart());
+        return;
+      }
       
       const cartId = localStorage.getItem(CART_ID);
       const cartItem = {
@@ -119,6 +215,10 @@ export const addToCart = (item) => {
       
       if (response.data.cart) {
         dispatch({
+          type: SELECTED_TICKETS,
+          payload: cartItem.ticketId
+        })
+        dispatch({
           type: SET_CART_ITEMS,
           payload: response.data.cart.tickets || []
         });
@@ -128,8 +228,6 @@ export const addToCart = (item) => {
           payload: response.data.cart.total || 0
         });
       }
-      
-      // dispatch(showNotification('success', 'Item added to cart'));
       
       dispatch(toggleCart());
     } catch (error) {
@@ -159,6 +257,11 @@ export const removeFromCart = (ticketId) => {
         if (response.data.cart.tickets.length === 0) {
             dispatch(clearCart());
         }
+
+        dispatch({
+          type: DELETE_SELECTED_TICKETS,
+          payload: ticketId
+        })
         dispatch({
           type: SET_CART_ITEMS,
           payload: response.data.cart.tickets || []
@@ -170,7 +273,6 @@ export const removeFromCart = (ticketId) => {
         });
       }
       
-      // dispatch(showNotification('success', 'Item removed from cart'));
     } catch (error) {
       handleError(error, dispatch);
       dispatch(setCartError('Failed to remove item from cart'));
@@ -185,6 +287,14 @@ export const updateCartItem = (ticketId, updates) => {
   return async (dispatch, getState) => {
     try {
       dispatch(setCartLoading(true));
+      
+      const { authenticated } = getState().authentication;
+      
+      // If not authenticated, don't allow quantity changes
+      if (!authenticated && updates.quantity > 1) {
+        dispatch(showNotification('info', 'Please sign in to increase ticket quantity'));
+        return;
+      }
       
       const cartId = localStorage.getItem(CART_ID);
       
@@ -223,11 +333,11 @@ export const clearCart = () => {
     try {
       dispatch(setCartLoading(true));
       
-      const cartId = localStorage.getItem(CART_ID);
+      /*const cartId = localStorage.getItem(CART_ID);
       
       if (cartId) {
         await axios.delete(`${API_URL}/cart/${cartId}`);
-      }
+      }*/
       
       localStorage.removeItem(CART_ID);
       
@@ -244,18 +354,52 @@ export const clearCart = () => {
   };
 };
 
-export const handleCheckout = () => {
-  return (dispatch, getState) => {
-    const { authenticated } = getState().authentication;
-    
-    if (!authenticated) {
-      dispatch(showNotification('info', 'Please login to proceed to checkout'));
+export const checkout = (navigate, guest=null) => {
+  return async (dispatch, getState) => {
+    dispatch(setCartLoading(true));
+    try {
+      const { email, name, _id } = guest;
+      const user = getState().account.user;
+      const cart = getState().cart;
+      const { eventId, ticketId, discountPrice, price } = cart.items[0]
+      const { cartId, total } = cart
+      const userEmail = user.email
+      const user_name = user.name
+      const userId = user._id
+
       dispatch(toggleCart());
-      // Redirect to login page
-      return;
+      dispatch(clearCart());
+
+      // before creating an order, check if every ticket in the db is
+      // active or the quantity is greater than 0
+      const checkTIcketStatus = await ticketStatusChecker(cartId);
+
+      if (!checkTIcketStatus) {
+        throw new Error('Cannot buy ticket at this time, try again!!')
+      }
+
+
+      const ps = await payStackHelper({
+        cart: cartId,
+        user: { email: userEmail, name: user_name, _id: userId},
+        guest: { email, name, _id },
+        events: eventId,
+        tickets: ticketId,
+        finalAmount: total,
+        discountPrice: discountPrice,
+        amountBeforeDiscount: price,
+        billingEmail: email !== undefined || null ? email : userEmail,
+      })
+
+      if (ps && ps.status === 200) {
+        // payment successful
+        // redirect to confirmation page
+        navigate(`/order/success/${guest.name ? 'guest-' + ps.data.order._id : ps.data.order._id}`)
+      }
+    } catch (error) {
+      handleError(error, dispatch)
+    } finally {
+      dispatch(setCartLoading(false));
     }
-    
-    // Proceed with checkout
-    // This will be implemented later
-  };
-};
+  }
+}
