@@ -7,6 +7,76 @@ const Coupon = require('../../models/coupon');
 const Event = require('../../models/event');
 const Ticket = require('../../models/ticket');
 
+// validate a coupon
+router.post('/validate', auth, async (req, res) => {
+  try {
+    const { code, tickets = [], events = [] } = req.body;
+    const user = req.user;
+
+    if (!code) {
+      return res.status(400).json({ error: 'Coupon code is required.' });
+    }
+
+    const coupon = await Coupon.findOne({ code: code.trim().toUpperCase() })
+      .populate('event')
+      .populate('ticket');
+
+    if (!coupon) {
+      return res.status(404).json({ error: 'Invalid coupon code.' });
+    }
+
+    if (!coupon.active) {
+      return res.status(400).json({ error: 'This coupon is not active.' });
+    }
+
+    if (coupon.quantity !== null && coupon.usedCount >= coupon.quantity) {
+      return res.status(400).json({ error: 'This coupon has reached its maximum usage limit.' });
+    }
+
+    if (!coupon.userLimit || coupon.userLimit < 1) {
+      return res.status(400).json({ error: 'This coupon does not permit usage.' });
+    }
+
+    // Check ticket match
+    const matchedTicket = tickets.find(tId =>
+      coupon.ticket.some(ct => ct._id.toString() === tId)
+    );
+    if (coupon.ticket.length && !matchedTicket) {
+      return res.status(400).json({ error: 'This coupon is not valid for any selected ticket.' });
+    }
+
+    // Check event match
+    const matchedEvent = events.find(eId =>
+      coupon.event.some(ce => ce._id.toString() === eId)
+    );
+    if (coupon.event.length && !matchedEvent) {
+      return res.status(400).json({ error: 'This coupon is not valid for any selected event.' });
+    }
+
+    // Check user usage
+    const usageCount = coupon.hasUsed.filter(uid =>
+      uid.toString() === user._id.toString()
+    ).length;
+
+    if (usageCount >= coupon.userLimit) {
+      return res.status(400).json({ error: 'You have already used this coupon the maximum number of times allowed.' });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Coupon is valid.',
+      couponId: coupon._id,
+      type: coupon.type,
+      amount: coupon.amount || 0,
+      percentage: coupon.percentage || 0,
+      appliesTo: coupon.appliesTo,
+    });
+  } catch (error) {
+    console.error('Validate coupon error:', error);
+    return res.status(500).json({ error: 'Error validating coupon.' });
+  }
+});
+
 // GET /coupon/me - return coupons based on user role
 router.get(
   '/me',
@@ -272,61 +342,6 @@ router.put(
   }
 );
 
-// validate a coupon
-router.post('/validate', auth, async (req, res) => {
-  try {
-    const { code, tickets = [], events = [] } = req.body;
-    const user = req.user;
-
-    if (!code) {
-      return res.status(400).json({ error: 'Coupon code is required.' });
-    }
-
-    const coupon = await Coupon.findOne({ code: code.trim().toUpperCase() })
-      .populate('event')
-      .populate('ticket');
-
-    if (!coupon) {
-      return res.status(404).json({ error: 'Invalid coupon code.' });
-    }
-
-    if (!coupon.active) {
-      return res.status(400).json({ error: 'This coupon is not active.' });
-    }
-
-    if (!coupon.userLimit || coupon.userLimit < 1) {
-      return res.status(400).json({ error: 'This coupon does not permit usage.' });
-    }
-
-    // Find the first matching ticket
-    const matchedTicket = tickets.find(tId => coupon.ticket.some(ct => ct._id.toString() === tId));
-    if (coupon.ticket.length && !matchedTicket) {
-      return res.status(400).json({ error: 'This coupon is not valid for any selected ticket.' });
-    }
-
-    // Find the first matching event
-    const matchedEvent = events.find(eId => coupon.event.some(ce => ce._id.toString() === eId));
-    if (coupon.event.length && !matchedEvent) {
-      return res.status(400).json({ error: 'This coupon is not valid for any selected event.' });
-    }
-
-    // Count user usage
-    const usageCount = coupon.hasUsed.filter(uid => uid.toString() === user._id.toString()).length;
-    if (usageCount >= coupon.userLimit) {
-      return res.status(400).json({ error: 'You have already used this coupon the maximum number of times allowed.' });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: 'Coupon is valid.',
-      discount: coupon.percentage,
-      couponId: coupon._id
-    });
-  } catch (error) {
-    console.error('Validate coupon error:', error);
-    return res.status(500).json({ error: 'Error validating coupon.' });
-  }
-});
 
 // DELETE /coupon/:id - Delete coupon
 router.delete(

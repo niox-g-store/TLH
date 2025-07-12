@@ -403,11 +403,14 @@ router.delete('/id/:id', auth, async (req, res) => {
     }
 
     if (order.cart && order.cart.tickets && order.cart.tickets.length > 0) {
-      await increaseQuantity(order.cart.tickets);
+      // increase quantity only if the order status === 'true'
+      if (order.status === 'true') {
+        await increaseQuantity(order.cart.tickets);
+      }
     }
 
     // Delete the order
-    await order.deleteOne();
+    await order.deleteOne();  
 
     return res.status(200).json({ message: 'Order deleted and tickets restocked successfully.' });
   } catch (error) {

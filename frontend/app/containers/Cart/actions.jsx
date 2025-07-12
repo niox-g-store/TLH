@@ -120,10 +120,14 @@ export const applyCoupon = () => {
       }
       console.log(requestData);
       // confirm coupon
-      // const response = await axios.post(`${API_URL}/coupon/validate`, requestData);
+      const response = await axios.post(`${API_URL}/coupon/validate`, requestData);
+      if (response.status === 200) {
+        const data = response.data
+        console.log(data)
+        dispatch(showNotification('success', 'Coupon applied successfully'));
+      }
 
 
-      console.log(code)
     } catch (error) {
       handleError(error, dispatch);
     } finally {
@@ -134,12 +138,14 @@ export const applyCoupon = () => {
 
 // Initialize cart from database using cart ID from localStorage
 export const initializeCart = () => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
       dispatch(setCartLoading(true));
       const cartId = localStorage.getItem(CART_ID);
       
       if (cartId) {
+        // set cart id to state if it's null
+        if (!getState().cart.cartId) { dispatch(setCartId(cartId)) }
         const response = await axios.get(`${API_URL}/cart/${cartId}`);
         
         if (response.data.cart) {
