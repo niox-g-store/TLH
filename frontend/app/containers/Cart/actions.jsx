@@ -236,7 +236,7 @@ export const addToCart = (item) => {
         price: item.price,
         discount: item.discount || false,
         discountPrice: item.discountPrice || 0,
-        discountAmount: item.price - item.discountPrice,
+        discountAmount: item.discount ? item.price - item.discountPrice : 0,
         quantity: 1,
         ticketQuantity: item.ticketQuantity
       };

@@ -58,8 +58,8 @@ const OrderViewer = (props) => {
                 <h3>{order?.guest ? 'Guest' : 'User'}</h3>
                 <CCardTitle className='d-flex' style={{ justifyContent: 'space-between' }}>
                   <p className='mb-0'><strong>Id:</strong> {order?._id || 'N/A'}</p>
-                  <CBadge color={order?.paymentStatus === 'success' ? 'success' : 'danger'} className='mb-2'>
-                    {order?.paymentStatus || ''}
+                  <CBadge color={order?.status === 'true' ? 'success' : 'danger'} className='mb-2'>
+                    {(order?.status === 'true' ? 'success' : 'failed') || ''}
                   </CBadge>
                 </CCardTitle>
 
