@@ -22,6 +22,9 @@ header.scrolled {
 @media (min-width: 1024px) {
   header .container {
     padding: 0 !important;
+    margin: 0em 0em 0em 2em;
+    width: 100%;
+    max-width: 100%;
   }
 }
 .navigation {
@@ -58,8 +61,8 @@ header.scrolled {
 .buttons {
   flex: 0 0 22%;
   display: flex;
-  gap: 8px;
-
+  gap: 16px;
+  width: fit-content;
   align-items: center;
 }
 

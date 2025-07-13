@@ -36,7 +36,7 @@ const Footer = () => {
               </div>
               <div className="col-links-c">
                 <h4 className="p-white">Socials</h4>
-                <ul className="d-flex" style={{ gap: '.25em' }}>
+                <ul className="d-flex flex-column" style={{ gap: '.25em' }}>
                   <li>
                     <a className="p-white" target="_blank" href="https://chat.whatsapp.com/BITMxQSwpFT5x8zjX0v6z2">
                     <MdOutlineWhatsapp size={30}/>

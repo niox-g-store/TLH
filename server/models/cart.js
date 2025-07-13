@@ -15,6 +15,18 @@ const CartItemSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Coupon'
   },
+  couponDiscount: {
+    type: Number,
+    default: 0
+  },
+  couponAmount: {
+    type: Number,
+    default: 0
+  },
+  couponPercentage: {
+    type: Number,
+    default: 0
+  },
   eventName: {
     type: String,
     required: true

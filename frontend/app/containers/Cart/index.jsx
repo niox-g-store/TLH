@@ -35,7 +35,13 @@ const CartViewer = (props) => {
       updateCartItem,
 
       handleCouponChange,
-      applyCoupon
+      applyCoupon,
+
+      discountAmount,
+      amountBeforeDiscount,
+      appliedCoupon,
+      ticketDiscounts,
+      couponValidTickets
   } = props;
   const navigate = useNavigate();
 
@@ -137,17 +143,40 @@ const CartViewer = (props) => {
                 </div>
 
                 {/* coupon */}
+                {authenticated &&
                 <div className="cart-coupon-container">
                   <Input
                     value={coupon.code || ''}
                     type="text"
-                    className="cart-coupon"
+                    className={`cart-coupon ${appliedCoupon?.length > 0 && 'bg-gray'}`}
                     name="code"
                     placeholder='Coupon Code Here'
                     onInputChange={(n, v) => handleCouponChange(n, v)}
+                    disabled={appliedCoupon?.length > 0 && true}
                   />
-                  <button onClick={applyCoupon}>Apply</button>
+                  <button
+                    className={`${appliedCoupon?.length > 0 && 'bg-gray p-black'}`}
+                    disabled={appliedCoupon?.length > 0 && true}
+                    onClick={applyCoupon}>{appliedCoupon?.length > 0 ? 'Applied' : 'Apply'}</button>
                 </div>
+                }
+
+                {discountAmount > 0 && (
+                <div className="cart-discount-info">
+                  <p className='mb-0'>Coupon Applied: {appliedCoupon[0].code}</p>
+                  <p className='mb-0'>Applied to Event: {items.filter((item) =>
+                                                   couponValidTickets?.some((td) => td === item.ticketId))
+                                                   .map((item) => item.eventName)
+                                                   .join(', ')}
+                  </p>
+                  <p className='mb-0'>Applied to Ticket: {items.filter((item) =>
+                                                   couponValidTickets?.some((td) => td === item.ticketId))
+                                                   .map((item) => item.ticketType)
+                                                   .join(', ')}
+                  </p>
+                  <p className='mb-4'>Discount: -₦{discountAmount.toLocaleString()}</p>
+                </div>
+                )}
 
                 <div className="cart-actions">
                   <button className="clear-cart" onClick={clearCart}>Clear Cart</button>
@@ -219,7 +248,13 @@ const mapStateToProps = (state) => {
     showGuestForm: state.cart.showGuestForm,
     guestInfo: state.cart.guestInfo,
     guestErrors: state.cart.guestErrors,
-    coupon: state.cart.coupon
+    coupon: state.cart.coupon,
+
+    discountAmount: state.cart.discountAmount,
+    amountBeforeDiscount: state.cart.amountBeforeDiscount,
+    appliedCoupon: state.cart.appliedCoupon,
+    ticketDiscounts: state.cart.ticketDiscounts,
+    couponValidTickets: state.cart.couponValidTickets
   };
 };
 

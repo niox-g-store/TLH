@@ -4,6 +4,7 @@ import {
   SET_IS_LOADING,
   FETCH_USER_ORDERS,
   SET_DELETE_ORDER,
+  SET_SECOND_DISCOUNT,
 } from './constants';
 
 const initialState = {
@@ -11,11 +12,17 @@ const initialState = {
   orders: [],
   userOrders: [],
   deleteOrderVisibility: false,
-  isLoading: false
+  isLoading: false,
+  secondDiscount: 0
 };
 
 const ordersReducer = (state = initialState, action) => {
   switch (action.type) {
+    case SET_SECOND_DISCOUNT:
+      return {
+        ...state,
+        secondDiscount: action.payload
+      };
     case SET_DELETE_ORDER:
       return {
         ...state,

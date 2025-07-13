@@ -249,4 +249,48 @@ router.put('/:cartId/user', auth, async (req, res) => {
   }
 });
 
+// Update entire cart with coupon and final amount
+router.put('/:cartId/apply-coupon', async (req, res) => {
+  try {
+    const { cartId } = req.params;
+    const { finalAmount, discountAmount, coupon, couponValidTickets } = req.body;
+
+    if (!finalAmount || !coupon || !Array.isArray(couponValidTickets)) {
+      return res.status(400).json({ error: 'Invalid input data' });
+    }
+
+    const cart = await Cart.findById(cartId);
+    if (!cart) {
+      return res.status(400).json({ error: 'Cart not found' });
+    }
+
+    // Apply ticket updates to cart item
+    couponValidTickets.forEach((ticketId) => {
+      const item = cart.tickets.find(t => t.ticketId.toString() === ticketId.toString());
+      if (item) {
+        item.coupon = coupon.couponId;
+        if (coupon.type === 'Fixed') {
+          item.couponAmount = coupon.amount
+          item.couponDiscount = item.discountPrice - coupon.amount
+        } else if (coupon.type === 'Percentage') {
+          item.couponPercentage = coupon.percentage
+          item.couponDiscount = item.discountPrice * (coupon.percentage / 100)
+        }
+      }
+    });
+
+    cart.total = finalAmount;
+
+    await cart.save();
+
+    return res.status(200).json({
+      success: true,
+      cart
+    });
+  } catch (error) {
+    return res.status(400).json({ error: 'Failed to apply coupon to cart' });
+  }
+});
+
+
 module.exports = router;

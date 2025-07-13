@@ -169,6 +169,10 @@ input[type="date"] {
   color: gray !important;
 }
 
+.bg-gray {
+  background-color: #80808047 !important;
+}
+
 .border-10 {
   border-radius: 10px;
 }

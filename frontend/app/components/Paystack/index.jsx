@@ -50,7 +50,6 @@ export const payStackHelper = async (props, dispatch) => {
             payStackId: id,
             billingEmail,
           });
-          dispatch(setCartLoading(false));
         } catch (error) {
           reject(new Error(`Payment failed: ${error.message}`));
         }

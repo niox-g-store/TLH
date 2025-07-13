@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   CRow,
@@ -24,7 +24,7 @@ const OrderViewer = (props) => {
   const { order = {}, user,
           isLightMode, orderIsLoading,
           setDeleteOrderVisibility, deleteOrderVisibility,
-          deleteOrder
+          deleteOrder, secondDiscount, setSecondDiscount
         } = props;
   const navigate = useNavigate();
 
@@ -35,6 +35,21 @@ const OrderViewer = (props) => {
   const firstImage =
     order?.cart?.tickets?.[0]?.eventId?.imageUrls?.[0] || '';
   const totalPrice = order?.cart?.tickets?.reduce((sum, ticket) => sum + ((ticket?.price * ticket.quantity) || 0), 0);
+
+  useEffect(() => {
+    let secDiscount = 0;
+    const ticketWithCoupon = order?.cart?.tickets?.find((t) => t.coupon);
+
+    if (ticketWithCoupon) {
+      const { couponPercentage, couponAmount, price } = ticketWithCoupon;
+      secDiscount = couponPercentage > 0 
+        ? (price * couponPercentage) / 100 
+        : couponAmount;
+
+      setSecondDiscount(secDiscount);
+    }
+  }, [order?.cart?.tickets]);
+
 
   return (
     <div data-aos='fade-up' className='container-lg px-4 d-flex flex-column mb-custom-5em'>
@@ -85,7 +100,7 @@ const OrderViewer = (props) => {
                   ? (
                     <div className='mt-2'>
                       <CRow>
-                        <CCol><strong>Original:</strong></CCol>
+                        <CCol><strong>SubTotal:</strong></CCol>
                         <CCol className='text-end'>
                         ₦{order?.amountBeforeDiscount ? order.amountBeforeDiscount.toLocaleString() : '0'}
                       </CCol>
@@ -93,11 +108,11 @@ const OrderViewer = (props) => {
                       <CRow>
                         <CCol><strong>Discount:</strong></CCol>
                         <CCol className='text-end text-danger'>
-                        -₦{order?.discountAmount ? order.discountAmount.toLocaleString() : '0'}
+                        -₦{order?.discountAmount ? (order.discountAmount + secondDiscount).toLocaleString() : '0'}
                       </CCol>
                       </CRow>
                       <CRow>
-                        <CCol><strong>Final:</strong></CCol>
+                        <CCol><strong>Total:</strong></CCol>
                         <CCol className='text-end fw-bold text-success'>
                         ₦{order?.finalAmount ? order.finalAmount.toLocaleString() : '0'}
                       </CCol>
@@ -107,9 +122,16 @@ const OrderViewer = (props) => {
                   : (
                     <div className='mt-2'>
                       <CRow>
-                        <CCol><strong>Final Amount:</strong></CCol>
+                        <CCol><strong>SubTotal:</strong></CCol>
                         <CCol className='text-end fw-bold'>
                         ₦{order?.finalAmount ? totalPrice.toLocaleString() : '0'}
+                      </CCol>
+                      </CRow>
+
+                      <CRow>
+                        <CCol><strong>Total:</strong></CCol>
+                        <CCol className='text-end fw-bold'>
+                        ₦{order?.finalAmount ? order?.finalAmount.toLocaleString() : '0'}
                       </CCol>
                       </CRow>
                     </div>
@@ -148,6 +170,7 @@ const OrderViewer = (props) => {
                     const price = ticket?.price || 0;
                     const discountPrice = ticket?.discountPrice || 0;
                     const hasDiscount = ticket?.discount;
+                    const hasCoupon = ticket?.coupon;
 
                     return (
                       <div key={index} className='mb-3 border-bottom pb-2'>
@@ -155,8 +178,21 @@ const OrderViewer = (props) => {
                         <p><strong>Ticket Type:</strong> {ticket?.ticketType || 'N/A'}</p>
                         <p><strong>Quantity:</strong> {quantity}</p>
                         <p>
-                          <strong>{!hasDiscount ? 'Price:' : 'Original price:'}</strong> ₦{price.toLocaleString()}
+                          <strong>{!hasDiscount ? 'SubTotal:' : 'SubTotal:'}</strong> ₦{price.toLocaleString()}
                         </p>
+                        {hasDiscount && hasCoupon &&
+                        <>
+                          {ticket.couponAmount > 0 && <>
+                            <p> <strong>Coupon:</strong> -₦{(ticket.couponDiscount * -1).toLocaleString()}</p>
+                            <p className='text-success'>Total: ₦{(ticket.price - ticket.couponAmount).toLocaleString()}</p>
+                          </>}
+                          {ticket.couponPercentage > 0 && <>
+                            <p className='fw-bold'> <strong>Coupon:</strong> {ticket.couponPercentage}%OFF</p>
+                            <p className='text-danger'>Discount: ₦-{(ticket.price * (ticket.couponPercentage / 100)).toLocaleString()}</p>
+                            <p className='text-success'>Total: ₦{((ticket.price) - (ticket.price * (ticket.couponPercentage / 100))).toLocaleString()}</p>
+                          </>}
+                        </>
+                        }
 
                         {hasDiscount && (
                           <>
@@ -164,9 +200,22 @@ const OrderViewer = (props) => {
                             <strong>Discount:</strong> -₦{(price - discountPrice).toLocaleString()}
                           </p>
                           <p className='text-success'>
-                            <strong>Final price:</strong> ₦{discountPrice.toLocaleString()}
+                            <strong>Total:</strong> ₦{discountPrice.toLocaleString()}
                           </p>
                         </>
+                        )}
+                        {hasCoupon && (
+                          <>
+                          {ticket.couponAmount > 0 && <>
+                            <p> <strong>Coupon:</strong> -₦{(ticket.couponDiscount * -1).toLocaleString()}</p>
+                            <p className='text-success'>Total: ₦{(ticket.price - ticket.couponAmount).toLocaleString()}</p>
+                          </>}
+                          {ticket.couponPercentage > 0 && <>
+                            <p className='fw-bold'> <strong>Coupon:</strong> {ticket.couponPercentage}%OFF</p>
+                            <p className='text-danger'>Discount: ₦-{(ticket.price * (ticket.couponPercentage / 100)).toLocaleString()}</p>
+                            <p className='text-success'>Total: ₦{((ticket.price) - (ticket.price * (ticket.couponPercentage / 100))).toLocaleString()}</p>
+                          </>}
+                          </>
                         )}
 
                         {quantity > 1 && (
@@ -229,7 +278,8 @@ const mapStateToProps = state => ({
   order: state.order.order,
   isLightMode: state.dashboard.isLightMode,
   orderIsLoading: state.order.isLoading,
-  deleteOrderVisibility: state.order.deleteOrderVisibility
+  deleteOrderVisibility: state.order.deleteOrderVisibility,
+  secondDiscount: state.order.secondDiscount,
 });
 
 export default connect(mapStateToProps, actions)(withRouter(ViewOrder));

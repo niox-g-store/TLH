@@ -33,7 +33,7 @@ const qrCodeSchema = new mongoose.Schema({
     default: false
   },
   order: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'Order',
     required: true
   },

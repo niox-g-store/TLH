@@ -149,15 +149,15 @@ const EventViewer = (props) => {
                                 key={ticket._id}
                                 className={`ticket-item ${ticket.quantity <= 0 ? 'sold-out' : ''}`}
                                 onClick={() => ticket.quantity > 0 && addToCart({
-                  ticketId: ticket._id,
-                  eventId: event._id,
-                  eventName: event.name,
-                  ticketType: ticket.type,
-                  price: ticket.price,
-                  discount: ticket.discount,
-                  discountPrice: ticket.discountPrice,
-                  ticketQuantity: ticket.quantity
-                })}
+                                         ticketId: ticket._id,
+                                         eventId: event._id,
+                                         eventName: event.name,
+                                         ticketType: ticket.type,
+                                         price: ticket.price,
+                                         discount: ticket.discount,
+                                         discountPrice: ticket.discountPrice,
+                                         ticketQuantity: ticket.quantity
+                                })}
                               >
                                 {!ticket.discount && (
                   <div className='d-flex flex-column'>

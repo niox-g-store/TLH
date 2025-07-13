@@ -21,7 +21,8 @@ import {
 
   SELECTED_TICKETS,
   DELETE_SELECTED_TICKETS,
-  SET_CART_COUPON
+  SET_CART_COUPON,
+  APPLY_COUPON_TO_CART
 } from './constants';
 
 import { getSelectedTicketsFromStorage, saveSelectedTicketsToStorage } from '../../utils/selectedTickets';
@@ -39,11 +40,25 @@ const initialState = {
   guestErrors: {},
   coupon: {
     code: ''
-  }
+  },
+  amountBeforeDiscount: 0,
+  discountAmount: 0,
+  appliedCoupon: null,
+  ticketDiscounts: [],
+  couponValidTickets: []
 };
 
 const cartReducer = (state = initialState, action) => {
   switch (action.type) {
+    case APPLY_COUPON_TO_CART:
+      return {
+        ...state,
+        amountBeforeDiscount: action.payload.amountBeforeDiscount,
+        discountAmount: action.payload.discountAmount,
+        appliedCoupon: action.payload.appliedCoupon,
+        ticketDiscounts: action.payload.ticketDiscounts,
+        couponValidTickets: action.payload.couponValidTickets
+      };
     case SET_CART_COUPON:
       return {
         ...state,
@@ -126,7 +141,12 @@ const cartReducer = (state = initialState, action) => {
         coupon: {
           code: ''
         },
-        showGuestForm: false
+        showGuestForm: false,
+        amountBeforeDiscount: 0,
+        discountAmount: 0,
+        appliedCoupon: null,
+        ticketDiscounts: [],
+        couponValidTickets: []
       };
     case SET_CART_ITEMS:
       return {

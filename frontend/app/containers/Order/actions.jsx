@@ -3,12 +3,20 @@ import {
   FETCH_ORDER,
   FETCH_ORDERS,
   FETCH_USER_ORDERS,
-  SET_DELETE_ORDER
+  SET_DELETE_ORDER,
+  SET_SECOND_DISCOUNT
 } from './constants';
 import axios from 'axios';
 import { API_URL } from '../../constants';
 import { showNotification } from '../Notification/actions';
 import handleError from '../../utils/error';
+
+export const setSecondDiscount = (v) => {
+  return {
+    type: SET_SECOND_DISCOUNT,
+    payload: v
+  }
+}
 
 export const setDeleteOrderVisibility = (v) => {
   return {

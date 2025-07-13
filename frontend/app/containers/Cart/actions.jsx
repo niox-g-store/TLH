@@ -29,7 +29,8 @@ import {
   DELETE_SELECTED_TICKETS,
   SET_GUEST_FORM_ERRORS,
   SHOW_GUEST_FORM,
-  SET_CART_COUPON
+  SET_CART_COUPON,
+  APPLY_COUPON_TO_CART
 } from './constants';
 import { ticketStatusChecker } from '../Ticket/actions';
 
@@ -100,6 +101,123 @@ export const setGuestForm = (v) => {
   }
 }
 
+export const calculateCouponDiscount = (coupon) => {
+  return async (dispatch, getState) => {
+    dispatch(setCartLoading(true))
+    try {
+      const state = getState();
+      const cart = state.cart;
+      const cartItems = [...cart.items];
+
+      let originalTotal = 0;
+      let discountAmount = 0;
+
+      // Get correct original total (respecting discounts)
+      cartItems.forEach(item => {
+        const price = item.discount ? item.discountPrice : item.price;
+        const quantity = item.quantity || 1;
+        originalTotal += price * quantity;
+      });
+
+      if (coupon.appliesTo === 'One') {
+        const matchableTicketIds = coupon.ticket?.map(id => id.toString()) || [];
+        const match = cartItems.find(item =>
+          matchableTicketIds.includes(item.ticketId?.toString())
+        );
+
+        if (match) {
+          const price = match.discount ? match.discountPrice : match.price;
+          const quantity = match.quantity || 1;
+          const totalForItem = price * quantity;
+
+          if (coupon.type === 'Fixed') {
+            discountAmount = Math.min(coupon.amount, totalForItem);
+          } else if (coupon.type === 'Percentage') {
+            discountAmount = (coupon.percentage / 100) * totalForItem;
+          }
+        }
+
+      } else if (coupon.appliesTo === 'Multiple') {
+        const matchableTicketIds = coupon.ticket?.map(id => id.toString()) || [];
+
+        cartItems.forEach(item => {
+          const matches = matchableTicketIds.length === 0 ||
+            matchableTicketIds.includes(item.ticketId?.toString());
+
+          if (matches) {
+            const price = item.discount ? item.discountPrice : item.price;
+            const quantity = item.quantity || 1;
+            const itemTotal = price * quantity;
+
+            if (coupon.type === 'Fixed') {
+              discountAmount += Math.min(coupon.amount, itemTotal);
+            } else if (coupon.type === 'Percentage') {
+              discountAmount += (coupon.percentage / 100) * itemTotal;
+            }
+          }
+        });
+      }
+
+      const finalAmount = Math.max(originalTotal - discountAmount, 0);
+      // update cart total with finalAmount, cartItems.discountPrice should be updated to discountAmount for the coupon.ticket === cartItems.ticketId
+      // after updating cart, then disoatch to HANDLE_CART_TOTAL with the new payload as finalAmount
+      const cartId = getState().cart.cartId;
+
+      // build ticket discounts to send
+      const ticketDiscounts = cartItems.map(item => {
+      const ticketId = item.ticketId;
+      let discountPrice = item.price;
+  
+      if (coupon.ticket?.includes(ticketId)) {
+        if (coupon.type === 'Fixed') {
+          discountPrice = item.price - Math.min(coupon.amount, item.price);
+        } else if (coupon.type === 'Percentage') {
+          discountPrice = item.price - (coupon.percentage / 100) * item.price;
+        }
+      }
+
+      return {
+        ticketId,
+        discountPrice: Math.round(discountPrice)
+      };
+      });
+
+
+      // update cart in backend
+      /*await axios.put(`${API_URL}/cart/${cartId}/apply-coupon`, {
+        finalAmount: Math.round(finalAmount),
+        discountAmount: Math.round(discountAmount),
+        couponCode: coupon.code,
+        ticketDiscounts
+      });*/
+
+      // update redux store
+      dispatch({
+        type: HANDLE_CART_TOTAL,
+        payload: Math.round(finalAmount)
+      });
+
+      dispatch({
+        type: APPLY_COUPON_TO_CART,
+        payload: {
+          amountBeforeDiscount: originalTotal,
+          discountAmount: Math.round(discountAmount),
+          appliedCoupon: [coupon],
+          ticketDiscounts,
+          couponValidTickets: coupon.ticket
+        }
+      });
+      dispatch(showNotification('success', 'Discount applied to cart.'));
+    } catch (error) {
+      handleError(error, dispatch)
+    } finally {
+      dispatch(setCartLoading(false))
+    }
+  }
+}
+
+
+
 export const applyCoupon = () => {
   return async(dispatch, getState) => {
     dispatch(setCartLoading(true));
@@ -112,22 +230,16 @@ export const applyCoupon = () => {
       }
       const code = coupon.code;
       const tickets = cartItems.map(item => item.ticketId);
-      const events = cartItems.map(item => item.eventId);
       const requestData = {
         code,
         tickets,
-        events
       }
-      console.log(requestData);
       // confirm coupon
       const response = await axios.post(`${API_URL}/coupon/validate`, requestData);
       if (response.status === 200) {
         const data = response.data
-        console.log(data)
-        dispatch(showNotification('success', 'Coupon applied successfully'));
+        dispatch(calculateCouponDiscount(data))
       }
-
-
     } catch (error) {
       handleError(error, dispatch);
     } finally {
@@ -424,16 +536,30 @@ export const checkout = (navigate, guest=null) => {
       } else {
         user_name = user.name
       }
-
       dispatch(toggleCart());
       dispatch(clearCart());
 
       // before creating an order, check if every ticket in the db is
       // active or the quantity is greater than 0
       const checkTIcketStatus = await ticketStatusChecker(cartId);
-
       if (!checkTIcketStatus) {
         throw new Error('Cannot buy ticket at this time, try again!!')
+      }
+
+      // here we need to update the cart before calling paystack if "appliedCoupon" has been applied
+      // then update the cart.items.discountPrice to be the new dicountPrice of applied Coupon
+      // update the cart.items.tickets.coupon to applied Coupon
+      const finalAmount = cart.total;
+      const discountAmount = cart.discountAmount;
+      const couponValidTickets = cart.couponValidTickets;
+      const appliedCoupon = cart.appliedCoupon
+      if (appliedCoupon?.length > 0) {
+        await axios.put(`${API_URL}/cart/${cartId}/apply-coupon`, {
+          finalAmount: Math.round(finalAmount),
+          discountAmount: Math.round(discountAmount),
+          coupon: appliedCoupon[0],
+          couponValidTickets
+        });
       }
 
 

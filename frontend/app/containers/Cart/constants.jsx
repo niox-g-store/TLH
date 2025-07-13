@@ -22,3 +22,4 @@ export const SET_GUEST_INFO = 'src/Cart/SET_GUEST_INFO';
 export const SHOW_GUEST_FORM = 'src/Cart/SHOW_GUEST_FORM';
 export const SET_GUEST_FORM_ERRORS = 'src/Cart/SET_GUEST_FORM_ERRORS';
 export const SET_CART_COUPON = 'src/Cart/SET_CART_COUPON';
+export const APPLY_COUPON_TO_CART = 'src/Cart/APPLY_COUPON_TO_CART';

@@ -124,25 +124,28 @@ const ManagerCouponHelper = (props) => {
                 />
                 <CCardBody>
                   <div className='d-flex justify-content-between align-items-center mb-2'>
-                    <CCardTitle><strong>Event: </strong>{coupon.event?.name || 'N/A'}</CCardTitle>
+                    <CCardTitle>
+                    <CButton
+                      color='light'
+                      size='sm'
+                      className='mb-2'
+                      onClick={(e) => {
+                        e.preventDefault();
+                        toggleCodeVisibility(idx);
+                      }}
+                    >
+                      {visibleCodes[idx] ? <FaEyeSlash /> : <FaEye />}
+                    </CButton>
+                      <strong>Code:</strong>&nbsp;&nbsp;&nbsp;
+                    <span className='mb-2'>
+                       {visibleCodes[idx] ? coupon.code : '••••••••'}
+                    </span>
+                    </CCardTitle>
                     <CBadge color={coupon.active ? 'success' : 'danger'}>
                       {coupon.active ? 'Active' : 'Inactive'}
                     </CBadge>
                   </div>
-                  <CButton
-                    color='light'
-                    size='sm'
-                    className='mb-2'
-                    onClick={(e) => {
-                      e.preventDefault();
-                      toggleCodeVisibility(idx);
-                    }}
-                  >
-                    {visibleCodes[idx] ? <FaEyeSlash /> : <FaEye />}
-                  </CButton>
-                  &nbsp;&nbsp;&nbsp;<span className='mb-2'>
-                    <strong>Code:</strong> {visibleCodes[idx] ? coupon.code : '••••••••'}
-                  </span>
+ 
                   <CCardText as={'div'} className="copon-card-text-container">
                     <div className='copon-card-text'>
                     <strong>Type:</strong> {coupon.type || 'N/A'}

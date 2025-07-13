@@ -24,6 +24,53 @@ import ManagerPagination from '../../Pagination';
 import LoadingIndicator from '../../../store/LoadingIndicator';
 import { GoBack } from '../../../../containers/goBack/inedx';
 
+const OrderWithCoupon = ({ order, cart }) => {
+  const discount = cart?.tickets.find((i) => i.coupon !== null);
+  return (
+    <>
+          <div className='mt-2'>
+            <CRow>
+              <CCol><strong>SubTotal:</strong></CCol>
+              <CCol className='text-end'>₦{order.amountBeforeDiscount.toLocaleString()}</CCol>
+            </CRow>
+            {discount.couponAmount > 0 && <CRow>
+              <CCol><strong>Coupon:</strong></CCol>
+              <CCol className='text-end text-danger'>-₦{discount.couponDiscount.toLocaleString()}</CCol>
+            </CRow>}
+            {discount.couponPercentage > 0 && <CRow>
+              <CCol><strong>Coupon:</strong></CCol>
+              <CCol className='text-end fw-bold text-danger'>{discount.couponPercentage}%OFF</CCol>
+            </CRow>}
+            <CRow>
+              <CCol><strong>Total:</strong></CCol>
+              <CCol className='text-end fw-bold text-success'>₦{order.finalAmount.toLocaleString()}</CCol>
+            </CRow>
+          </div>
+    </>
+  )
+}
+
+const OrderWithDiscountAmount = ({order}) => {
+  return (
+    <>
+          <div className='mt-2'>
+            <CRow>
+              <CCol><strong>Subtotal:</strong></CCol>
+              <CCol className='text-end'>₦{order.amountBeforeDiscount.toLocaleString()}</CCol>
+            </CRow>
+            <CRow>
+              <CCol><strong>Discount:</strong></CCol>
+              <CCol className='text-end text-danger'>-₦{order.discountAmount.toLocaleString()}</CCol>
+            </CRow>
+            <CRow>
+              <CCol><strong>Total:</strong></CCol>
+              <CCol className='text-end fw-bold text-success'>₦{order.finalAmount.toLocaleString()}</CCol>
+            </CRow>
+          </div>
+    </>
+  )
+}
+
 const ManagerOrderList = (props) => {
   const { isLightMode, user, orderIsLoading, orders } = props;
   const [currentPage, setCurrentPage] = useState(1);
@@ -52,7 +99,7 @@ const ManagerOrderList = (props) => {
       {currentOrders.map((order, idx) => (
        <CCol md={6} key={idx}>
         <Link to={`/dashboard/orders/${order._id}`}>
-    <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}>
+      <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}>
       <div style={{ width: '40%' }}>
         <CImage
           src={ResolveImage(API_URL + order.events[0].imageUrls[0] || '')}
@@ -66,7 +113,7 @@ const ManagerOrderList = (props) => {
         </CCardTitle>
 
         <CBadge color={order.paymentStatus === 'success' ? 'success' : 'danger'} className='mb-2'>
-          {order.paymentStatus}
+          {order.paymentStatus || order?.status === 'false' && "There's an issue with this payment"}
         </CBadge>
         <CRow>
           <CCol className='mb-2'>
@@ -79,36 +126,31 @@ const ManagerOrderList = (props) => {
             <strong>Method:</strong> {order.paymentMethod || 'N/A'}
           </CCol>
           <CCol className='text-end'>
-            <strong>Date:</strong> {new Date(order.createdAt).toLocaleDateString()}
+            <strong>Date:</strong> {formatDate(order.createdAt)}
           </CCol>
         </CRow>
 
-        {order.discountAmount > 0 ? (
+        <CRow className='mb-2'>
+          <CCol>
+            <strong>Ordered By:</strong> {order.user ? 'User' : 'Guest'}
+          </CCol>
+          <CCol className='text-end'>
+            {order.guest?.name ? <><strong>Guest Name:</strong> {order.guest.name}</> : <><strong>User name: {order.user.name}</strong></>}
+          </CCol>
+        </CRow>
+        {order?.cart?.tickets.find((item) => item.coupon) && <OrderWithCoupon cart={order?.cart} order={order}/>}
+        {order?.discountAmount > 0 && <OrderWithDiscountAmount order={order}/>}
+        {order?.discountAmount < 1 && !order?.cart?.tickets.find((item) => item.coupon) &&
           <div className='mt-2'>
             <CRow>
-              <CCol><strong>Original:</strong></CCol>
-              <CCol className='text-end'>₦{order.amountBeforeDiscount.toLocaleString()}</CCol>
-            </CRow>
-            <CRow>
-              <CCol><strong>Discount:</strong></CCol>
-              <CCol className='text-end text-danger'>-₦{order.discountAmount.toLocaleString()}</CCol>
-            </CRow>
-            <CRow>
-              <CCol><strong>Final:</strong></CCol>
-              <CCol className='text-end fw-bold text-success'>₦{order.finalAmount.toLocaleString()}</CCol>
-            </CRow>
-          </div>
-        ) : (
-          <div className='mt-2'>
-            <CRow>
-              <CCol><strong>Final Amount:</strong></CCol>
+              <CCol><strong>Total:</strong></CCol>
               <CCol className='text-end fw-bold'>₦{order.finalAmount.toLocaleString()}</CCol>
             </CRow>
           </div>
-        )}
+        }
       </CCardBody>
     </CCard>
-    </Link>
+  </Link>
   </CCol>
 ))}
       </CRow>

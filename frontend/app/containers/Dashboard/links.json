@@ -25,6 +25,7 @@
     { "to": "/orders", "name": "Orders", "prefix": "/dashboard", "icon": "IoReceiptOutline" },
     { "to": "/newsletter", "name": "Newsletter", "prefix": "/dashboard", "icon": "MdOutlineCampaign" },
     { "to": "/scan", "name": "Ticket Scanner", "prefix": "/dashboard", "icon": "IoScanOutline" },
+    { "to": "/earnings", "name": "Earnings", "prefix": "/dashboard", "icon": "TbPigMoney" },
     { "to": "/account", "name": "Account Details", "prefix": "/dashboard", "icon": "MdOutlineAccountCircle" },
     { "to": "/security", "name": "Account Security", "prefix": "/dashboard", "provider": ["Email"], "icon": "MdOutlineSecurity" }
   ],

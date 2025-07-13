@@ -10,7 +10,7 @@ const Ticket = require('../../models/ticket');
 // validate a coupon
 router.post('/validate', auth, async (req, res) => {
   try {
-    const { code, tickets = [], events = [] } = req.body;
+    const { code, tickets = [] } = req.body;
     const user = req.user;
 
     if (!code) {
@@ -22,7 +22,7 @@ router.post('/validate', auth, async (req, res) => {
       .populate('ticket');
 
     if (!coupon) {
-      return res.status(404).json({ error: 'Invalid coupon code.' });
+      return res.status(400).json({ error: 'Invalid coupon code.' });
     }
 
     if (!coupon.active) {
@@ -37,22 +37,18 @@ router.post('/validate', auth, async (req, res) => {
       return res.status(400).json({ error: 'This coupon does not permit usage.' });
     }
 
+    const couponTicket = await Ticket.findOne({ coupons: coupon._id });
+    console.log(couponTicket)
+    /*const matchedCoupon = couponTicket?.coupons.find(c => c.toString() === coupon._id.toString());
+
     // Check ticket match
-    const matchedTicket = tickets.find(tId =>
-      coupon.ticket.some(ct => ct._id.toString() === tId)
-    );
-    if (coupon.ticket.length && !matchedTicket) {
+    const matchedTicket = tickets.find((id) => 
+      matchedCoupon && couponTicket._id.toString() === id.toString()
+    );*/
+    if (!couponTicket) {
       return res.status(400).json({ error: 'This coupon is not valid for any selected ticket.' });
     }
-
-    // Check event match
-    const matchedEvent = events.find(eId =>
-      coupon.event.some(ce => ce._id.toString() === eId)
-    );
-    if (coupon.event.length && !matchedEvent) {
-      return res.status(400).json({ error: 'This coupon is not valid for any selected event.' });
-    }
-
+    
     // Check user usage
     const usageCount = coupon.hasUsed.filter(uid =>
       uid.toString() === user._id.toString()
@@ -66,10 +62,12 @@ router.post('/validate', auth, async (req, res) => {
       success: true,
       message: 'Coupon is valid.',
       couponId: coupon._id,
+      code: coupon.code,
       type: coupon.type,
-      amount: coupon.amount || 0,
-      percentage: coupon.percentage || 0,
+      amount: coupon.type === 'Fixed' ? coupon.amount : 0,
+      percentage: coupon.type === 'Percentage' ? coupon.percentage : 0,
       appliesTo: coupon.appliesTo,
+      ticket: [couponTicket._id]
     });
   } catch (error) {
     console.error('Validate coupon error:', error);
@@ -160,17 +158,16 @@ router.get(
 
       if (req.user.role === ROLES.Organizer) {
         coupons = await Coupon.find({ user: req.user._id, active: true })
-          .select('_id code percentage')
+          //.select('_id code percentage')
           .sort('code');
       } else {
         coupons = await Coupon.find({ active: true })
-          .select('_id code percentage')
+          //.select('_id code percentage')
           .sort('code');
       }
-
       const couponsSelect = coupons.map(coupon => ({
         value: coupon._id,
-        label: `${coupon.code} (${coupon.percentage}% off)`
+        label: `${coupon.code} (${coupon.type === 'Percentage' ? `${coupon.percentage}% off` : `-${coupon.amount}NGN`})`
       }));
 
       return res.status(200).json({ coupons: couponsSelect });

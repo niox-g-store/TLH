@@ -5,19 +5,74 @@ const Order = require('../../models/order');
 const Cart = require('../../models/cart');
 const Event = require('../../models/event');
 const Ticket = require('../../models/ticket');
+const QRCODE = require('../../models/qrCode');
 const auth = require('../../middleware/auth');
 const role = require('../../middleware/role');
 const { ROLES } = require('../../utils/constants');
 const PaymentHandler = require('../../utils/paystack');
+const { customAlphabet } = require('nanoid');
+const jwt = require('jsonwebtoken');
+const QRCode = require('qrcode');
+const keys = require('../../config/keys');
+const { secret } = keys.jwt;
+
+const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', 8);
+
+const assignQrCode = async (order, cart) => {
+  try {
+    const isGuest = !!order.guest;
+    const userOrGuestId = isGuest ? order.guest : order.user._id;
+
+    const allQrCodes = [];
+
+    for (const ticketItem of cart.tickets) {
+      const { ticketId, eventId, quantity } = ticketItem;
+
+      for (let i = 0; i < quantity; i++) {
+        const shortCode = nanoid();
+
+        const payload = {
+          code: shortCode,
+          ticketId,
+          eventId,
+          orderId: order._id,
+          userId: userOrGuestId,
+          ownedByModel: isGuest ? 'Guest' : 'User',
+          index: i,
+        };
+
+        const token = jwt.sign(payload, secret, { expiresIn: '360d' });
+        const qrBuffer = await QRCode.toBuffer(token);
+
+        const qr = new QRCODE({
+          ticketId,
+          eventId,
+          order: order._id,
+          ownedBy: userOrGuestId,
+          ownedByModel: isGuest ? 'Guest' : 'User',
+          code: shortCode,
+          bytes: qrBuffer
+        });
+
+        const savedQr = await qr.save();
+        allQrCodes.push(savedQr);
+      }
+    }
+
+    return allQrCodes;
+  } catch (error) {
+    throw new Error('Failed to assign QR codes');
+  }
+};
 
 /**
  * generates unique code
  */
 const generateUniqueCode = () => {
-  // const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  //const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   const characters = '0123456789';
   let code = '';
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 8; i++) {
       code += characters.charAt(Math.floor(Math.random() * characters.length));
   }
   return code
@@ -60,6 +115,10 @@ router.post('/add', async (req, res) => {
     if (guest) {
         cartDoc.guest = guest
         await cartDoc.save()
+    }
+    const fetchOrder = await Order.findOne({ payStackId: payStackId })
+    if (fetchOrder) {
+      return res.status(200).json({ order: fetchOrder })
     }
     const ID = await newObjectId();
 
@@ -124,6 +183,8 @@ router.put('/edit/order/', async (req, res) => {
       .populate('tickets.ticketId');
 
     if (status) {
+      // assign qr code to the ticket
+      const qrAssigner = await assignQrCode(updateOrder, cartDoc)
         const newOrder = {
           _id: updateOrder._id,
           created: updateOrder.createdAt,

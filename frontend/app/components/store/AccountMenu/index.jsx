@@ -27,7 +27,7 @@ import { AiOutlineShop } from "react-icons/ai";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { CiLogout } from "react-icons/ci";
 import { useDispatch } from 'react-redux';
-
+import { TbPigMoney } from "react-icons/tb";
 
 const iconMap = {
   IoTicketOutline,
@@ -46,7 +46,8 @@ const iconMap = {
   MdOutlinePeople,
   MdOutlineGroups2,
   MdOutlinePayment,
-  AiOutlineShop
+  AiOutlineShop,
+  TbPigMoney
 };
 
 const AccountMenu = (props) => {
