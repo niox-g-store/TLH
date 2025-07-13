@@ -28,7 +28,7 @@ import Terms from './containers/Terms';
 import PrivacyPolicy from './containers/Policy';
 import OrderSuccess from './containers/Order/success';
 
-function App (props) {
+const App = (props) => {
   const { user } = props;
   const location = useLocation();
   const USER = user ?? user.role;

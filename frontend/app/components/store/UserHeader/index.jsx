@@ -36,12 +36,13 @@ const UserHeader = (props) => {
                 </li>
 
                 <li>
+                  <Link to="/shop">Shop</Link>
+                </li>
+                
+                <li>
                   <Link to="/organizer-signup">Organizers</Link>
                 </li>
 
-                <li>
-                  <Link to="/shop">Shop</Link>
-                </li>
                 <li>
                   <Dropdown type={"hover"} parent={"Pages"}>
                     <Link to={"/about"}>About Us</Link>
@@ -107,11 +108,11 @@ const UserHeader = (props) => {
                 </li>
 
                 <li>
-                  <Link onClick={toggleMenu} to="/organizer-signup">Organizers</Link>
+                  <Link onClick={toggleMenu} to="/shop">Shop</Link>
                 </li>
 
                 <li>
-                  <Link onClick={toggleMenu} to="/shop">Shop</Link>
+                  <Link onClick={toggleMenu} to="/organizer-signup">Organizers</Link>
                 </li>
 
                 <li>

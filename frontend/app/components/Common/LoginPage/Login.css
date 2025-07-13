@@ -24,8 +24,8 @@
 .left-login {
   background-color: #f8f8f8;
   /* overflow: auto; */
-  max-height: 100%;
-  max-width: 50%;
+  height: 100%;
+  width: 47%;
 }
 .left-login p {
   text-align: center;
@@ -65,6 +65,7 @@
 }
 .col-login-form {
   margin: auto 0;
+  width: 100%;
 }
 
 .create-account-links {
@@ -78,30 +79,29 @@
 .or-line {
   width: 100%;
   max-width: 100%;
+  display: flex;
+  align-items: center;
+  margin-bottom: 1em;
+  justify-content: center;
 }
 .or-line p {
   text-align: center;
   position: relative;
 }
-.or-line p::before {
-  content: "";
+.or-line .first {
   display: block;
   width: 270px;
   height: 1px;
   background: #867f7f;
-  left: 0;
-  top: 50%;
-  position: absolute;
+  padding: .5px 0px;
 }
-.or-line p::after {
+.or-line .second {
   content: "";
   display: block;
   width: 270px;
   height: 1px;
   background: #867f7f;
-  right: 0;
-  top: 50%;
-  position: absolute;
+  padding: .5px 0px;
 }
 .or-line span {
   background: #fff;

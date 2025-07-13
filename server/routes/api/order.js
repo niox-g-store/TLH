@@ -5,6 +5,8 @@ const Order = require('../../models/order');
 const Cart = require('../../models/cart');
 const Event = require('../../models/event');
 const Ticket = require('../../models/ticket');
+const User = require('../../models/user');
+const Guest = require('../../models/guest');
 const QRCODE = require('../../models/qrCode');
 const auth = require('../../middleware/auth');
 const role = require('../../middleware/role');
@@ -21,20 +23,47 @@ const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', 8);
 const assignQrCode = async (order, cart) => {
   try {
     const isGuest = !!order.guest;
-    const userOrGuestId = isGuest ? order.guest : order.user._id;
+    let userOrGuestId = isGuest ? order.guest : order.user._id;
 
     const allQrCodes = [];
 
+    if (isGuest) {
+      userOrGuestId = await Guest.findOne({_id: userOrGuestId})
+    } else {
+      userOrGuestId = await User.findOne({ _id: userOrGuestId })
+    }
+
     for (const ticketItem of cart.tickets) {
-      const { ticketId, eventId, quantity } = ticketItem;
+      const { coupon,
+              ticketType,
+              eventName,
+              quantity,
+              price,
+              discount,
+              discountAmount,
+              discountPrice,
+              couponDiscount,
+              couponAmount,
+              couponPercentage,
+              eventId,
+              ticketId
+      } = ticketItem;
 
       for (let i = 0; i < quantity; i++) {
         const shortCode = nanoid();
 
         const payload = {
           code: shortCode,
-          ticketId,
-          eventId,
+          ticketType,
+          eventName,
+          coupon,
+          price,
+          discount,
+          discountAmount,
+          discountPrice,
+          couponDiscount,
+          couponAmount,
+          couponPercentage,
           orderId: order._id,
           userId: userOrGuestId,
           ownedByModel: isGuest ? 'Guest' : 'User',
@@ -45,8 +74,18 @@ const assignQrCode = async (order, cart) => {
         const qrBuffer = await QRCode.toBuffer(token);
 
         const qr = new QRCODE({
-          ticketId,
           eventId,
+          ticketId,
+          ticketType,
+          eventName,
+          coupon,
+          price,
+          discount,
+          discountAmount,
+          discountPrice,
+          couponDiscount,
+          couponAmount,
+          couponPercentage,
           order: order._id,
           ownedBy: userOrGuestId,
           ownedByModel: isGuest ? 'Guest' : 'User',
@@ -185,6 +224,7 @@ router.put('/edit/order/', async (req, res) => {
     if (status) {
       // assign qr code to the ticket
       const qrAssigner = await assignQrCode(updateOrder, cartDoc)
+      console.log(qrAssigner)
         const newOrder = {
           _id: updateOrder._id,
           created: updateOrder.createdAt,

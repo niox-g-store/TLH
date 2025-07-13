@@ -56,7 +56,7 @@ const Footer = () => {
               </div>
               <div className="col-links-s">
                 <h4 className="p-white">Support</h4>
-                <ul className="d-flex" style={{ gap: '.25em' }}>
+                <ul className="d-flex flex-column" style={{ gap: '.25em' }}>
                   <li>
                     <a className="p-white" href="mailto:contact@thelinkhangout.com">
                       <MdOutlineMailOutline size={30} />

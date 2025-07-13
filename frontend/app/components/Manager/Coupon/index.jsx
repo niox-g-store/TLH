@@ -136,6 +136,7 @@ const ManagerCouponHelper = (props) => {
                     >
                       {visibleCodes[idx] ? <FaEyeSlash /> : <FaEye />}
                     </CButton>
+                    <br />
                       <strong>Code:</strong>&nbsp;&nbsp;&nbsp;
                     <span className='mb-2'>
                        {visibleCodes[idx] ? coupon.code : '••••••••'}

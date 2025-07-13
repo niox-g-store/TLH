@@ -8,12 +8,16 @@
         }
         img {
             margin-bottom: -5px;
+            height: 101vh;
         }
     }
 
     .right-login {
         @include media-breakpoint-up(md) {
             width: 50%;
+            height: 100%;
+            margin: 0;
+            position: relative;
         }
         width: 100%;
     }

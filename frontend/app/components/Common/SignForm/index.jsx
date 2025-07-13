@@ -33,7 +33,7 @@ const SignForm = (props) => {
       <div className="signup signup-left">
         <Link className="back-to-home" to="/" onClick={signupReset}>
           <BackIcon />
-          <p className="p-purple">Back to Home</p>
+          <p style={{ fontSize: '16px' }} className="p-purple">Back to Home</p>
         </Link>
 
         <div data-aos="fade-up" className="col-login-form">

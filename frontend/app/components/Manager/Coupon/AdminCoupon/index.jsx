@@ -7,6 +7,7 @@ import {
   CCardTitle,
   CCardText,
   CBadge,
+  CButton,
   CImage,
   CPagination,
   CPaginationItem
@@ -90,23 +91,29 @@ const AdminCouponHelper = (props) => {
                 />
                 <CCardBody>
                   <div className='d-flex justify-content-between align-items-center mb-2'>
-                    <CCardTitle><strong>Event: </strong>{coupon.event?.name || 'N/A'}</CCardTitle>
+                    <CCardTitle>
+                    <CButton
+                      color='light'
+                      size='sm'
+                      className='mb-2'
+                      onClick={(e) => {
+                        e.preventDefault();
+                        toggleCodeVisibility(idx);
+                      }}
+                    >
+                      {visibleCodes[idx] ? <FaEyeSlash /> : <FaEye />}
+                    </CButton>
+                    <br />
+                      <strong>Code:</strong>&nbsp;&nbsp;&nbsp;
+                    <span className='mb-2'>
+                       {visibleCodes[idx] ? coupon.code : '••••••••'}
+                    </span>
+                    </CCardTitle>
                     <CBadge color={coupon.active ? 'success' : 'danger'}>
                       {coupon.active ? 'Active' : 'Inactive'}
                     </CBadge>
                   </div>
-                  <div
-                    className='mb-2'
-                    onClick={(e) => {
-                      e.preventDefault();
-                      toggleCodeVisibility(idx);
-                    }}
-                  >
-                    {visibleCodes[idx] ? <FaEyeSlash /> : <FaEye />}
-                  </div>
-                  <p className='mb-2'>
-                    <strong>Code:</strong> {visibleCodes[idx] ? coupon.code : '••••••••'}
-                  </p>
+
                   <CCardText>
                     <strong>Qty:</strong> {coupon.quantity}<br />
                     <strong>Used:</strong> {coupon.usedCount}<br />

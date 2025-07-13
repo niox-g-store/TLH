@@ -228,6 +228,7 @@ header.scrolled {
     margin-top: 5em;
     flex-direction: row;
     justify-content: space-around;
+    width: 100%;
   }
   .header-menu-mobile .nav > ul > li {
     position: relative;

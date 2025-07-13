@@ -33,7 +33,7 @@ const LoginForm = (props) => {
       <div className="right-login">
         <Link className="back-to-home" to="/">
           <BackIcon color={"purple"}/>
-          <p className="p-purple">Back to Home</p>
+          <p style={{ fontSize: '16px' }} className="p-purple">Back to Home</p>
         </Link>
 
         <div className="col-login-form" data-aos="fade-up">
@@ -95,9 +95,9 @@ const LoginForm = (props) => {
           </form>
 
           <div className="or-line login-btn">
-            <p>
+            <span className="first"> </span>
               <span>or</span>
-            </p>
+            <span className="second"></span>
           </div>
 
           <div className="google-btn login-btn">

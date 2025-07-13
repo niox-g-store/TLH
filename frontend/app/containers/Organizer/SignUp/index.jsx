@@ -28,7 +28,7 @@ const OrganizerSignUp = (props) => {
         <div className='signup'>
           <Link className='back-to-home' to='/'>
             <BackIcon />
-            <p className='p-purple'> Back to Home</p>
+            <p style={{ fontSize: '16px' }} className='p-purple'> Back to Home</p>
           </Link>
           <div data-aos='fade-up' className='col-login-form'>
             <h1 className='p-black'>Become an event organizer</h1>
@@ -114,6 +114,7 @@ const OrganizerSignUp = (props) => {
                     <Input
                       type='submit'
                       value='Create Account'
+                      style={{ color: 'white' }}
                       className='form-btn font-family-default p-white'
                     />
                   </div>
@@ -144,6 +145,7 @@ const OrganizerSignUp = (props) => {
                 <input
                   type='submit'
                   value='Create Account'
+                  style={{ color: 'white' }}
                   className='form-btn font-family-default'
                 />
               </div>
