@@ -16,7 +16,8 @@ const Signup = (props) => {
     signUpSubmit,
     comparePasswords,
     signupReset,
-    authenticated
+    authenticated,
+    googleSignup
   } = props;
 
   if (authenticated) return <Navigate to='/dashboard' />;

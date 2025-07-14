@@ -49,11 +49,11 @@ module.exports = {
     adminEmail: process.env.ADMIN_EMAIL,
     secondAdminEmail: process.env.TEMP_ADMIN_EMAIL
   },*/
-  /*google: {
+  google: {
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: process.env.GOOGLE_CALLBACK_URL
-  },*/
+  },
   paystack: {
     apiSecretKey: process.env.PAYSTACK_SECRET_KEY
   }

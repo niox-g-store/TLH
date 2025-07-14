@@ -6,8 +6,8 @@ import Slider from "react-slick";
 import { Link } from "react-router-dom";
 import Input from "../HtmlTags/Input";
 import { BackIcon } from "../Icons/Back";
-
-const GoogleLogo = "../../../assets/google-logo.svg";
+import SignupProvider from "../../store/SignUpProvider";
+import LoadingIndicator from "../../store/LoadingIndicator";
 
 const SignForm = (props) => {
   const {
@@ -20,7 +20,8 @@ const SignForm = (props) => {
     isSubscribed,
     signUpSubmit,
     comparePasswords,
-    signupReset
+    signupReset,
+    googleSignup
   } = props;
 
   const handleSubmit = (e) => {
@@ -30,6 +31,7 @@ const SignForm = (props) => {
 
   return (
     <div className="n-signup bg-white">
+      {isLoading && <LoadingIndicator />}
       <div className="signup signup-left">
         <Link className="back-to-home" to="/" onClick={signupReset}>
           <BackIcon />
@@ -133,14 +135,7 @@ const SignForm = (props) => {
       </div>
 
       <div className="signup-right">
-        <div className="google-btn">
-          <a href="https://accounts.google.com/signin">
-            <span>
-              <img src={GoogleLogo} alt="Google Logo" />
-              Log In to Google
-            </span>
-          </a>
-        </div>
+          <SignupProvider googleSignup={(v) => googleSignup(v)}/>
 
         <div className="create-account-links">
           <p className="p-black">

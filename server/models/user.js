@@ -13,9 +13,12 @@ const UserSchema = new mongoose.Schema({
   },
   userName: {
     type: String,
-    required: true,
+    required: function () {
+      return !this.googleId;
+    },
     lowercase: true,
     trim: true,
+    default: null
   },
   name: {
     type: String
@@ -28,6 +31,9 @@ const UserSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Organizer',
     default: null
+  },
+  companyName: {
+    type: String,
   },
   provider: {
     type: String,

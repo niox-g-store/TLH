@@ -10,9 +10,9 @@ const User = require('../../models/user');
 const Organizer = require('../../models/organizer');
 const keys = require('../../config/keys');
 const { EMAIL_PROVIDER, JWT_COOKIE, ROLES } = require('../../utils/constants');
-// const { OAuth2Client } = require('google-auth-library');
-// const { clientID } = keys.google
-// const client = new OAuth2Client(clientID);
+const { OAuth2Client } = require('google-auth-library');
+const { clientID } = keys.google
+const client = new OAuth2Client(clientID);
 const { secret, tokenLife } = keys.jwt;
 
 
@@ -470,12 +470,8 @@ router.post('/reset', auth, async (req, res) => {
 // for google sign up
 router.post('/register/google', async (req, res) => {
   try {
-    const { isSubscribed, credential, phoneNumber } = req.body;
+    const { isSubscribed, credential } = req.body;
     const user = await verifyGoogleToken(credential);
-
-    if (!phoneNumber) {
-      return res.status(400).json({ error: 'You must enter a phone number.' });
-    }
 
     // check if user email already exist
     const email = user.email.trim().toLowerCase()
@@ -485,8 +481,9 @@ router.post('/register/google', async (req, res) => {
         error: 'That email address is already in use.'
       })
     }
+
     let subscribed = false;
-    if (isSubscribed) {
+    /*if (isSubscribed) {
       // add user to newsteller as they are subscribed
       const news = new Newsletter({
         email
@@ -495,16 +492,13 @@ router.post('/register/google', async (req, res) => {
       // also add user email to mailgun mailing list
       mailgun.createMember(email, firstName, lastName)
       subscribed = true
-    }
+    }*/
 
     const newUser = new User({
       email: email,
-      firstName: user.given_name,
-      lastName: user.family_name,
-      phoneNumber: phoneNumber,
+      name: user.given_name + user.family_name,
       googleId: user.sub,
       provider: EMAIL_PROVIDER.Google,
-      avatar: user.picture,
     })
 
     const registeredUser = await newUser.save();
@@ -513,11 +507,11 @@ router.post('/register/google', async (req, res) => {
       id: registeredUser.id
     };
 
-    await mailgun.sendEmail(
+    /*await mailgun.sendEmail(
       registeredUser.email,
       'signup',
       registeredUser
-    );
+    );*/
 
     const token = jwt.sign(payload, secret, { expiresIn: tokenLife });
 
@@ -527,13 +521,14 @@ router.post('/register/google', async (req, res) => {
       token: `Bearer ${token}`,
       user: {
         id: registeredUser.id,
-        firstName: registeredUser.firstName,
-        lastName: registeredUser.lastName,
+        name: registeredUser.name,
+        userName: registeredUser.userName,
         email: registeredUser.email,
         role: registeredUser.role
       }
     });
   } catch (error) {
+    console.log(error)
     return res.status(400).json({
       error: "Error Creating google account"
     })
@@ -562,7 +557,7 @@ router.post('/google/signin', async (req, res) => {
 
     if (existingEmail && existingEmail.provider !== EMAIL_PROVIDER.Google) {
       return res.status(400).send({
-        error: `That email address is already in use using ${existingEmail.provider} Account.`
+        error: `This email is already registered with a password`
       });
     }
 
@@ -576,21 +571,21 @@ router.post('/google/signin', async (req, res) => {
       throw new Error();
     }
 
-    await mailgun.sendEmail(
+    /*await mailgun.sendEmail(
       existingEmail.email,
       'signin',
       existingEmail
-    );
+    );*/
 
     return res.status(200).json({
       success: true,
       token: `Bearer ${token}`,
       user: {
-        id: existingEmail.id,
-        firstName: existingEmail.firstName,
-        lastName: existingEmail.lastName,
-        email: existingEmail.email,
-        role: existingEmail.role
+        id: user.id,
+        name: user.name,
+        companyName: user.companyName,
+        email: user.email,
+        role: user.role
       }
     });
   } catch (eror) {

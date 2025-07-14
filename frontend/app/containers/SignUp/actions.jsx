@@ -127,6 +127,44 @@ export const organizerSignupSubmit = () => {
   }
 }
 
+export const googleSignup = (credential) => {
+  return async (dispatch, getState) => {
+    try {
+      const isSubscribed = getState().signup.isSubscribed;
+      dispatch({ type: SET_SIGNUP_SUBMITTING, payload: true });
+      dispatch({ type: SET_SIGNUP_LOADING, payload: true });
+
+
+      const user = {
+        isSubscribed,
+        credential: credential.credential,
+      };
+
+      const response = await axios.post(`${API_URL}/auth/register/google`, user);
+
+      const successfulOptions = {
+        title: `You have signed up successfully!`,
+      };
+
+      localStorage.setItem('token', response.data.token);
+
+      setToken(response.data.token);
+
+      dispatch(setAuth());
+      dispatch(showNotification('success', successfulOptions.title));
+      dispatch({ type: SIGNUP_RESET });
+    } catch (error) {
+      const title = `Please try to signup again!`;
+      handleError(error, dispatch, title);
+      return;
+    } finally {
+      dispatch({ type: SET_SIGNUP_SUBMITTING, payload: false });
+      dispatch({ type: SET_SIGNUP_LOADING, payload: false });
+      return;
+    }
+  }
+
+}
 
 export const signUpSubmit = () => {
   return async (dispatch, getState) => {

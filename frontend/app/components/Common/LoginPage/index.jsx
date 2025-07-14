@@ -4,10 +4,10 @@ import "slick-carousel/slick/slick-theme.css";
 import { Link } from "react-router-dom";
 import { BackIcon } from "../Icons/Back";
 import Input from "../HtmlTags/Input";
+import SigninProvider from "../../store/SignInProvider";
+import LoadingIndicator from "../../store/LoadingIndicator";
 
 const logo = "./assets/login.JPG";
-const GoogleLogo = "./assets/google-logo.svg";
-
 const LoginForm = (props) => {
   const {
     loginFormData,
@@ -17,7 +17,8 @@ const LoginForm = (props) => {
     isLoading,
     isSubmitting,
     rememberMeChange,
-    rememberMe
+    rememberMe,
+    googleSignin
   } = props;
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -26,6 +27,7 @@ const LoginForm = (props) => {
 
   return (
     <div className="login">
+      {isLoading && <LoadingIndicator />}
       <div className="left-login">
         <img src={logo} width="100%" height="100%" alt="Login Visual" />
       </div>
@@ -100,17 +102,8 @@ const LoginForm = (props) => {
             <span className="second"></span>
           </div>
 
-          <div className="google-btn login-btn">
-            <a
-              href="https://accounts.google.com/v3/signin/identifier?hl=en-gb"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <span>
-                <img src={GoogleLogo} alt="Google Logo" />
-                Log In to Google
-              </span>
-            </a>
+          <div className="login-btn">
+            <SigninProvider googleSignin={(v) => googleSignin(v)}/>
           </div>
 
           <div className="create-account-links">

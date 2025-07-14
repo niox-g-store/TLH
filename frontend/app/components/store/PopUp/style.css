@@ -20,6 +20,7 @@
   height: 90vh;
   position: absolute;
   bottom: 0;
+  z-index: 10000;
 }
 
 .popup-close {
@@ -102,7 +103,7 @@
 
 @media (max-width: 480px) {
   .popup-card {
-    /*height: 80vh;*/
+    height: 80vh;
   }
   .popup-content {
     padding: 0em 2.5em;
@@ -111,7 +112,7 @@
 
 @media (max-width: 576px) {
   .popup-card {
-    /*height: 80vh;*/
+    height: 80vh;
   }
   .popup-content {
     padding: 0em 2.5em;

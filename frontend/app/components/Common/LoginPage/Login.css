@@ -120,6 +120,7 @@
   color: var(--secondary-bg);
   opacity: 0.8;
   display: flex;
+  align-items: center;
 }
 .remember-me .form-label label {
   margin: 0;

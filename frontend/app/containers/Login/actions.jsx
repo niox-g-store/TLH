@@ -93,52 +93,15 @@ export const googleSignin = (credential) => {
                                      
       const response = await axios.post(`${API_URL}/auth/google/signin`, credential);
       const userid = response.data.user.id
-
-      const sm = getState().currency;
-      const default_currency = sm.select_currency.length > 0 ? sm.select_currency : sm.default_currency
-
-      // try and fetch currency of user
-      const fetchUserCurrency = await axios.get(`${API_URL}/currency/get_currency/${userid}`)
-      if (fetchUserCurrency.status === 200) {
-        localStorage.setItem('select_currency', fetchUserCurrency.data.currency[0].currency)
-      } else {
-        // if no currency found create currency for user
-        // chcek if localStorage.getItem('select_currency) exists
-        // if it doesn't use default_currency for user currency
-
-        const lSCurrency = localStorage.getItem('select_currency');
-
-        const userCurrency = lSCurrency ? lSCurrency : default_currency[0]
-        const currencyResponse = await axios.post(`${API_URL}/currency/add`,
-          {
-            userId: userid,
-            currency: userCurrency
-          },
-          {
-            headers: { 'Content-Type': 'application/json' }
-          }
-        )
-
-        if (currencyResponse.status === 200) {
-          localStorage.setItem('select_currency', userCurrency);
-        }
-      }
-      const firstName = response.data.user.firstName;
-      const successfulOptions = {
-        title: `Hey${firstName ? ` ${firstName}` : ''}, Welcome Back!`,
-        position: 'tr',
-        autoDismiss: 1
-      };
-
       localStorage.setItem('token', response.data.token);
 
       setToken(response.data.token);
 
       dispatch(setAuth());
-      dispatch(showNotification('success', 'Welcome Back!'));
+      dispatch(showNotification('success', 'Welcome!'));
 
       dispatch({ type: LOGIN_RESET });
-
+      dispatch({ type: LOGIN_RESET });
     } catch (error) {
       const title = `Please try to login again!`;
       handleError(error, dispatch, title);
