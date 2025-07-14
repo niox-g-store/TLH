@@ -315,7 +315,7 @@ const EventViewer = (props) => {
               <h5>About this event</h5>
               <p className='font-size-15 text-wrap text-break w-100 overflow-hidden event-description' dangerouslySetInnerHTML={{ __html: event.description }} />
 
-              <h3 style={{ textAlign: 'center', margin: '0', fontSize: '30px' }}>Tickets</h3>
+              <h3 style={{ margin: '0', fontSize: '30px' }}>Tickets</h3>
               {event && event.status !== 'Ended'
                 ? <div className='event-tickets'>
                   {event && event.tickets && event.tickets.length > 0
