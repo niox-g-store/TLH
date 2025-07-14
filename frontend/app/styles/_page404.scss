@@ -1,9 +1,10 @@
 .page-404 {
-    padding-top: 10em;
+    height: 100vh;
     @include media-breakpoint-down(md) {
-        padding-top: 3em;
+        height: 100vh;
     }
     .hero-banner {
+        height: 100vh;
         @include media-breakpoint-down(md) {
             padding-top: 10em;
         }

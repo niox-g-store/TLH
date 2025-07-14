@@ -1,0 +1,1 @@
+sudo yum install -y   nss   libXScrnSaver   atk   cups-libs   libdrm   xorg-x11-server-Xvfb   libXrandr   GConf2   alsa-lib   gtk3   xorg-x11-fonts-100dpi   xorg-x11-fonts-75dpi   xorg-x11-utils   xorg-x11-fonts-cyrillic   xorg-x11-fonts-Type1   xorg-x11-fonts-misc

@@ -13,6 +13,11 @@ import { MdOutlineAddShoppingCart, MdShoppingCart } from 'react-icons/md';
 import Page404 from '../Page404';
 import LoadingIndicator from '../../components/store/LoadingIndicator';
 import Cart from '../Cart';
+import { IoLocationOutline } from "react-icons/io5";
+import { LuCalendarDays } from "react-icons/lu";
+import { CgProfile } from "react-icons/cg";
+import { AiOutlineTags } from "react-icons/ai";
+
 
 const EventViewer = (props) => {
   const {
@@ -129,13 +134,25 @@ const EventViewer = (props) => {
 
             <div className='event-info'>
               <h2 className='event-title text-wrap text-break w-100 overflow-hidden'>{event && event.name}</h2>
-              <p className='font-size-20 text-wrap text-break w-100 overflow-hidden' dangerouslySetInnerHTML={{ __html: event.description }} />
-              <p className='event-location p-black'>Location: {event && event.location}</p>
-              <p className='event-location p-black'>Category: {event && event.category}</p>
+              <p className='event-location p-black'>
+                <span className='event-view-icon'><IoLocationOutline size={20} color='white'/></span>
+                Location: {event && event.location}
+              </p>
+              <p className='event-location p-black'>
+                <span className='event-view-icon'><AiOutlineTags size={20} color='white'/></span>
+                Category: {event && event.category}</p>
               <p className='event-date p-black'>
+                <span className='event-view-icon'><LuCalendarDays size={20} color='white'/></span>
                 From {formatReadableDate(event && event.startDate)} <b className='p-black'>to</b> {formatReadableDate(event && event.endDate)}
               </p>
-              <p className='event-host'>Your host: {event && event.user && event.user.organizer && event.user.organizer.companyName || 'The link hangouts'}</p>
+              <p className='event-host'>
+                <span className='event-view-icon'><CgProfile size={20} color='white'/></span>
+                Your host: {event && event.user && event.user.organizer && event.user.organizer.companyName || 'The link hangouts'}
+              </p>
+
+              <h5>About this event</h5>
+              <p className='font-size-15 text-wrap text-break w-100 overflow-hidden event-description' dangerouslySetInnerHTML={{ __html: event.description }} />
+
               {event && event.status !== 'Ended'
                 ? <div className='event-tickets'>
                   {event && event.tickets && event.tickets.length > 0
@@ -160,44 +177,52 @@ const EventViewer = (props) => {
                                 })}
                               >
                                 {!ticket.discount && (
-                  <div className='d-flex flex-column'>
-                                  <h4 className='font-size-25' style={{ padding: '0', margin: '0' }}>{ticket.type}</h4>
-                                  <span className='font-size-15'>₦{ticket.price.toLocaleString()}</span><br />
-                                  <span>{ticket.quantity > 0 ? `${ticket.quantity} Remaining` : 'Sold Out'}</span>
-                                </div>
-                )}
+                                  <div className='d-flex flex-column w-100 text-start'>
+                                    <div style={{ position: 'relative' }} className='d-flex'>
+                                      <h4 className='font-size-25' style={{ padding: '0', margin: '0' }}>{ticket.type}</h4>
+                                      <span className='ticket-label'>{ticket.quantity > 0 ? `${ticket.quantity} Remaining` : 'Sold Out'}</span>
+                                    </div>
+                                      <span className='font-size-20'>₦{ticket.price.toLocaleString()}</span>
+                                  </div>
+                                )}
                                 {ticket.discount && ticket.discountPrice && (
-                  <div style={{ position: 'relative' }}>
-                                  <h4 className='font-size-25' style={{ padding: '0', margin: '0' }}>{ticket.type}</h4>
-                                  <b style={{ fontSize: '15px', textDecoration: 'line-through', color: 'black' }}>₦{ticket.price.toLocaleString()}</b>&nbsp;&nbsp;
-                                  <span className='font-size-20'>₦{ticket.discountPrice.toLocaleString()}</span><br />
-                                  <span>{ticket.quantity > 0 ? `${ticket.quantity} Remaining` : 'Sold Out'}</span>
-                                </div>
-                )}
-                                <MdOutlineAddShoppingCart
-                  size={30}
-                  style={{ cursor: ticket.quantity > 0 ? 'pointer' : 'not-allowed', color: ticket.quantity > 0 ? 'inherit' : '#ccc' }}
-                />
+                                  <div className='d-flex flex-column w-100 text-start'>
+                                    <div style={{ position: 'relative' }} className='d-flex'>
+                                      <h4 className='font-size-25' style={{ padding: '0', margin: '0' }}>{ticket.type}</h4>
+                                      <span className='ticket-label'>{ticket.quantity > 0 ? `${ticket.quantity} Remaining` : 'Sold Out'}</span>
+                                    </div>
+                                    <p style={{ margin: '0' }}><span style={{ fontSize: '15px', textDecoration: 'line-through', color: 'black' }}>₦{ticket.price.toLocaleString()}</span>&nbsp;&nbsp;
+                                    <span className='font-size-20'>₦{ticket.discountPrice.toLocaleString()}</span>
+                                    </p>
+                                  </div>
+                                )}
                               </li>
                             );
                           } else {
                             return (
                               <li key={ticket._id} className='ticket-item sold-out'>
                                 {!ticket.discount && (
-                  <div className='d-flex flex-column'>
-                                  <h4 className='font-size-25' style={{ padding: '0', margin: '0' }}>{ticket.type}</h4>
-                                  <span className='font-size-15'>₦{ticket.price.toLocaleString()}</span><br />
-                                  <span className='text-center sold-out font-size-15 p-gray'>This ticket has been selected</span>
+                                  <div className='d-flex flex-column w-100 text-start'>
+                                    <div style={{ position: 'relative' }} className='d-flex'>
+                                    <h4 className='font-size-25' style={{ padding: '0', margin: '0' }}>{ticket.type}</h4>
+                                      <span className='ticket-label-selected'>{ticket.quantity > 0 ? `${ticket.quantity} Remaining` : 'Sold Out'}</span>
+                                  </div>
+                                  <span className='font-size-20'>₦{ticket.price.toLocaleString()}</span>
+                                  <span className='text-left sold-out font-size-15 p-gray'>This ticket has been selected</span>
                                 </div>
-                )}
+                                )}
                                 {ticket.discount && ticket.discountPrice && (
-                  <div style={{ position: 'relative' }}>
-                                  <h4 className='font-size-25' style={{ padding: '0', margin: '0' }}>{ticket.type}</h4>
-                                  <b style={{ fontSize: '15px', textDecoration: 'line-through', color: 'black' }}>₦{ticket.price.toLocaleString()}</b>&nbsp;&nbsp;
-                                  <span className='font-size-20'>₦{ticket.discountPrice.toLocaleString()}</span><br />
-                                  <span className='text-center sold-out font-size-15 p-gray'>This ticket has been selected</span>
-                                </div>
-                )}
+                                  <div className='d-flex flex-column w-100 text-start'>
+                                    <div style={{ position: 'relative' }} className='d-flex'>
+                                      <h4 className='font-size-25' style={{ padding: '0', margin: '0' }}>{ticket.type}</h4>
+                                      <span className='ticket-label-selected'>{ticket.quantity > 0 ? `${ticket.quantity} Remaining` : 'Sold Out'}</span>
+                                    </div>
+                                    <p style={{ margin: '0' }}><span style={{ fontSize: '15px', textDecoration: 'line-through', color: 'black' }}>₦{ticket.price.toLocaleString()}</span>&nbsp;&nbsp;
+                                    <span className='font-size-20'>₦{ticket.discountPrice.toLocaleString()}</span>
+                                    </p>
+                                    <span className='text-left sold-out font-size-15 p-gray'>This ticket has been selected</span>
+                                  </div>
+                                )}
                               </li>
                             );
                           }
@@ -271,13 +296,26 @@ const EventViewer = (props) => {
 
             <div className='event-info'>
               <h2 className='event-title text-wrap text-break w-100 overflow-hidden'>{event && event.name}</h2>
-              <p className='font-size-20 text-wrap text-break w-100 overflow-hidden' dangerouslySetInnerHTML={{ __html: event.description }} />
-              <p className='event-location p-black'>Location: {event && event.location}</p>
-              <p className='event-location p-black'>Category: {event && event.category}</p>
+              <p className='event-location p-black'>
+                <span className='event-view-icon'><IoLocationOutline size={20} color='white'/></span>
+                Location: {event && event.location}
+              </p>              
+              <p className='event-location p-black'>
+                <span className='event-view-icon'><AiOutlineTags size={20} color='white'/></span>
+                Category: {event && event.category}</p>
               <p className='event-date p-black'>
+                <span className='event-view-icon'><LuCalendarDays size={20} color='white'/></span>
                 From {formatReadableDate(event && event.startDate)} <b className='p-black'>to</b> {formatReadableDate(event && event.endDate)}
               </p>
-              <p className='event-host'>Your host: {event && event.user && event.user.organizer && event.user.organizer.companyName || 'The link hangouts'}</p>
+              <p className='event-host'>
+                <span className='event-view-icon'><CgProfile size={20} color='white'/></span>
+                Your host: {event && event.user && event.user.organizer && event.user.organizer.companyName || 'The link hangouts'}
+              </p>
+              <hr />
+              <h5>About this event</h5>
+              <p className='font-size-15 text-wrap text-break w-100 overflow-hidden event-description' dangerouslySetInnerHTML={{ __html: event.description }} />
+
+              <h3 style={{ textAlign: 'center', margin: '0', fontSize: '30px' }}>Tickets</h3>
               {event && event.status !== 'Ended'
                 ? <div className='event-tickets'>
                   {event && event.tickets && event.tickets.length > 0
@@ -299,47 +337,55 @@ const EventViewer = (props) => {
                                          discount: ticket.discount,
                                          discountPrice: ticket.discountPrice,
                                          ticketQuantity: ticket.quantity
-                                  })}
+                                })}
                               >
                                 {!ticket.discount && (
-                  <div className='d-flex flex-column'>
-                                  <h4 className='font-size-25' style={{ padding: '0', margin: '0' }}>{ticket.type}</h4>
-                                  <span className='font-size-15'>₦{ticket.price.toLocaleString()}</span><br />
-                                  <span>{ticket.quantity > 0 ? `${ticket.quantity} Remaining` : 'Sold Out'}</span>
-                                </div>
-                )}
+                                  <div className='d-flex flex-column w-100 text-start'>
+                                    <div style={{ position: 'relative' }} className='d-flex'>
+                                      <h4 className='font-size-25' style={{ padding: '0', margin: '0' }}>{ticket.type}</h4>
+                                      <span className='ticket-label'>{ticket.quantity > 0 ? `${ticket.quantity} Remaining` : 'Sold Out'}</span>
+                                    </div>
+                                      <span className='font-size-20'>₦{ticket.price.toLocaleString()}</span>
+                                  </div>
+                                )}
                                 {ticket.discount && ticket.discountPrice && (
-                  <div style={{ position: 'relative' }}>
-                                  <h4 className='font-size-25' style={{ padding: '0', margin: '0' }}>{ticket.type}</h4>
-                                  <b style={{ fontSize: '15px', textDecoration: 'line-through', color: 'black' }}>₦{ticket.price.toLocaleString()}</b>&nbsp;&nbsp;
-                                  <span className='font-size-20'>₦{ticket.discountPrice.toLocaleString()}</span><br />
-                                  <span>{ticket.quantity > 0 ? `${ticket.quantity} Remaining` : 'Sold Out'}</span>
-                                </div>
-                )}
-                                <MdOutlineAddShoppingCart
-                  size={30}
-                  style={{ cursor: ticket.quantity > 0 ? 'pointer' : 'not-allowed', color: ticket.quantity > 0 ? 'inherit' : '#ccc' }}
-                />
+                                  <div className='d-flex flex-column w-100 text-start'>
+                                    <div style={{ position: 'relative' }} className='d-flex'>
+                                      <h4 className='font-size-25' style={{ padding: '0', margin: '0' }}>{ticket.type}</h4>
+                                      <span className='ticket-label'>{ticket.quantity > 0 ? `${ticket.quantity} Remaining` : 'Sold Out'}</span>
+                                    </div>
+                                    <p style={{ margin: '0' }}><span style={{ fontSize: '15px', textDecoration: 'line-through', color: 'black' }}>₦{ticket.price.toLocaleString()}</span>&nbsp;&nbsp;
+                                    <span className='font-size-20'>₦{ticket.discountPrice.toLocaleString()}</span>
+                                    </p>
+                                  </div>
+                                )}
                               </li>
                             );
                           } else {
                             return (
                               <li key={ticket._id} className='ticket-item sold-out'>
                                 {!ticket.discount && (
-                  <div className='d-flex flex-column'>
-                                  <h4 className='font-size-25' style={{ padding: '0', margin: '0' }}>{ticket.type}</h4>
-                                  <span className='font-size-15'>₦{ticket.price.toLocaleString()}</span><br />
-                                  <span className='text-center sold-out font-size-15 p-gray'>This ticket has been selected</span>
+                                  <div className='d-flex flex-column w-100 text-start'>
+                                    <div style={{ position: 'relative' }} className='d-flex'>
+                                    <h4 className='font-size-25' style={{ padding: '0', margin: '0' }}>{ticket.type}</h4>
+                                      <span className='ticket-label-selected'>{ticket.quantity > 0 ? `${ticket.quantity} Remaining` : 'Sold Out'}</span>
+                                  </div>
+                                  <span className='font-size-20'>₦{ticket.price.toLocaleString()}</span>
+                                  <span className='text-left sold-out font-size-15 p-gray'>This ticket has been selected</span>
                                 </div>
-                )}
+                                )}
                                 {ticket.discount && ticket.discountPrice && (
-                  <div style={{ position: 'relative' }}>
-                                  <h4 className='font-size-25' style={{ padding: '0', margin: '0' }}>{ticket.type}</h4>
-                                  <b style={{ fontSize: '15px', textDecoration: 'line-through', color: 'black' }}>₦{ticket.price.toLocaleString()}</b>&nbsp;&nbsp;
-                                  <span className='font-size-20'>₦{ticket.discountPrice.toLocaleString()}</span><br />
-                                  <span className='text-center sold-out font-size-15 p-gray'>This ticket has been selected</span>
-                                </div>
-                )}
+                                  <div className='d-flex flex-column w-100 text-start'>
+                                    <div style={{ position: 'relative' }} className='d-flex'>
+                                      <h4 className='font-size-25' style={{ padding: '0', margin: '0' }}>{ticket.type}</h4>
+                                      <span className='ticket-label-selected'>{ticket.quantity > 0 ? `${ticket.quantity} Remaining` : 'Sold Out'}</span>
+                                    </div>
+                                    <p style={{ margin: '0' }}><span style={{ fontSize: '15px', textDecoration: 'line-through', color: 'black' }}>₦{ticket.price.toLocaleString()}</span>&nbsp;&nbsp;
+                                    <span className='font-size-20'>₦{ticket.discountPrice.toLocaleString()}</span>
+                                    </p>
+                                    <span className='text-left sold-out font-size-15 p-gray'>This ticket has been selected</span>
+                                  </div>
+                                )}
                               </li>
                             );
                           }

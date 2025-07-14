@@ -65,6 +65,9 @@
 
   .event-info {
     padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
   }
 
   .event-title {
@@ -81,7 +84,7 @@
   }
 
   .event-tickets {
-    margin-top: 1rem;
+    margin-top: .5rem;
     font-size: 0.9rem;
   }
 
@@ -127,6 +130,9 @@
   }
 }
 .view-event-ticket {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
       .ticket-item {
         background-color: var(--primary_color);
         color: #fff;
@@ -144,4 +150,54 @@
   display: flex;
   flex-wrap: wrap;
   gap: 1em;
+}
+
+.event-view-icon- {
+  margin: 0em .5em 0em 0em;
+  padding: 5px;
+}
+
+.event-view-icon {
+  background: var(--primary_color);
+  padding: 5px;
+  border-radius: 5px;
+  margin: 0em .5em 0em 0em;
+}
+
+.event-description {
+  letter-spacing: 2.5px;
+  font-weight: 100;
+  font-size: 14px;
+}
+
+.ticket-label {
+    background: #fff;
+    color: black;
+    right: -55px;
+    transform: rotate(-42deg);
+    padding: 10px 45px 10px 45px;
+    position: absolute;
+    top: 10px;
+    border-radius: 5%;
+    font-size: 14px;
+    border-top-right-radius: 30px;
+}
+.ticket-label-selected {
+  background: #fff;
+    color: black;
+    right: -55px;
+    transform: rotate(-42deg);
+    padding: 10px 50px 10px 50px;
+    position: absolute;
+    top: 22px;
+    border-radius: 5%;
+    font-size: 14px;
+    border-top-right-radius: 30px;
+}
+
+.p-tre {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1em;
+    gap: .5em;
 }

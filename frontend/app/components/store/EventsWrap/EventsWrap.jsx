@@ -1,10 +1,20 @@
+import React, { useState } from 'react';
 import Card from "../Card";
 import "./EventsWrap.css";
 import Pagination from "../Pagination";
 import Input from "../../Common/HtmlTags/Input";
+import SelectOption from "../SelectOption";
 
 const EventsWrap = (props) => {
   const { events } = props;
+  const [searchTerm, setSearchTerm] = useState('');
+  const filteredEvents = events.filter(event => 
+    event.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  const handleSearch = (name, value) => {
+    setSearchTerm(value);
+  };
+
   return (
     <>
     {events.length > 0 ?
@@ -12,13 +22,17 @@ const EventsWrap = (props) => {
         <div className="event-heading">
           <h2 className="head1">Discover our Events</h2>
 
-          <Input placeholder={"Search events by name"} type={"search"} />
+          <Input placeholder={"Search events by name"}
+                 type={"search"}
+                 value={searchTerm}
+                 onInputChange={handleSearch}
+          />
         </div>
 
         <div className="events-list-wrapper">
           <div className="upcoming-events">
             <Pagination
-              items={events}
+              items={filteredEvents}
               itemsPerPage={12}
               renderItem={(event, index) => <Card event={event} key={index} />}
             />

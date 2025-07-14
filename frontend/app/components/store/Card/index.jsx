@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import ResolveImage from "../ResolveImage";
 import { API_URL } from "../../../constants";
 import { Link } from "react-router-dom";
+import { IoLocationOutline } from "react-icons/io5";
+import { LuCalendarDays } from "react-icons/lu";
 
 const Card = ({ event, type = "event" }) => {
   const navigate = useNavigate();
@@ -42,9 +44,18 @@ const Card = ({ event, type = "event" }) => {
           height={100}
           loading="lazy"
         />
-        <h3 className="card-title">{event.name}</h3>
-        <p className="card-desc">{event.desc}</p>
-        <p>Date: {formatDateRange(event.startDate, event.endDate)}</p>
+        <div className="p-tre">
+        <h3 style={{ margin: '.5em .5em' }} className="card-title">{event.name}</h3>
+        <p className='event-location p-black'>
+          <span className='event-view-icon-'><IoLocationOutline size={20} color='#9172EC'/></span>
+          Location: {event && event.location}
+        </p>
+
+        <p className='event-date p-black'>
+          <span className='event-view-icon-'><LuCalendarDays size={20} color='#9172EC'/></span>
+          Date: {formatReadableDate(event && event.startDate)}
+        </p>
+      </div>
       </div>
 
       <button

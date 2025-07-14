@@ -80,7 +80,7 @@
   }
 
   .event-tickets {
-    margin-top: 1rem;
+    margin-top: 0rem;
     font-size: 0.9rem;
   }
 
@@ -131,11 +131,12 @@
         border-radius: 10px;
         padding: 10px 25px 10px 15px;
         box-shadow: 1px 0px 3px 0px var(--primary_color);
-        width: fit-content;
+        width: 100%;
         display: flex;
         gap: 1em;
         cursor: pointer;
         transition: transform 0.2s ease-in-out;
+        position: relative;
         
         &:hover {
           transform: translateY(-3px);
