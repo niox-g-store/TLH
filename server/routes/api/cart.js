@@ -274,7 +274,7 @@ router.put('/:cartId/apply-coupon', async (req, res) => {
           item.couponDiscount = item.discountPrice - coupon.amount
         } else if (coupon.type === 'Percentage') {
           item.couponPercentage = coupon.percentage
-          item.couponDiscount = item.discountPrice * (coupon.percentage / 100)
+          item.couponDiscount = (item.discountPrice > 0  ? item.discountPrice : item.price) * (coupon.percentage / 100)
         }
       }
     });

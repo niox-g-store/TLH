@@ -13,6 +13,7 @@ import PButton from "../../components/Common/HtmlTags/PrimaryButton/PButton";
 import SButton from "../../components/Common/HtmlTags/SecondaryButton/SButton";
 import HomeBanner from "./HomeBanner";
 import { API_URL } from "../../constants";
+import PopupComponent from "../../components/store/PopUp";
 
 const event1 = "./assets/events/event_1.jpeg";
 const event2 = "./assets/events/event_2.jpeg";
@@ -22,9 +23,10 @@ const event4 = "./assets/events/event_4.jpeg";
 class Home extends React.PureComponent {
   componentDidMount() {
     this.props.fetchHomeMedia();
+    this.props.fetchVisibleEvents();
   }
   render () {
-  const { authenticated, homeMedia } = this.props;
+  const { authenticated, homeMedia, popOverEvents } = this.props;
   if (authenticated) return <Navigate to='/dashboard' />;
 
   let video, images = null
@@ -49,6 +51,7 @@ class Home extends React.PureComponent {
 
   return (
     <>
+    {popOverEvents?.length > 0 && <PopupComponent data={popOverEvents} type={"image"}/>}
     <HomeBanner media={video}/>
       <HeroBanner
         heading="Discover The Link Hangouts Experience"
@@ -76,6 +79,7 @@ const mapStateToProps = (state) => {
   return {
     homeMedia: state.media.homeMedia,
     authenticated: state.authentication.authenticated,
+    popOverEvents: state.media.popOverEvents
   };
 };
 

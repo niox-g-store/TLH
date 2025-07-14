@@ -19,6 +19,7 @@ import {
   SET_MEDIA_LOADING,
   SET_MEDIA_EDIT_FORM_ERRORS,
   HOME_MEDIA,
+  POPOVER_MEDIA
 } from './constants';
 
 export const defaultWarning = () => {
@@ -158,6 +159,22 @@ export const updateMedia = (mediaId, updateData, navigate) => {
     }
   };
 };
+
+export const fetchVisibleEvents = () => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get(`${API_URL}/media/popover`);
+      if (response.data.success === true) {
+        dispatch({
+          type: POPOVER_MEDIA,
+          payload: response.data.events
+        })
+      }
+    } catch (error) {
+      handleError(error, dispatch, 'Error fetching events')
+    }
+  }
+}
 
 export const deleteMedia = (mediaId, navigate) => {
   return async (dispatch) => {

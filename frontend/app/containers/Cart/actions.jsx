@@ -151,6 +151,7 @@ export const calculateCouponDiscount = (coupon) => {
 
             if (coupon.type === 'Fixed') {
               discountAmount += Math.min(coupon.amount, itemTotal);
+              discountAmount *= quantity
             } else if (coupon.type === 'Percentage') {
               discountAmount += (coupon.percentage / 100) * itemTotal;
             }

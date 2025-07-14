@@ -12,7 +12,8 @@ import {
   UPDATE_MEDIA,
   SET_MEDIA_LOADING,
   SET_MEDIA_EDIT_FORM_ERRORS,
-  HOME_MEDIA
+  HOME_MEDIA,
+  POPOVER_MEDIA
 } from './constants'; // Adjust path if needed
 
 const initialState = {
@@ -26,11 +27,17 @@ const initialState = {
   isLoading: false,
   formErrors: {},
   editFormErrors: {},
-  homeMedia: []
+  homeMedia: [],
+  popOverEvents: []
 };
 
 const mediaReducer = (state = initialState, action) => {
   switch (action.type) {
+    case POPOVER_MEDIA:
+      return {
+        ...state,
+        popOverEvents: action.payload
+      }
     case HOME_MEDIA:
       return {
         ...state,

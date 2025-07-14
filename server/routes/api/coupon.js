@@ -37,16 +37,18 @@ router.post('/validate', auth, async (req, res) => {
       return res.status(400).json({ error: 'This coupon does not permit usage.' });
     }
 
-    const couponTicket = await Ticket.findOne({ coupons: coupon._id });
-    console.log(couponTicket)
-    /*const matchedCoupon = couponTicket?.coupons.find(c => c.toString() === coupon._id.toString());
+    const couponTicket = await Ticket.findOne({
+      coupons: coupon._id,
+      _id: { $in: tickets }
+    });
+    const matchedCoupon = couponTicket?.coupons.find(c => c.toString() === coupon._id.toString());
 
     // Check ticket match
     const matchedTicket = tickets.find((id) => 
       matchedCoupon && couponTicket._id.toString() === id.toString()
-    );*/
-    if (!couponTicket) {
-      return res.status(400).json({ error: 'This coupon is not valid for any selected ticket.' });
+    );
+    if (!matchedTicket) {
+      return res.status(400).json({ error: 'Invalid coupon code!!' });
     }
     
     // Check user usage
@@ -57,6 +59,10 @@ router.post('/validate', auth, async (req, res) => {
     if (usageCount >= coupon.userLimit) {
       return res.status(400).json({ error: 'You have already used this coupon the maximum number of times allowed.' });
     }
+
+    coupon.hasUsed.push(user._id);
+    coupon.usedCount = (coupon.usedCount || 0) + 1;
+    await coupon.save();
 
     return res.status(200).json({
       success: true,
@@ -70,7 +76,6 @@ router.post('/validate', auth, async (req, res) => {
       ticket: [couponTicket._id]
     });
   } catch (error) {
-    console.error('Validate coupon error:', error);
     return res.status(500).json({ error: 'Error validating coupon.' });
   }
 });
@@ -123,7 +128,8 @@ router.get(
               model: 'Organizer',
             }
           })
-          .sort('-createdAt');
+          .sort('-usedCount')
+          .sort('-createdAt')
       } else {
         // Admin: return all coupons
         coupons = await Coupon.find()
@@ -136,6 +142,7 @@ router.get(
               model: 'Organizer',
             }
           })
+          .sort('-usedCount')
           .sort('-createdAt');
       }
       return res.status(200).json({ coupons });
@@ -147,7 +154,7 @@ router.get(
   }
 );
 
-// GET /coupon/select - Get coupons for select options
+// GET /coupon/select - Get coupons for select options, when adding coupon to ticket
 router.get(
   '/select',
   auth,

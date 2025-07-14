@@ -13,10 +13,9 @@ const role = require('../../middleware/role');
 const { ROLES } = require('../../utils/constants');
 const PaymentHandler = require('../../utils/paystack');
 const { customAlphabet } = require('nanoid');
-const jwt = require('jsonwebtoken');
 const QRCode = require('qrcode');
 const keys = require('../../config/keys');
-const { secret } = keys.jwt;
+const { generateInvoice } = require('../../utils/invoiceService');
 
 const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', 8);
 
@@ -30,7 +29,7 @@ const assignQrCode = async (order, cart) => {
     if (isGuest) {
       userOrGuestId = await Guest.findOne({_id: userOrGuestId})
     } else {
-      userOrGuestId = await User.findOne({ _id: userOrGuestId })
+      userOrGuestId = await User.findOne({ _id: userOrGuestId }).populate('organizer')
     }
 
     for (const ticketItem of cart.tickets) {
@@ -52,7 +51,7 @@ const assignQrCode = async (order, cart) => {
       for (let i = 0; i < quantity; i++) {
         const shortCode = nanoid();
 
-        const payload = {
+        /*const payload = {
           code: shortCode,
           ticketType,
           eventName,
@@ -68,10 +67,19 @@ const assignQrCode = async (order, cart) => {
           userId: userOrGuestId,
           ownedByModel: isGuest ? 'Guest' : 'User',
           index: i,
+        };*/
+
+        const ppayload = {
+          code: shortCode,
+          userId: userOrGuestId._id,
+          email: userOrGuestId.email,
+          eventName,
+          ticketType,
         };
 
-        const token = jwt.sign(payload, secret, { expiresIn: '360d' });
-        const qrBuffer = await QRCode.toBuffer(token);
+        const qrPayload = JSON.stringify(ppayload);
+
+        const qrBuffer = await QRCode.toBuffer(qrPayload);
 
         const qr = new QRCODE({
           eventId,
@@ -223,8 +231,10 @@ router.put('/edit/order/', async (req, res) => {
 
     if (status) {
       // assign qr code to the ticket
-      const qrAssigner = await assignQrCode(updateOrder, cartDoc)
-      console.log(qrAssigner)
+      const qrAssigner = await assignQrCode(updateOrder, cartDoc);
+      for (items of qrAssigner) {
+        const invoice = await generateInvoice(items);
+      }
         const newOrder = {
           _id: updateOrder._id,
           created: updateOrder.createdAt,

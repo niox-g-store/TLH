@@ -5,6 +5,7 @@ const auth = require('../../middleware/auth');
 const role = require('../../middleware/role');
 const { ROLES } = require('../../utils/constants');
 const Media = require('../../models/media');
+const Event = require('../../models/event');
 const multer = require('multer');
 const crypto = require('crypto');
 const path = require("path");
@@ -23,6 +24,27 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+router.get('/popover',
+  async (req, res) => {
+    try {
+      const events = await Event.find({
+        visibility: true,
+        isActive: true,
+        status: { $in: ['Upcoming', 'Ongoing'] }
+      })
+      .populate('tickets');
+      return res.status(200).json({
+        success: true,
+        events
+      })
+    } catch (error) {
+      return res.status(400).json({
+        error: 'Your request could not be processed. Please try again.'
+      });
+    }
+  }
+)
+
 router.get(
   '/fetch_all',
   async(req, res) => {
@@ -32,7 +54,6 @@ router.get(
         .limit(5);
       return res.status(200).json({ medias });
     } catch (error) {
-      console.log(error)
       return res.status(400).json({
         error: 'Your request could not be processed. Please try again.'
       });

@@ -15,7 +15,7 @@ const qrCodeSchema = new mongoose.Schema({
   eventName: { type: String },
   coupon: { type: String },
   price: { type: Number, default: 0 },
-  discount: { type: Number, default: 0 },
+  discount: { type: Boolean, default: false },
   discountAmount: { type: Number, default: 0 },
   discountPrice: { type: Number, default: 0 },
   couponDiscount: { type: Number, default: 0 },

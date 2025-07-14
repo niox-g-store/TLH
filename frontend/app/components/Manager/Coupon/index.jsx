@@ -77,7 +77,7 @@ const ManagerCouponHelper = (props) => {
           <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white`}>
             <CCardBody>
               <CCardTitle>Most Used Coupon</CCardTitle>
-              <CCardText>{mostUsedCoupon.code} ({mostUsedCoupon.usedCount} used)</CCardText>
+              <CCardText>{(mostUsedCoupon.code).substring(0, 2) + '***'} ({mostUsedCoupon.usedCount} used)</CCardText>
             </CCardBody>
           </CCard>
         </CCol>

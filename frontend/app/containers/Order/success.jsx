@@ -42,7 +42,7 @@ const OrderSuccess = ({ authenticated }) => {
             <div className="user-message">
               <p>You can view and manage your tickets in your dashboard.</p>
               <div className="action-buttons">
-                <Link to="/dashboard/orders/my-orders"><Button className="primary" text={"View My Tickets"} /></Link>
+                <Link to="/dashboard/orders/my-orders"><Button className="primary" text={"View My Orders"} /></Link>
                 <Link to="/events"><Button type="secondary" text={"Explore More Events"} /></Link>
               </div>
             </div>
