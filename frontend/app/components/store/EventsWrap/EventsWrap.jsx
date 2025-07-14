@@ -3,7 +3,6 @@ import Card from "../Card";
 import "./EventsWrap.css";
 import Pagination from "../Pagination";
 import Input from "../../Common/HtmlTags/Input";
-import SelectOption from "../SelectOption";
 
 const EventsWrap = (props) => {
   const { events } = props;
