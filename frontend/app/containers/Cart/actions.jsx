@@ -563,6 +563,33 @@ export const checkout = (navigate, guest=null) => {
         });
       }
 
+      if (total === 0) {
+        const emptyOrder = await axios.post(`${API_URL}/order/add`, {
+          cart: cartId,
+          user: { email: userEmail, name: user_name, _id: userId},
+          guest: email && name && _id ? { email, name, _id } : null,
+          events: eventIds,
+          tickets: ticketIds,
+          finalAmount: total,
+          discountPrice: discountPrice,
+          amountBeforeDiscount: price,
+          billingEmail: email !== undefined || null ? email : userEmail,
+        });
+        if (emptyOrder.status === 200) {
+            const response = await axios.put(`${API_URL}/order/edit/order`, {
+              orderId: emptyOrder.data.order._id,
+              status: true
+            });
+            if (response && response.status === 200) {
+              // free ticket add order, mark order as paid, send user to success page
+              navigate(`/order/success/${name ? 'guest-' + response.data.order._id : response.data.order._id}`)
+              dispatch(setCartLoading(false));
+              return;
+            }
+        }
+
+      }
+
 
       const ps = await payStackHelper({
         cart: cartId,

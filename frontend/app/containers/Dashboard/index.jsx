@@ -49,7 +49,9 @@ class Dashboard extends React.PureComponent {
       updateCoupon, fetchCoupons,
       deleteCoupon, resetCoupon,
       fetchCoupon, getUserCoupons,
-      couponsOptions
+      couponsOptions,
+
+      accountEditFormErrors
     } = this.props;
     // if (isDisabledOrganizerAccount(user)) { return <DisabledOrganizerAccount user={user} />; }
 
@@ -111,7 +113,9 @@ const mapStateToProps = state => {
     couponIsLoading: state.coupon.isLoading,
     coupons: state.coupon.coupons,
     coupon: state.coupon.coupon,
-    couponsOptions: state.coupon.couponsSelect
+    couponsOptions: state.coupon.couponsSelect,
+
+    accountEditFormErrors: state.account.editFormErrors
   };
 };
 

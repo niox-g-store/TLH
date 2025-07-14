@@ -3,6 +3,7 @@ const router = express.Router();
 
 // Bring in Models & Helpers
 const User = require('../../models/user');
+const Organizer = require('../../models/organizer');
 const auth = require('../../middleware/auth');
 const role = require('../../middleware/role');
 const { ROLES } = require('../../utils/constants');
@@ -100,15 +101,34 @@ router.put('/', auth, async (req, res) => {
   try {
     const user = req.user._id;
     const update = req.body.profile;
+    let userDoc;
+
     const query = { _id: user };
 
-    const userDoc = await User.findOneAndUpdate(query, update, {
+    userDoc = await User.findOneAndUpdate(query, update, {
       new: true
     });
 
+    // If user has organizer linked, update that too
+    if (userDoc.organizer) {
+      const organizerUpdate = {};
+
+      if (update.companyName) {
+        organizerUpdate.companyName = update.companyName;
+      }
+
+      // Support phone number in two places
+      if (update.phoneNumber) {
+        organizerUpdate.phoneNumber = update.phoneNumber;
+      }
+
+      if (Object.keys(organizerUpdate).length > 0) {
+        await Organizer.findByIdAndUpdate(userDoc.organizer, organizerUpdate);
+      }
+    }
     return res.status(200).json({
       success: true,
-      message: 'Your profile is successfully updated!',
+      message: 'successfully updated!',
       user: userDoc
     });
   } catch (error) {

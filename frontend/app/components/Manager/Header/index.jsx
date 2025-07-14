@@ -24,7 +24,7 @@ const HeaderPanel = (props) => {
   };
 
   // Use companyName or userName
-  const source = user?.companyName || user?.userName || '';
+  const source = user?.organizer?.companyName || user?.userName || '';
   const initials = source
     .trim()
     .split(/\s+/)
@@ -41,7 +41,7 @@ const HeaderPanel = (props) => {
   <CContainer fluid className='d-flex justify-content-between align-items-center h-100'>
     <CHeaderToggler className='d-flex flex-row gap-4'>
       <CgMenuRightAlt className={isLightMode ? 'text-light-mode' : 'text-dark-mode'} size={30} onClick={toggleMenu} />
-      <p className={`${isLightMode ? 'text-light-mode' : 'text-dark-mode'} padding-0 font-size-25`}>
+      <p className={`${isLightMode ? 'text-light-mode' : 'text-dark-mode'} padding-0 font-size-25 text-hid`}>
         Welcome {source}
       </p>
     </CHeaderToggler>

@@ -73,14 +73,11 @@ const OrganizerSignUp = (props) => {
 
                 {/** */}
                 <div className='form-field-right'>
-                  <div className='first-name form-field'>
-                    <Input
-                      type='text'
-                      name='phoneNumber'
-                      label='Phone Number'
-                      value={organizerSignupFormData.phoneNumber}
-                      error={formErrors?.phoneNumber}
-                      onInputChange={(n, v) => organizerSignupChange(n, v)}
+                  <div className='first-name form-field org-phone-input'>
+                    <Input type={"phone"}
+                       val={organizerSignupFormData.phoneNumber}
+                       error={formErrors?.phoneNumber}
+                       onPhoneChange={(v) => organizerSignupChange('phoneNumber', v)}
                     />
                   </div>
                   <div className='form-field email'>

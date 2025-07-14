@@ -19,11 +19,12 @@ import {
 
   SET_BANK_FORM_ERROR,
   RESET_BANK_FORM_ERROR,
+  SET_PROFILE_EDIT_ERRORS
 } from './constants';
 import handleError from '../../utils/error';
 import { API_URL } from '../../constants';
+import { showNotification } from '../Notification/actions';
 import { allFieldsValidation } from '../../utils/validation';
-
 
 export const resetBanks = () => {
   return async (dispatch, getState) => {
@@ -31,15 +32,23 @@ export const resetBanks = () => {
   };
 }
 
-
 export const accountChange = (name, value) => {
-  let formData = {};
-  formData[name] = value;
+  return (dispatch, getState) => { 
+    let formData = {};
+      const organizer = getState().account?.user?.organizer
+    if (organizer && (name === 'phoneNumber' || name === 'companyName')) {
+      formData['organizer'] = {
+        ...organizer,
+        [name]: value
+      } 
+    }
+    formData[name] = value;
 
-  return {
+   dispatch({
     type: ACCOUNT_CHANGE,
     payload: formData
-  };
+  });
+  }
 };
 
 export const clearAccount = () => {
@@ -73,6 +82,23 @@ export const fetchProfile = () => {
 export const updateProfile = () => {
   return async (dispatch, getState) => {
     const profile = getState().account.user;
+      const rules = {
+        userName: 'required|username_format',
+      };
+
+      const newProfile = {
+        name: profile.name,
+        userName: profile.userName
+      };
+
+      const { isValid, errors } = allFieldsValidation(newProfile, rules, {
+        'required.userName': 'User name is required',
+        'userName.username_format': 'Username can only contain letters, numbers, underscores, and dashes (no spaces).',
+      });
+
+      if (!isValid) {
+        return dispatch({ type: SET_PROFILE_EDIT_ERRORS, payload: errors });
+      }
 
     try {
       const response = await axios.put(`${API_URL}/user`, {
@@ -87,7 +113,7 @@ export const updateProfile = () => {
 
       dispatch({ type: FETCH_PROFILE, payload: response.data.user });
 
-      dispatch(success(successfulOptions));
+      dispatch(showNotification('success', successfulOptions.title));
     } catch (error) {
       handleError(error, dispatch);
     }

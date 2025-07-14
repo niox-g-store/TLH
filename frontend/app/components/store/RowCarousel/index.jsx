@@ -1,4 +1,6 @@
 import React, { useRef } from "react";
+import { MdKeyboardArrowLeft } from "react-icons/md";
+import { MdKeyboardArrowRight } from "react-icons/md";
 
 const RowCarousel = (props) => {
   const { children, buttonClassName,
@@ -24,7 +26,7 @@ const RowCarousel = (props) => {
   return (
     <div className="row_carousel">
       <div className={`carousel-buttons carousel-buttons-left ${buttonClassName && buttonClassName} ${buttonClassLeftName && buttonClassLeftName}`} onClick={scrollLeft}>
-        {leftArrow ? <span>&larr;</span> : <span>&lt;</span>}
+        {leftArrow ? <span>&larr;</span> : <span><MdKeyboardArrowLeft size={20}/></span>}
       </div>
 
       <div ref={scrollRef} className="carousel_content">
@@ -32,7 +34,7 @@ const RowCarousel = (props) => {
       </div>
 
       <div className={`carousel-buttons carousel-buttons-right ${buttonClassName && buttonClassName} ${buttonClassRightName && buttonClassRightName}`} onClick={scrollRight}>
-        {rightArrow ? <span>&rarr;</span> : <span>&gt;</span>}
+        {rightArrow ? <span>&rarr;</span> : <span><MdKeyboardArrowRight size={20}/></span>}
       </div>
     </div>
   );

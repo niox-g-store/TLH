@@ -17,10 +17,10 @@ exports.generateInvoice = async (qrArray) => {
 
     const pdfBuffer = await pdf.generatePdf(file, options);
 
-    const outputPath = path.join(__dirname, `../invoices/invoice-${qrArray._id}.pdf`);
-    fs.writeFileSync(outputPath, pdfBuffer);
+    //const outputPath = path.join(__dirname, `../invoices/invoice-${qrArray._id}.pdf`);
+    //fs.writeFileSync(outputPath, pdfBuffer);
 
-    return outputPath; // or return buffer if you prefer
+    return pdfBuffer; // or return buffer if you prefer
   } catch (err) {
     throw new Error('Failed to generate invoice');
   }

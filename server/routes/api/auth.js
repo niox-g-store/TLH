@@ -528,7 +528,6 @@ router.post('/register/google', async (req, res) => {
       }
     });
   } catch (error) {
-    console.log(error)
     return res.status(400).json({
       error: "Error Creating google account"
     })

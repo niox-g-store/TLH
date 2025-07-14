@@ -21,7 +21,7 @@ const SignupProvider = (props) => {
 
 
   return (
-    <div className='signup-provider'>
+    <div className='signup-provider' style={{ display: 'flex', justifyContent: 'center' }}>
       <div
         id='g_id_onload'
         data-client_id='418853884066-d19un4l7q6adm08ib1av5dsavejgmnri.apps.googleusercontent.com'

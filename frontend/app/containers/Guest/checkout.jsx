@@ -1,5 +1,6 @@
 import Input from '../../components/Common/HtmlTags/Input';
 import { useNavigate } from "react-router-dom";
+import LoadingIndicator from '../../components/store/LoadingIndicator';
 
 const GuestCheckout = (props) => {
     const {
@@ -8,7 +9,8 @@ const GuestCheckout = (props) => {
             guestInfo,
             guestErrors,
             handleGuestInputChange,
-            addGuest
+            addGuest,
+            loading
         } = props;
     const navigate = useNavigate();
     const handleGuestCheckout = (e) => {
@@ -19,6 +21,7 @@ const GuestCheckout = (props) => {
             <>
                 {!authenticated && showGuestForm && (
                   <div className="guest-checkout-form">
+                    {loading && <LoadingIndicator />}
                     <p className="guest-info-text">As a guest, you can only purchase one ticket type with quantity of 1.</p>
                     <form onSubmit={handleGuestCheckout}>
                       <div className="form-group">

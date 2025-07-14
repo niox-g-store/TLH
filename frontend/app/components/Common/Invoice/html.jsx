@@ -1,15 +1,15 @@
 const convertQRToBase64 = (qrBinary) => {
   if (!qrBinary) return null;
 
-  const buffer = Buffer.isBuffer(qrBinary)
-    ? qrBinary
-    : Buffer.from(qrBinary.data || []);
+  const uint8Array = new Uint8Array(qrBinary);
+  const binaryString = uint8Array.reduce((data, byte) => data + String.fromCharCode(byte), '');
+  const base64String = btoa(binaryString);
 
-  const base64String = buffer.toString('base64');
   return `data:image/png;base64,${base64String}`;
-}
+};
 
-exports.invoiceGenerator = (data) => {
+
+export const invoiceGenerator = (data) => {
   const user = data.ownedBy;
   const name = user?.organizer ? user.organizer.companyName : user.name;
   const email = user.email;

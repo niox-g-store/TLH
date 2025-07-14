@@ -18,7 +18,7 @@ class Account extends React.PureComponent {
   }
 
   render() {
-    const { user, accountChange, updateProfile } = this.props;
+    const { user, accountChange, updateProfile, editFormErrors } = this.props;
 
     if (user.role === ROLES.Admin) {
     // const { deleteBank, banks, createBank, formErrors } = this.props;
@@ -29,6 +29,7 @@ class Account extends React.PureComponent {
             user={user}
             // banks={banks}
             formErrors={formErrors}
+            editFormErrors={editFormErrors}
             // accountChange={accountChange}
             // updateProfile={updateProfile}
             // deleteBank={(v) => deleteBank(v)}
@@ -45,6 +46,7 @@ class Account extends React.PureComponent {
             user={user}
             // banks={banks}
             formErrors={formErrors}
+            editFormErrors={editFormErrors}
             // accountChange={accountChange}
             // updateProfile={updateProfile}
             // deleteBank={(v) => deleteBank(v)}
@@ -59,6 +61,7 @@ class Account extends React.PureComponent {
         <SubPage title={'Account Details'} isMenuOpen={null}>
           <AccountDetails
             user={user}
+            editFormErrors={editFormErrors}
             // accountChange={accountChange}
             // updateProfile={updateProfile}
           />
@@ -72,6 +75,7 @@ class Account extends React.PureComponent {
 const mapStateToProps = state => {
   return {
     user: state.account.user,
+    editFormErrors: state.account.editFormErrors
     // resetFormData: state.resetPassword.resetFormData,
     // formErrors: state.resetPassword.formErrors,
 

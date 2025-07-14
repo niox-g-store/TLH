@@ -17,6 +17,7 @@ import {
 
   RESET_BANK_FORM_ERROR,
   SET_BANK_FORM_ERROR,
+  SET_PROFILE_EDIT_ERRORS
 } from './constants';
 
 const initialState = {
@@ -26,6 +27,10 @@ const initialState = {
     companyName: '',
     provider: '',
     role: '',
+    organizer: {
+      companyName: '',
+      phoneNumber: ''
+    }
   },
   isLoading: false,
 
@@ -35,11 +40,17 @@ const initialState = {
     bankName: '',
     accountNumber: '',
     nameOnAccount: '',
-  }
+  },
+  editFormErrors: {}
 };
 
 const accountReducer = (state = initialState, action) => {
   switch (action.type) {
+    case SET_PROFILE_EDIT_ERRORS:
+      return {
+        ...state,
+        editFormErrors: action.payload
+      }
     case CREATE_BANK:
       return {
         ...state,
@@ -102,7 +113,8 @@ const accountReducer = (state = initialState, action) => {
           name: '',
           userName: '',
           companyName: '',
-        }
+        },
+        editFormErrors: {}
       };
     case SET_PROFILE_LOADING:
       return {

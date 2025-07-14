@@ -200,17 +200,29 @@ router.post('/add', async (req, res) => {
 
 router.put('/edit/order/', async (req, res) => {
   try {
-    const payStackId = req.body.payStackId;
-    const payStackReference = req.body.paystackReference;
+    const id = req.body.orderId;
+    let update, status, updateOrder,
+        payStackReference, paymentMethod, payStackId,
+        verifyPayment, paymentStatus, paymentFees;
+    if (id) { // free ticket
+      status = req.body.status;
+      update = {
+          $set: {
+            status,
+          }
+        }
+    } else {
+      payStackId = req.body.payStackId;
+      payStackReference = req.body.paystackReference;
     
-    // confirm order via paystack
-    const verifyPayment = await PaymentHandler(payStackId);
-    const paymentStatus = verifyPayment.data.status
-    const status = verifyPayment.data.status === 'success' ? true : false;
-    const paymentMethod = verifyPayment.data.channel;
-    const paymentFees = Math.round(verifyPayment.data.fees / 100);
+      // confirm order via paystack
+      verifyPayment = await PaymentHandler(payStackId);
+      paymentStatus = verifyPayment.data.status
+      status = verifyPayment.data.status === 'success' ? true : false;
+      paymentMethod = verifyPayment.data.channel;
+      paymentFees = Math.round(verifyPayment.data.fees / 100);
 
-    const update = {
+      update = {
         $set: {
           payStackReference,
           status,
@@ -219,11 +231,19 @@ router.put('/edit/order/', async (req, res) => {
           paymentFees,
         }
       }
-    //const options = { new: true };
-    const updateOrder = await Order.findOneAndUpdate(
-        { payStackId: payStackId },
-        update,
-    )
+    }
+
+    if (id) {
+      updateOrder = await Order.findOneAndUpdate(
+            { _id: id },
+            update,
+      )
+    } else {
+      updateOrder = await Order.findOneAndUpdate(
+            { payStackId: payStackId },
+            update,
+      )
+    }
   
     const cartDoc = await Cart.findById(updateOrder.cart)
       .populate('tickets.eventId')
@@ -247,8 +267,8 @@ router.put('/edit/order/', async (req, res) => {
           amountBeforeDiscount: updateOrder.amountBeforeDiscount,
           billingEmail: updateOrder.billingEmail,
 
-          paystackReference: payStackReference,
-          paymentMethod: `paid with ${paymentMethod}`,
+          paystackReference: payStackReference || "",
+          paymentMethod: `paid with ${paymentMethod || ""}`,
           //image: 'https://res.cloudinary.com/dduai6ryd/image/upload/v1736088530/ithoan/images/logo/business_logo.png'
         };
   
@@ -339,27 +359,29 @@ router.get(
       events: orderDoc.events,
     };
 
+    let paymentDetails;
+
     // === Admin Logic ===
     if (currentUser.role === ROLES.Admin) {
-      const paymentDetails = await PaymentHandler(orderDoc.payStackId);
+      if (orderDoc?.payStackId?.length > 0) { paymentDetails = await PaymentHandler(orderDoc?.payStackId); }
       order = {
         ...order,
-        payStackId: orderDoc.payStackId,
-        payStackReference: orderDoc.payStackReference,
-        paymentStatus: paymentDetails.data.status,
-        paymentDate: paymentDetails.data.paid_at,
-        paymentCurrency: paymentDetails.data.currency,
+        payStackId: orderDoc?.payStackId || "",
+        payStackReference: orderDoc?.payStackReference || "",
+        paymentStatus: paymentDetails?.data.status || "",
+        paymentDate: paymentDetails?.data.paid_at || "",
+        paymentCurrency: paymentDetails?.data.currency || "",
       };
     }
 
     // === User Logic ===
     else if (currentUser.role === ROLES.User) {
-      const paymentDetails = await PaymentHandler(orderDoc.payStackId);
+      if (orderDoc?.payStackId?.length > 0) { paymentDetails = await PaymentHandler(orderDoc?.payStackId); }
       order = {
         ...order,
-        paymentStatus: paymentDetails.data.status,
-        paymentDate: paymentDetails.data.paid_at,
-        paymentCurrency: paymentDetails.data.currency,
+        paymentStatus: paymentDetails?.data?.status || "",
+        paymentDate: paymentDetails?.data?.paid_at || "",
+        paymentCurrency: paymentDetails?.data?.currency || "",
       };
     }
 
@@ -388,12 +410,43 @@ router.get(
       };
     }
 
-    return res.status(200).json({ order });
+    const isGuest = !!orderDoc.guest;
+    let userOrGuestId = isGuest ? orderDoc.guest : orderDoc.user._id;
+
+    if (isGuest) {
+      userOrGuestId = await Guest.findOne({_id: userOrGuestId})
+    } else {
+      userOrGuestId = await User.findOne({ _id: userOrGuestId }).populate('organizer')
+    }
+    const invoice = await QRCODE.find({ order: orderId })
+    for (let qr of invoice) {
+      qr.ownedBy = userOrGuestId;
+      qr.ownedByModel = isGuest ? 'Guest' : 'User';
+      await qr.save();
+    }
+
+    return res.status(200).json({ order, invoice });
 
   } catch (error) {
     return res.status(400).json({
       error: 'Your request could not be processed. Please try again.'
     });
+  }
+});
+
+router.post('/invoice-download', auth, async (req, res) => {
+  try {
+    const invoice = req.body.invoice;
+    const pdfBuffer = await generateInvoice(invoice, true);
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment`,
+      'Content-Length': pdfBuffer.length,
+    });
+    return res.send(pdfBuffer);
+  } catch (error) {
+    res.status(400).json({ message: 'Failed to generate invoice.' });
   }
 });
 

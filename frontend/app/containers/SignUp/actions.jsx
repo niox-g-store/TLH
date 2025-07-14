@@ -73,7 +73,7 @@ export const organizerSignupSubmit = () => {
         email: 'required|email',
         password: 'required|min:6',
         companyName: 'required',
-        userName: 'required',
+        userName: 'required|username_format',
         confirmPassword: 'required|confirmed:password',
         phoneNumber: 'required'
       };
@@ -85,6 +85,7 @@ export const organizerSignupSubmit = () => {
         'required.email': 'Email is required.',
         'required.companyName': 'Company name is required.',
         'required.userName': 'User name is required',
+        'userName.username_format': 'Username can only contain letters, numbers, underscores, and dashes (no spaces).',
         'required.password': 'Password is required.',
         'required.confirmPassword': "Password don't match",
         'required.phoneNumber': "Phone Number is required"
@@ -173,7 +174,7 @@ export const signUpSubmit = () => {
         email: 'required|email',
         password: 'required|min:6',
         name: 'required',
-        userName: 'required',
+        userName: 'required|username_format',
         confirmPassword: 'required|confirmed:password',
       };
 
@@ -184,6 +185,7 @@ export const signUpSubmit = () => {
         'required.email': 'Email is required.',
         'required.name': 'Name is required.',
         'required.userName': 'User name is required',
+        'userName.username_format': 'Username can only contain letters, numbers, underscores, and dashes (no spaces).',
         'required.password': 'Password is required.',
         'required.confirmPassword': "Password don't match"
       });

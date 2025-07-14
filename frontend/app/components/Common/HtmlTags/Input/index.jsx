@@ -33,6 +33,7 @@ const PhoneNumberInput = ({ onPhoneChange, val }) => {
         international
         countryCallingCodeEditable={true}
         className="phone-input"
+        style={{ border: '1px solid #c9c9c9' }}
       />
     </div>
   );
@@ -59,7 +60,7 @@ const Input = props => {
     checked = false,
     onPhoneChange,
     val,
-    multiple
+    multiple,
   } = props;
 
   const handleIncrement = () => {

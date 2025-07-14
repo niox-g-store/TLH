@@ -24,6 +24,14 @@ html {
   --linear-bg-2: linear-gradient(120deg, #1f1f47, #9172EC, #6f42c1);
 }
 
+.text-hid {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 199px;
+  text-wrap: nowrap;
+}
+
 /*  */
 body {
   font-family: 'Bebas Neue', sans-serif;

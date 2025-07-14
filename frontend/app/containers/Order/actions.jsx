@@ -70,6 +70,29 @@ export const userOrders = () => {
   }
 }
 
+
+export const downloadInvoice = (invoice, orderId) => {
+  return async (dispatch) => {
+    dispatch(setOrderLoading(true));
+    try {
+      const response = await axios.post(
+        `${API_URL}/order/invoice-download`,
+        { invoice },
+        { responseType: 'blob' } // important!
+      );
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `${orderId}_invoice.pdf`;
+      link.click();
+    } catch (error) {
+      handleError(error, dispatch);
+    } finally {
+      dispatch(setOrderLoading(false));
+    }
+  };
+};
+
 export const fetchOrder = (id) => {
   return async (dispatch) => {
     dispatch(setOrderLoading(true));
@@ -78,7 +101,7 @@ export const fetchOrder = (id) => {
       if (order.status === 200 && order.data.order) {
           dispatch({
               type: FETCH_ORDER,
-              payload: order.data.order
+              payload: { order: order.data.order, invoice: order.data.invoice}
           })
       }
     } catch (error) {

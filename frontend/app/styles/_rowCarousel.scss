@@ -30,7 +30,7 @@
           color: black;
           position: relative;
           top: -8px;
-          right: 1px;
+          right: 7px;
           font-family: inherit;
           outline: none;
         }
@@ -50,12 +50,12 @@
     .carousel_content {
       display: flex;
       overflow-x: auto;
-      overflow-y: scroll;
+      overflow-y: auto;
       scroll-behavior: smooth;
       white-space: nowrap;
-      padding: 0 2rem;
-      scrollbar-width: thin; // Hide scrollbar for Firefox
-      -ms-overflow-style: thin; // Hide scrollbar for IE/Edge
+      padding: 0 4rem 0em 2rem;
+      scrollbar-width: none; // Hide scrollbar for Firefox
+      -ms-overflow-style: none; // Hide scrollbar for IE/Edge
 
       @include media-breakpoint-down(sm) {
         padding: 0;

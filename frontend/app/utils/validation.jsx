@@ -6,6 +6,14 @@ import en from 'validatorjs/src/lang/en';
 Validator.setMessages('en', en);
 
 Validator.register(
+  'username_format',
+  function(value) {
+    return /^[a-zA-Z0-9_-]+$/.test(value); // allows only letters, numbers, underscores, dashes
+  },
+  'Username may only contain letters, numbers, underscores, and dashes.'
+);
+
+Validator.register(
   'confirmed',
   function(value, requirement, attribute) {
     const allFields = this.validator?.input || {};

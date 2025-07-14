@@ -19,7 +19,7 @@ const SigninProvider = (props) => {
   }, []);
 
   return (
-    <div className='signup-provider'>
+    <div style={{ display: 'flex', justifyContent: 'center' }} className='signup-provider'>
       <div id="g_id_onload"
           data-client_id="418853884066-d19un4l7q6adm08ib1av5dsavejgmnri.apps.googleusercontent.com"
           // data-login_uri={`${API_URL}/auth/google_signin`}

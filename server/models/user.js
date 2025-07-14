@@ -62,7 +62,17 @@ const UserSchema = new mongoose.Schema({
 });
 
 // Automatically create a slug from the title before saving
-UserSchema.pre('save', function(next) {
+UserSchema.pre('save', async function (next) {
+  if (this.userName) {
+    this.userName = this.userName.replace(/\s+/g, ''); // remove all spaces
+  }
+  if (!this.companyName && this.organizer) {
+    const Organizer = mongoose.model('Organizer');
+    const org = await Organizer.findById(this.organizer);
+    if (org && org.companyName) {
+      this.companyName = org.companyName;
+    }
+  }
   this.updatedAt = new Date();
   next();
 });

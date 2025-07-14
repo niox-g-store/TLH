@@ -28,6 +28,7 @@
     "dotenv": "^16.6.0",
     "font-awesome": "^4.7.0",
     "history": "^5.3.0",
+    "html2pdf.js": "^0.10.3",
     "html5-qrcode": "^2.3.8",
     "image-validator": "^1.2.1",
     "quill": "^2.0.3",

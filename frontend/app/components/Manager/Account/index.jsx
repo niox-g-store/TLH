@@ -157,6 +157,7 @@ const ManagerAccount = (props) => {
     formErrors,
     createBank,
     isLightMode,
+    accountEditFormErrors
   } = props;
 
   const handleSubmit = (e) => {
@@ -182,39 +183,56 @@ const ManagerAccount = (props) => {
             </CCol>
 
               <CCol className={`${isLightMode ? 'p-black': 'p-white'}`} md={6}>
-                <CFormInput
+                <Input
                   type="text"
                   label="User Name"
                   name="userName"
                   placeholder="Enter a new username"
                   value={user.userName || ''}
-                  onChange={(e) => accountChange('userName', e.target.value)}
+                  error={accountEditFormErrors.userName}
+                  onInputChange={(e, v) => accountChange('userName', v)}
                 />
               </CCol>
           </CRow>
 
           <CForm onSubmit={handleSubmit}>
             <CRow className="mb-3 g-3">
+              {user.role !== ROLES.Organizer &&
+              <CCol className={`${isLightMode ? 'p-black': 'p-white'}`} md={6}>
+                <CFormInput
+                  type="text"
+                  label="Name"
+                  name="Name"
+                  placeholder="Enter your name"
+                  value={user.name || ''}
+                  onChange={(e) => accountChange('name', e.target.value)}
+                />
+              </CCol>
+              }
+              
+              {[ROLES.Admin, ROLES.Organizer].includes(user?.role) && 
               <CCol className={`${isLightMode ? 'p-black': 'p-white'}`} md={6}>
                 <CFormInput
                   type="text"
                   label="Company Name"
                   name="companyName"
                   placeholder="Enter your company name"
-                  value={user.organizer && user.organizer.companyName || ''}
-                  onChange={(e) => accountChange('name', e.target.value)}
+                  value={user.companyName}
+                  onChange={(e) => accountChange('companyName', e.target.value)}
                 />
               </CCol>
-
+              }
+              {user?.organizer &&
               <CCol className={`${isLightMode ? 'p-black': 'p-white'}`} md={6}>
                 <Input type={"phone"}
                        val={user.organizer && user.organizer.phoneNumber || ''}
                        onPhoneChange={(v) => accountChange('phoneNumber', v)}
                 />
               </CCol>
+              }
             </CRow>
 
-            <div className="d-flex justify-content-end mt-3">
+            <div className="d-flex justify-content-center mt-3">
               <CButton type="submit" className={`p-white linear-grad`}>
                 Save Changes
               </CButton>

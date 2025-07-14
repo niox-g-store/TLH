@@ -70,7 +70,6 @@ const orderSchema = new mongoose.Schema({
 
   paymentStatus: {
     type: String,
-    reuqired: true,
   },
   paymentMethod: {
     type: String

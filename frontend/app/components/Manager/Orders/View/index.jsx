@@ -24,7 +24,8 @@ const OrderViewer = (props) => {
   const { order = {}, user,
           isLightMode, orderIsLoading,
           setDeleteOrderVisibility, deleteOrderVisibility,
-          deleteOrder, secondDiscount, setSecondDiscount
+          deleteOrder, secondDiscount, setSecondDiscount,
+          invoice, downloadInvoice
         } = props;
   const navigate = useNavigate();
 
@@ -171,6 +172,8 @@ const OrderViewer = (props) => {
                     const discountPrice = ticket?.discountPrice || 0;
                     const hasDiscount = ticket?.discount;
                     const hasCoupon = ticket?.coupon;
+                    const ticketId = ticket.ticketId;
+                    const qrData = invoice.find((e) => e.ticketId === ticketId);
 
                     return (
                       <div key={index} className='mb-3 border-bottom pb-2'>
@@ -226,6 +229,16 @@ const OrderViewer = (props) => {
                           </p>
                         </>
                         )}
+                        {invoice
+                          .filter((inv) => inv.ticketId === ticketId)
+                          .map((inv, idx) => (
+                          <Button
+                            key={inv.code || idx}
+                            text={`Download (${idx + 1})`}
+                            onClick={() => downloadInvoice(inv, order._id)}
+                            style={{ padding: '10px 15px', margin: '1em 0em 0.5em 0em' }}
+                          />
+                        ))}
                       </div>
                     );
                   })
@@ -235,7 +248,7 @@ const OrderViewer = (props) => {
           </CCol>
                 {isAdmin && (
                   <>
-                    <CRow>
+                    <CRow style={{ marginTop: '1em', justifyContent: 'center' }}>
                       <Button onClick={() => setDeleteOrderVisibility(true)} text={"Delete order"} cls="text-danger mt-2"/>
                     </CRow>
                     <TopSlideConfirmModal
@@ -280,6 +293,8 @@ const mapStateToProps = state => ({
   orderIsLoading: state.order.isLoading,
   deleteOrderVisibility: state.order.deleteOrderVisibility,
   secondDiscount: state.order.secondDiscount,
+
+  invoice: state.order.invoice
 });
 
 export default connect(mapStateToProps, actions)(withRouter(ViewOrder));

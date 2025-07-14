@@ -38,7 +38,7 @@ const PopupComponent = ({ data, type }) => {
               {item.name && <h2 style={{ color: 'white' }}>{item.name}</h2>}
             </div>
 
-            {item.tickets && item.tickets.length > 0 && (
+            {/*item.tickets && item.tickets.length > 0 && (
               <div className="popup-tickets">
                 <h2 className='font-size-20'>Tickets on discount</h2>
                 <div className='ticket-price-container'>
@@ -59,7 +59,7 @@ const PopupComponent = ({ data, type }) => {
                   }
                   </div>
               </div>
-            )}
+            )*/}
 
             <Link className='popover-link' to={`/event/${item.slug}`}>
               <button className="popup-cta">Get Tickets Now</button>

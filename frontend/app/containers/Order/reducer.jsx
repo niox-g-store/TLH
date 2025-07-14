@@ -13,7 +13,8 @@ const initialState = {
   userOrders: [],
   deleteOrderVisibility: false,
   isLoading: false,
-  secondDiscount: 0
+  secondDiscount: 0,
+  invoice: []
 };
 
 const ordersReducer = (state = initialState, action) => {
@@ -31,7 +32,8 @@ const ordersReducer = (state = initialState, action) => {
     case FETCH_ORDER:
       return {
         ...state,
-        order: action.payload
+        order: action.payload.order,
+        invoice: action.payload.invoice
       }
     case FETCH_USER_ORDERS:
       return {
