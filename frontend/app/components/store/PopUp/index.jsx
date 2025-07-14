@@ -25,13 +25,15 @@ const PopupComponent = ({ data, type }) => {
             </div>
 
             {type === 'image' && item.imageUrls && (
-            <Link to={`/event/${item.slug}`}>
-              <img
-                src={ResolveImage(API_URL + item.imageUrls[0])}
-                alt={index}
-                className="popup-image"
-              />
-              </Link>
+              <div style={{ height: '15em' }}>
+                <Link to={`/event/${item.slug}`}>
+                  <img
+                    src={ResolveImage(API_URL + item.imageUrls[0])}
+                    alt={index}
+                    className="popup-image"
+                  />
+                  </Link>
+              </div>
             )}
 
             <div className="popup-text">

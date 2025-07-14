@@ -1,6 +1,6 @@
 .popup-overlay {
   position: fixed;
-  width: 100%;
+  width: 90%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.6);
   display: flex;
@@ -41,9 +41,9 @@
 }
 
 .popup-image {
-  width: 50%;
+  width: 100%;
   border-radius: 12px;
-  height: 10em;
+  height: 100%;
 }
 
 .popup-text {
