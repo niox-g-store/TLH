@@ -201,7 +201,7 @@ const Input = props => {
           <input
             className={className && `${className} input-text` || 'input-text'}
             autoComplete={autoComplete}
-            type={type}
+            type={"text"}
             onChange={e => {
               _onChange(e);
             }}
@@ -210,6 +210,7 @@ const Input = props => {
             value={value}
             placeholder={placeholder}
             checked={checked}
+            style={{ fontFamily: 'sans-serif' }}
           />
           {inlineElement}
           <div className="input-search-icon"><IoIosSearch size={30}/> </div>

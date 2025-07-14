@@ -564,6 +564,7 @@ export const checkout = (navigate, guest=null) => {
       }
 
       if (total === 0) {
+        dispatch(setCartLoading(true));
         const emptyOrder = await axios.post(`${API_URL}/order/add`, {
           cart: cartId,
           user: { email: userEmail, name: user_name, _id: userId},
