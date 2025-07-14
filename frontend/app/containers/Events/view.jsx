@@ -132,7 +132,7 @@ const EventViewer = (props) => {
               </FadeSlider>
             </div>
 
-            <div className='event-info'>
+            <div className='event-info w-100'>
               <h2 className='event-title text-wrap text-break w-100 overflow-hidden'>{event && event.name}</h2>
               <p className='event-location p-black'>
                 <span className='event-view-icon'><IoLocationOutline size={20} color='white'/></span>
@@ -157,7 +157,7 @@ const EventViewer = (props) => {
                 ? <div className='event-tickets'>
                   {event && event.tickets && event.tickets.length > 0
                     ? (
-                      <ul className='view-event-ticket view-event-ticket-lg'>
+                      <ul style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }} className='view-event-ticket view-event-ticket-lg'>
                         {event && event.tickets.map((ticket) => {
                           const isSelected = selectedTickets.includes(ticket._id);
                           if (!isSelected) {
@@ -315,7 +315,6 @@ const EventViewer = (props) => {
               <h5>About this event</h5>
               <p className='font-size-15 text-wrap text-break w-100 overflow-hidden event-description' dangerouslySetInnerHTML={{ __html: event.description }} />
 
-              <h3 style={{ margin: '0', fontSize: '30px' }}>Tickets</h3>
               {event && event.status !== 'Ended'
                 ? <div className='event-tickets'>
                   {event && event.tickets && event.tickets.length > 0
