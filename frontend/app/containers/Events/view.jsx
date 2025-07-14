@@ -175,6 +175,7 @@ const EventViewer = (props) => {
                                          discountPrice: ticket.discountPrice,
                                          ticketQuantity: ticket.quantity
                                 })}
+                                style={{ height: 'fit-content' }}
                               >
                                 {!ticket.discount && (
                                   <div className='d-flex flex-column w-100 text-start'>
