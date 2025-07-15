@@ -6,6 +6,8 @@ import ResolveImage from '../ResolveImage';
 import { formatReadableDate } from '../Card/functions';
 import VideoDevice from '../../Common/VideoDevice';
 import VideoOverlay from '../../Common/VideoOverlay';
+import { LuCalendarDays } from "react-icons/lu";
+import { FaRegEye } from "react-icons/fa";
 
 const GalleryViewer = (props) => {
   const { gallery } = props;
@@ -111,10 +113,15 @@ const GalleryViewer = (props) => {
         <div className="gallery-info">
           <h2 data-aos="fade-up" className="gallery-title">{gallery.name}</h2>
           {gallery.description && gallery.description.length > 0 && <p className='font-size-20 p-white' dangerouslySetInnerHTML={{ __html: gallery.description }}></p>}
-          <p className="gallery-date p-white">
-            Date: {formatReadableDate(gallery.date)}
+
+          <p className='gallery-date p-white'>
+            <span className='event-view-icon-' style={{ paddingLeft: '0' }}><LuCalendarDays size={20} color='white'/></span>
+            {formatReadableDate(gallery && gallery.date).day}
           </p>
-          <p data-aos="fade-right" className='gallery-views p-white'>Views: {gallery.views || 0}</p>
+          <p data-aos="fade-right" className='gallery-views p-white'>
+            <span className='event-view-icon-'> <FaRegEye size={20} color='white'/></span>
+            {gallery.views || 0}
+          </p>
         </div>
       </div>
 

@@ -302,7 +302,7 @@ const Input = props => {
           <input
             className={`${className && `${className} input-text` || 'input-text'} p-black`}
             autoComplete={autoComplete}
-            type={type}
+            type={type === 'date' ? 'datetime-local' : type}
             onChange={e => {
               _onChange(e);
             }}

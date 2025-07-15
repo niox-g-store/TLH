@@ -50,6 +50,11 @@ export const formatReadableDate = (rawDate) => {
       : day % 10 === 3 && day !== 13
       ? "rd"
       : "th";
+
   const options = { month: "long", year: "numeric" };
-  return `${day}${suffix} ${date.toLocaleDateString("en-US", options)}`;
+  const hour = String(date.getHours()).padStart(2, '0');
+  const minute = String(date.getMinutes()).padStart(2, '0');
+
+  return { day: `${day}${suffix} ${date.toLocaleDateString("en-US", options)}`, time: `${hour}:${minute}`};
 };
+

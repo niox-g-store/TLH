@@ -17,7 +17,7 @@ import { IoLocationOutline } from "react-icons/io5";
 import { LuCalendarDays } from "react-icons/lu";
 import { CgProfile } from "react-icons/cg";
 import { AiOutlineTags } from "react-icons/ai";
-
+import { RxLapTimer } from "react-icons/rx";
 
 const EventViewer = (props) => {
   const {
@@ -141,9 +141,13 @@ const EventViewer = (props) => {
               <p className='event-location p-black'>
                 <span className='event-view-icon'><AiOutlineTags size={20} color='white'/></span>
                 {event && event.category}</p>
-              <p className='event-date p-black'>
+              <p className='event-date p-black mb-0'>
                 <span className='event-view-icon'><LuCalendarDays size={20} color='white'/></span>
-                {formatReadableDate(event && event.startDate)} <b className='p-black'>to</b> {formatReadableDate(event && event.endDate)}
+                {formatReadableDate(event && event.startDate).day}
+              </p>
+              <p className='event-date p-black'>
+                <span className='event-view-icon'><RxLapTimer size={20} color='white'/></span>
+                {formatReadableDate(event && event.startDate).time}
               </p>
               <p className='event-host'>
                 <span className='event-view-icon'><CgProfile size={20} color='white'/></span>
@@ -304,9 +308,13 @@ const EventViewer = (props) => {
               <p className='event-location p-black'>
                 <span className='event-view-icon'><AiOutlineTags size={20} color='white'/></span>
                 {event && event.category}</p>
-              <p className='event-date p-black'>
+              <p className='event-date p-black mb-0'>
                 <span className='event-view-icon'><LuCalendarDays size={20} color='white'/></span>
-                {formatReadableDate(event && event.startDate)} <b className='p-black'>to</b> {formatReadableDate(event && event.endDate)}
+                {formatReadableDate(event && event.startDate).day}
+              </p>
+              <p className='event-date p-black'>
+                <span className='event-view-icon'><RxLapTimer size={20} color='white'/></span>
+                {formatReadableDate(event && event.startDate).time}
               </p>
               <p className='event-host'>
                 <span className='event-view-icon'><CgProfile size={20} color='white'/></span>
