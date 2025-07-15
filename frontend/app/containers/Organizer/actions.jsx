@@ -77,3 +77,16 @@ export const deleteOrganizer = (id, navigate) => async (dispatch) => {
     dispatch({ type: SET_LOADING, payload: false });
   }
 };
+export const unbanOrganizer = (id, navigate) => async (dispatch) => {
+  dispatch({ type: SET_LOADING, payload: true });
+  try {
+    await axios.put(`${API_URL}/organizer/unban/${id}`);
+    dispatch(showNotification('success', 'Organizer ban removed.'));
+    navigate(-1)
+  } catch (err) {
+    handleError(err, dispatch);
+  } finally {
+    dispatch({ type: SET_LOADING, payload: false });
+  }
+};
+

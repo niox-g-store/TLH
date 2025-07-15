@@ -92,11 +92,31 @@ router.delete('/:id', auth, role.check(ROLES.Admin), async (req, res) => {
     // Delete all related events or turn off all organizer events
     await Event.updateMany({ _id: { $in: organizer.event } }, { $set: { isActive: false } });
 
-    await Organizer.findByIdAndUpdate(req.params.id, { $set: { banned: true } });
+    await Organizer.findByIdAndUpdate(req.params.id, { $set: { banned: true, isActive: false } });
     //set organizer to banned
     await User.findOneAndUpdate({ organizer: req.params.id }, { $set: { banned: true } })
 
     return res.json({ message: 'Organizer has been banned and related events turned off successfully' });
+  } catch (error) {
+    res.status(400).json({ error: 'Failed to delete organizer' });
+  }
+});
+
+
+// unban organizer
+router.put('/unban/:id', auth, role.check(ROLES.Admin), async (req, res) => {
+  try {
+    const organizer = await Organizer.findById(req.params.id);
+    if (!organizer) return res.status(404).json({ error: 'Organizer not found' });
+
+    // Delete all related events or turn off all organizer events
+    await Event.updateMany({ _id: { $in: organizer.event } }, { $set: { isActive: true } });
+
+    await Organizer.findByIdAndUpdate(req.params.id, { $set: { banned: false, isActive: true } });
+    //set organizer to banned
+    await User.findOneAndUpdate({ organizer: req.params.id }, { $set: { banned: false } })
+
+    return res.json({ message: 'Organizer ban has been removed and related events turned on successfully' });
   } catch (error) {
     res.status(400).json({ error: 'Failed to delete organizer' });
   }

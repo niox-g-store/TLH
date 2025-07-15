@@ -143,14 +143,13 @@ router.post('/register', async (req, res) => {
     }
 
     const existingUser = await User.findOne({ email });
-
+    if (existingUser.banned) {
+      return res.status(400).json({ error: 'You cannot sign up at this time' })
+    }
     if (existingUser) {
       return res
         .status(400)
         .json({ error: 'That email address is already in use.' });
-    }
-    if (existingUser.banned) {
-      return res.status(400).json({ error: 'You cannot sign up at this time' })
     }
 
     const existingUserName = await User.findOne({ userName });

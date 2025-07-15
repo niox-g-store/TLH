@@ -16,7 +16,8 @@ const OrganizerViewer = (props) => {
   const {
     organizer, suspendOrganizer,
     resumeOrganizer, deleteOrganizer,
-    isLightMode, isLoading
+    isLightMode, isLoading,
+    unbanOrganizer
   } = props;
   const navigate = useNavigate();
   const id = organizer._id;
@@ -24,6 +25,7 @@ const OrganizerViewer = (props) => {
   const handleSuspend = () => suspendOrganizer(id);
   const handleResume = () => resumeOrganizer(id);
   const handleDelete = () => deleteOrganizer(id, navigate);
+  const handleUnBanned = () => unbanOrganizer(id, navigate);
 
   return (
     <div className='container-lg px-4 d-flex flex-column'>
@@ -39,10 +41,16 @@ const OrganizerViewer = (props) => {
           <CBadge color={organizer.isActive ? 'success' : 'danger'}>
             {organizer.isActive ? 'Active' : 'Suspended'}
           </CBadge>
+          <br />
+          <br />
+          <CBadge color={organizer.banned ? 'danger' : 'success'}>
+                  {organizer.banned ? 'Banned' : 'Not Banned'}
+          </CBadge>
           <div className='mt-3'>
             <CButton color='warning' className='me-2' onClick={handleSuspend} disabled={!organizer?.isActive}>Suspend</CButton>
             <CButton color='success' className='me-2' onClick={handleResume} disabled={organizer?.isActive}>Resume</CButton>
-            <CButton color='danger' onClick={handleDelete}>Delete</CButton>
+            <CButton className='me-2' color='danger' disabled={organizer?.banned} onClick={handleDelete}>Ban</CButton>
+            <CButton className='me-2' color='secondary' disabled={!organizer?.banned} onClick={handleUnBanned}>Remove ban</CButton>
           </div>
           <hr />
           <h5>Events Created:</h5>

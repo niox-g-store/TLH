@@ -64,6 +64,7 @@ const OrganizerList = (props) => {
                         <strong>Total Events:</strong> {org.eventCount || 0}<br />
                         <CBadge color={org.isActive ? 'success' : 'danger'}>
                         {org.isActive ? 'Active' : 'Suspended'}
+                        {org.banned && ' And Banned'}
                         </CBadge>
                       </CCardText>
                     </CCardBody>

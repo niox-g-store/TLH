@@ -19,11 +19,11 @@ const DisabledOrganizerAccount = (props) => {
       <h3 className='mb-3'>Hi, {user?.organizer?.companyName}</h3>
       <div
         className={`p-4 rounded-sm ${
-          isLightMode ? 'bg-light' : 'text-white'
+          isLightMode ? 'p-black' : 'text-white'
         }`}
       >
         <h5>Unfortunately it seems your account has been disabled.</h5>
-        <p className={`${isLightMode ? 'text-muted' : 'text-gray'} mb-1`}>
+        <p className={`${isLightMode ? 'p-black' : 'p-white'} mb-1`}>
           Please contact admin to request access again.
         </p>
         <div style={{ display: 'flex', gap: '2em', justifyContent: 'center' }} className='mt-2'>
