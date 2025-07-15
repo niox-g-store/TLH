@@ -26,6 +26,9 @@ header.scrolled {
     width: 100%;
     max-width: 100%;
   }
+  .logo {
+    margin-left: 2em;
+  }
 }
 .navigation {
   display: flex;

@@ -55,6 +55,7 @@ const UserSchema = new mongoose.Schema({
     default: ROLES.Member,
     enum: [ROLES.Admin, ROLES.Member, ROLES.Organizer]
   },
+  banned: { type: Boolean, default: false },
   resetPasswordToken: { type: String },
   resetPasswordExpires: { type: Date },
   createdAt: { type: Date, default: Date.now },

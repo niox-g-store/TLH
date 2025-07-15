@@ -64,6 +64,10 @@ export const login = () => {
     try {
       const response = await axios.post(`${API_URL}/auth/login`, user);
       const userid = response.data.user.id
+      if (response.data.user.banned) {
+        dispatch(showNotification('error', "Try again"));
+        return
+      }
 
       localStorage.setItem('token', response.data.token);
 

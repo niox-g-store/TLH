@@ -70,7 +70,7 @@ router.get('/fetch_slug/:slug', async(req, res) => {
         error: "event doesn't exist"
       })
     }
-    const event = await Event.findOne({slug})
+    const event = await Event.findOne({slug, isActive: true})
       .populate('tickets')
       .populate({
         path: 'user',

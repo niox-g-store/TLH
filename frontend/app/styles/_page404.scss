@@ -5,6 +5,7 @@
     }
     .hero-banner {
         height: 100vh;
+        padding-top: 15em;
         @include media-breakpoint-down(md) {
             padding-top: 10em;
         }

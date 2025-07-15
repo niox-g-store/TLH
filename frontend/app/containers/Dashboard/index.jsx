@@ -61,6 +61,9 @@ class Dashboard extends React.PureComponent {
         />
       )
     }
+    if (user?.banned || user?.organizer?.banned) {
+      return signOut();
+    }
 
     return (
       <div className='dashboard'>

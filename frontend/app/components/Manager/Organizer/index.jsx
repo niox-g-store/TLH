@@ -33,6 +33,7 @@ const OrganizerList = (props) => {
   return (
     <div className='container-lg px-4 d-flex flex-column mb-custom-5em'>
       <h2 className={`${isLightMode ? 'p-black' : 'p-white'}`}>Organizers</h2>
+      <p className={`${isLightMode ? 'p-black' : 'p-white'}`}>{organizers.length} Organizers</p>
       <hr className={`${isLightMode ? 'p-black' : 'p-white'}`} />
 
       <Input

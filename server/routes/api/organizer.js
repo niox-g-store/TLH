@@ -89,13 +89,14 @@ router.delete('/:id', auth, role.check(ROLES.Admin), async (req, res) => {
     const organizer = await Organizer.findById(req.params.id);
     if (!organizer) return res.status(404).json({ error: 'Organizer not found' });
 
-    // Delete all related events
-    await Event.deleteMany({ _id: { $in: organizer.event } });
+    // Delete all related events or turn off all organizer events
+    await Event.updateMany({ _id: { $in: organizer.event } }, { $set: { isActive: false } });
 
-    await Organizer.findByIdAndDelete(req.params.id);
-    await User.findOneAndDelete({ organizer: req.params.id })
+    await Organizer.findByIdAndUpdate(req.params.id, { $set: { banned: true } });
+    //set organizer to banned
+    await User.findOneAndUpdate({ organizer: req.params.id }, { $set: { banned: true } })
 
-    return res.json({ message: 'Organizer and related events deleted successfully' });
+    return res.json({ message: 'Organizer has been banned and related events turned off successfully' });
   } catch (error) {
     res.status(400).json({ error: 'Failed to delete organizer' });
   }

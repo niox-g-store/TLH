@@ -166,7 +166,7 @@ const ManagerEventHelper = (props) => {
                         <strong>End Date:</strong> {formatDate(event.endDate)}<br />
                         <strong>Venue:</strong> {event.location}<br />
                         <strong>Tickets Sold:</strong> {event.attendees || 0}<br />
-                        { event.user.organizer && <strong>Created By: {event.user.organizer.companyName}</strong> }
+                        { event?.user?.organizer && <strong>Created By: {event?.user?.organizer?.companyName}</strong> }
                       </CCardText>
                     </CCardBody>
                   </CCard>

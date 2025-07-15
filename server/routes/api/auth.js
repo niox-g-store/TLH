@@ -110,7 +110,8 @@ router.post('/login', async (req, res) => {
         name: user.name,
         companyName: user.companyName,
         email: user.email,
-        role: user.role
+        role: user.role,
+        banned: user.banned
       }
     });
   } catch (error) {
@@ -147,6 +148,9 @@ router.post('/register', async (req, res) => {
       return res
         .status(400)
         .json({ error: 'That email address is already in use.' });
+    }
+    if (existingUser.banned) {
+      return res.status(400).json({ error: 'You cannot sign up at this time' })
     }
 
     const existingUserName = await User.findOne({ userName });
@@ -200,7 +204,8 @@ router.post('/register', async (req, res) => {
         name: registeredUser.name,
         userName: registeredUser.userName,
         email: registeredUser.email,
-        role: registeredUser.role
+        role: registeredUser.role,
+        banned: registeredUser.banned
       }
     });
   } catch (error) {
@@ -240,11 +245,16 @@ router.post('/register/organizer', async (req, res) => {
     }
 
     const existingUser = await User.findOne({ email });
+    if (existingUser?.banned) {
+      return res.status(400).json({ error: 'You cannot sign up at this time' })
+    }
     if (existingUser) {
       return res
         .status(400)
         .json({ error: 'That email address is already in use.' });
     }
+
+
     
     const existingUserName = await User.findOne({ userName });
     if (existingUserName) {
@@ -313,7 +323,8 @@ router.post('/register/organizer', async (req, res) => {
         companyName: registeredUser.name,
         userName: registeredUser.userName,
         email: registeredUser.email,
-        role: registeredUser.role
+        role: registeredUser.role,
+        banned: registeredUser.banned
       }
     });
   } catch (error) {
@@ -336,6 +347,10 @@ router.post('/forgot', async (req, res) => {
     email = email.trim().toLowerCase();
 
     const existingUser = await User.findOne({ email });
+
+    if (existingUser.banned) {
+      return res.status(400).json({ error: 'You cannot make this request' })
+    }
 
     if (!existingUser) {
       return res
@@ -476,11 +491,15 @@ router.post('/register/google', async (req, res) => {
     // check if user email already exist
     const email = user.email.trim().toLowerCase()
     const existingEmail = await User.findOne({ email })
+    if (existingEmail.banned) {
+      return res.status(400).json({ error: 'You cannot sign up at this time' })
+    }    
     if (existingEmail) {
       return res.status(400).json({
         error: 'That email address is already in use.'
       })
     }
+
 
     let subscribed = false;
     /*if (isSubscribed) {
@@ -524,7 +543,8 @@ router.post('/register/google', async (req, res) => {
         name: registeredUser.name,
         userName: registeredUser.userName,
         email: registeredUser.email,
-        role: registeredUser.role
+        role: registeredUser.role,
+        banned: registeredUser.banned
       }
     });
   } catch (error) {
@@ -547,12 +567,16 @@ router.post('/google/signin', async (req, res) => {
     // check if user email already exist
     const email = user.email.trim().toLowerCase()
     const existingEmail = await User.findOne({ email })
-
+    if (existingEmail.banned) {
+      return res.status(400).json({ error: 'You cannot sign in at this time' })
+    }
     if (!existingEmail) {
       return res
         .status(400)
         .send({ error: 'No user found for this email address.' });
     }
+
+
 
     if (existingEmail && existingEmail.provider !== EMAIL_PROVIDER.Google) {
       return res.status(400).send({
@@ -584,7 +608,8 @@ router.post('/google/signin', async (req, res) => {
         name: user.name,
         companyName: user.companyName,
         email: user.email,
-        role: user.role
+        role: user.role,
+        banned: user.banned
       }
     });
   } catch (eror) {

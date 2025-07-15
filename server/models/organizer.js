@@ -11,6 +11,7 @@ const OrganizerSchema = new mongoose.Schema({
     lowercase: true,
     trim: true
   },
+  banned: { type: Boolean, default: false },
   phoneNumber: {
     type: String
   },

@@ -68,11 +68,11 @@ const ManagerGuestHelper = (props) => {
                 <CCardBody>
                   <CCardTitle>{guest.name}</CCardTitle>
                   <CCardText>
-                    <strong>Email:</strong> {guest.email}<br />
-                    <strong>Event:</strong> {guest.eventId.name}<br />
-                    <strong>Ticket:</strong> {guest.ticketId.type}<br />
+                    <strong>Email:</strong> {guest?.email || ""}<br />
+                    <strong>Event:</strong> {guest?.eventId?.name || ""}<br />
+                    <strong>Ticket:</strong> {guest?.ticketId?.type || ""}<br />
                     <strong>Checked In:</strong> {guest.checkedIn ? 'Yes' : 'No'}<br />
-                    <strong>Date:</strong> {formatDate(guest.createdAt)}
+                    <strong>Date:</strong> {formatDate(guest?.createdAt)}
                   </CCardText>
                 </CCardBody>
               </CCard>
