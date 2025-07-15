@@ -57,7 +57,7 @@ const Organizer = (props) => {
           <Route path='coupons/add' element={<AddCoupon {...props}/>} />
           <Route path='coupons/edit/:id' element={<EditCoupon {...props}/>} />
           <Route path='orders/my-orders' element={<AdminOrder {...props} />} />
-          <Route path='orders/:id' element={<ViewOrder {...props} />} />
+          <Route path='order/:id' element={<ViewOrder {...props} />} />
           <Route path='*' element={<Page404 />} />
         </Routes>
       </div>

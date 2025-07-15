@@ -9,3 +9,4 @@ export const ORGANIZER_COMPARE_PASSWORD = 'src/Signup/ORGANIZER_COMPARE_PASSWORD
 export const FETCH_ORGANIZERS = 'src/Organizer/FETCH_ORGANIZERS';
 export const FETCH_ORGANIZER_BY_ID = 'src/Organizer/FETCH_ORGANIZER_BY_ID';
 export const SET_LOADING = 'src/Organizer/SET_LOADING';
+export const RESET_ORGANIZER = 'src/Organizer/RESET_ORGANIZER';

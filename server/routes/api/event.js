@@ -8,6 +8,7 @@ const role = require('../../middleware/role');
 const { ROLES } = require('../../utils/constants');
 const Event = require('../../models/event');
 const Ticket = require('../../models/ticket');
+const Organizer = require('../../models/organizer');
 const { updateEventStatus } = require("../../utils/event");
 const { deleteFilesFromPath } = require("../../utils/deleteFiles");
 
@@ -184,8 +185,13 @@ router.post(
       });
 
       updateEventStatus(event);
-
       await event.save();
+      // check if organizer is sending request, append event id to their list of event
+      if (req.user.role === ROLES.Organizer) {
+        const organizer = await Organizer.findOne({ _id: req.user.organizer })
+        organizer.event.push(event._id)
+        await organizer.save()
+      }
 
       return res.status(200).json({
         success: true,

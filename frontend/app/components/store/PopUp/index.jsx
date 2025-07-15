@@ -25,10 +25,10 @@ const PopupComponent = ({ data, type }) => {
             </div>
 
             {type === 'image' && item.imageUrls && (
-              <div style={{ height: '11em' }}>
+              <div style={{ height: '13em', width: '100%' }}>
                 <Link to={`/event/${item.slug}`}>
-                  <img
-                    src={ResolveImage(API_URL + item.imageUrls[0])}
+                  <div
+                    style={{background: `url(${ResolveImage(API_URL + item.imageUrls[0])})`}}
                     alt={index}
                     className="popup-image"
                   />
@@ -66,7 +66,6 @@ const PopupComponent = ({ data, type }) => {
             <Link className='popover-link' to={`/event/${item.slug}`}>
               <button className="popup-cta">Get Tickets Now</button>
             </Link>
-            {index + 1 < data.length && <p style={{ marginTop: '1em', justifySelf: 'end' }}>Swipe to see more... </p>}
           </div>
         ))}
         </RowCarousel>

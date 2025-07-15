@@ -5,14 +5,21 @@ import { API_URL } from "../../constants";
 import {
   FETCH_ORGANIZERS,
   FETCH_ORGANIZER_BY_ID,
-  SET_LOADING
+  SET_LOADING,
+  RESET_ORGANIZER
 } from './constants';
+
+export const resetOrganizer = () => {
+  return {
+    type: RESET_ORGANIZER
+  }
+}
 
 export const fetchOrganizers = () => async (dispatch) => {
   dispatch({ type: SET_LOADING, payload: true });
   try {
     const res = await axios.get(`${API_URL}/organizer`);
-    dispatch({ type: FETCH_ORGANIZERS, payload: res.data });
+    dispatch({ type: FETCH_ORGANIZERS, payload: res.data.organizers });
   } catch (err) {
     handleError(err, dispatch);
   } finally {
@@ -24,7 +31,7 @@ export const fetchOrganizerById = (id) => async (dispatch) => {
   dispatch({ type: SET_LOADING, payload: true });
   try {
     const res = await axios.get(`${API_URL}/organizer/${id}`);
-    dispatch({ type: FETCH_ORGANIZER_BY_ID, payload: res.data });
+    dispatch({ type: FETCH_ORGANIZER_BY_ID, payload: res.data.organizer });
   } catch (err) {
     handleError(err, dispatch);
   } finally {
@@ -35,9 +42,9 @@ export const fetchOrganizerById = (id) => async (dispatch) => {
 export const suspendOrganizer = (id) => async (dispatch) => {
   dispatch({ type: SET_LOADING, payload: true });
   try {
-    await axios.patch(`${API_URL}/organizer/${id}/suspend`);
+    await axios.put(`${API_URL}/organizer/${id}/suspend`);
     dispatch(fetchOrganizerById(id));
-    dispatch(showNotification('Organizer suspended.'));
+    dispatch(showNotification('success', 'Organizer suspended.'));
   } catch (err) {
     handleError(err, dispatch);
   } finally {
@@ -48,9 +55,9 @@ export const suspendOrganizer = (id) => async (dispatch) => {
 export const resumeOrganizer = (id) => async (dispatch) => {
   dispatch({ type: SET_LOADING, payload: true });
   try {
-    await axios.patch(`${API_URL}/organizer/${id}/resume`);
+    await axios.put(`${API_URL}/organizer/${id}/resume`);
     dispatch(fetchOrganizerById(id));
-    dispatch(showNotification('Organizer resumed.'));
+    dispatch(showNotification('success', 'Organizer resumed.'));
   } catch (err) {
     handleError(err, dispatch);
   } finally {
@@ -58,12 +65,12 @@ export const resumeOrganizer = (id) => async (dispatch) => {
   }
 };
 
-export const deleteOrganizer = (id) => async (dispatch) => {
+export const deleteOrganizer = (id, navigate) => async (dispatch) => {
   dispatch({ type: SET_LOADING, payload: true });
   try {
     await axios.delete(`${API_URL}/organizer/${id}`);
-    dispatch(fetchOrganizers());
-    dispatch(showNotification('Organizer deleted.'));
+    dispatch(showNotification('success', 'Organizer deleted.'));
+    navigate(-1)
   } catch (err) {
     handleError(err, dispatch);
   } finally {

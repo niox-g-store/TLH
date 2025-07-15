@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   CRow,
   CCol,
   CCard,
+  CBadge,
   CCardBody,
   CCardTitle,
   CCardText,
@@ -15,14 +16,10 @@ import Input from '../../Common/HtmlTags/Input';
 import actions from '../../../actions';
 import LoadingIndicator from '../../store/LoadingIndicator';
 
-const OrganizerList = ({ organizers = [], isLoading, fetchOrganizers, isLightMode }) => {
+const OrganizerList = (props) => {
+  const { organizers = [], isLoading, isLightMode } = props;
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    fetchOrganizers();
-  }, [fetchOrganizers]);
 
   const filteredOrganizers = organizers.filter(o =>
     o.companyName?.toLowerCase().includes(search.toLowerCase()) ||
@@ -39,6 +36,7 @@ const OrganizerList = ({ organizers = [], isLoading, fetchOrganizers, isLightMod
       <hr className={`${isLightMode ? 'p-black' : 'p-white'}`} />
 
       <Input
+        type='search'
         placeholder='Search by name or email'
         value={search}
         onInputChange={(name, val) => {
@@ -47,30 +45,36 @@ const OrganizerList = ({ organizers = [], isLoading, fetchOrganizers, isLightMod
         }}
       />
 
-      {isLoading ? (
-        <LoadingIndicator />
-      ) : (
-        <CRow className='mt-4 gy-3'>
-          {currentItems.map((org, i) => (
-            <CCol md={6} key={org._id || i}>
-              <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'}`}>
-                <CCardBody>
-                  <CCardTitle className='fw-bold'>{org.companyName || 'N/A'}</CCardTitle>
-                  <CCardText>
-                    <strong>Email:</strong> {org.email}<br />
-                    <strong>Phone:</strong> {org.phoneNumber || 'N/A'}<br />
-                    <strong>Total Events:</strong> {org.event?.length || 0}
-                  </CCardText>
-                  <Link to={`/dashboard/organizer/${org._id}`} className='btn btn-sm btn-outline-primary'>View Organizer</Link>
-                </CCardBody>
-              </CCard>
-            </CCol>
-          ))}
-        </CRow>
-      )}
+      {isLoading
+        ? (
+          <LoadingIndicator />
+          )
+        : (
+          <CRow className='mt-4 gy-3'>
+            {currentItems.map((org, i) => (
+              <CCol md={6} key={org._id || i}>
+                <Link to={`/dashboard/organizer/${org._id}`}>
+                  <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'}`}>
+                    <CCardBody>
+                      <CCardTitle className='fw-bold'>{org.companyName || 'N/A'}</CCardTitle>
+                      <CCardText>
+                        <strong>Email:</strong> {org.email}<br />
+                        <strong>Phone:</strong> {org.phoneNumber || 'N/A'}<br />
+                        <strong>Total Events:</strong> {org.eventCount || 0}<br />
+                        <CBadge color={org.isActive ? 'success' : 'danger'}>
+                        {org.isActive ? 'Active' : 'Suspended'}
+                        </CBadge>
+                      </CCardText>
+                    </CCardBody>
+                  </CCard>
+                </Link>
+              </CCol>
+            ))}
+          </CRow>
+          )}
 
       {totalPages > 1 && (
-        <CPagination align="center" className='mt-4'>
+        <CPagination align='center' className='mt-4'>
           {[...Array(totalPages)].map((_, idx) => (
             <CPaginationItem
               key={idx}
@@ -86,10 +90,22 @@ const OrganizerList = ({ organizers = [], isLoading, fetchOrganizers, isLightMod
   );
 };
 
+class ManagerOrganizers extends React.PureComponent {
+  componentDidMount () {
+    this.props.fetchOrganizers();
+  }
+
+  render () {
+    return (
+      <OrganizerList {...this.props} />
+    );
+  }
+}
+
 const mapStateToProps = (state) => ({
   organizers: state.organizer.organizers,
   isLoading: state.organizer.loading,
-  isLightMode: state.dashboard.isLightMode,
+  isLightMode: state.dashboard.isLightMode
 });
 
-export default connect(mapStateToProps, actions)(OrganizerList);
+export default connect(mapStateToProps, actions)(ManagerOrganizers);

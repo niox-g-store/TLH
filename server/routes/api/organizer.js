@@ -3,6 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const Organizer = require('../../models/organizer');
+const User = require('../../models/user');
 const Event = require('../../models/event');
 const { ROLES } = require('../../utils/constants');
 const auth = require('../../middleware/auth');
@@ -11,77 +12,92 @@ const role = require('../../middleware/role');
 // GET all organizers with total event count
 router.get('/', auth, role.check(ROLES.Admin), async (req, res) => {
   try {
-    const organizers = await Organizer.find().select('-__v');
-    const result = await Promise.all(organizers.map(async (org) => {
-      const eventCount = await Event.countDocuments({ organizer: org._id });
+    const organizersFetch = await Organizer.find().select('-__v');
+    const organizers = await Promise.all(organizersFetch.map(async (org) => {
+      const organizerUserId = await User.findOne({ organizer: org._id }).select('_id');
+      let eventCount = 0
+      if (organizerUserId) {
+        eventCount = await Event.countDocuments({ user: organizerUserId?._id });
+      }
       return {
         ...org._doc,
         eventCount
       };
     }));
-    res.json({ organizers: result });
+    return res.json({ organizers });
   } catch (error) {
-    console.error('Error fetching organizers:', error);
-    res.status(500).json({ error: 'Failed to fetch organizers' });
+    res.status(400).json({ error: 'Failed to fetch organizers' });
   }
 });
 
 // GET a single organizer by ID, with populated event slugs
 router.get('/:id', auth, role.check(ROLES.Admin), async (req, res) => {
   try {
-    const organizer = await Organizer.findById(req.params.id).populate({
-      path: 'event',
-      select: 'slug name'
-    });
+    const organizer = await Organizer.findById(req.params.id).populate('event');
     if (!organizer) return res.status(404).json({ error: 'Organizer not found' });
-    res.json({ organizer });
+    return res.json({ organizer });
   } catch (error) {
-    console.error('Error fetching organizer details:', error);
-    res.status(500).json({ error: 'Failed to fetch organizer' });
+    res.status(400).json({ error: 'Failed to fetch organizer' });
   }
 });
 
 // PUT suspend organizer
 router.put('/:id/suspend', auth, role.check(ROLES.Admin), async (req, res) => {
   try {
-    const updated = await Organizer.findByIdAndUpdate(
-      req.params.id,
-      { isActive: false },
-      { new: true }
+    const organizer = await Organizer.findById(req.params.id).populate('event');
+    if (!organizer) return res.status(404).json({ error: 'Organizer not found' });
+
+    organizer.isActive = false;
+    await organizer.save();
+
+    // Disable all associated events
+    await Event.updateMany(
+      { _id: { $in: organizer.event } },
+      { $set: { isActive: false } }
     );
-    if (!updated) return res.status(404).json({ error: 'Organizer not found' });
-    res.json({ organizer: updated });
+
+    return res.json({ organizer });
   } catch (error) {
-    console.error('Error suspending organizer:', error);
-    res.status(500).json({ error: 'Failed to suspend organizer' });
+    res.status(400).json({ error: 'Failed to suspend organizer' });
   }
 });
 
 // PUT resume organizer
 router.put('/:id/resume', auth, role.check(ROLES.Admin), async (req, res) => {
   try {
-    const updated = await Organizer.findByIdAndUpdate(
-      req.params.id,
-      { isActive: true },
-      { new: true }
+    const organizer = await Organizer.findById(req.params.id).populate('event');
+    if (!organizer) return res.status(404).json({ error: 'Organizer not found' });
+
+    organizer.isActive = true;
+    await organizer.save();
+
+    // Re-activate all associated events
+    await Event.updateMany(
+      { _id: { $in: organizer.event } },
+      { $set: { isActive: true } }
     );
-    if (!updated) return res.status(404).json({ error: 'Organizer not found' });
-    res.json({ organizer: updated });
+
+    return res.json({ organizer });
   } catch (error) {
-    console.error('Error resuming organizer:', error);
-    res.status(500).json({ error: 'Failed to resume organizer' });
+    res.status(400).json({ error: 'Failed to resume organizer' });
   }
 });
 
 // DELETE organizer
 router.delete('/:id', auth, role.check(ROLES.Admin), async (req, res) => {
   try {
-    const deleted = await Organizer.findByIdAndDelete(req.params.id);
-    if (!deleted) return res.status(404).json({ error: 'Organizer not found' });
-    res.json({ message: 'Organizer deleted successfully' });
+    const organizer = await Organizer.findById(req.params.id);
+    if (!organizer) return res.status(404).json({ error: 'Organizer not found' });
+
+    // Delete all related events
+    await Event.deleteMany({ _id: { $in: organizer.event } });
+
+    await Organizer.findByIdAndDelete(req.params.id);
+    await User.findOneAndDelete({ organizer: req.params.id })
+
+    return res.json({ message: 'Organizer and related events deleted successfully' });
   } catch (error) {
-    console.error('Error deleting organizer:', error);
-    res.status(500).json({ error: 'Failed to delete organizer' });
+    res.status(400).json({ error: 'Failed to delete organizer' });
   }
 });
 

@@ -22,7 +22,7 @@ header.scrolled {
 @media (min-width: 1024px) {
   header .container {
     padding: 0 !important;
-    margin: 0em 0em 0em 2em;
+    margin: 0em 0em 0em 0em;
     width: 100%;
     max-width: 100%;
   }
@@ -239,6 +239,9 @@ header.scrolled {
 }
 
 @media (max-width: 768px) {
+  header .container {
+    padding: 20px;
+  }
   .lblcheck {
     display: inline;
   }

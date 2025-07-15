@@ -12,6 +12,7 @@ const media = require('./media');
 const cart = require('./cart');
 const guest = require('./guest');
 const order = require('./order');
+const organizer = require('./organizer');
 //const newsletter = require('./newsletter')
 
 // for static file uploads
@@ -34,5 +35,6 @@ router.use('/media', media);
 router.use('/cart', cart);
 router.use('/guest', guest);
 router.use('/order', order);
+router.use('/organizer', organizer);
 
 module.exports = router;

@@ -17,7 +17,7 @@
         border: none;
         cursor: pointer;
         padding: 10px;
-        z-index: 100;
+        z-index: 90000000;
         width: 24px !important;
         height: 24px !important;
         border-radius: 50%;
@@ -53,12 +53,14 @@
       overflow-y: auto;
       scroll-behavior: smooth;
       white-space: nowrap;
-      padding: 0 4rem 0em 2rem;
       scrollbar-width: none; // Hide scrollbar for Firefox
       -ms-overflow-style: none; // Hide scrollbar for IE/Edge
+      gap: 0em;
 
+      
+      @include media-breakpoint-down(md) {
+      }
       @include media-breakpoint-down(sm) {
-        padding: 0;
       }
     }
   

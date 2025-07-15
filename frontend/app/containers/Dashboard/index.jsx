@@ -53,7 +53,14 @@ class Dashboard extends React.PureComponent {
 
       accountEditFormErrors
     } = this.props;
-    // if (isDisabledOrganizerAccount(user)) { return <DisabledOrganizerAccount user={user} />; }
+    if (isDisabledOrganizerAccount(user)) {
+      return (
+        <DisabledOrganizerAccount signOut={signOut}
+                                  isLightMode={isLightMode}
+                                  user={user}
+        />
+      )
+    }
 
     return (
       <div className='dashboard'>

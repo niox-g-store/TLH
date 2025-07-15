@@ -71,3 +71,18 @@
   height: 31vh;
   width: 35vw;
 }
+
+.admin-view-organizer {
+  padding: 1em;
+  @include media-breakpoint-down(md) {
+    flex-direction: column;
+    align-items: center;
+
+    img {
+      width: 100% !important;
+    }
+    .card-body {
+      align-self: baseline;
+    }
+  }
+}

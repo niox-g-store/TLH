@@ -1,17 +1,23 @@
 import {
   FETCH_ORGANIZERS,
   FETCH_ORGANIZER_BY_ID,
-  SET_LOADING
+  SET_LOADING,
+  RESET_ORGANIZER
 } from './constants';
 
 const initialState = {
   organizers: [],
-  selectedOrganizer: null,
+  selectedOrganizer: {},
   loading: false
 };
 
 export default function organizerReducer(state = initialState, action) {
   switch (action.type) {
+    case RESET_ORGANIZER:
+      return {
+        ...state,
+        selectedOrganizer: {}
+      }
     case SET_LOADING:
         return {
             ...state,
