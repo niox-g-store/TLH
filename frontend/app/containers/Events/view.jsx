@@ -136,18 +136,18 @@ const EventViewer = (props) => {
               <h2 className='event-title text-wrap text-break w-100 overflow-hidden'>{event && event.name}</h2>
               <p className='event-location p-black'>
                 <span className='event-view-icon'><IoLocationOutline size={20} color='white'/></span>
-                Location: {event && event.location}
+                {event && event.location}
               </p>
               <p className='event-location p-black'>
                 <span className='event-view-icon'><AiOutlineTags size={20} color='white'/></span>
-                Category: {event && event.category}</p>
+                {event && event.category}</p>
               <p className='event-date p-black'>
                 <span className='event-view-icon'><LuCalendarDays size={20} color='white'/></span>
-                From {formatReadableDate(event && event.startDate)} <b className='p-black'>to</b> {formatReadableDate(event && event.endDate)}
+                {formatReadableDate(event && event.startDate)} <b className='p-black'>to</b> {formatReadableDate(event && event.endDate)}
               </p>
               <p className='event-host'>
                 <span className='event-view-icon'><CgProfile size={20} color='white'/></span>
-                Your host: {event && event.user && event.user.organizer && event.user.organizer.companyName || 'The link hangouts'}
+                {event && event.user && event.user.organizer && event.user.organizer.companyName || 'The link hangouts'}
               </p>
 
               <h5>About this event</h5>
@@ -299,18 +299,18 @@ const EventViewer = (props) => {
               <h2 className='event-title text-wrap text-break w-100 overflow-hidden'>{event && event.name}</h2>
               <p className='event-location p-black'>
                 <span className='event-view-icon'><IoLocationOutline size={20} color='white'/></span>
-                Location: {event && event.location}
+                {event && event.location}
               </p>              
               <p className='event-location p-black'>
                 <span className='event-view-icon'><AiOutlineTags size={20} color='white'/></span>
-                Category: {event && event.category}</p>
+                {event && event.category}</p>
               <p className='event-date p-black'>
                 <span className='event-view-icon'><LuCalendarDays size={20} color='white'/></span>
-                From {formatReadableDate(event && event.startDate)} <b className='p-black'>to</b> {formatReadableDate(event && event.endDate)}
+                {formatReadableDate(event && event.startDate)} <b className='p-black'>to</b> {formatReadableDate(event && event.endDate)}
               </p>
               <p className='event-host'>
                 <span className='event-view-icon'><CgProfile size={20} color='white'/></span>
-                Your host: {event && event.user && event.user.organizer && event.user.organizer.companyName || 'The link hangouts'}
+                {event && event.user && event.user.organizer && event.user.organizer.companyName || 'The link hangouts'}
               </p>
               <hr />
               <h5>About this event</h5>

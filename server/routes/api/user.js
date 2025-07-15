@@ -8,6 +8,16 @@ const auth = require('../../middleware/auth');
 const role = require('../../middleware/role');
 const { ROLES } = require('../../utils/constants');
 
+
+router.get('/non-organizers', auth, role.check(ROLES.Admin), async (req, res) => {
+  try {
+    const users = await User.find({ organizer: null }).select('-password -resetPasswordToken -resetPasswordExpires');
+    return res.status(200).json({ users });
+  } catch (error) {
+    return res.status(400).json({ error: 'Failed to fetch users' });
+  }
+});
+
 // search users api
 router.get('/search', auth, role.check(ROLES.Admin), async (req, res) => {
   try {

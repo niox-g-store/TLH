@@ -48,12 +48,12 @@ const Card = ({ event, type = "event" }) => {
         <h3 style={{ margin: '.5em .5em' }} className="card-title">{event.name}</h3>
         <p className='event-location p-black'>
           <span className='event-view-icon-'><IoLocationOutline size={20} color='#9172EC'/></span>
-          Location: {event && event.location}
+          {event && event.location}
         </p>
 
         <p className='event-date p-black'>
           <span className='event-view-icon-'><LuCalendarDays size={20} color='#9172EC'/></span>
-          Date: {formatReadableDate(event && event.startDate)}
+          {formatReadableDate(event && event.startDate)}
         </p>
       </div>
       </div>

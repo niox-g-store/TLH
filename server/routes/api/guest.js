@@ -2,6 +2,18 @@ const express = require('express');
 const router = express.Router();
 const Guest = require('../../models/guest');
 const auth = require('../../middleware/auth');
+const role = require('../../middleware/role');
+const { ROLES } = require('../../utils/constants');
+
+router.get('', auth, role.check(ROLES.Admin), async (req, res) => {
+  try {
+    const guests = await Guest.find().populate('eventId').populate('ticketId');
+    return res.status(200).json({ guests });
+  } catch (error) {
+    return res.status(400).json({ error: 'Failed to fetch guests' });
+  }
+});
+
 
 // Create a new guest profile
 router.post('/add', async (req, res) => {

@@ -25,7 +25,7 @@ const PopupComponent = ({ data, type }) => {
             </div>
 
             {type === 'image' && item.imageUrls && (
-              <div style={{ height: '15em' }}>
+              <div style={{ height: '11em' }}>
                 <Link to={`/event/${item.slug}`}>
                   <img
                     src={ResolveImage(API_URL + item.imageUrls[0])}

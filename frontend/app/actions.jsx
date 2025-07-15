@@ -14,6 +14,9 @@ import * as gallery from '../app/containers/Gallery/actions';
 import * as media from '../app/containers/Media/actions';
 import * as cart from '../app/containers/Cart/actions';
 import * as order from '../app/containers/Order/actions';
+import * as user from '../app/containers/User/actions';
+import * as guest from '../app/containers/Guest/actions';
+import * as organizer from '../app/containers/Organizer/actions';
 
 export default function mapDispatchToProps (dispatch) {
   return bindActionCreators(
@@ -32,6 +35,9 @@ export default function mapDispatchToProps (dispatch) {
       ...media,
       ...cart,
       ...order,
+      ...user,
+      ...guest,
+      ...organizer,
     },
     dispatch
   );

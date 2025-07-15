@@ -42,6 +42,10 @@ import AddMedia from '../../components/Manager/Media/Add';
 import AdminOrder from '../../components/Manager/Orders/AdminOrders';
 import ViewOrder from '../../components/Manager/Orders/View';
 
+import ManagerUsers from '../../components/Manager/User';
+
+import ManagerGuests from '../../components/Manager/Guest';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@coreui/coreui/dist/css/coreui.min.css';
 
@@ -85,9 +89,9 @@ const Admin = (props) => {
           <Route path='orders/:id' element={<ViewOrder {...props} />} />
           <Route path='orders/my-orders' element={<AdminOrder {...props} />} />
 
-          {/*<Route path='users' element={<AdminOrder {...props} />} />*/}
+          <Route path='users' element={<ManagerUsers {...props} />} />
           {/*<Route path='organizers' element={<AdminOrder {...props} />} />*/}
-          {/*<Route path='guests' element={<AdminOrder {...props} />} />*/}
+          <Route path='guests' element={<ManagerGuests {...props} />} />
           
           <Route path='*' element={<Page404 />} />
         </Routes>

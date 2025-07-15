@@ -16,8 +16,9 @@
         @include media-breakpoint-up(md) {
             width: 50%;
             height: 100%;
-            margin: 0;
+            margin-left: 0px;
             position: relative;
+            margin-left: 2em;
         }
         width: 100%;
     }

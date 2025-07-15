@@ -39,17 +39,17 @@ const Footer = () => {
                 <ul className="d-flex flex-column" style={{ gap: '.25em' }}>
                   <li>
                     <a className="p-white" target="_blank" href="https://chat.whatsapp.com/BITMxQSwpFT5x8zjX0v6z2">
-                    <MdOutlineWhatsapp size={30}/>
+                    <MdOutlineWhatsapp size={20}/> Whatsapp
                     </a>
                   </li>
                   <li>
                     <a className="p-white" target="_blank" href="https://www.tiktok.com/@linkhangouts?_t=ZN-8xRsHnS1ygY&_r=1">
-                    <AiOutlineTikTok size={30} />
+                    <AiOutlineTikTok size={20} /> Tiktok
                     </a>
                   </li>
                   <li>
                     <a className="p-white" target="_blank" href="https://www.instagram.com/thelinkhangouts?igsh=MThybGJsMDA3bW50ZA%3D%3D&utm_source=qr">
-                    <AiOutlineInstagram size={30} />
+                    <AiOutlineInstagram size={20} /> Instagram
                     </a>
                   </li>
                 </ul>
@@ -59,12 +59,12 @@ const Footer = () => {
                 <ul className="d-flex flex-column" style={{ gap: '.25em' }}>
                   <li>
                     <a className="p-white" href="mailto:contact@thelinkhangout.com">
-                      <MdOutlineMailOutline size={30} />
+                      <MdOutlineMailOutline size={20} /> Email
                     </a>
                   </li>
                   <li>
                     <a className="p-white" target="_blank" href="https://wa.me/message/PIGYWR7NTGHKK1">
-                    <MdOutlineWhatsapp size={30}/>
+                    <MdOutlineWhatsapp size={20}/> Whatsapp
                     </a>
                   </li>
                 </ul>
