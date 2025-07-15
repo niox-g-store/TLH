@@ -330,6 +330,7 @@ export const addToCart = (item) => {
       const { authenticated } = getState().authentication;
       
       const { items } = getState().cart;
+      const user = getState().account.user || {}
       
       // Check if user is guest and already has an item in cart
       if (!authenticated && items.length > 0) {
@@ -364,7 +365,7 @@ export const addToCart = (item) => {
       if (cartId) {
         response = await axios.put(`${API_URL}/cart/${cartId}/add`, { item: cartItem });
       } else {
-        response = await axios.post(`${API_URL}/cart/add`, { item: cartItem });
+        response = await axios.post(`${API_URL}/cart/add`, { item: cartItem, user });
         if (response.data.cartId) {
           dispatch(setCartId(response.data.cartId));
         }
@@ -563,7 +564,7 @@ export const checkout = (navigate, guest=null) => {
         });
       }
 
-      if (total === 0) {
+      if (total === 0) { // free ticket
         dispatch(setCartLoading(true));
         const emptyOrder = await axios.post(`${API_URL}/order/add`, {
           cart: cartId,
@@ -579,7 +580,8 @@ export const checkout = (navigate, guest=null) => {
         if (emptyOrder.status === 200) {
             const response = await axios.put(`${API_URL}/order/edit/order`, {
               orderId: emptyOrder.data.order._id,
-              status: true
+              status: true,
+              guest: email && name && _id ? { email, name, _id } : null,
             });
             if (response && response.status === 200) {
               // free ticket add order, mark order as paid, send user to success page

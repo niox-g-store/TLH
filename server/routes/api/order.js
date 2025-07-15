@@ -16,6 +16,7 @@ const { customAlphabet } = require('nanoid');
 const QRCode = require('qrcode');
 const keys = require('../../config/keys');
 const { generateInvoice } = require('../../utils/invoiceService');
+const cart = require('../../models/cart');
 
 const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', 8);
 
@@ -200,7 +201,8 @@ router.post('/add', async (req, res) => {
 
 router.put('/edit/order/', async (req, res) => {
   try {
-    const id = req.body.orderId;
+    const id = req.body.orderId || null;
+    const guest = req.body.guest;
     let update, status, updateOrder,
         payStackReference, paymentMethod, payStackId,
         verifyPayment, paymentStatus, paymentFees;
@@ -234,22 +236,35 @@ router.put('/edit/order/', async (req, res) => {
     }
 
     if (id) {
-      updateOrder = await Order.findOneAndUpdate(
-            { _id: id },
-            update,
-      )
+      updateOrder = await Order.findOneAndUpdate({ _id: id }, update)
     } else {
-      updateOrder = await Order.findOneAndUpdate(
-            { payStackId: payStackId },
-            update,
-      )
+      updateOrder = await Order.findOneAndUpdate({ payStackId: payStackId }, update)
     }
   
     const cartDoc = await Cart.findById(updateOrder.cart)
       .populate('tickets.eventId')
-      .populate('tickets.ticketId');
-
+      .populate('tickets.ticketId')
     if (status) {
+      // add user to registered attendees or unregistered attendees
+      const cartEvents = cartDoc.tickets.map(e => e.eventId)
+      let quantity = 0;
+      for (const item of cartDoc.tickets) { quantity += item.quantity }
+
+      if (cartDoc.user) { // add to registered attendees
+        for (const item of cartEvents) {
+          const eve = await Event.findById(item._id)
+          eve.attendees += quantity
+          eve.registeredAttendees.push(cartDoc.user)
+          await eve.save()
+        }
+      } else {
+        for (const item of cartEvents) {
+          const eve = await Event.findById(item._id)
+          eve.attendees += quantity
+          eve.unregisteredAttendees.push(guest._id)
+          await eve.save()
+        }
+      }
       // assign qr code to the ticket
       const qrAssigner = await assignQrCode(updateOrder, cartDoc);
       for (items of qrAssigner) {

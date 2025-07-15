@@ -6,7 +6,7 @@ const auth = require('../../middleware/auth');
 // Create a new cart
 router.post('/add', async (req, res) => {
   try {
-    const { item } = req.body;
+    const { item, user = null } = req.body;
     
     if (!item) {
       return res.status(400).json({ error: 'No items provided' });
@@ -15,7 +15,7 @@ router.post('/add', async (req, res) => {
     // Create a new cart with the item
     const cart = new Cart({
       tickets: [item],
-      user: req.user ? req.user._id : null
+      user: user ? user._id : null
     });
     
     await cart.save();

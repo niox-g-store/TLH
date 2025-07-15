@@ -64,6 +64,7 @@ export const payStackHelper = async (props, dispatch) => {
             const response = await axios.put(`${API_URL}/order/edit/order`, {
               payStackId: globalId,
               paystackReference: reference,
+              guest
             });
             resolve(response);
           }

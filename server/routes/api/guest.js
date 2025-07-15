@@ -36,7 +36,7 @@ router.post('/add', async (req, res) => {
         eventId,
         ticketId
     })
-     
+
     await guest.save();
     
     return res.status(200).json({
