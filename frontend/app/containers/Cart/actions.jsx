@@ -579,7 +579,7 @@ export const checkout = (navigate, guest=null) => {
         });
         if (emptyOrder.status === 200) {
             const response = await axios.put(`${API_URL}/order/edit/order`, {
-              orderId: emptyOrder.data.order._id,
+              orderId: emptyOrder.data.orderId,
               status: true,
               guest: email && name && _id ? { email, name, _id } : null,
             });
