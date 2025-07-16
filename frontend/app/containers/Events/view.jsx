@@ -16,8 +16,15 @@ import Cart from '../Cart';
 import { IoLocationOutline } from "react-icons/io5";
 import { LuCalendarDays } from "react-icons/lu";
 import { CgProfile } from "react-icons/cg";
-import { AiOutlineTags } from "react-icons/ai";
 import { RxLapTimer } from "react-icons/rx";
+import { AiOutlineTags } from "react-icons/ai";
+import { MdEmail } from "react-icons/md";
+import { CModal, CModalBody, CModalHeader, CButton } from '@coreui/react';
+import { FaFacebook } from "react-icons/fa";
+import { AiFillTikTok } from "react-icons/ai";
+import { FaSquareInstagram } from "react-icons/fa6";
+import { MdPhone } from "react-icons/md";
+import MapEmbed from '../../components/store/MapEmbed';
 
 const EventViewer = (props) => {
   const {
@@ -31,6 +38,7 @@ const EventViewer = (props) => {
   // --- ALL HOOKS MUST BE DECLARED HERE, AT THE TOP LEVEL ---
   const videoRefs = useRef([]);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  const [showOrganizerModal, setShowOrganizerModal] = useState(false);
 
   // Helper to determine if the URL is a video
   const isVideo = (url) => {
@@ -149,14 +157,51 @@ const EventViewer = (props) => {
                 <span className='event-view-icon'><RxLapTimer size={20} color='white'/></span>
                 {formatReadableDate(event && event.startDate).time}
               </p>
-              <p className='event-host'>
-                <span className='event-view-icon'><CgProfile size={20} color='white'/></span>
-                {event && event.user && event.user.organizer && event.user.organizer.companyName || 'The link hangouts'}
-              </p>
 
-              <h5>About this event</h5>
+        <div style={{ cursor: 'pointer' }} className='host-des' onClick={() => setShowOrganizerModal(true)}>
+          <p>your host</p>
+          <img src={ResolveImage(API_URL + event?.user?.imageUrl, 'profile')} style={{ borderRadius: '50%', width: '6%', height: '3em' }} />
+          &nbsp; &nbsp; &nbsp; <span className='p-purple'>{event?.user?.companyName}</span>
+        </div>
+
+        {/* Modal with Organizer Details */}
+        <CModal visible={showOrganizerModal} onClose={() => setShowOrganizerModal(false)} alignment="center">
+          <CModalHeader>
+            <h5>Organizer Details</h5>
+          </CModalHeader>
+          <CModalBody style={{ background: 'white' }}>
+            <div className='text-center'>
+              <img src={ResolveImage(API_URL + event?.user?.imageUrl)} alt='Organizer' style={{ width: '100px', height: '100px', borderRadius: '10px' }} />
+              <p className='mt-2'><CgProfile /> {event?.user?.companyName}</p>
+              {event?.user?.contactEmail?.length > 3 && (
+                <p><MdEmail /> {event.user.contactEmail}</p>
+              )}
+              {event?.user?.phoneNumber?.length > 3 && (
+                <p><MdPhone /> {event.user.phoneNumber}</p>
+              )}
+              <div className='d-flex g-2' style={{ width: 'fit-content', gap: '2em', justifySelf: 'center' }}>
+              {event?.user?.instagram?.length > 3 && (
+                <p><a href={event.user.instagram}> <FaSquareInstagram size={30}/> </a></p>
+              )}
+              {event?.user?.facebook?.length > 3 && (
+                <p><a href={event.user.facebook}><FaFacebook size={30}/></a></p>
+              )}
+              {event?.user?.tiktok?.length > 3 && (
+                <p><a href={event.user.tiktok}><AiFillTikTok size={32}/></a></p>
+              )}
+              </div>
+              {event?.user?.bio?.length > 3 && (
+                <>
+                <p>About this profile</p>
+                <p style={{ fontSize: '13px' }}>{event.user.bio}</p>
+                </>
+              )}
+            </div>
+          </CModalBody>
+        </CModal>
+              <h3 style={{ fontSize: '23px' }}>About this event</h3>
               <p className='font-size-15 text-wrap text-break w-100 overflow-hidden event-description' dangerouslySetInnerHTML={{ __html: event.description }} />
-
+              <h3 style={{ fontSize: '23px' }}>Tickets</h3>
               {event && event.status !== 'Ended'
                 ? <div className='event-tickets'>
                   {event && event.tickets && event.tickets.length > 0
@@ -239,6 +284,7 @@ const EventViewer = (props) => {
                       )}
                   </div>
                 : <p className='text-center font-size-20 p-gray'>Sold out</p>}
+                <MapEmbed location={event.location}/>
             </div>
           </div>
 
@@ -316,14 +362,51 @@ const EventViewer = (props) => {
                 <span className='event-view-icon'><RxLapTimer size={20} color='white'/></span>
                 {formatReadableDate(event && event.startDate).time}
               </p>
-              <p className='event-host'>
-                <span className='event-view-icon'><CgProfile size={20} color='white'/></span>
-                {event && event.user && event.user.organizer && event.user.organizer.companyName || 'The link hangouts'}
-              </p>
-              <hr />
-              <h5>About this event</h5>
-              <p className='font-size-15 text-wrap text-break w-100 overflow-hidden event-description' dangerouslySetInnerHTML={{ __html: event.description }} />
+        <div style={{ cursor: 'pointer' }} className='host-des' onClick={() => setShowOrganizerModal(true)}>
+          <p>your host</p>
+          <img src={ResolveImage(API_URL + event?.user?.imageUrl, 'profile')} style={{ borderRadius: '50%', width: '12%', height: '3em' }} />
+          &nbsp; &nbsp; &nbsp; <span className='p-purple'>{event?.user?.companyName}</span>
+        </div>
 
+        {/* Modal with Organizer Details */}
+        <CModal visible={showOrganizerModal} onClose={() => setShowOrganizerModal(false)} alignment="center">
+          <CModalHeader>
+            <h5>Organizer Details</h5>
+          </CModalHeader>
+          <CModalBody style={{ background: 'white' }}>
+            <div className='text-center'>
+              <img src={ResolveImage(API_URL + event?.user?.imageUrl)} alt='Organizer' style={{ width: '100px', height: '100px', borderRadius: '10px' }} />
+              <p className='mt-2'><CgProfile /> {event?.user?.companyName}</p>
+              {event?.user?.contactEmail?.length > 3 && (
+                <p><MdEmail /> {event.user.contactEmail}</p>
+              )}
+              {event?.user?.phoneNumber?.length > 3 && (
+                <p><MdPhone /> {event.user.phoneNumber}</p>
+              )}
+              <div className='d-flex g-2' style={{ width: 'fit-content', gap: '2em', justifySelf: 'center' }}>
+              {event?.user?.instagram?.length > 3 && (
+                <p><a href={event.user.instagram}> <FaSquareInstagram size={30}/> </a></p>
+              )}
+              {event?.user?.facebook?.length > 3 && (
+                <p><a href={event.user.facebook}><FaFacebook size={30}/></a></p>
+              )}
+              {event?.user?.tiktok?.length > 3 && (
+                <p><a href={event.user.tiktok}><AiFillTikTok size={32}/></a></p>
+              )}
+              </div>
+              {event?.user?.bio?.length > 3 && (
+                <>
+                <p>About this profile</p>
+                <p style={{ fontSize: '13px' }}>{event.user.bio}</p>
+                </>
+              )}
+            </div>
+          </CModalBody>
+        </CModal>
+              <hr />
+              <h3 style={{ fontSize: '23px' }}>About this event</h3>
+              <p className='font-size-15 text-wrap text-break w-100 overflow-hidden event-description' dangerouslySetInnerHTML={{ __html: event.description }} />
+              <h3 style={{ fontSize: '23px' }}>Tickets</h3>
               {event && event.status !== 'Ended'
                 ? <div className='event-tickets'>
                   {event && event.tickets && event.tickets.length > 0
@@ -406,6 +489,7 @@ const EventViewer = (props) => {
                       )}
                   </div>
                 : <p className='text-center font-size-20 p-gray'>Sold out</p>}
+                <MapEmbed location={event.location}/>
             </div>
           </div>
         </div>

@@ -16,6 +16,11 @@ const client = new OAuth2Client(clientID);
 const { secret, tokenLife } = keys.jwt;
 
 
+const normalizeCompanyName = (str) => {
+  if (!str) return '';
+  return str.replace(/\s+/g, '').toLowerCase();
+};
+
 /**
  * 
  * @param {*} token 
@@ -259,10 +264,16 @@ router.post('/register/organizer', async (req, res) => {
     if (existingUserName) {
       return res.status(400).json({ error: 'That username is already in use.' })
     }
+    const normalizedIncoming = normalizeCompanyName(companyName);
 
-    const existingCompanyName = await Organizer.findOne({ companyName });
-    if (existingCompanyName) {
-      return res.status(400).json({ error: 'That company name is already in use' })
+    const allOrganizers = await User.find({ companyName: { $ne: null } }, 'companyName');
+
+    const hasSimilarName = allOrganizers.some(org => {
+      return normalizeCompanyName(org.companyName) === normalizedIncoming;
+    });
+
+    if (hasSimilarName) {
+      return res.status(400).json({ error: 'You cannot use that company name' })
     }
 
     let subscribed = false;
@@ -287,6 +298,7 @@ router.post('/register/organizer', async (req, res) => {
     const user = new User({
       email,
       companyName,
+      phoneNumber,
       userName,
       password,
       role: ROLES.Organizer,

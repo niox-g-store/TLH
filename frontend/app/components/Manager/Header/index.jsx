@@ -24,7 +24,7 @@ const HeaderPanel = (props) => {
   };
 
   // Use companyName or userName
-  const source = user?.organizer?.companyName || user?.userName || '';
+  const source = user?.companyName || user?.userName || '';
   const initials = source
     .trim()
     .split(/\s+/)

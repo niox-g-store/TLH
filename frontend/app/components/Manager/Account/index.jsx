@@ -14,14 +14,21 @@ import {
   CRow,
   CCol,
   CButton,
+  CModal,
+  CModalBody
 } from '@coreui/react';
 import React, { useState } from 'react';
-// import BankSelector from '../../Common/Banks';
-
-import { EMAIL_PROVIDER, ROLES } from '../../../constants';
-import UserRole from '../../store/UserRole';
+import { ROLES } from '../../../constants';
 import Input from '../../Common/HtmlTags/Input';
 import Button from '../../Common/HtmlTags/Button';
+import AdvancedUpload from '../../store/AdanceFileUpload';
+import DescriptionBox from '../../store/DescriptionBox';
+import { API_URL } from '../../../constants';
+import ResolveImage from '../../store/ResolveImage';
+import { useNavigate, Link } from 'react-router-dom';
+ 
+// import BankSelector from '../../Common/Banks';
+
 // import PhoneInput from 'react-phone-number-input';
 // import 'react-phone-number-input/style.css';
 // import { TrashIcon } from '../../Common/Icon';
@@ -159,30 +166,43 @@ const ManagerAccount = (props) => {
     isLightMode,
     accountEditFormErrors
   } = props;
+  const navigate = useNavigate()
+
+  const [editPicModal, setEditPicModal] = useState(false);
+  const [profileUpload, setProfileUpload] = useState([]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    updateProfile();
+    updateProfile(navigate);
   };
 
   return (
     <div data-aos="fade-up" className='container-lg px-4 d-flex flex-column mb-custom-5em'>
-      <CCard className={`${isLightMode ? 'bg-white': 'bg-black'}  w-100`}>
+      <CCard className={`${isLightMode ? 'bg-white': 'bg-black'} w-100`}>
         <CCardHeader>
           <CCardTitle className={`${isLightMode ? 'p-black': 'p-white'} font-size-30`}>Account Details</CCardTitle>
         </CCardHeader>
         <CCardBody>
-          <CRow className="mb-3 g-3">
-            <CCol className={`${isLightMode ? 'p-black': 'p-white'}`} md={6}>
-              <CFormInput
-                type="email"
-                label="Email"
-                value={user.email || ''}
-                disabled
+          <div style={{ width: 'fit-content' }} className='d-flex align-items-center justify-content-center mb-4'>
+              <img
+                src={ResolveImage(API_URL + user?.imageUrl, 'profile')}
+                alt="Profile"
+                style={{ width: 120, height: 120, borderRadius: '50%', objectFit: 'cover' }}
               />
-            </CCol>
+            <CButton className='ms-3 purple-bg p-white' onClick={() => setEditPicModal(true)}>{user?.imageUrl.length > 0 ? 'Edit' : 'Add a profile picture'}</CButton>
+          </div>
 
-              <CCol className={`${isLightMode ? 'p-black': 'p-white'}`} md={6}>
+          <CForm onSubmit={handleSubmit}>
+            <CRow className="mb-3 g-3">
+              <CCol md={6} className={`${isLightMode ? 'p-black': 'p-white'}`}>
+                <CFormInput
+                  type="email"
+                  label="Email"
+                  value={user.email || ''}
+                  disabled
+                />
+              </CCol>
+              <CCol md={6} className={`${isLightMode ? 'p-black': 'p-white'}`}>
                 <Input
                   type="text"
                   label="User Name"
@@ -193,43 +213,82 @@ const ManagerAccount = (props) => {
                   onInputChange={(e, v) => accountChange('userName', v)}
                 />
               </CCol>
-          </CRow>
+            </CRow>
 
-          <CForm onSubmit={handleSubmit}>
             <CRow className="mb-3 g-3">
-              {user.role !== ROLES.Organizer &&
-              <CCol className={`${isLightMode ? 'p-black': 'p-white'}`} md={6}>
-                <CFormInput
-                  type="text"
-                  label="Name"
-                  name="Name"
-                  placeholder="Enter your name"
-                  value={user.name || ''}
-                  onChange={(e) => accountChange('name', e.target.value)}
+              {user.role !== ROLES.Organizer && (
+                <CCol md={6} className={`${isLightMode ? 'p-black': 'p-white'}`}>
+                  <CFormInput
+                    type="text"
+                    label="Name"
+                    value={user.name || ''}
+                    onChange={(e) => accountChange('name', e.target.value)}
+                  />
+                </CCol>
+              )}
+              {[ROLES.Admin, ROLES.Organizer].includes(user.role) && (
+                <CCol md={6} className={`${isLightMode ? 'p-black': 'p-white'}`}>
+                  <CFormInput
+                    type="text"
+                    label="Company Name"
+                    value={user.companyName || ''}
+                    onChange={(e) => accountChange('companyName', e.target.value)}
+                  />
+                </CCol>
+              )}
+              <CCol md={6} className={`${isLightMode ? 'p-black': 'p-white'}`}>
+                <Input
+                  type='phone'
+                  label='Phone Number'
+                  val={user.phoneNumber || ''}
+                  onPhoneChange={(v) => accountChange('phoneNumber', v)}
                 />
               </CCol>
-              }
-              
-              {[ROLES.Admin, ROLES.Organizer].includes(user?.role) && 
-              <CCol className={`${isLightMode ? 'p-black': 'p-white'}`} md={6}>
-                <CFormInput
-                  type="text"
-                  label="Company Name"
-                  name="companyName"
-                  placeholder="Enter your company name"
-                  value={user.companyName}
-                  onChange={(e) => accountChange('companyName', e.target.value)}
+              <CCol md={6} className={`${isLightMode ? 'p-black': 'p-white'}`}>
+                <Input
+                  type='email'
+                  placeholder="Enter email"
+                  label='Contact email'
+                  value={user.contactEmail || ''}
+                  onInputChange={(n, v) => accountChange('contactEmail', v)}
                 />
               </CCol>
-              }
-              {user?.organizer &&
-              <CCol className={`${isLightMode ? 'p-black': 'p-white'}`} md={6}>
-                <Input type={"phone"}
-                       val={user.organizer && user.organizer.phoneNumber || ''}
-                       onPhoneChange={(v) => accountChange('phoneNumber', v)}
+              <CCol md={6} className={`${isLightMode ? 'p-black': 'p-white'}`}>
+                <Input
+                  type='text'
+                  label='Instagram'
+                  value={user.instagram || ''}
+                  placeholder='Paste Instagram link'
+                  onInputChange={(name, val) => accountChange('instagram', val)}
                 />
               </CCol>
-              }
+              <CCol md={6} className={`${isLightMode ? 'p-black': 'p-white'}`}>
+                <Input
+                  type='text'
+                  label='TikTok'
+                  value={user.tiktok || ''}
+                  placeholder='Paste TikTok link'
+                  onInputChange={(name, val) => accountChange('tiktok', val)}
+                />
+              </CCol>
+              <CCol md={6} className={`${isLightMode ? 'p-black': 'p-white'}`}>
+                <Input
+                  type='text'
+                  label='Facebook'
+                  value={user.facebook || ''}
+                  placeholder='Paste Facebook link'
+                  onInputChange={(name, val) => accountChange('facebook', val)}
+                />
+              </CCol>
+              <CCol md={12} className={`${isLightMode ? 'p-black': 'p-white'}`}>
+                <label className='mb-2'>Bio</label>
+                <textarea
+                  label='Bio'
+                  value={user.bio}
+                  placeholder='Enter your bio (Optional)'
+                  onChange={(e) => accountChange('bio', e.target.value)}
+                />
+              </CCol>
             </CRow>
 
             <div className="d-flex justify-content-center mt-3">
@@ -241,7 +300,25 @@ const ManagerAccount = (props) => {
         </CCardBody>
       </CCard>
 
-      {/* Uncomment this if Admins can manage bank accounts
+      <CModal visible={editPicModal} onClose={() => setEditPicModal(false)} alignment="center">
+        <CModalBody>
+          <h5 className='mb-3'>Upload Profile Picture</h5>
+          <AdvancedUpload
+            limit={1}
+            onFilesChange={(files) => setProfileUpload(files)}
+          />
+          <div className="d-flex justify-content-end mt-3">
+            <Button style={{ padding: '10px 15px' }} text='Save' onClick={() => {
+              if (profileUpload.length > 0) {
+                accountChange('image', profileUpload[0]);
+              }
+              setEditPicModal(false);
+            }} />
+          </div>
+        </CModalBody>
+      </CModal>
+
+            {/* Uncomment this if Admins can manage bank accounts
       {user.role === ROLES.Admin && (
         <div className='mt-4 w-100'>
           <BankAccountComponent

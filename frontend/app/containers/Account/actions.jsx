@@ -33,22 +33,13 @@ export const resetBanks = () => {
 }
 
 export const accountChange = (name, value) => {
-  return (dispatch, getState) => { 
-    let formData = {};
-      const organizer = getState().account?.user?.organizer
-    if (organizer && (name === 'phoneNumber' || name === 'companyName')) {
-      formData['organizer'] = {
-        ...organizer,
-        [name]: value
-      } 
-    }
-    formData[name] = value;
-
-   dispatch({
+  let formData = {};
+  formData[name] = value;
+  console.log(formData)
+  return {
     type: ACCOUNT_CHANGE,
     payload: formData
-  });
-  }
+  };
 };
 
 export const clearAccount = () => {
@@ -79,30 +70,44 @@ export const fetchProfile = () => {
   };
 };
 
-export const updateProfile = () => {
+export const updateProfile = (navigate) => {
   return async (dispatch, getState) => {
     const profile = getState().account.user;
-      const rules = {
-        userName: 'required|username_format',
-      };
+    const rules = {
+      userName: 'required|username_format',
+    };
 
-      const newProfile = {
-        name: profile.name,
-        userName: profile.userName
-      };
+    const newProfile = {
+      name: profile.name,
+      userName: profile.userName,
+    };
 
-      const { isValid, errors } = allFieldsValidation(newProfile, rules, {
-        'required.userName': 'User name is required',
-        'userName.username_format': 'Username can only contain letters, numbers, underscores, and dashes (no spaces).',
-      });
+    const { isValid, errors } = allFieldsValidation(newProfile, rules, {
+      'required.userName': 'User name is required',
+      'userName.username_format': 'Username can only contain letters, numbers, underscores, and dashes (no spaces).',
+    });
 
-      if (!isValid) {
-        return dispatch({ type: SET_PROFILE_EDIT_ERRORS, payload: errors });
-      }
+    if (!isValid) {
+      return dispatch({ type: SET_PROFILE_EDIT_ERRORS, payload: errors });
+    }
 
     try {
-      const response = await axios.put(`${API_URL}/user`, {
-        profile
+      const formData = new FormData();
+
+      for (const key in profile) {
+        if (Object.hasOwnProperty.call(profile, key)) {
+          if (key === 'image' && Array.isArray(profile.image)) {
+            for (const file of profile.image) {
+              formData.append('image', file);
+            }
+          } else {
+            formData.append(key, profile[key]);
+          }
+        }
+      }
+
+      const response = await axios.put(`${API_URL}/user`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
       });
 
       const successfulOptions = {
@@ -112,8 +117,8 @@ export const updateProfile = () => {
       };
 
       dispatch({ type: FETCH_PROFILE, payload: response.data.user });
-
       dispatch(showNotification('success', successfulOptions.title));
+      navigate(0)
     } catch (error) {
       handleError(error, dispatch);
     }

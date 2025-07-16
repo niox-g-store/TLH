@@ -34,10 +34,43 @@ const OrganizerViewer = (props) => {
       </div>
       {isLoading && <LoadingIndicator />}
       <h2 className={`${isLightMode ? 'p-black' : 'p-white'}`}>{organizer?.companyName}</h2>
-      <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'}`}>
-        <CCardBody>
-          <CCardTitle>Email: {organizer?.email}</CCardTitle>
-          <CCardText>Phone: {organizer?.phoneNumber || 'N/A'}</CCardText>
+<CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'}`}>
+  <CCardBody>
+    {/* Profile Image */}
+    {organizer?.user?.imageUrl && (
+      <div className='mb-3 text-center'>
+        <CImage
+          src={ResolveImage(API_URL + organizer.user.imageUrl, 'profile')}
+          style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '50%' }}
+        />
+      </div>
+    )}
+
+    <CCardTitle>Email: {organizer?.email}</CCardTitle>
+    <CCardText>Phone: {organizer?.phoneNumber || 'N/A'}</CCardText>
+
+    {/* Social and Bio Details */}
+    {organizer?.user && (
+      <>
+        {organizer.user.bio && (
+          <CCardText><strong>Bio:</strong> {organizer.user.bio}</CCardText>
+        )}
+        {organizer.user.contactEmail && (
+          <CCardText><strong>Contact Email:</strong> {organizer.user.contactEmail}</CCardText>
+        )}
+        {organizer.user.instagram && (
+          <CCardText><strong>Instagram:</strong> {organizer.user.instagram}</CCardText>
+        )}
+        {organizer.user.tiktok && (
+          <CCardText><strong>TikTok:</strong> {organizer.user.tiktok}</CCardText>
+        )}
+        {organizer.user.facebook && (
+          <CCardText><strong>Facebook:</strong> {organizer.user.facebook}</CCardText>
+        )}
+      </>
+    )}
+
+          
           <CBadge color={organizer.isActive ? 'success' : 'danger'}>
             {organizer.isActive ? 'Active' : 'Suspended'}
           </CBadge>

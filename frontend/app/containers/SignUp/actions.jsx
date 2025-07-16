@@ -72,7 +72,7 @@ export const organizerSignupSubmit = () => {
       const rules = {
         email: 'required|email',
         password: 'required|min:6',
-        companyName: 'required',
+        companyName: 'required|not_starts_with_the_link',
         userName: 'required|username_format',
         confirmPassword: 'required|confirmed:password',
         phoneNumber: 'required'
@@ -84,6 +84,7 @@ export const organizerSignupSubmit = () => {
       const { isValid, errors } = allFieldsValidation(newUser, rules, {
         'required.email': 'Email is required.',
         'required.companyName': 'Company name is required.',
+        'companyName.not_starts_with_the_link': 'Company name cannot start with "The Link".',
         'required.userName': 'User name is required',
         'userName.username_format': 'Username can only contain letters, numbers, underscores, and dashes (no spaces).',
         'required.password': 'Password is required.',

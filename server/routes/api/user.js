@@ -7,6 +7,20 @@ const Organizer = require('../../models/organizer');
 const auth = require('../../middleware/auth');
 const role = require('../../middleware/role');
 const { ROLES } = require('../../utils/constants');
+const multer = require('multer');
+const crypto = require('crypto');
+const path = require("path");
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, process.cwd() + "/file_manager/uploads/profile");
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + crypto.randomBytes(4).toString('hex');
+    cb(null, `${uniqueSuffix}${path.extname(file.originalname)}`);
+  }
+});
+const upload = multer({ storage });
 
 
 router.get('/non-organizers', auth, role.check(ROLES.Admin), async (req, res) => {
@@ -92,10 +106,11 @@ router.get('/me', auth, async (req, res) => {
   try {
     const user = req.user._id;
     // const userDoc = await User.findById(user, { password: 0 })
-    const userDoc = await User.findById(user, { password: 0 }).populate({
+    const userDoc = await User.findById(user, { password: 0 });
+    /*.populate({
       path: 'organizer',
       model: 'Organizer',
-    });
+    });*/
 
     return res.status(200).json({
       user: userDoc
@@ -107,35 +122,32 @@ router.get('/me', auth, async (req, res) => {
   }
 });
 
-router.put('/', auth, async (req, res) => {
+router.put('/', auth, upload.single('image'), async (req, res) => {
   try {
-    const user = req.user._id;
-    const update = req.body.profile;
+    const userId = req.user._id;
+    const update = req.body;
     let userDoc;
 
-    const query = { _id: user };
+    if (req.file) {
+      update.imageUrl = `/uploads/profile/${req.file.filename}`;
+    }
 
-    userDoc = await User.findOneAndUpdate(query, update, {
-      new: true
-    });
+    userDoc = await User.findByIdAndUpdate(userId, update);
 
     // If user has organizer linked, update that too
     if (userDoc.organizer) {
       const organizerUpdate = {};
-
       if (update.companyName) {
         organizerUpdate.companyName = update.companyName;
       }
-
-      // Support phone number in two places
       if (update.phoneNumber) {
         organizerUpdate.phoneNumber = update.phoneNumber;
       }
-
       if (Object.keys(organizerUpdate).length > 0) {
         await Organizer.findByIdAndUpdate(userDoc.organizer, organizerUpdate);
       }
     }
+
     return res.status(200).json({
       success: true,
       message: 'successfully updated!',

@@ -9,7 +9,7 @@ const ResolveImage = (image, type = null) => {
         break;
     }
   }
-  const defaultImage = '/assets/placeholder.PNG';
+  const defaultImage = type === 'profile' ? '/assets/profile-icon.png' : '/assets/placeholder.PNG';
   return image && image.trim() !== '' ? image : defaultImage;
 };
 

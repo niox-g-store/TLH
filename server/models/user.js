@@ -55,7 +55,23 @@ const UserSchema = new mongoose.Schema({
     default: ROLES.Member,
     enum: [ROLES.Admin, ROLES.Member, ROLES.Organizer]
   },
+  imageUrl: {
+    type: String
+  },
+
+  contactEmail: { type: String },
+  instagram: { type: String },
+  tiktok: { type: String },
+  facebook: { type: String },
+
+  phoneNumber: { type:String },
+
+  bio: { type: String },
+
   banned: { type: Boolean, default: false },
+
+  hasUpdateProfile: { type: Boolean, default: false },
+
   resetPasswordToken: { type: String },
   resetPasswordExpires: { type: Date },
   createdAt: { type: Date, default: Date.now },
@@ -73,6 +89,20 @@ UserSchema.pre('save', async function (next) {
     if (org && org.companyName) {
       this.companyName = org.companyName;
     }
+  }
+  const profileFields = [
+    this.imageUrl,
+    this.contactEmail,
+    this.instagram,
+    this.tiktok,
+    this.facebook,
+    this.phoneNumber,
+    this.bio
+  ];
+
+  // Set hasUpdateProfile to true if any profile field has value
+  if (profileFields.some(field => field && field.trim() !== '')) {
+    this.hasUpdateProfile = true;
   }
   this.updatedAt = new Date();
   next();

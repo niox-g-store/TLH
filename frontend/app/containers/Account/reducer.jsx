@@ -27,10 +27,14 @@ const initialState = {
     companyName: '',
     provider: '',
     role: '',
-    organizer: {
-      companyName: '',
-      phoneNumber: ''
-    }
+    facebook: '',
+    instagram: '',
+    tiktok: '',
+    image: '',
+    imageUrl: '',
+    contactEmail: '',
+    bio: '',
+    phoneNumber: '',
   },
   isLoading: false,
 

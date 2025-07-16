@@ -30,16 +30,32 @@ router.get('/', auth, role.check(ROLES.Admin), async (req, res) => {
   }
 });
 
-// GET a single organizer by ID, with populated event slugs
+// GET a single organizer by ID, with populated event slugs and user details
 router.get('/:id', auth, role.check(ROLES.Admin), async (req, res) => {
   try {
-    const organizer = await Organizer.findById(req.params.id).populate('event');
-    if (!organizer) return res.status(404).json({ error: 'Organizer not found' });
-    return res.json({ organizer });
+    const organizer = await Organizer.findById(req.params.id)
+      .populate('event') // Populates related events
+      .lean(); // Convert Mongoose doc to plain object
+
+    if (!organizer) {
+      return res.status(404).json({ error: 'Organizer not found' });
+    }
+
+    const user = await User.findOne({ organizer: organizer._id })
+      .select('imageUrl bio instagram tiktok facebook contactEmail phoneNumber') // Only relevant fields
+      .lean();
+
+    return res.json({
+      organizer: {
+        ...organizer,
+        user
+      }
+    });
   } catch (error) {
     res.status(400).json({ error: 'Failed to fetch organizer' });
   }
 });
+
 
 // PUT suspend organizer
 router.put('/:id/suspend', auth, role.check(ROLES.Admin), async (req, res) => {

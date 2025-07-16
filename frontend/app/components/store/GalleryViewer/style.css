@@ -165,7 +165,7 @@
 .gallery-info {
   position: absolute;
   z-index: 100;
-  top: 60%;
+  top: 50%;
   left: 1em;
   color: white;
 }
@@ -178,7 +178,7 @@
 /* Responsive adjustments for smaller screens */
 @media (max-width: 768px) {
   .gallery-banner {
-    height: 50vh;
+    height: 60vh;
   }
   .gallery-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));

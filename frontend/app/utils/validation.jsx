@@ -14,6 +14,17 @@ Validator.register(
 );
 
 Validator.register(
+  'not_starts_with_the_link',
+  function(value) {
+    if (!value) return true;
+    const normalized = value.replace(/\s+/g, '').toLowerCase(); // remove all spaces and lowercase
+    return !normalized.startsWith('thelink');
+  },
+  'Company name cannot start with "The Link".'
+);
+
+
+Validator.register(
   'confirmed',
   function(value, requirement, attribute) {
     const allFields = this.validator?.input || {};
