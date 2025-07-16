@@ -61,9 +61,9 @@ const UserHeader = (props) => {
             </div>
               <div className="buttons header-lg-buttons">
                 <Link to="/login" className="button">
-                  Log In
+                  {authenticated ? 'Go to dashboard' : 'Log In'}
                 </Link>
-                <Link to="/organizer-signup" className="button--secondary">
+                <Link to="/dashboard/events/add" className="button--secondary">
                   Create event
                 </Link>
               </div>
@@ -136,9 +136,9 @@ const UserHeader = (props) => {
               </div>
               <div className="buttons">
                 <Link onClick={toggleMenu} to="/login" className="button">
-                  Log In
+                  {authenticated ? 'Go to dashboard' : 'Log In'}
                 </Link>
-                <Link onClick={toggleMenu} to="/organizer-signup" className="button--secondary">
+                <Link onClick={toggleMenu} to="/dashboard/events/add" className="button--secondary">
                   Create event
                 </Link>
               </div>

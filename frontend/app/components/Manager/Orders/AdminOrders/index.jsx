@@ -98,7 +98,7 @@ const ManagerOrderList = (props) => {
       <CRow className='gy-4'>
       {currentOrders.map((order, idx) => (
        <CCol md={6} key={idx}>
-        <Link to={`/dashboard/orders/${order._id}`}>
+        <Link to={`/dashboard/order/${order._id}`}>
       <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}>
       <div style={{ width: '40%' }}>
         <CImage

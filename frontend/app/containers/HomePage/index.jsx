@@ -27,7 +27,7 @@ class Home extends React.PureComponent {
   }
   render () {
   const { authenticated, homeMedia, popOverEvents } = this.props;
-  if (authenticated) return <Navigate to='/dashboard' />;
+  //if (authenticated) return <Navigate to='/dashboard' />;
 
   let video, images = null
   const eventImages = [event1, event3, event2, event4];
