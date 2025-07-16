@@ -364,7 +364,7 @@ const EventViewer = (props) => {
               </p>
         <div style={{ cursor: 'pointer' }} className='host-des' onClick={() => setShowOrganizerModal(true)}>
           <p>your host</p>
-          <img src={ResolveImage(API_URL + event?.user?.imageUrl, 'profile')} style={{ borderRadius: '50%', width: '12%', height: '3em' }} />
+          <img src={ResolveImage(API_URL + event?.user?.imageUrl, 'profile')} style={{ borderRadius: '50%', width: '15%', height: '3em' }} />
           &nbsp; &nbsp; &nbsp; <span className='p-purple'>{event?.user?.companyName}</span>
         </div>
 
@@ -375,7 +375,7 @@ const EventViewer = (props) => {
           </CModalHeader>
           <CModalBody style={{ background: 'white' }}>
             <div className='text-center'>
-              <img src={ResolveImage(API_URL + event?.user?.imageUrl)} alt='Organizer' style={{ width: '100px', height: '100px', borderRadius: '10px' }} />
+              <img src={ResolveImage(API_URL + event?.user?.imageUrl, 'profile')} alt='Organizer' style={{ width: '100px', height: '100px', borderRadius: '10px' }} />
               <p className='mt-2'><CgProfile /> {event?.user?.companyName}</p>
               {event?.user?.contactEmail?.length > 3 && (
                 <p><MdEmail /> {event.user.contactEmail}</p>

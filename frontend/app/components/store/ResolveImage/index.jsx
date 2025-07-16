@@ -1,4 +1,7 @@
 const ResolveImage = (image, type = null) => {
+  if (type === 'profile' && image === 'http://localhost:3030/apiundefined') {
+    return '/assets/profile-icon.png'
+  }
   if (type) {
     switch (type) {
       case 'ticket':
@@ -9,7 +12,7 @@ const ResolveImage = (image, type = null) => {
         break;
     }
   }
-  const defaultImage = type === 'profile' ? '/assets/profile-icon.png' : '/assets/placeholder.PNG';
+  const defaultImage = '/assets/placeholder.PNG';
   return image && image.trim() !== '' ? image : defaultImage;
 };
 
