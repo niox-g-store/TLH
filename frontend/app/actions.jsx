@@ -17,6 +17,7 @@ import * as order from '../app/containers/Order/actions';
 import * as user from '../app/containers/User/actions';
 import * as guest from '../app/containers/Guest/actions';
 import * as organizer from '../app/containers/Organizer/actions';
+import * as scan from '../app/containers/Scan/actions';
 
 export default function mapDispatchToProps (dispatch) {
   return bindActionCreators(
@@ -38,6 +39,7 @@ export default function mapDispatchToProps (dispatch) {
       ...user,
       ...guest,
       ...organizer,
+      ...scan,
     },
     dispatch
   );

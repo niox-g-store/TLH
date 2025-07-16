@@ -1,2 +1,4 @@
 export const ADD_SCANNED_TICKET = 'src/Scan/ADD_SCANNED_TICKET';
 export const CLEAR_SCANNED_TICKETS = 'src/Scan/CLEAR_SCANNED_TICKETS';
+export const LOADING = 'src/Scan/LOADING'
+export const FETCH_SCANNED_TICKETS = 'src/Scan/FETCH_SCANNED_TICKETS'

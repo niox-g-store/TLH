@@ -7,17 +7,22 @@ import {
   CModalHeader, CModalTitle, CModalBody, CModalFooter
 } from '@coreui/react';
 import QRScanner from './QrScanner';
-import { addScannedTicket } from '../../../actions/scan.actions';
+import { withRouter } from '../../../withRouter';
+import actions from '../../../actions';
+import LoadingIndicator from '../../store/LoadingIndicator';
 
-const ManagerScannerView = ({ isLightMode, scannedTicket = [], addScannedTicket }) => {
+const ManagerScannerView = (props) => {
+  const { isLoading,
+          isLightMode, scannedTicket = [],
+          addScannedTicket, scannedTickets } = props;
   const [code, setCode] = useState('');
   const [showScanner, setShowScanner] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const ticketsPerPage = 10;
 
   const startIndex = (currentPage - 1) * ticketsPerPage;
-  const currentTickets = scannedTicket.slice(startIndex, startIndex + ticketsPerPage);
-  const totalPages = Math.ceil(scannedTicket.length / ticketsPerPage);
+  const currentTickets = scannedTickets.slice(startIndex, startIndex + ticketsPerPage);
+  const totalPages = Math.ceil(scannedTickets.length / ticketsPerPage);
 
   const handleScan = () => {
     if (code.trim()) {
@@ -36,8 +41,9 @@ const ManagerScannerView = ({ isLightMode, scannedTicket = [], addScannedTicket 
 
   return (
     <div className='container-lg px-4 d-flex flex-column'>
+      {isLoading && <LoadingIndicator />}
       <CCard>
-        <CCardBody className={isLightMode ? 'bg-white' : 'bg-black'}>
+        <CCardBody className={`${isLightMode ? 'bg-white' : 'bg-black'} d-flex flex-column`}>
           <CCardTitle className={isLightMode ? 'p-black' : 'p-white'}>Ticket Scanner</CCardTitle>
 
           <CForm className='d-flex gap-2 my-3'>
@@ -49,7 +55,7 @@ const ManagerScannerView = ({ isLightMode, scannedTicket = [], addScannedTicket 
             <CButton className='linear-grad p-white' onClick={handleScan}>Scan Ticket</CButton>
           </CForm>
 
-          <CButton className='linear-grad p-white' onClick={() => setShowScanner(true)}>
+          <CButton style={{ width: 'fit-content', alignSelf: 'center' }} className='linear-grad p-white' onClick={() => setShowScanner(true)}>
             Scan QR Code
           </CButton>
 
@@ -83,7 +89,7 @@ const ManagerScannerView = ({ isLightMode, scannedTicket = [], addScannedTicket 
       </CCard>
 
       <CCard className='mt-4'>
-        <CCardBody className={isLightMode ? 'bg-white' : 'bg-black'}>
+        <CCardBody className={`${isLightMode ? 'bg-white' : 'bg-black'} d-flex flex-column`}>
           <CCardTitle className={isLightMode ? 'p-black' : 'p-white'}>Scanned Tickets</CCardTitle>
           <CTable hover responsive>
             <CTableHead>
@@ -117,12 +123,13 @@ const ManagerScannerView = ({ isLightMode, scannedTicket = [], addScannedTicket 
           </CTable>
 
           <div className='d-flex justify-content-between align-items-center mt-3'>
-            <div className='text-muted'>
+            <div className={`${isLightMode ? 'p-black' : 'p-white'} text-muted`}>
               Showing {startIndex + 1}-{startIndex + currentTickets.length} of {scannedTicket.length}
             </div>
             <CPagination className='mb-0'>
               {[...Array(totalPages)].map((_, index) => (
                 <CPaginationItem
+                  isLightMode={isLightMode}
                   key={index}
                   active={index + 1 === currentPage}
                   onClick={() => {
@@ -140,10 +147,24 @@ const ManagerScannerView = ({ isLightMode, scannedTicket = [], addScannedTicket 
     </div>
   );
 };
+class ManagerScanner extends React.PureComponent {
+  componentDidMount () {
+    this.props.fetchEvents();
+  }
 
-const mapState = state => ({
+  render () {
+    return (
+      <ManagerScannerView {...this.props} />
+    );
+  }
+}
+
+const mapStateToProps = state => ({
+  scannedTickets: state.scan.scannedTickets,
   scannedTicket: state.scan.scannedTicket,
-  isLightMode: state.dashboard.isLightMode
+  isLightMode: state.dashboard.isLightMode,
+  isLoading: state.scan.isLoading
 });
 
-export default connect(mapState, { addScannedTicket })(ManagerScannerView);
+export default connect(mapStateToProps, actions)(ManagerScanner);
+

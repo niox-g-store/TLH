@@ -13,6 +13,7 @@ const cart = require('./cart');
 const guest = require('./guest');
 const order = require('./order');
 const organizer = require('./organizer');
+const scan = require('./qrCode');
 //const newsletter = require('./newsletter')
 
 // for static file uploads
@@ -36,5 +37,6 @@ router.use('/cart', cart);
 router.use('/guest', guest);
 router.use('/order', order);
 router.use('/organizer', organizer);
+router.use('/scan', scan);
 
 module.exports = router;

@@ -3,7 +3,6 @@
  * Event actions
  *
  */
-import { useState } from 'react';
 import { showNotification } from '../Notification/actions';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
