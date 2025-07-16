@@ -1,133 +1,106 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import {
-  CCard,
-  CCardBody,
-  CCardTitle,
-  CForm,
-  CFormInput,
-  CButton,
-  CRow,
-  CCol,
-  CTable,
-  CTableBody,
-  CTableHead,
-  CTableRow,
-  CTableHeaderCell,
-  CTableDataCell,
-  CPagination,
-  CPaginationItem,
-  CBadge,
-  CModal,
-  CModalHeader,
-  CModalTitle,
-  CModalBody,
-  CModalFooter,
+  CCard, CCardBody, CCardTitle, CForm, CFormInput, CButton,
+  CTable, CTableBody, CTableHead, CTableRow, CTableHeaderCell,
+  CTableDataCell, CPagination, CPaginationItem, CBadge, CModal,
+  CModalHeader, CModalTitle, CModalBody, CModalFooter
 } from '@coreui/react';
 import QRScanner from './QrScanner';
+import { addScannedTicket } from '../../../actions/scan.actions';
 
-const mockScannedTickets = Array.from({ length: 34 }, (_, i) => ({
-  code: `TCKT${1000 + i}`,
-  event: `Event ${i % 5 + 1}`,
-  ticketType: ['VIP', 'Regular', 'Backstage'][i % 3],
-  owner: i % 2 === 0 ? 'User' : 'Guest',
-  used: i % 4 === 0,
-  scannedAt: new Date().toLocaleString()
-}));
-
-const ManagerSanner = (props) => {
-  const { isLightMode } = props;
+const ManagerScannerView = ({ isLightMode, scannedTicket = [], addScannedTicket }) => {
   const [code, setCode] = useState('');
+  const [showScanner, setShowScanner] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const ticketsPerPage = 10;
-  const [scannedCode, setScannedCode] = useState('');
-  const [showScanner, setShowScanner] = useState(false);
 
   const startIndex = (currentPage - 1) * ticketsPerPage;
-  const currentTickets = mockScannedTickets.slice(startIndex, startIndex + ticketsPerPage);
-  const totalPages = Math.ceil(mockScannedTickets.length / ticketsPerPage);
+  const currentTickets = scannedTicket.slice(startIndex, startIndex + ticketsPerPage);
+  const totalPages = Math.ceil(scannedTicket.length / ticketsPerPage);
 
   const handleScan = () => {
     if (code.trim()) {
-      alert(`Searching ticket code: ${code}`);
+      const ticket = {
+        code,
+        event: 'Unknown Event',
+        ticketType: 'Unknown',
+        owner: 'User',
+        used: false,
+        scannedAt: new Date().toLocaleString()
+      };
+      addScannedTicket(ticket);
       setCode('');
     }
   };
 
   return (
-    <div data-aos="fade-up" className='container-lg px-4 d-flex flex-column mb-custom-5em'>
-      <CCard className={`${isLightMode ? '' : 'border-0'} mb-4`}>
-        <CCardBody className={`${isLightMode ? 'bg-white' : 'bg-black'}`}>
-          <CCardTitle className={`${isLightMode ? 'p-black' : 'p-white'} mb-3 font-size-30`}>Ticket Scanner</CCardTitle>
-          <div className='d-flex flex-column gap-2'>
-          <CForm className='d-flex gap-2'>
+    <div className='container-lg px-4 d-flex flex-column'>
+      <CCard>
+        <CCardBody className={isLightMode ? 'bg-white' : 'bg-black'}>
+          <CCardTitle className={isLightMode ? 'p-black' : 'p-white'}>Ticket Scanner</CCardTitle>
+
+          <CForm className='d-flex gap-2 my-3'>
             <CFormInput
-              style={{ width: '90%' }}
               placeholder='Enter ticket code'
               value={code}
               onChange={(e) => setCode(e.target.value)}
             />
-            <CButton className='linear-grad p-white' onClick={handleScan}>
-              Scan Ticket
-            </CButton>
+            <CButton className='linear-grad p-white' onClick={handleScan}>Scan Ticket</CButton>
           </CForm>
 
+          <CButton className='linear-grad p-white' onClick={() => setShowScanner(true)}>
+            Scan QR Code
+          </CButton>
 
-            <div style={{ marginTop: '1em' }} className='d-flex flex-column-reverse gap-2 align-items-center'>
-    <CButton
-      className='linear-grad p-white'
-      onClick={() => setShowScanner(true)}
-    >
-        Scan QR Code
-    </CButton>
-
-<CModal
-  visible={showScanner}
-  onClose={() => setShowScanner(false)}
-  fullscreen
->
-  <CModalHeader>
-    <CModalTitle>Scan Ticket</CModalTitle>
-  </CModalHeader>
-  <CModalBody className="d-flex justify-content-center align-items-center">
-    <QRScanner
-      onScanSuccess={(code) => {
-        setScannedCode(code);
-        setShowScanner(false);
-      }}
-    />
-  </CModalBody>
-  <CModalFooter>
-    <CButton color="secondary" onClick={() => setShowScanner(false)}>
-      Close
-    </CButton>
-  </CModalFooter>
-</CModal>
-  </div>
-
-          </div>
-
+          <CModal visible={showScanner} onClose={() => setShowScanner(false)} fullscreen>
+            <CModalHeader>
+              <CModalTitle>Scan Ticket</CModalTitle>
+            </CModalHeader>
+            <CModalBody className='d-flex justify-content-center align-items-center'>
+              <QRScanner
+                onScanSuccess={(code) => {
+                  const ticket = {
+                    code,
+                    event: 'Scanned Event',
+                    ticketType: 'QR',
+                    owner: 'User',
+                    used: false,
+                    scannedAt: new Date().toLocaleString()
+                  };
+                  addScannedTicket(ticket);
+                  setShowScanner(false);
+                }}
+              />
+            </CModalBody>
+            <CModalFooter>
+              <CButton color="secondary" onClick={() => setShowScanner(false)}>
+                Close
+              </CButton>
+            </CModalFooter>
+          </CModal>
         </CCardBody>
       </CCard>
 
-      <CCard className={`${isLightMode ? '' : 'border-0'}`}>
-        <CCardBody className={`${isLightMode ? 'bg-white' : 'bg-black'}`}>
-          <CCardTitle className={`${isLightMode ? 'p-black' : 'p-white'} mb-3`}>Scanned Tickets</CCardTitle>
+      <CCard className='mt-4'>
+        <CCardBody className={isLightMode ? 'bg-white' : 'bg-black'}>
+          <CCardTitle className={isLightMode ? 'p-black' : 'p-white'}>Scanned Tickets</CCardTitle>
           <CTable hover responsive>
             <CTableHead>
               <CTableRow>
                 <CTableHeaderCell>#</CTableHeaderCell>
                 <CTableHeaderCell>Code</CTableHeaderCell>
                 <CTableHeaderCell>Event</CTableHeaderCell>
-                <CTableHeaderCell>Ticket Type</CTableHeaderCell>
-                <CTableHeaderCell>Owner Type</CTableHeaderCell>
+                <CTableHeaderCell>Type</CTableHeaderCell>
+                <CTableHeaderCell>Owner</CTableHeaderCell>
                 <CTableHeaderCell>Status</CTableHeaderCell>
                 <CTableHeaderCell>Scanned At</CTableHeaderCell>
               </CTableRow>
             </CTableHead>
             <CTableBody>
-              {currentTickets.map((ticket, idx) => (
-                <CTableRow key={idx}>
-                  <CTableDataCell>{startIndex + idx + 1}</CTableDataCell>
+              {currentTickets.map((ticket, index) => (
+                <CTableRow key={index}>
+                  <CTableDataCell>{startIndex + index + 1}</CTableDataCell>
                   <CTableDataCell>{ticket.code}</CTableDataCell>
                   <CTableDataCell>{ticket.event}</CTableDataCell>
                   <CTableDataCell>{ticket.ticketType}</CTableDataCell>
@@ -144,8 +117,8 @@ const ManagerSanner = (props) => {
           </CTable>
 
           <div className='d-flex justify-content-between align-items-center mt-3'>
-            <div className={`${isLightMode ? 'p-black' : 'p-white'} text-muted`}>
-              Showing {startIndex + 1}-{startIndex + currentTickets.length} of {mockScannedTickets.length}
+            <div className='text-muted'>
+              Showing {startIndex + 1}-{startIndex + currentTickets.length} of {scannedTicket.length}
             </div>
             <CPagination className='mb-0'>
               {[...Array(totalPages)].map((_, index) => (
@@ -156,7 +129,6 @@ const ManagerSanner = (props) => {
                     setCurrentPage(index + 1);
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  style={{ cursor: 'pointer' }}
                 >
                   {index + 1}
                 </CPaginationItem>
@@ -169,4 +141,9 @@ const ManagerSanner = (props) => {
   );
 };
 
-export default ManagerSanner;
+const mapState = state => ({
+  scannedTicket: state.scan.scannedTicket,
+  isLightMode: state.dashboard.isLightMode
+});
+
+export default connect(mapState, { addScannedTicket })(ManagerScannerView);

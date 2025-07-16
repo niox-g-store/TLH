@@ -131,6 +131,9 @@ router.put('/', auth, upload.single('image'), async (req, res) => {
     if (req.file) {
       update.imageUrl = `/uploads/profile/${req.file.filename}`;
     }
+    if (update.organizer === 'null') {
+     update.organizer = null;
+    }
 
     userDoc = await User.findByIdAndUpdate(userId, update);
 
