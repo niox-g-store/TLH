@@ -1,16 +1,37 @@
 import { ADD_SCANNED_TICKET,
     CLEAR_SCANNED_TICKETS,
     FETCH_SCANNED_TICKETS,
-    LOADING } from './constants';
+    LOADING,
+    SHOW_SCAN_MODAL_WITH_DETAILS,
+    FETCH_TICKET_DETAILS,
+    SET_CODE_TO_SCAN
+} from './constants';
 
 const initialState = {
-  scannedTicket: [],
+  scannedTicket: {},
   isLoading: false,
-  scannedTickets: []
+  scannedTickets: [],
+  showScanModal: false,
+  code: ''
 };
 
 export default function scanReducer(state = initialState, action) {
   switch (action.type) {
+    case SET_CODE_TO_SCAN:
+      return {
+        ...state,
+        code: action.payload
+      };
+    case FETCH_TICKET_DETAILS:
+      return {
+        ...state,
+        scannedTicket: action.payload
+      }
+    case SHOW_SCAN_MODAL_WITH_DETAILS:
+      return {
+        ...state,
+        showScanModal: action.payload
+      };
     case FETCH_SCANNED_TICKETS:
       return {
         ...state,
@@ -24,12 +45,13 @@ export default function scanReducer(state = initialState, action) {
     case ADD_SCANNED_TICKET:
       return {
         ...state,
-        scannedTicket: [action.payload, ...state.scannedTicket]
+        scannedTickets: [action.payload, ...state.scannedTickets]
       };
     case CLEAR_SCANNED_TICKETS:
       return {
         ...state,
-        scannedTicket: []
+        scannedTickets: [],
+        scannedTicket: {}
       };
     default:
       return state;

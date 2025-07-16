@@ -39,6 +39,8 @@ const EventViewer = (props) => {
   const videoRefs = useRef([]);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [showOrganizerModal, setShowOrganizerModal] = useState(false);
+  const [showTicketDescriptionModal, setShowTicketDescriptionModal] = useState(false);
+  const [selectedTicketWithDescription, setSelectedTicketWithDescription] = useState(null);
 
   // Helper to determine if the URL is a video
   const isVideo = (url) => {
@@ -160,7 +162,7 @@ const EventViewer = (props) => {
 
         <div style={{ cursor: 'pointer' }} className='host-des' onClick={() => setShowOrganizerModal(true)}>
           <p>your host</p>
-          <img src={ResolveImage(API_URL + event?.user?.imageUrl, 'profile')} style={{ borderRadius: '50%', width: '6%', height: '3em' }} />
+          <img src={ResolveImage(API_URL + event?.user?.imageUrl, 'profile')} style={{ borderRadius: '50%', width: '5%', height: '3em' }} />
           &nbsp; &nbsp; &nbsp; <span className='p-purple'>{event?.user?.companyName}</span>
         </div>
 
@@ -214,16 +216,25 @@ const EventViewer = (props) => {
                               <li
                                 key={ticket._id}
                                 className={`ticket-item ${ticket.quantity <= 0 ? 'sold-out' : ''}`}
-                                onClick={() => ticket.quantity > 0 && addToCart({
-                                         ticketId: ticket._id,
-                                         eventId: event._id,
-                                         eventName: event.name,
-                                         ticketType: ticket.type,
-                                         price: ticket.price,
-                                         discount: ticket.discount,
-                                         discountPrice: ticket.discountPrice,
-                                         ticketQuantity: ticket.quantity
-                                })}
+                                onClick={() => {
+  if (ticket.quantity > 0) {
+    if (ticket.description?.trim()?.length > 0) {
+      setSelectedTicketWithDescription(ticket);
+      setShowTicketDescriptionModal(true);
+    } else {
+      addToCart({
+        ticketId: ticket._id,
+        eventId: event._id,
+        eventName: event.name,
+        ticketType: ticket.type,
+        price: ticket.price,
+        discount: ticket.discount,
+        discountPrice: ticket.discountPrice,
+        ticketQuantity: ticket.quantity
+      });
+    }
+  }
+}}
                                 style={{ height: 'fit-content' }}
                               >
                                 {!ticket.discount && (
@@ -364,7 +375,7 @@ const EventViewer = (props) => {
               </p>
         <div style={{ cursor: 'pointer' }} className='host-des' onClick={() => setShowOrganizerModal(true)}>
           <p>your host</p>
-          <img src={ResolveImage(API_URL + event?.user?.imageUrl, 'profile')} style={{ borderRadius: '50%', width: '15%', height: '3em' }} />
+          <img src={ResolveImage(API_URL + event?.user?.imageUrl, 'profile')} style={{ borderRadius: '50%', width: '14%', height: '3em' }} />
           &nbsp; &nbsp; &nbsp; <span className='p-purple'>{event?.user?.companyName}</span>
         </div>
 
@@ -419,16 +430,25 @@ const EventViewer = (props) => {
                               <li
                                 key={ticket._id}
                                 className={`ticket-item ${ticket.quantity <= 0 ? 'sold-out' : ''}`}
-                                onClick={() => ticket.quantity > 0 && addToCart({
-                                         ticketId: ticket._id,
-                                         eventId: event._id,
-                                         eventName: event.name,
-                                         ticketType: ticket.type,
-                                         price: ticket.price,
-                                         discount: ticket.discount,
-                                         discountPrice: ticket.discountPrice,
-                                         ticketQuantity: ticket.quantity
-                                })}
+                                onClick={() => {
+  if (ticket.quantity > 0) {
+    if (ticket.description?.trim()?.length > 0) {
+      setSelectedTicketWithDescription(ticket);
+      setShowTicketDescriptionModal(true);
+    } else {
+      addToCart({
+        ticketId: ticket._id,
+        eventId: event._id,
+        eventName: event.name,
+        ticketType: ticket.type,
+        price: ticket.price,
+        discount: ticket.discount,
+        discountPrice: ticket.discountPrice,
+        ticketQuantity: ticket.quantity
+      });
+    }
+  }
+}}
                               >
                                 {!ticket.discount && (
                                   <div className='d-flex flex-column w-100 text-start'>
@@ -494,6 +514,37 @@ const EventViewer = (props) => {
           </div>
         </div>
         <Cart />
+
+        <CModal visible={showTicketDescriptionModal} onClose={() => setShowTicketDescriptionModal(false)} alignment="center">
+  <CModalHeader>
+    <h5>Event Description</h5>
+  </CModalHeader>
+  <CModalBody>
+    <p className='font-size-15 text-wrap text-break' dangerouslySetInnerHTML={{ __html: selectedTicketWithDescription?.description || '' }} />
+  </CModalBody>
+  <CModalBody className="d-flex justify-content-center">
+    <Button
+      text={"Add to Cart"}
+      className="linear-grad p-white"
+      onClick={() => {
+        const t = selectedTicketWithDescription;
+        addToCart({
+          ticketId: t._id,
+          eventId: event._id,
+          eventName: event.name,
+          ticketType: t.type,
+          price: t.price,
+          discount: t.discount,
+          discountPrice: t.discountPrice,
+          ticketQuantity: t.quantity
+        });
+        setShowTicketDescriptionModal(false);
+      }}
+    >
+    </Button>
+  </CModalBody>
+</CModal>
+
       </>
     );
   }

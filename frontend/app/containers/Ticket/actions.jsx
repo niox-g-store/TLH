@@ -265,7 +265,6 @@ export const ticketStatusChecker = async (cartId) => {
     }
     return true;
   } catch (error) {
-    console.error('Error checking ticket status:', error);
     return false;
   }
 };

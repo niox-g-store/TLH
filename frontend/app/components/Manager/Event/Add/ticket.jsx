@@ -35,6 +35,7 @@ const AddEventTicket = ({
       eventTickets.length === 0 ? ticketFormData : {
         type: '',
         price: '',
+        description: '',
         quantity: '',
         discount: false,
         discountPrice: '',
@@ -121,6 +122,16 @@ const RenderDiscountInfo = ({ price, discountPrice, discount }) => {
             handleEditTicket(ticket.id, { [name]: value })
           }
         />
+      </Col>
+
+      <Col xs='12' lg='6' className={`${isLightMode ? 'p-black': 'p-white'}`}>
+          <label className='mb-2'>Description</label>
+            <textarea
+              label='Description'
+              value={ticket.description}
+              placeholder='Enter ticket Description (Optional)'
+              onChange={(e) => handleEditTicket(ticket.id, { 'description': e.target.value })}
+            />
       </Col>
 
       {/* Quantity */}

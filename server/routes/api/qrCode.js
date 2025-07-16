@@ -1,57 +1,110 @@
 const express = require('express');
 const router = express.Router();
 const QRCode = require('../../models/qrCode');
+const Event = require('../../models/event');
 const Organizer = require('../../models/organizer');
 const { ROLES } = require('../../utils/constants');
 const auth = require('../../middleware/auth');
 const role = require('../../middleware/role');
 
 // GET all used QR codes (Admin and Organizer only)
-router.get('/used', auth, role.check([ROLES.Admin, ROLES.Organizer]), async (req, res) => {
+router.get('/used', auth, role.check(ROLES.Admin, ROLES.Organizer), async (req, res) => {
   try {
     if (req.user.role === ROLES.Admin) {
-      const allUsedQRCodes = await QRCode.find({ used: true }).populate('eventId ticketId');
+
+      // Get array of event IDs only
+      const userEvents = await Event.find({ user: req.user._id }).select('_id');
+      const eventIds = userEvents.map(e => e._id);
+
+      // Filter QR codes where eventId is in user's event IDs
+      const allUsedQRCodes = await QRCode.find({
+        used: true,
+        eventId: { $in: eventIds }
+      }).populate('eventId ticketId').sort('-createdAt');
+
       return res.json({ qrCodes: allUsedQRCodes });
     }
 
     const organizerId = req.user.organizer;
     const organizer = await Organizer.findById(organizerId);
-    if (!organizer) return res.status(403).json({ error: 'Organizer not found' });
+    if (!organizer) return res.status(400).json({ error: 'Organizer not found' });
 
     const qrCodes = await QRCode.find({
       used: true,
       eventId: { $in: organizer.event },
-    }).populate('eventId ticketId');
+    }).populate('eventId ticketId').sort('-createdAt');
 
     return res.json({ qrCodes });
   } catch (err) {
-    return res.status(500).json({ error: 'Failed to fetch QR codes' });
+    return res.status(400).json({ error: 'Failed to fetch QR codes' });
   }
 });
 
 // POST to verify a QR code
-router.post('/verify', async (req, res) => {
+router.post('/verify', auth, role.check(ROLES.Admin, ROLES.Organizer), async (req, res) => {
   try {
-    const { code } = req.body;
+    let { code, scannedAt } = req.body;
+    code = code.toUpperCase()
 
-    if (!code) return res.status(400).json({ error: 'QR code is required' });
+    if (!code) return res.status(400).json({ error: 'Code is required' });
 
     // Find the QR code
     const qr = await QRCode.findOne({ code }).populate('eventId ticketId');
-    if (!qr) return res.status(404).json({ error: 'QR code not found' });
+    // check if the eventId for the qr is part of the event created by the user making the requests
+    const userEvents = await Event.findById(qr.eventId);
+    if (!userEvents.user.equals(req.user._id)) {
+      return res.status(400).json({ error: "You cannot verify this code because you're not the host of this event" })
+    }
+    if (!qr) return res.status(400).json({ error: 'Code not found' });
 
     if (qr.used) {
-      return res.status(409).json({ error: 'QR code has already been used', data: qr });
+      return res.status(400).json({ error: 'Code has already been scanned', data: qr });
     }
 
     // Mark it as used
     qr.used = true;
-    qr.scannedAt = new Date();
+    qr.scannedAt = scannedAt
     await qr.save();
 
-    return res.json({ success: true, message: 'QR code verified successfully', data: qr });
+    return res.json({ success: true,
+                      message: 'Code verified successfully',
+                      qr
+    });
   } catch (err) {
-    return res.status(500).json({ error: 'Failed to verify QR code' });
+    return res.status(400).json({ error: 'Failed to verify QR code' });
+  }
+});
+
+router.post('/ticket-details', auth, role.check(ROLES.Admin, ROLES.Organizer), async (req, res) => {
+  try {
+    let { code, scanner } = req.body;
+    code = code.toUpperCase()
+
+    if (!code) return res.status(400).json({ error: 'Code is required' });
+
+    // Find the QR code
+    const qr = await QRCode.findOne({ code }).populate('eventId ticketId');
+    // check if the eventId for the qr is part of the event created by the user making the requests
+    const userEvents = await Event.findById(qr.eventId);
+    if (!userEvents.user.equals(req.user._id)) {
+      return res.status(400).json({ error: "You cannot verify this code because you're not the host of this event" })
+    }
+    if (!qr) return res.status(400).json({ error: 'Code not found' });
+
+    if (qr.used) {
+      if (scanner) {
+        return res.status(400).json({ error: 'Code has already been scanned, close the scanner and try again!', data: qr });
+      } else {
+        return res.status(400).json({ error: 'Code has already been scanned', data: qr });
+      }
+    }
+
+    await qr.save();
+
+    return res.status(200).json({ success: true, message: 'Code verified successfully', qr });
+  } catch (err) {
+    console.log(err)
+    return res.status(400).json({ error: 'Failed to verify QR code' });
   }
 });
 

@@ -90,6 +90,16 @@ const AddTicketForm = (props) => {
           />
         </Col>
 
+        <Col xs='12' lg='6' className={`${isLightMode ? 'p-black': 'p-white'}`}>
+          <label className='mb-2'>Description</label>
+            <textarea
+              label='Description'
+              value={ticketFormData.description}
+              placeholder='Enter ticket Description (Optional)'
+              onChange={(e) => ticketChange('description', e.target.value)}
+            />
+        </Col>
+
         {/* Quantity */}
         <Col className={isLightMode ? 'p-black' : 'p-white'} xs='12' lg='6'>
           <Input

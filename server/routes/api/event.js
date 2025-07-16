@@ -365,7 +365,7 @@ router.post(
   role.check(ROLES.Admin, ROLES.Organizer),
   async (req, res) => {
     try {
-      let { event, type, price, discount, quantity, discountPrice, coupons } = req.body;
+      let { event, type, price, discount, quantity, discountPrice, coupons, description } = req.body;
       const user = req.user._id;
 
       if (!event || !type || price == null) {
@@ -392,6 +392,7 @@ router.post(
           type,
           user,
           price,
+          description,
           quantity,
           discount: discount || false,
           discountPrice: discountPrice || 0,

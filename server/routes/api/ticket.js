@@ -103,7 +103,7 @@ router.post(
       const {
         type, price,
         discount, discountPrice,
-        quantity
+        quantity, description
       } = req.body;
       const coupons = req.body.coupons.length > 0 ? req.body.coupons.map(coupon => coupon.value) : [];
       const user = req.user._id;
@@ -113,6 +113,7 @@ router.post(
         user,
         price,
         quantity,
+        description,
         discount: discount || false,
         discountPrice: discountPrice || 0,
         coupons: coupons || []
@@ -152,8 +153,19 @@ router.put(
   role.check(ROLES.Admin, ROLES.Organizer),
   async (req, res) => {
     try {
-      const { type, discount, price, discountPrice, quantity } = req.body;
-      const coupons = req.body.coupons.length > 0 ? req.body.coupons.map(coupon => coupon.value) : [];
+      const { type, discount, description, price, discountPrice, quantity } = req.body;
+      let coupons = [];
+
+      if (Array.isArray(req.body.coupons) && req.body.coupons.length > 0) {
+        coupons = req.body.coupons.map(coupon => {
+          if (typeof coupon === 'object' && coupon !== null) {
+            return coupon._id ? coupon._id : coupon.value;
+          }
+          return coupon; // fallback in case it's a string or unexpected format
+        });
+      }
+
+      //coupons = req.body.coupons.length > 0 ? req.body.coupons.map(coupon => coupon.value) : [];
       const updatedTicket = await Ticket.findByIdAndUpdate(
         req.params.id,
         {
@@ -161,6 +173,7 @@ router.put(
           coupons,
           type,
           quantity,
+          description,
           discount,
           discountPrice
         },

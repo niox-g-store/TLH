@@ -81,6 +81,16 @@ const assignQrCode = async (order, cart) => {
         const qrPayload = JSON.stringify(ppayload);
 
         const qrBuffer = await QRCode.toBuffer(qrPayload);
+        let name;
+        if (!isGuest) {
+          if (userOrGuestId.organizer) {
+            name = userOrGuestId.organizer.companyName
+          } else {
+            name = userOrGuestId.name
+          }
+        } else {
+          name = userOrGuestId.name
+        }
 
         const qr = new QRCODE({
           eventId,
@@ -97,6 +107,8 @@ const assignQrCode = async (order, cart) => {
           couponPercentage,
           order: order._id,
           ownedBy: userOrGuestId,
+          billingEmail: userOrGuestId.email,
+          billingName: name,
           ownedByModel: isGuest ? 'Guest' : 'User',
           code: shortCode,
           bytes: qrBuffer

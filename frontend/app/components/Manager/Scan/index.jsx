@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import {
   CCard, CCardBody, CCardTitle, CForm, CFormInput, CButton,
@@ -7,18 +7,24 @@ import {
   CModalHeader, CModalTitle, CModalBody, CModalFooter
 } from '@coreui/react';
 import QRScanner from './QrScanner';
-import { withRouter } from '../../../withRouter';
 import actions from '../../../actions';
+import { formatDateScan } from '../../../utils/formatDate';
 import LoadingIndicator from '../../store/LoadingIndicator';
 
 const ManagerScannerView = (props) => {
   const { isLoading,
-          isLightMode, scannedTicket = [],
-          addScannedTicket, scannedTickets } = props;
-  const [code, setCode] = useState('');
+          isLightMode, scannedTicket = {},
+          addScannedTicket, scannedTickets = [],
+          showScanModal, getTicketDetails,
+          code, setCode } = props;
   const [showScanner, setShowScanner] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const ticketsPerPage = 10;
+  useEffect(() => {
+    if (showScanModal) {
+      setShowScanner(false);
+    }
+  }, [showScanModal]);
 
   const startIndex = (currentPage - 1) * ticketsPerPage;
   const currentTickets = scannedTickets.slice(startIndex, startIndex + ticketsPerPage);
@@ -28,16 +34,21 @@ const ManagerScannerView = (props) => {
     if (code.trim()) {
       const ticket = {
         code,
-        event: 'Unknown Event',
-        ticketType: 'Unknown',
-        owner: 'User',
-        used: false,
-        scannedAt: new Date().toLocaleString()
+        scannedAt: new Date()
       };
-      addScannedTicket(ticket);
-      setCode('');
+      getTicketDetails(ticket);
     }
   };
+  const handleTicketCheckIn = () => {
+    if (code.trim()) {
+      const ticket = {
+        code,
+        scannedAt: new Date()
+      }
+      addScannedTicket(ticket);
+      setCode('')
+    }
+  }
 
   return (
     <div className='container-lg px-4 d-flex flex-column'>
@@ -55,36 +66,33 @@ const ManagerScannerView = (props) => {
             <CButton className='linear-grad p-white' onClick={handleScan}>Scan Ticket</CButton>
           </CForm>
 
-          <CButton style={{ width: 'fit-content', alignSelf: 'center' }} className='linear-grad p-white' onClick={() => setShowScanner(true)}>
+          <CButton style={{ width: 'fit-content', alignSelf: 'center', padding: '15px' }} className='linear-grad p-white' onClick={() => setShowScanner(true)}>
             Scan QR Code
           </CButton>
 
-          <CModal visible={showScanner} onClose={() => setShowScanner(false)} fullscreen>
-            <CModalHeader>
-              <CModalTitle>Scan Ticket</CModalTitle>
-            </CModalHeader>
-            <CModalBody className='d-flex justify-content-center align-items-center'>
-              <QRScanner
-                onScanSuccess={(code) => {
-                  const ticket = {
-                    code,
-                    event: 'Scanned Event',
-                    ticketType: 'QR',
-                    owner: 'User',
-                    used: false,
-                    scannedAt: new Date().toLocaleString()
-                  };
-                  addScannedTicket(ticket);
-                  setShowScanner(false);
-                }}
-              />
-            </CModalBody>
-            <CModalFooter>
-              <CButton color="secondary" onClick={() => setShowScanner(false)}>
-                Close
-              </CButton>
-            </CModalFooter>
-          </CModal>
+<CModal visible={showScanner} onClose={() => setShowScanner(false)} fullscreen>
+  <CModalHeader>
+    <CModalTitle>Scan Ticket</CModalTitle>
+  </CModalHeader>
+  <CModalBody className='d-flex justify-content-center align-items-center'>
+    {showScanner && (
+      <QRScanner
+        onScanSuccess={(code) => {
+            const codeData = JSON.parse(code);
+            setCode(codeData.code);
+            getTicketDetails({ code: codeData.code, scannedAt: new Date() }, true);
+            // don’t close modal yet, let user see result
+        }}
+      />
+    )}
+  </CModalBody>
+  <CModalFooter style={{ justifyContent: 'center' }}>
+    <CButton className="purple-bg p-white" onClick={() => setShowScanner(false)}>
+      Close
+    </CButton>
+  </CModalFooter>
+</CModal>
+
         </CCardBody>
       </CCard>
 
@@ -97,7 +105,9 @@ const ManagerScannerView = (props) => {
                 <CTableHeaderCell>#</CTableHeaderCell>
                 <CTableHeaderCell>Code</CTableHeaderCell>
                 <CTableHeaderCell>Event</CTableHeaderCell>
-                <CTableHeaderCell>Type</CTableHeaderCell>
+                <CTableHeaderCell>Ticket Type</CTableHeaderCell>
+                <CTableHeaderCell>Name</CTableHeaderCell>
+                <CTableHeaderCell>Email</CTableHeaderCell>
                 <CTableHeaderCell>Owner</CTableHeaderCell>
                 <CTableHeaderCell>Status</CTableHeaderCell>
                 <CTableHeaderCell>Scanned At</CTableHeaderCell>
@@ -108,15 +118,17 @@ const ManagerScannerView = (props) => {
                 <CTableRow key={index}>
                   <CTableDataCell>{startIndex + index + 1}</CTableDataCell>
                   <CTableDataCell>{ticket.code}</CTableDataCell>
-                  <CTableDataCell>{ticket.event}</CTableDataCell>
+                  <CTableDataCell>{ticket.eventName}</CTableDataCell>
                   <CTableDataCell>{ticket.ticketType}</CTableDataCell>
-                  <CTableDataCell>{ticket.owner}</CTableDataCell>
+                  <CTableDataCell>{ticket.billingName || ''}</CTableDataCell>
+                  <CTableDataCell>{ticket.billingEmail || ''}</CTableDataCell>
+                  <CTableDataCell>{ticket.ownedByModel || ''}</CTableDataCell>
                   <CTableDataCell>
-                    <CBadge color={ticket.used ? 'danger' : 'success'}>
+                    <CBadge color={ticket.used ? 'success' : 'danger'}>
                       {ticket.used ? 'Used' : 'Valid'}
                     </CBadge>
                   </CTableDataCell>
-                  <CTableDataCell>{ticket.scannedAt}</CTableDataCell>
+                  <CTableDataCell>{formatDateScan(ticket.scannedAt)}</CTableDataCell>
                 </CTableRow>
               ))}
             </CTableBody>
@@ -129,7 +141,6 @@ const ManagerScannerView = (props) => {
             <CPagination className='mb-0'>
               {[...Array(totalPages)].map((_, index) => (
                 <CPaginationItem
-                  isLightMode={isLightMode}
                   key={index}
                   active={index + 1 === currentPage}
                   onClick={() => {
@@ -144,13 +155,60 @@ const ManagerScannerView = (props) => {
           </div>
         </CCardBody>
       </CCard>
+
+<CModal visible={showScanModal} onClose={() => {}}>
+  <CModalHeader>
+    <CModalTitle>Ticket Details</CModalTitle>
+  </CModalHeader>
+  <CModalBody>
+    {scannedTicket && (
+      <div className='d-flex flex-column gap-2'>
+        <p><strong>Code: </strong>{scannedTicket.code || 'N/A'}</p>
+        <p><strong>Name:</strong> {scannedTicket.billingName || 'N/A'}</p>
+        <p><strong>Email:</strong> {scannedTicket.billingEmail || 'N/A'}</p>
+        <p><strong>Owner Type:</strong> {scannedTicket.ownedByModel}</p>
+        <p><strong>Event:</strong> {scannedTicket.eventName}</p>
+        <p><strong>Ticket Type:</strong> {scannedTicket.ticketType}</p>
+
+        {/* Coupon Info */}
+        {scannedTicket.coupon && (
+          <>
+            <p><strong>Coupon:</strong> {scannedTicket.coupon}</p>
+            {scannedTicket.couponAmount > 0 && (
+              <p><strong>Coupon Discount:</strong> ₦{scannedTicket.couponAmount} off</p>
+            )}
+            {scannedTicket.couponPercentage > 0 && (
+              <p><strong>Coupon Discount:</strong> {scannedTicket.couponPercentage}% off</p>
+            )}
+          </>
+        )}
+
+        {/* Ticket Discount Info */}
+        {scannedTicket.discount && (
+          <>
+            <p><strong>Original Price:</strong> ₦{scannedTicket.price}</p>
+            <p><strong>Discount Amount:</strong> ₦{scannedTicket.discountAmount}</p>
+            <p><strong>Discounted Price:</strong> ₦{scannedTicket.discountPrice}</p>
+          </>
+        )}
+      </div>
+    )}
+  </CModalBody>
+  <CModalFooter style={{ justifyContent: 'center' }}>
+    <CButton onClick={handleTicketCheckIn} className="purple-bg p-white">Check in</CButton>
+  </CModalFooter>
+</CModal>
     </div>
   );
 };
 class ManagerScanner extends React.PureComponent {
   componentDidMount () {
-    this.props.fetchEvents();
+    this.props.fetchScannedTicket();
   }
+
+  /*componentDidUpdate() {
+    this.props.fetchScannedTicket();
+  }*/
 
   render () {
     return (
@@ -163,7 +221,9 @@ const mapStateToProps = state => ({
   scannedTickets: state.scan.scannedTickets,
   scannedTicket: state.scan.scannedTicket,
   isLightMode: state.dashboard.isLightMode,
-  isLoading: state.scan.isLoading
+  isLoading: state.scan.isLoading,
+  showScanModal: state.scan.showScanModal,
+  code: state.scan.code,
 });
 
 export default connect(mapStateToProps, actions)(ManagerScanner);

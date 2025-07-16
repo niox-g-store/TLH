@@ -228,6 +228,7 @@ export const addEventTicket = (navigate) => {
       const ticketsPayload = eventTickets.map((ticket) => ({
         type: ticket.type,
         price: parseFloat(ticket.price),
+        description: ticket.description,
         discount: ticket.discount || false,
         quantity: ticket.quantity || 0,
         coupons: ticket.coupons || [],

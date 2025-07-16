@@ -31,6 +31,14 @@ const qrCodeSchema = new mongoose.Schema({
     required: true,
     enum: ['User', 'Guest']
   },
+  billingEmail: {
+    type: String,
+    default: ""
+  },
+  billingName: {
+    type: String,
+    default: ""
+  },
   bytes: {
     type: Buffer,
     required: true

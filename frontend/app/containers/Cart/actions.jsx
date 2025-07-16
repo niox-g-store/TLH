@@ -534,7 +534,7 @@ export const checkout = (navigate, guest=null) => {
       const userId = user._id
       let user_name;
       if (user.role === ROLES.Organizer) {
-        user_name = user.organizer.companyName
+        user_name = user.companyName
       } else {
         user_name = user.name
       }
