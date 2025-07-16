@@ -577,6 +577,7 @@ export const checkout = (navigate, guest=null) => {
           amountBeforeDiscount: price,
           billingEmail: email !== undefined || null ? email : userEmail,
         });
+        console.log(emptyOrder)
         if (emptyOrder.status === 200) {
             const response = await axios.put(`${API_URL}/order/edit/order`, {
               orderId: emptyOrder.data.orderId,
