@@ -566,32 +566,32 @@ export const checkout = (navigate, guest=null) => {
 
       if (total === 0) { // free ticket
         dispatch(setCartLoading(true));
-        const emptyOrder = await axios.post(`${API_URL}/order/add`, {
+
+        const { data: { order }, status } = await axios.post(`${API_URL}/order/add`, {
           cart: cartId,
-          user: { email: userEmail, name: user_name, _id: userId},
+          user: { email: userEmail, name: user_name, _id: userId },
           guest: email && name && _id ? { email, name, _id } : null,
           events: eventIds,
           tickets: ticketIds,
           finalAmount: total,
-          discountPrice: discountPrice,
+          discountPrice,
           amountBeforeDiscount: price,
-          billingEmail: email !== undefined || null ? email : userEmail,
+          billingEmail: email || userEmail,
         });
-        console.log(emptyOrder)
-        if (emptyOrder.status === 200) {
-            const response = await axios.put(`${API_URL}/order/edit/order`, {
-              orderId: emptyOrder.data.orderId,
-              status: true,
-              guest: email && name && _id ? { email, name, _id } : null,
-            });
-            if (response && response.status === 200) {
-              // free ticket add order, mark order as paid, send user to success page
-              navigate(`/order/success/${name ? 'guest-' + response.data.order._id : response.data.order._id}`)
-              dispatch(setCartLoading(false));
-              return;
-            }
-        }
 
+        if (status === 200 && order && order._id) {
+          const response = await axios.put(`${API_URL}/order/edit/order`, {
+            orderId: order._id,
+            status: true,
+            guest: email && name && _id ? { email, name, _id } : null,
+          });
+
+          if (response?.status === 200) {
+            const id = name ? `guest-${response.data.order._id}` : response.data.order._id;
+            navigate(`/order/success/${id}`);
+            return;
+          }
+        }
       }
 
 

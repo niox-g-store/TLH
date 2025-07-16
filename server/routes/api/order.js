@@ -143,7 +143,7 @@ const newObjectId = async() => {
 
 router.post('/add', async (req, res) => {
   try {
-    const {
+    let {
       cart,
       guest,
       user,
@@ -317,6 +317,7 @@ router.put('/edit/order/', async (req, res) => {
         });
       }
     } catch (error) {
+      console.log(error)
       return res.status(400).json({
         error: 'Your request could not be processed. Please try again.'
       });

@@ -4,7 +4,7 @@ const orderSchema = new mongoose.Schema({
   _id: {
     type: String,
     auto: true,
-    default: mongoose.Schema.ObjectId,
+    required: true
   },
   user: {
     _id: {
