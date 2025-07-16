@@ -141,9 +141,10 @@ const newObjectId = async() => {
   return uniqueCode;
 }
 
+
 router.post('/add', async (req, res) => {
   try {
-    let {
+    const {
       cart,
       guest,
       user,
@@ -155,6 +156,7 @@ router.post('/add', async (req, res) => {
       payStackId,
       billingEmail,
     } = req.body;
+    const ID = await newObjectId();
 
     const cartDoc = await Cart.findById(cart);
     if (!cartDoc) {
@@ -164,11 +166,12 @@ router.post('/add', async (req, res) => {
         cartDoc.guest = guest
         await cartDoc.save()
     }
-    const fetchOrder = await Order.findOne({ payStackId: payStackId })
-    if (fetchOrder) {
-      return res.status(200).json({ order: fetchOrder })
+    if (payStackId) {
+      const fetchOrder = await Order.exists({ payStackId: payStackId })
+      if (fetchOrder) {
+        return res.status(200).json({ order: fetchOrder })
+      }
     }
-    const ID = await newObjectId();
 
     const order = new Order({
       _id: ID,
@@ -189,7 +192,7 @@ router.post('/add', async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      orderId: order._id
+      order
     });
   } catch (error) {
     return res.status(400).json({
@@ -317,7 +320,6 @@ router.put('/edit/order/', async (req, res) => {
         });
       }
     } catch (error) {
-      console.log(error)
       return res.status(400).json({
         error: 'Your request could not be processed. Please try again.'
       });

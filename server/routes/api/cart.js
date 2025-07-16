@@ -7,8 +7,7 @@ const auth = require('../../middleware/auth');
 router.post('/add', async (req, res) => {
   try {
     const { item, user } = req.body;
-    console.log(user)
-    
+
     if (!item) {
       return res.status(400).json({ error: 'No items provided' });
     }
@@ -20,7 +19,6 @@ router.post('/add', async (req, res) => {
     });
     
     await cart.save();
-    console.log(cart)
     
     return res.status(200).json({
       success: true,

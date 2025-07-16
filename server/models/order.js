@@ -3,13 +3,11 @@ const mongoose = require('mongoose');
 const orderSchema = new mongoose.Schema({
   _id: {
     type: String,
-    auto: true,
     required: true
   },
   user: {
     _id: {
-      type: mongoose.Schema.ObjectId,
-      ref: 'User',
+      type: String,
       default: null
     },
     name: {

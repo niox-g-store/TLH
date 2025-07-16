@@ -35,7 +35,6 @@ export const resetBanks = () => {
 export const accountChange = (name, value) => {
   let formData = {};
   formData[name] = value;
-  console.log(formData)
   return {
     type: ACCOUNT_CHANGE,
     payload: formData
