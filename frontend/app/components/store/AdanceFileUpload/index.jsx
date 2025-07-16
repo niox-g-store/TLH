@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { AiOutlineUpload } from 'react-icons/ai';
 import { FaFileVideo } from 'react-icons/fa';
 
-const MAX_IMAGE_SIZE = 2 * 1024 * 1024;  // 2MB
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;  // 5MB
 const MAX_VIDEO_SIZE = 20 * 1024 * 1024; // 20MB
 
 const AdvancedUpload = (props) => {
