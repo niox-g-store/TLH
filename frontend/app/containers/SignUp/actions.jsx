@@ -72,7 +72,7 @@ export const organizerSignupSubmit = () => {
       const rules = {
         email: 'required|email',
         password: 'required|min:6',
-        companyName: 'required|not_starts_with_the_link',
+        companyName: 'required|not_starts_with_the_link|not_starts_with_the_link_or_reserved',
         userName: 'required|username_format',
         confirmPassword: 'required|confirmed:password',
         phoneNumber: 'required'
@@ -104,7 +104,6 @@ export const organizerSignupSubmit = () => {
         ...newUser
       };
       const response = await axios.post(`${API_URL}/auth/register/organizer`, user);
-      const userid = response.data.user.id
 
       const successfulOptions = {
         title: `You have signed up successfully!`,

@@ -3,97 +3,63 @@ import {
   CCardBody,
   CCardTitle,
   CForm,
-  CFormInput,
   CButton,
   CAlert,
   CFormSwitch,
   CCollapse
 } from '@coreui/react';
-import { useState } from 'react';
+import React from 'react';
+import Input from '../../Common/HtmlTags/Input';
+import actions from '../../../actions';
+import { connect } from 'react-redux';
+import LoadingIndicator from '../../store/LoadingIndicator';
 
-const AccountSecurity = ({ isLightMode }) => {
-  const [formData, setFormData] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
-  });
-  const [alert, setAlert] = useState({ show: false, message: '', color: '' });
-
-  const [is2FAEnabled, setIs2FAEnabled] = useState(false);
-  const [show2FASetup, setShow2FASetup] = useState(false);
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+const AccountSecurityForm = (props) => {
+  const {
+    isLightMode, resetFormData,
+    handleToggle2FA, resetAccountPassword,
+    resetPasswordChange, formErrors,
+    isLoading
+  } = props;
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (!formData.currentPassword || !formData.newPassword || !formData.confirmPassword) {
-      return setAlert({ show: true, message: 'All fields are required.', color: 'danger' });
-    }
-
-    if (formData.newPassword !== formData.confirmPassword) {
-      return setAlert({ show: true, message: 'Passwords do not match.', color: 'warning' });
-    }
-
-    setAlert({ show: true, message: 'Password changed successfully.', color: 'success' });
-    setFormData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    resetAccountPassword();
   };
-
-  const handleToggle2FA = () => {
-    if (is2FAEnabled) {
-      setAlert({ show: true, message: 'Two-Factor Authentication disabled.', color: 'danger' });
-      setIs2FAEnabled(false);
-      setShow2FASetup(false);
-    } else {
-      setIs2FAEnabled(true);
-      setShow2FASetup(true);
-    }
-  };
-
   return (
     <div data-aos="fade-up" className="container-lg px-4 mb-5">
+      { isLoading && <LoadingIndicator /> }
       <CCard className={`${isLightMode ? '' : 'border-0'}`}>
         <CCardBody className={`${isLightMode ? 'bg-white' : 'bg-black'}`}>
           <CCardTitle className={`${isLightMode ? 'p-black' : 'p-white'} mb-3 font-size-30`}>
             Account Security
           </CCardTitle>
 
-          {alert.show && (
-            <CAlert color={alert.color} dismissible onClose={() => setAlert({ ...alert, show: false })}>
-              {alert.message}
-            </CAlert>
-          )}
-
           {/* Password Change Section */}
           <CForm className={`${isLightMode ? 'p-black' : 'p-white'}`} onSubmit={handleSubmit}>
-            <CFormInput
+            <Input
               type="password"
-              name="currentPassword"
-              label="Current Password"
-              placeholder="Enter current password"
+              name="password"
+              label="Old Password"
+              placeholder="Enter Old password"
               className="mb-3"
-              value={formData.currentPassword}
-              onChange={handleChange}
+              value={resetFormData.password}
+              error={formErrors['password']}
+              onInputChange={(name, value) => {
+                resetPasswordChange(name, value);
+              }}              
             />
-            <CFormInput
-              type="password"
-              name="newPassword"
-              label="New Password"
-              placeholder="Enter new password"
-              className="mb-3"
-              value={formData.newPassword}
-              onChange={handleChange}
-            />
-            <CFormInput
+            <Input
               type="password"
               name="confirmPassword"
-              label="Confirm New Password"
-              placeholder="Confirm new password"
+              label="New Password"
+              placeholder="Enter new password"
               className="mb-4"
-              value={formData.confirmPassword}
-              onChange={handleChange}
+              value={resetFormData.confirmPassword}
+              error={formErrors['confirmPassword']}
+              onInputChange={(name, value) => {
+                resetPasswordChange(name, value);
+              }}              
             />
             <CButton type="submit" className="linear-grad p-white mb-4">
               Change Password
@@ -103,7 +69,7 @@ const AccountSecurity = ({ isLightMode }) => {
           <hr />
 
           {/* 2FA Toggle */}
-          <div className='mb-3'>
+          {/*<div className='mb-3'>
             <div className='d-flex justify-content-between align-items-center'>
               <label className={`${isLightMode ? 'p-black' : 'p-white'} fw-bold mb-0`}>
                 Two-Factor Authentication (2FA)
@@ -115,7 +81,6 @@ const AccountSecurity = ({ isLightMode }) => {
             </div>
           </div>
 
-          {/* 2FA Setup Section */}
           <CCollapse visible={show2FASetup}>
             <div className="p-3 border rounded bg-light text-dark">
               <p>
@@ -128,11 +93,31 @@ const AccountSecurity = ({ isLightMode }) => {
                 Setup 2FA
               </CButton>
             </div>
-          </CCollapse>
+          </CCollapse>*/}
         </CCardBody>
       </CCard>
     </div>
   );
 };
 
-export default AccountSecurity;
+class AccountSecurity extends React.PureComponent {
+  componentDidMount() {
+    const token = this.props.match.params.token;
+    if (token) {
+      this.props.resetPassword(token);
+    }
+  }
+  render () {
+    return (
+      <AccountSecurityForm {...this.props} />
+    );
+  }
+}
+
+const mapStateToProps = state => ({
+  resetFormData: state.account.resetFormData,
+  formErrors: state.account.formErrors,
+  isLoading: state.account.isLoading,
+  isLightMode: state.dashboard.isLightMode,
+});
+export default connect(mapStateToProps, actions)(AccountSecurity);

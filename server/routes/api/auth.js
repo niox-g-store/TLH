@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const passport = require('passport');
-
+const mailgun = require('../../services/mailgun');
 const auth = require('../../middleware/auth');
 const User = require('../../models/user');
 const Organizer = require('../../models/organizer');
@@ -75,6 +75,9 @@ router.post('/login', async (req, res) => {
                 'No user found for this email address.' :
                 'No user found with that username.' });
     }
+    if (user?.banned) {
+      return res.status(400).json({ error: 'You cannot login at this time' })
+    }
 
     if (user && user.provider !== EMAIL_PROVIDER.Email) {
       return res.status(400).send({
@@ -101,11 +104,11 @@ router.post('/login', async (req, res) => {
       throw new Error();
     }
 
-    /*await mailgun.sendEmail(
+    await mailgun.sendEmail(
       user.email,
       'signin',
       user
-    );*/
+    );
 
     return res.status(200).json({
       success: true,
@@ -148,7 +151,7 @@ router.post('/register', async (req, res) => {
     }
 
     const existingUser = await User.findOne({ email });
-    if (existingUser.banned) {
+    if (existingUser?.banned) {
       return res.status(400).json({ error: 'You cannot sign up at this time' })
     }
     if (existingUser) {
@@ -191,11 +194,11 @@ router.post('/register', async (req, res) => {
       id: registeredUser.id
     };
 
-    /*await mailgun.sendEmail(
+    await mailgun.sendEmail(
       registeredUser.email,
       'signup',
       registeredUser
-    );*/
+    );
 
     const token = jwt.sign(payload, secret, { expiresIn: tokenLife });
 
@@ -258,7 +261,6 @@ router.post('/register/organizer', async (req, res) => {
         .json({ error: 'That email address is already in use.' });
     }
 
-
     
     const existingUserName = await User.findOne({ userName });
     if (existingUserName) {
@@ -317,11 +319,11 @@ router.post('/register/organizer', async (req, res) => {
       id: registeredUser.id
     };
 
-    /*await mailgun.sendEmail(
+    await mailgun.sendEmail(
       registeredUser.email,
-      'signup',
+      'organizer-signup',
       registeredUser
-    );*/
+    );
 
     const token = jwt.sign(payload, secret, { expiresIn: tokenLife });
 
@@ -462,7 +464,7 @@ router.post('/reset', auth, async (req, res) => {
     if (!existingUser) {
       return res
         .status(400)
-        .json({ error: 'That email address is already in use.' });
+        .json({ error: 'That email does not exist' });
     }
 
     const isMatch = await bcrypt.compare(password, existingUser.password);
@@ -471,6 +473,12 @@ router.post('/reset', auth, async (req, res) => {
       return res
         .status(400)
         .json({ error: 'Please enter your correct old password.' });
+    }
+    const oldPasswordMatch = await bcrypt.compare(confirmPassword, existingUser.password);
+    if (oldPasswordMatch) {
+      return res
+        .status(400)
+        .json({ error: "Your new password can't be the same as your current password. Choose a different one." })
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -629,29 +637,5 @@ router.post('/google/signin', async (req, res) => {
     })
   }
 });
-
-/*router.get(
-  '/facebook',
-  passport.authenticate('facebook', {
-    session: false,
-    scope: ['public_profile', 'email']
-  })
-);
-
-router.get(
-  '/facebook/callback',
-  passport.authenticate('facebook', {
-    failureRedirect: `${keys.app.clientURL}/login`,
-    session: false
-  }),
-  (req, res) => {
-    const payload = {
-      id: req.user.id
-    };
-    const token = jwt.sign(payload, secret, { expiresIn: tokenLife });
-    const jwtToken = `Bearer ${token}`;
-    res.redirect(`${keys.app.clientURL}/auth/success?token=${jwtToken}`);
-  }
-);*/
 
 module.exports = router;

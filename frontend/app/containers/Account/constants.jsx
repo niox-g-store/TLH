@@ -17,3 +17,8 @@ export const RESET_BANK = 'src/Account/RESET_BANK';
 export const RESET_BANK_FORM_ERROR = 'src/Account/RESET_BANK_FORM_ERROR';
 export const SET_BANK_FORM_ERROR = 'src/Account/SET_BANK_FORM_ERROR';
 export const SET_PROFILE_EDIT_ERRORS = 'src/Account/SET_PROFILE_EDIT_ERRORS';
+
+export const PASSWORD_CHANGE = 'src/Account/PASSWORD_CHANGE';
+export const RESET_PASSWORD_RESET = 'src/Account/RESET_PASSWORD_RESET';
+export const SET_RESET_PASSWORD_FORM_ERRORS = 'src/Account/SET_RESET_PASSWORD_FORM_ERRORS';
+export const SET_TWO_FACTOR = 'src/Account/SET_TWO_FACTOR';

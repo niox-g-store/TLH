@@ -517,7 +517,7 @@ const EventViewer = (props) => {
 
         <CModal visible={showTicketDescriptionModal} onClose={() => setShowTicketDescriptionModal(false)} alignment="center">
   <CModalHeader>
-    <h5>Event Description</h5>
+    <h5>Ticket Description</h5>
   </CModalHeader>
   <CModalBody>
     <p className='font-size-15 text-wrap text-break' dangerouslySetInnerHTML={{ __html: selectedTicketWithDescription?.description || '' }} />

@@ -8,7 +8,7 @@
         }
         img {
             margin-bottom: -5px;
-            height: 101vh;
+            height: auto;
         }
     }
 
@@ -18,7 +18,8 @@
             height: 100%;
             margin-left: 0px;
             position: relative;
-            margin-left: 2em;
+            padding-top: 3em;
+            flex-wrap: nowrap;
         }
         width: 100%;
     }

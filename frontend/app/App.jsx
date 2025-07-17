@@ -27,6 +27,8 @@ import EventView from './containers/Events/view';
 import Terms from './containers/Terms';
 import PrivacyPolicy from './containers/Policy';
 import OrderSuccess from './containers/Order/success';
+import ForgotPassword from './containers/ForgotPassword';
+import AccountSecurity from './components/Manager/Security';;
 
 const App = (props) => {
   const { user } = props;
@@ -78,6 +80,9 @@ const App = (props) => {
         <Route path='/signup' element={<Signup />} />
         <Route path='/organizer-signup' element={<OrganizerSignUp />} />
 
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<AccountSecurity />} />
+
         <Route path='/faq' element={<FAQs />} />
         <Route path='/terms' element={<Terms />} />
         <Route path='/privacy' element={<PrivacyPolicy />} />
@@ -91,7 +96,6 @@ const App = (props) => {
 }
 
 const mapStateToProps = (state) => {
-  console.log(state)
   return {
     user: state.account.user
   };

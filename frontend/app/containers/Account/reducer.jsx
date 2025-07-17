@@ -17,7 +17,12 @@ import {
 
   RESET_BANK_FORM_ERROR,
   SET_BANK_FORM_ERROR,
-  SET_PROFILE_EDIT_ERRORS
+  SET_PROFILE_EDIT_ERRORS,
+
+  PASSWORD_CHANGE,
+  SET_TWO_FACTOR,
+  SET_RESET_PASSWORD_FORM_ERRORS,
+  RESET_PASSWORD_RESET
 } from './constants';
 
 const initialState = {
@@ -37,6 +42,11 @@ const initialState = {
     phoneNumber: '',
   },
   isLoading: false,
+  resetFormData: {
+    password: '',
+    confirmPassword: ''
+  },
+  formErrors: {},
 
   banks: [],
   bankFormError: {},
@@ -50,6 +60,25 @@ const initialState = {
 
 const accountReducer = (state = initialState, action) => {
   switch (action.type) {
+    case PASSWORD_CHANGE:
+      return {
+        ...state,
+        resetFormData: {...state.resetFormData, ...action.payload}
+      };
+    case SET_RESET_PASSWORD_FORM_ERRORS:
+      return {
+        ...state,
+        formErrors: action.payload
+      }
+    case RESET_PASSWORD_RESET:
+      return {
+        ...state,
+        resetFormData: {
+          password: '',
+          confirmPassword: ''
+        },
+        formErrors: {}
+      }
     case SET_PROFILE_EDIT_ERRORS:
       return {
         ...state,

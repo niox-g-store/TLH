@@ -4,6 +4,29 @@ import { validateImage } from "image-validator";
 import en from 'validatorjs/src/lang/en';
 
 Validator.setMessages('en', en);
+const RESERVED_PREFIXES = [
+  'support',
+  'management',
+  'orders',
+  'security',
+  'auth',
+  'newsletter',
+  'no-reply',
+  'info',
+  'admin',
+  'contact'
+];
+
+Validator.register(
+  'not_starts_with_the_link_or_reserved',
+  function (value) {
+    if (!value) return true;
+
+    const normalized = value.replace(/\s+/g, '').toLowerCase();
+    return !RESERVED_PREFIXES.some(prefix => normalized.startsWith(prefix));
+  },
+  'Company name cannot start with any reserved names like support, management, orders, auth, etc.'
+);
 
 Validator.register(
   'username_format',

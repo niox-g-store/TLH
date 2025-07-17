@@ -33,3 +33,24 @@
   background-color: white;
   color: black;
 }
+
+.ql-toolbar { /* overide the header background */
+  background-color: white !important;
+}
+.ql-expanded {
+  background-color: white;
+  color: black !important;
+}
+
+.ql-formats {
+  background-color: white !important;
+}
+
+.ql-picker-label {
+  color: black !important;
+  background-color: white;
+}
+
+.ql-picker-item {
+  color: black !important;
+}

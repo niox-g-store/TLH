@@ -82,7 +82,7 @@ const LoginForm = (props) => {
               </div>
 
               <div className="forget-pass">
-                <a href="#">Forget Password?</a>
+                <a href="/forgot-password">Forget Password?</a>
               </div>
             </div>
 

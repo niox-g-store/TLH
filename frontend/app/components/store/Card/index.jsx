@@ -1,6 +1,4 @@
-import React from "react";
 import "./style.css";
-import { getCurrentUserDetail } from "../../../../../Backend/auth";
 import { getRegistrationStatus, formatDateRange, formatReadableDate } from "./functions";
 import { useNavigate } from "react-router-dom";
 import ResolveImage from "../ResolveImage";
@@ -12,12 +10,10 @@ import { RxLapTimer } from "react-icons/rx";
 
 const Card = ({ event, type = "event" }) => {
   const navigate = useNavigate();
-  const currentUser = getCurrentUserDetail() ?? null;
-  const userID = currentUser ? currentUser.id : null;
 
   if (type === "gallery") {
     return (
-      <div className="card-wrapper" userid={userID}>
+      <div className="card-wrapper">
         <div className="card-body">
           <img loading="lazy" src={ResolveImage(API_URL + event.bannerUrl)} alt={event.name} width={100} height={100} />
           <h3 className="card-title">{event.name}</h3>
@@ -39,7 +35,7 @@ const Card = ({ event, type = "event" }) => {
   // Default: Event Card
   return (
     <Link to={`/event/${event.slug}`}>
-    <div className="card-wrapper" userid={userID}>
+    <div className="card-wrapper">
       <div className="card-body">
         <img
           src={ResolveImage(`${API_URL}${event.imageUrls[0]}` || '')}

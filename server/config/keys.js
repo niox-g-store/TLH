@@ -27,7 +27,7 @@ module.exports = {
     key: process.env.MAILCHIMP_KEY,
     listKey: process.env.MAILCHIMP_LIST_KEY
   },*/
-  /*mailgun: {
+  mailgun: {
     key: process.env.MAILGUN_KEY,
     domain: process.env.MAILGUN_DOMAIN,
     sender: process.env.MAILGUN_EMAIL_SENDER,
@@ -44,7 +44,7 @@ module.exports = {
     news: process.env.MAILGUN_EMAIL_NEWS_SENDER,
     test_news: process.env.MAILGUN_EMAIL_TEST_NEWS,
     domain_unsubscribe :process.env.MAILGUN_DOMAIN_UNSUBSCRIBE,
-  },*/
+  },
   /*adminEmail: {
     adminEmail: process.env.ADMIN_EMAIL,
     secondAdminEmail: process.env.TEMP_ADMIN_EMAIL

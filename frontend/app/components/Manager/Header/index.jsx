@@ -9,6 +9,8 @@ import { CgMenuRightAlt } from 'react-icons/cg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@coreui/coreui/dist/css/coreui.min.css';
 import { useDispatch } from 'react-redux';
+import ResolveImage from '../../store/ResolveImage';
+import { API_URL } from '../../../constants';
 
 const HeaderPanel = (props) => {
   const { user, toggleMenu, isMenuOpen, toggleDashboardTheme, isLightMode } = props;
@@ -60,7 +62,7 @@ const HeaderPanel = (props) => {
         height: '2.2em',
         fontSize: '1.2em'
       }}>
-        {initials}
+        <div style={{ borderRadius: '50%', width: '100%', height: '100%', background: `url(${ResolveImage(API_URL + user.imageUrl, 'profile')}) no-repeat center/cover` }} />
       </CAvatar>
     </div>
   </CContainer>
