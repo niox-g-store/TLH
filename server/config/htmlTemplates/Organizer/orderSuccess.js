@@ -1,18 +1,9 @@
 const moment = require('moment');
 
-exports.invoiceEmailHtml = (order) => {
-    const eventNames = order.eventNames;
-
-    const uniqueEventNames = [...new Set(eventNames)];
-
-    let eventNamesFormatted;
-    if (uniqueEventNames.length > 1) {
-        const lastEvent = uniqueEventNames[uniqueEventNames.length - 1];
-        const otherEvents = uniqueEventNames.slice(0, -1);
-        eventNamesFormatted = otherEvents.join(', ') + ' and ' + lastEvent;
-    } else {
-        eventNamesFormatted = uniqueEventNames[0];
-    }
+exports.organizerNewOrderHtml = (order) => {
+    const formatCurrency = (amount) => {
+        return `₦${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    };
 
     return `
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -20,7 +11,7 @@ exports.invoiceEmailHtml = (order) => {
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Your Link Hangouts Ticket Confirmation!</title>
+    <title>New Order for Your Event - The Link Hangouts</title>
     <style type="text/css">
         body { margin: 0; padding: 0; min-width: 100%; background-color: #f4f4f4; }
         table { border-collapse: collapse; }
@@ -51,7 +42,7 @@ exports.invoiceEmailHtml = (order) => {
 <body style="margin: 0; padding: 0; min-width: 100%; background-color: #f4f4f4;">
 
     <span class="preheader" style="color: transparent; display: none !important; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;">
-        Your ticket to ${eventNamesFormatted} has been confirmed! Details inside.
+        Great news! A new order has been placed for your event on The Link Hangouts.
     </span>
 
     <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4;">
@@ -66,13 +57,11 @@ exports.invoiceEmailHtml = (order) => {
 
                     <tr>
                         <td class="padding-mobile" style="padding: 30px 40px;">
-                            <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 15px 0;">Hi ${order.name},</p>
+                            <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 15px 0;">Hi ${order.organizer?.name || 'Organizer'},</p>
 
                             <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 20px 0;">
-                                Thanks for your purchase! Your ticket to ${eventNamesFormatted} has been confirmed.
+                                We're excited to let you know that a new order has been placed for your event on The Link Hangouts! Thank you for continuing to trust our platform to help you manage and grow your amazing events.
                             </p>
-
-                            <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 10px 0; font-weight: bold;">Here are the details:</p>
 
                             <hr style="border: none; border-top: 1px dashed #cccccc; margin: 20px 0;" />
 
@@ -83,6 +72,7 @@ exports.invoiceEmailHtml = (order) => {
                                 <strong>Date:</strong> ${moment(order.createdAt).format('MMMM D, YYYY')}
                             </p>
 
+                            <h3 style="font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #333333; margin: 0 0 15px 0;">Order Items:</h3>
                             ${order.cart.tickets.map(ticket => `
                                 <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 5px 0;">
                                     <strong>Event:</strong> ${ticket.eventId.name}
@@ -100,20 +90,36 @@ exports.invoiceEmailHtml = (order) => {
 
                             <hr style="border: none; border-top: 1px dashed #cccccc; margin: 20px 0;" />
 
-                            <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 10px 0; font-weight: bold;">Please bring:</p>
-                            <ul style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; padding-left: 20px; margin: 0 0 30px 0; list-style: none;">
-                                <li style="margin-bottom: 10px; position: relative; padding-left: 10px;">
-                                    <span style="position: absolute; left: 0;">•</span> Your QR code (scan at the gate)
-                                </li>
-                                <li style="margin-bottom: 10px; position: relative; padding-left: 10px;">
-                                    <span style="position: absolute; left: 0;">•</span> Your best vibe 🎶
-                                </li>
-                            </ul>
+                            <h3 style="font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #333333; margin: 0 0 15px 0;">Financial Summary:</h3>
+                            <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 5px 0;">
+                                <strong>Total Paid:</strong> ${formatCurrency(order.cart.total)}
+                            </p>
 
-                            <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 15px 0;">Need help? Contact us anytime at <a href="mailto:support@thelinkhangout.com" style="color: #007BFF; text-decoration: none;">support@thelinkhangout.com</a></p>
+                            ${order.discountAmount && order.discountAmount > 0 ? `
+                                <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 5px 0;">
+                                    <strong>Discount Applied:</strong> - ${formatCurrency(order.discountAmount)}
+                                </p>
+                            ` : ''}
 
-                            <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0;">See you soon!<br>– The Link Hangouts Team</p>
-                            <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #007BFF; margin: 10px 0 0 0;"><a href="https://thelinkhangout.com" target="_blank" style="color: #007BFF; text-decoration: none;">🌐 thelinkhangout.com</a></p>
+                            ${order.coupon && order.coupon.code ? `
+                                <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 5px 0;">
+                                    <strong>Coupon Used:</strong> ${order.coupon.code}
+                                </p>
+                                <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 5px 0;">
+                                    <strong>Coupon Discount:</strong>
+                                    ${order.coupon.type === 'Fixed' ? `- ${formatCurrency(order.coupon.amount)}` : ''}
+                                    ${order.coupon.type === 'Percentage' ? `${order.coupon.percentage}% OFF` : ''}
+                                </p>
+                            ` : ''}
+                            
+                            <hr style="border: none; border-top: 1px dashed #cccccc; margin: 20px 0;" />
+
+                            <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 20px 0;">
+                                You can view the full order details and manage your sales from your dashboard: <br>
+                                <a href="https://thelinkhangout.com/dashboard/order/${order._id}" target="_blank" style="color: #007BFF; text-decoration: none;">View Order #${order._id}</a>
+                            </p>
+
+                            <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0;">Keep up the great work!<br>The Link Hangouts Team</p>
                         </td>
                     </tr>
 

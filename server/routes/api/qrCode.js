@@ -2,10 +2,12 @@ const express = require('express');
 const router = express.Router();
 const QRCode = require('../../models/qrCode');
 const Event = require('../../models/event');
+const Coupon = require('../../models/coupon');
 const Organizer = require('../../models/organizer');
 const { ROLES } = require('../../utils/constants');
 const auth = require('../../middleware/auth');
 const role = require('../../middleware/role');
+const orderQueue = require('../../queues/orderQueue');
 
 // GET all used QR codes (Admin and Organizer only)
 router.get('/used', auth, role.check(ROLES.Admin, ROLES.Organizer), async (req, res) => {
@@ -65,6 +67,16 @@ router.post('/verify', auth, role.check(ROLES.Admin, ROLES.Organizer), async (re
     qr.used = true;
     qr.scannedAt = scannedAt
     await qr.save();
+    // send ticket check in to user
+    // give it to worker to send email to speed up check in
+    const checkInData = {
+      userName: qr.billingName,
+      eventName: qr.eventName,
+      ticketCode: qr.code,
+      email: qr.billingEmail,
+      scannedAt
+    }
+    await orderQueue.add('check-in', { checkInData });
 
     return res.json({ success: true,
                       message: 'Code verified successfully',
@@ -99,11 +111,14 @@ router.post('/ticket-details', auth, role.check(ROLES.Admin, ROLES.Organizer), a
       }
     }
 
-    await qr.save();
+    if (qr.coupon) {
+      // fetch coupon details
+      const coupon = await Coupon.findOne({ _id: qr.coupon });
+      qr.coupon = coupon.code;
+    }
 
     return res.status(200).json({ success: true, message: 'Code verified successfully', qr });
   } catch (err) {
-    console.log(err)
     return res.status(400).json({ error: 'Failed to verify QR code' });
   }
 });

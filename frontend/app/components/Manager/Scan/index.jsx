@@ -156,7 +156,7 @@ const ManagerScannerView = (props) => {
         </CCardBody>
       </CCard>
 
-<CModal visible={showScanModal} onClose={() => {}}>
+<CModal  style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }} visible={showScanModal} onClose={() => {}}>
   <CModalHeader>
     <CModalTitle>Ticket Details</CModalTitle>
   </CModalHeader>
@@ -175,7 +175,7 @@ const ManagerScannerView = (props) => {
           <>
             <p><strong>Coupon:</strong> {scannedTicket.coupon}</p>
             {scannedTicket.couponAmount > 0 && (
-              <p><strong>Coupon Discount:</strong> ₦{scannedTicket.couponAmount} off</p>
+              <p><strong>Coupon Discount:</strong> ₦{scannedTicket.couponAmount.toLocaleString()} off</p>
             )}
             {scannedTicket.couponPercentage > 0 && (
               <p><strong>Coupon Discount:</strong> {scannedTicket.couponPercentage}% off</p>
@@ -186,9 +186,9 @@ const ManagerScannerView = (props) => {
         {/* Ticket Discount Info */}
         {scannedTicket.discount && (
           <>
-            <p><strong>Original Price:</strong> ₦{scannedTicket.price}</p>
-            <p><strong>Discount Amount:</strong> ₦{scannedTicket.discountAmount}</p>
-            <p><strong>Discounted Price:</strong> ₦{scannedTicket.discountPrice}</p>
+            <p><strong>Original Price:</strong> ₦{(scannedTicket.price).toLocaleString()}</p>
+            <p><strong>Discount Amount:</strong> ₦{scannedTicket.discountAmount.toLocaleString()}</p>
+            <p><strong>Discounted Price:</strong> ₦{scannedTicket.discountPrice.toLocaleString()}</p>
           </>
         )}
       </div>

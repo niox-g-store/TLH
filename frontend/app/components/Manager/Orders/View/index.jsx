@@ -115,7 +115,7 @@ const OrderViewer = (props) => {
                       <CRow>
                         <CCol><strong>Total:</strong></CCol>
                         <CCol className='text-end fw-bold text-success'>
-                        ₦{order?.finalAmount ? order.finalAmount.toLocaleString() : '0'}
+                        ₦{order?.cart?.total ? order?.cart?.total.toLocaleString() : '0'}
                       </CCol>
                       </CRow>
                     </div>
@@ -132,7 +132,7 @@ const OrderViewer = (props) => {
                       <CRow>
                         <CCol><strong>Total:</strong></CCol>
                         <CCol className='text-end fw-bold'>
-                        ₦{order?.finalAmount ? order?.finalAmount.toLocaleString() : '0'}
+                        ₦{order?.cart?.total ? order?.cart?.total.toLocaleString() : '0'}
                       </CCol>
                       </CRow>
                     </div>

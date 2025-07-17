@@ -1,13 +1,10 @@
 const formData = require('form-data');
 const Mailgun = require('mailgun.js');
-
 const template = require('../config/template');
 const keys = require('../config/keys');
 
 const { key, domain, host, sender, support, mailingKey } = keys.mailgun;
-
 const { order, security, auth, news, management, domain_unsubscribe } = keys.mailgun;
-
 
 class MailgunService {
   constructor() {
@@ -286,17 +283,19 @@ const prepareTemplate = (type, host, data) => {
       message.sender = news;
       break;
 
-    case 'contact':
-      message = template.contactEmail();
+    case 'organizer-suspend-account':
+      message = template.organizerSuspendAccount(data, support);
       message.sender = management;
       break;
 
-    case 'merchant-application':
-      message = template.merchantApplicationEmail();
+    case 'organizer-resume-account':
+      message = template.organizerResumeAccount(data, support);
+      message.sender = management;
       break;
 
-    case 'merchant-deactivate-account':
-      message = template.merchantDeactivateAccount();
+    case 'organizer-banned-account':
+      message = template.organizerDeactivateAccount(data, support);
+      message.sender = management;
       break;
 
     case 'order-confirmation':
@@ -309,19 +308,14 @@ const prepareTemplate = (type, host, data) => {
       message.sender = order;
       break;
 
-    case 'update-order':
-      message = template.orderUpdateEmail(data);
+    case 'organizer-order-confirmation':
+      message = template.organizerOrderConfirmationEmail(data);
       message.sender = order;
       break;
 
-    case 'order-products-update':
-      message = template.orderProductsUpdateEmail(data);
-      message.sender = order;
-      break;
-
-    case 'order-address-change':
-      message = template.orderShippingInfoUpdateEmail(data);
-      message.sender = order;
+    case 'ticket-check-in':
+      message = template.ticketCheckin(data.userName, data.eventName, data.ticketCode, data.scannedAt);
+      message.sender = sender
       break;
       
     default:

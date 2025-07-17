@@ -545,11 +545,11 @@ router.post('/register/google', async (req, res) => {
       id: registeredUser.id
     };
 
-    /*await mailgun.sendEmail(
+    await mailgun.sendEmail(
       registeredUser.email,
       'signup',
       registeredUser
-    );*/
+    );
 
     const token = jwt.sign(payload, secret, { expiresIn: tokenLife });
 
@@ -613,11 +613,11 @@ router.post('/google/signin', async (req, res) => {
       throw new Error();
     }
 
-    /*await mailgun.sendEmail(
+    await mailgun.sendEmail(
       existingEmail.email,
       'signin',
       existingEmail
-    );*/
+    );
 
     return res.status(200).json({
       success: true,

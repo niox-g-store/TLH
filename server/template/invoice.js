@@ -123,7 +123,7 @@ return `
           </div>
           <div style="width: 18%; padding: 4px 8px;">
             <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black; font-weight: bold; text-align: right;">
-              ${hasDiscount && !hasCoupon ? discountAmount : hasCoupon ? couponAmount : price}
+              ${hasDiscount && !hasCoupon ? discountPrice : hasCoupon ? couponAmount : price}
             </p>
           </div>
         </div>
@@ -147,7 +147,7 @@ return `
                     <p style="margin: 0; padding: 8px; font-size: 14px; color: black;">Discount</p>
                 </div>
                 <div style="width: 50%; padding: 5px;">
-                    <span style="float: right; font-weight: bold; color: red">₦${discountAmount}</span>
+                    <span style="float: right; font-weight: bold; color: red">-₦${discountAmount}</span>
                 </div>
             </div>`
             :
@@ -171,7 +171,7 @@ return `
                 </div>
                 <div style="width: 50%; padding: 5px; display: flex; align-items: center; justify-content: flex-end;">
                     <p style="margin: 0; padding: 8px; font-size: 14px; font-weight: bold; color: #333; margin-right: 10px;"></p>
-                    <span style="font-weight: bold; color: white">₦ ${hasDiscount && !hasCoupon ? discountAmount : hasCoupon ? couponAmount : price}</span>
+                    <span style="font-weight: bold; color: white">₦ ${hasDiscount && !hasCoupon ? discountPrice : hasCoupon ? couponAmount : price}</span>
                 </div>
             </div>
         </div>

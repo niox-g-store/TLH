@@ -603,6 +603,7 @@ export const checkout = (navigate, guest=null) => {
         finalAmount: total,
         discountPrice: discountPrice,
         amountBeforeDiscount: price,
+        coupon: appliedCoupon ? appliedCoupon[0] : null,
         billingEmail: email !== undefined || null ? email : userEmail,
       }, dispatch)
 

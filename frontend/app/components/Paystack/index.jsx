@@ -19,9 +19,8 @@ export const payStackHelper = async (props, dispatch) => {
     paymentMethod,
     transactionId,
     billingEmail,
+    coupon,
   } = props;
-
-  //console.log(cart, user, guest, events, tickets, finalAmount, discountPrice)
 
   return new Promise((resolve, reject) => {
     let globalId;
@@ -49,6 +48,7 @@ export const payStackHelper = async (props, dispatch) => {
             amountBeforeDiscount,
             payStackId: id,
             billingEmail,
+            coupon
           });
         } catch (error) {
           reject(new Error(`Payment failed: ${error.message}`));

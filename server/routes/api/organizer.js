@@ -3,6 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const Organizer = require('../../models/organizer');
+const mailgun = require('../../services/mailgun');
 const User = require('../../models/user');
 const Event = require('../../models/event');
 const { ROLES } = require('../../utils/constants');
@@ -72,6 +73,9 @@ router.put('/:id/suspend', auth, role.check(ROLES.Admin), async (req, res) => {
       { $set: { isActive: false } }
     );
 
+    // send suspension email
+    await mailgun.sendEmail(organizer.email, 'organizer-suspend-account', organizer.companyName)
+
     return res.json({ organizer });
   } catch (error) {
     res.status(400).json({ error: 'Failed to suspend organizer' });
@@ -92,6 +96,8 @@ router.put('/:id/resume', auth, role.check(ROLES.Admin), async (req, res) => {
       { _id: { $in: organizer.event } },
       { $set: { isActive: true } }
     );
+    // send suspension email
+    await mailgun.sendEmail(organizer.email, 'organizer-resume-account', organizer.companyName)
 
     return res.json({ organizer });
   } catch (error) {
@@ -111,6 +117,9 @@ router.delete('/:id', auth, role.check(ROLES.Admin), async (req, res) => {
     await Organizer.findByIdAndUpdate(req.params.id, { $set: { banned: true, isActive: false } });
     //set organizer to banned
     await User.findOneAndUpdate({ organizer: req.params.id }, { $set: { banned: true } })
+
+    // send suspension email
+    await mailgun.sendEmail(organizer.email, 'organizer-banned-account', organizer.companyName)
 
     return res.json({ message: 'Organizer has been banned and related events turned off successfully' });
   } catch (error) {

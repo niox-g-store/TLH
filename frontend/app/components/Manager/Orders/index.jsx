@@ -43,7 +43,7 @@ const OrderWithCoupon = ({ order, cart }) => {
             </CRow>}
             <CRow>
               <CCol><strong>Total:</strong></CCol>
-              <CCol className='text-end fw-bold text-success'>₦{order.finalAmount.toLocaleString()}</CCol>
+              <CCol className='text-end fw-bold text-success'>₦{order?.cart?.total.toLocaleString()}</CCol>
             </CRow>
           </div>
     </>
@@ -64,7 +64,7 @@ const OrderWithDiscountAmount = ({order}) => {
             </CRow>
             <CRow>
               <CCol><strong>Total:</strong></CCol>
-              <CCol className='text-end fw-bold text-success'>₦{order.finalAmount.toLocaleString()}</CCol>
+              <CCol className='text-end fw-bold text-success'>₦{order?.cart?.total.toLocaleString()}</CCol>
             </CRow>
           </div>
     </>
@@ -164,7 +164,7 @@ const ManagerOrderList = (props) => {
           <div className='mt-2'>
             <CRow>
               <CCol><strong>Total:</strong></CCol>
-              <CCol className='text-end fw-bold'>₦{order.finalAmount.toLocaleString()}</CCol>
+              <CCol className='text-end fw-bold'>₦{order?.cart?.total.toLocaleString()}</CCol>
             </CRow>
           </div>
         }

@@ -7,6 +7,7 @@ const Cart = require('../../models/cart');
 const Event = require('../../models/event');
 const Ticket = require('../../models/ticket');
 const User = require('../../models/user');
+const Organizer = require('../../models/organizer');
 const Guest = require('../../models/guest');
 const QRCODE = require('../../models/qrCode');
 const auth = require('../../middleware/auth');
@@ -16,7 +17,7 @@ const PaymentHandler = require('../../utils/paystack');
 const { customAlphabet } = require('nanoid');
 const QRCode = require('qrcode');
 const keys = require('../../config/keys');
-const { generateInvoice } = require('../../utils/invoiceService');
+const orderQueue = require('../../queues/orderQueue');
 
 const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', 8);
 
@@ -167,6 +168,7 @@ router.post('/add', async (req, res) => {
       amountBeforeDiscount,
       payStackId,
       billingEmail,
+      coupon
     } = req.body;
     const ID = await newObjectId();
 
@@ -191,6 +193,7 @@ router.post('/add', async (req, res) => {
       user,
       guest,
       events,
+      coupon: coupon ? coupon.couponId : null,
       tickets,
       finalAmount,
       discountAmount: discountPrice || 0,
@@ -250,14 +253,18 @@ router.put('/edit/order/', async (req, res) => {
       }
     }
 
-    if (id) {
+    if (id) {  // free ticket update
       updateOrder = await Order.findOneAndUpdate({ _id: id }, update)
-        .populate('.cart')
+        .populate('cart')
         .populate('guest')
+        .populate('events')
+        .populate('coupon')
     } else {
       updateOrder = await Order.findOneAndUpdate({ payStackId: payStackId }, update)
         .populate('cart')
         .populate('guest')
+        .populate('events')
+        .populate('coupon')
     }
   
     const cartDoc = await Cart.findById(updateOrder.cart)
@@ -271,10 +278,17 @@ router.put('/edit/order/', async (req, res) => {
 
       if (cartDoc.user) { // add to registered attendees
         for (const item of cartEvents) {
-          const eve = await Event.findById(item._id)
-          eve.attendees += quantity
-          eve.registeredAttendees.push(cartDoc.user)
-          await eve.save()
+          const eve = await Event.findById(item._id);
+          eve.attendees += quantity;
+
+          const userIdStr = cartDoc.user.toString();
+          const alreadyRegistered = eve.registeredAttendees.some(id => id.toString() === userIdStr);
+
+          if (!alreadyRegistered) {
+            eve.registeredAttendees.push(cartDoc.user);
+          }
+
+          await eve.save();
         }
       } else {
         for (const item of cartEvents) {
@@ -285,17 +299,8 @@ router.put('/edit/order/', async (req, res) => {
         }
       }
       // assign qr code to the ticket
+      
       const qrAssigner = await assignQrCode(updateOrder, cartDoc);
-      const invoice = [];
-      for (let item = 0; item < qrAssigner.length; item++) {
-        const invoiceGenerator = await generateInvoice(qrAssigner[item]);
-        invoice.push({
-          filename: `${updateOrder._id}_${item}`,
-          data: invoiceGenerator,
-          contentType: 'application/pdf'
-        });
-      }
-
       const eventNames = cartDoc.tickets.map((item) => item.eventId.name);
       const newOrder = {
         _id: updateOrder._id,
@@ -303,29 +308,67 @@ router.put('/edit/order/', async (req, res) => {
         name: updateOrder.guest !== null ? updateOrder.guest.name : updateOrder.user.name,
         cart: cartDoc,
         eventNames,
+        coupon: updateOrder.coupon,
+        billingEmail: updateOrder.billingEmail
       };
-  
-        // decrease quantity if the order has been successful
-        decreaseQuantity(cartDoc.tickets);
-  
-        await mailgun.sendEmail(updateOrder.billingEmail, 'order-confirmation', newOrder, invoice);
-  
-        // send email to admin
-        /*if (adminEmail) {
-          await mailgun.sendEmail(adminEmail, 'admin-order-confirmation', newOrder);
-        }*/
-       // send email to organizer if event user role is organizer
-       const alertedOrganizer = [];
-       /*for (const eventId of cartDoc.events) {
-         const organizer = await Event.findOne({ _id: eventId }).populate('user');
-         if (organizer.user.role === ROLES.Organizer) {
-            if (!alertedOrganizer.includes(organizer.user._id)){
-              alertedOrganizer.push(organizer.user._id)
-              // send organizer email here as user can select multiple events belonging to different organizers
-              // so we want to alert each organizer
-            }
-         }
-       }*/
+      const adminEmails = await User.find({ role: ROLES.Admin }).select('email')
+      const alertedOrganizer = [];
+      const organizerEmailsAndData = [];
+      const cartDocEvents = cartDoc.tickets.map((item) => item.eventId)
+      for (const eventId of cartDocEvents) {
+        const organizer = await Event.findOne({ _id: eventId }).populate('user')
+        if (organizer.user.role === ROLES.Organizer) {
+          if (!alertedOrganizer.map(id => id.toString()).includes(organizer.user._id.toString())) {
+            alertedOrganizer.push(organizer.user._id)
+          }
+        }
+      }
+      // here sort newOrder and create an array of objects of orders and email,
+      // where the host of the event in that order is the organizer
+      // this will let an organizer get an order email that relates to their event or events
+      if (alertedOrganizer.length > 0) {
+        for (const organizer of alertedOrganizer) {
+          const organizerEmail = await User.findById(organizer)
+          const matchedEventNames = updateOrder.events
+            .filter(event => event.user.equals(organizer))
+            .map(event => event.name);
+          const filteredTickets = cartDoc?.tickets?.filter(
+            (ticket) =>
+              ticket.eventId &&
+              ticket.eventId.user &&
+              ticket.eventId.user.equals(organizer)
+          );
+          // here create a new cartDoc with the total from organizerCart cuz we want an organizer
+          // to only see the total of their cart items
+          const total = filteredTickets.reduce((sum, item) => {
+            const itemPrice = item.discount && item.discountPrice ? item.discountPrice : item.price;
+            return sum + (itemPrice * item.quantity);
+          }, 0);
+          const newCartDoc = {
+            _id: updateOrder._id,
+            createdAt: updateOrder.createdAt,
+            name: newOrder.name,
+            eventsNames: matchedEventNames,
+            cart: {
+              ...updateOrder.cart.toObject(),
+              tickets: filteredTickets,
+              total,
+            },
+            coupon: updateOrder.coupon,
+          }
+          organizerEmailsAndData.push({
+            email: organizerEmail.email,
+            newOrder: newCartDoc
+          })
+        }
+      }
+      // call background jobs
+      await orderQueue.add('new-order', { qrAssigner, newOrder, adminEmails, organizerEmailsAndData });
+
+
+      // decrease quantity if the order has been successful
+      decreaseQuantity(cartDoc.tickets);
+
   
         return res.status(200).json({
           success: true,
@@ -335,7 +378,6 @@ router.put('/edit/order/', async (req, res) => {
         });
       }
     } catch (error) {
-      console.log(error)
       return res.status(400).json({
         error: 'Your request could not be processed. Please try again.'
       });
@@ -433,6 +475,10 @@ router.get(
           ticket.eventId.user &&
           ticket.eventId.user.toString() === organizerId
       );
+      const total = filteredTickets.reduce((sum, item) => {
+        const itemPrice = item.discount && item.discountPrice ? item.discountPrice : item.price;
+        return sum + (itemPrice * item.quantity);
+      }, 0);
 
       order = {
         ...order,
@@ -440,6 +486,7 @@ router.get(
         cart: {
           ...orderDoc.cart.toObject(),
           tickets: filteredTickets,
+          total,
         }
       };
     }
@@ -522,12 +569,18 @@ router.get(
 
           // Only return the order if there's at least one relevant event or ticket
           if (relevantEvents.length > 0 || relevantTickets.length > 0) {
+            const total = relevantTickets.reduce((sum, item) => {
+              const itemPrice = item.discount && item.discountPrice ? item.discountPrice : item.price;
+                return sum + (itemPrice * item.quantity);
+            }, 0);
             return {
               ...order.toObject(),
               events: relevantEvents,
+              
               cart: {
                 ...order.cart.toObject(),
                 tickets: relevantTickets,
+                total
               },
             };
           }

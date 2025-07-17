@@ -1,6 +1,12 @@
 const { organizerSignupHtml } = require('./htmlTemplates/Organizer/signUp');
 const { userSignUpHtml } = require('./htmlTemplates/User/signUp');
 const { invoiceEmailHtml } = require('./htmlTemplates/User/orderSuccess');
+const { adminNewOrderHtml } = require('./htmlTemplates/Admin/orderSuccess');
+const { organizerNewOrderHtml } = require('./htmlTemplates/Organizer/orderSuccess');
+const { checkedInEmailHtml } = require('./htmlTemplates/User/scanTicket');
+const { accountSuspendedEmailHtml } = require('./htmlTemplates/Organizer/suspendAccount');
+const { accountResumedEmailHtml } = require('./htmlTemplates/Organizer/resumeAccount');
+const { accountBannedEmailHtml } = require('./htmlTemplates/Organizer/banAccount');
 /*exports.newsLetterEmail = (campaignData) => {
   const message = {
     subject: campaignData.heading,
@@ -77,12 +83,32 @@ exports.newsletterSubscriptionEmail = () => {
   return message;
 };
 
-exports.organizerDeactivateAccount = () => {
+exports.organizerDeactivateAccount = (name, contactEmail) => {
   const message = {
-    subject: 'Your account has been disabled',
-    text:
-      `Your organizer account has been disabled. \n\n` +
-      `Please contact admin to request access again.`
+    subject: "Urgent: Your Link Hangouts Organizer Account Has Been Permanently Banned",
+    html: accountBannedEmailHtml(name, contactEmail),
+    headers: { 'Content-Type': 'text/html' },
+  };
+
+  return message;
+};
+
+
+exports.organizerSuspendAccount = (name, contactEmail) => {
+  const message = {
+    subject: "Important: Your Link Hangouts Organizer Account Has Been Suspended",
+    html: accountSuspendedEmailHtml(name, contactEmail),
+    headers: { 'Content-Type': 'text/html' },
+  };
+
+  return message;
+};
+
+exports.organizerResumeAccount = (name, contactEmail) => {
+  const message = {
+    subject: "Great News! Your Link Hangouts Organizer Account is Active Again!",
+    html: accountResumedEmailHtml(name, contactEmail),
+    headers: { 'Content-Type': 'text/html' },
   };
 
   return message;
@@ -98,12 +124,12 @@ exports.orderConfirmationEmail = order => {
   return message;
 };
 
-/*exports.adminOrderConfirmationEmail = order => {
+exports.adminOrderConfirmationEmail = order => {
   const message = {
     subject: `YOU HAVE A NEW ORDER #${order._id}`,
     text:
       `You Have A New Order \n\n`,
-    html: adminOrderSuccess(order),
+    html: adminNewOrderHtml(order),
     headers: { 'Content-Type': 'text/html' },
   };
 
@@ -115,31 +141,22 @@ exports.organizerOrderConfirmationEmail = order => {
     subject: `YOU HAVE A NEW ORDER #${order._id}`,
     text:
       `You Have A New Order \n\n`,
-    html: adminOrderSuccess(order),
+    html: organizerNewOrderHtml(order),
     headers: { 'Content-Type': 'text/html' },
   };
 
   return message;
-}*/
+}
 
-/*exports.ticketCheckin = order => { // here once a ticket is scanned send a notification email
-  let msg = null;
-  if (order.status === 'Delivered' || order.status === 'Cancelled' || order.status === 'Shipped') {
-    msg = `has been ${order.status}`
-  } else if (order.status === 'Processing') {
-    msg = `has been confirmed`
-  } else {
-    msg = `cannot be processed`
-  }
+exports.ticketCheckin = (userName, eventName, ticketCode, scannedAt) => {
   const message = {
-    subject: `Update on your order #${order._id}`,
-    text:`Hi ${order.user.firstName}!`,
-    html: orderUpdate(order, `Hi ${order.user.firstName}! Your order ${msg}`),
+    subject: `Your Ticket for ${eventName} Has Been Checked In!`,
+    html: checkedInEmailHtml(userName, eventName, ticketCode, scannedAt),
     headers: { 'Content-Type': 'text/html' },
   };
 
   return message;
-};*/
+};
 
 exports.notifyAdminWithdrawalEmail = () => {
   const message = {
