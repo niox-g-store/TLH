@@ -17,6 +17,7 @@ import guest from './containers/Guest/reducer';
 import organizer from './containers/Organizer/reducer';
 import scan from './containers/Scan/reducer';
 import forgotPassword from './containers/ForgotPassword/reducer';
+import resetPassword from './containers/ResetPassword/reducer';
 
 const rootReducer = combineReducers({
   account,
@@ -37,5 +38,6 @@ const rootReducer = combineReducers({
   organizer,
   scan,
   forgotPassword,
+  resetPassword,
 });
 export default rootReducer;

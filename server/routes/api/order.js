@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const mailgun = require('../../services/mailgun');
 const router = express.Router();
 const Order = require('../../models/order');
 const Cart = require('../../models/cart');
@@ -16,7 +17,6 @@ const { customAlphabet } = require('nanoid');
 const QRCode = require('qrcode');
 const keys = require('../../config/keys');
 const { generateInvoice } = require('../../utils/invoiceService');
-const cart = require('../../models/cart');
 
 const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', 8);
 
@@ -252,8 +252,12 @@ router.put('/edit/order/', async (req, res) => {
 
     if (id) {
       updateOrder = await Order.findOneAndUpdate({ _id: id }, update)
+        .populate('.cart')
+        .populate('guest')
     } else {
       updateOrder = await Order.findOneAndUpdate({ payStackId: payStackId }, update)
+        .populate('cart')
+        .populate('guest')
     }
   
     const cartDoc = await Cart.findById(updateOrder.cart)
@@ -282,30 +286,29 @@ router.put('/edit/order/', async (req, res) => {
       }
       // assign qr code to the ticket
       const qrAssigner = await assignQrCode(updateOrder, cartDoc);
-      for (items of qrAssigner) {
-        const invoice = await generateInvoice(items);
+      const invoice = [];
+      for (let item = 0; item < qrAssigner.length; item++) {
+        const invoiceGenerator = await generateInvoice(qrAssigner[item]);
+        invoice.push({
+          filename: `${updateOrder._id}_${item}`,
+          data: invoiceGenerator,
+          contentType: 'application/pdf'
+        });
       }
-        const newOrder = {
-          _id: updateOrder._id,
-          created: updateOrder.createdAt,
-          user: updateOrder.user !== null ? updateOrder.user : updateOrder.guest,
-          cart: cartDoc,
-          finalAmount: updateOrder.finalAmount,
-          events: updateOrder.events,
-          tickets: updateOrder.tickets,
-          discountPrice: updateOrder.discountPrice,
-          amountBeforeDiscount: updateOrder.amountBeforeDiscount,
-          billingEmail: updateOrder.billingEmail,
 
-          paystackReference: payStackReference || "",
-          paymentMethod: `paid with ${paymentMethod || ""}`,
-          //image: 'https://res.cloudinary.com/dduai6ryd/image/upload/v1736088530/ithoan/images/logo/business_logo.png'
-        };
+      const eventNames = cartDoc.tickets.map((item) => item.eventId.name);
+      const newOrder = {
+        _id: updateOrder._id,
+        createdAt: updateOrder.createdAt,
+        name: updateOrder.guest !== null ? updateOrder.guest.name : updateOrder.user.name,
+        cart: cartDoc,
+        eventNames,
+      };
   
         // decrease quantity if the order has been successful
         decreaseQuantity(cartDoc.tickets);
   
-        // await mailgun.sendEmail(updateOrder.billingEmail, 'order-confirmation', newOrder);
+        await mailgun.sendEmail(updateOrder.billingEmail, 'order-confirmation', newOrder, invoice);
   
         // send email to admin
         /*if (adminEmail) {
@@ -332,6 +335,7 @@ router.put('/edit/order/', async (req, res) => {
         });
       }
     } catch (error) {
+      console.log(error)
       return res.status(400).json({
         error: 'Your request could not be processed. Please try again.'
       });

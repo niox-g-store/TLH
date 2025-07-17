@@ -22,13 +22,14 @@ import GalleryView from './containers/Gallery/view';
 import OrganizerSignUp from './containers/Organizer/SignUp';
 import Dashboard from './containers/Dashboard';
 import Page404 from './containers/Page404';
-import ScrollToTop from './components/Common/ScrollToTop';
 import EventView from './containers/Events/view';
 import Terms from './containers/Terms';
 import PrivacyPolicy from './containers/Policy';
 import OrderSuccess from './containers/Order/success';
 import ForgotPassword from './containers/ForgotPassword';
-import AccountSecurity from './components/Manager/Security';;
+import ResetPassword from './containers/ResetPassword';
+
+import ScrollToTop from './components/Common/ScrollToTop';
 
 const App = (props) => {
   const { user } = props;
@@ -50,9 +51,9 @@ const App = (props) => {
   }, []);
 
   const hideHeaderFooterPaths = ['/login', '/signup',
-    '/organizer-signup', '/dashboard'
+    '/organizer-signup', '/dashboard', '/forgot-password', '/reset-password'
   ];
-  const hideFooter = ['/event/', '/terms', '/privacy', '/faq', '/gallery', '/order']
+  const hideFooter = ['/event/', '/terms', '/privacy', '/faq', '/gallery', '/order', '/forgot-password']
   const showHeaderFooter = (USER.role === ROLES.Member ||
                             !hideHeaderFooterPaths.some(path => location.pathname.startsWith(path))
                             );
@@ -81,7 +82,7 @@ const App = (props) => {
         <Route path='/organizer-signup' element={<OrganizerSignUp />} />
 
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password/:token" element={<AccountSecurity />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
 
         <Route path='/faq' element={<FAQs />} />
         <Route path='/terms' element={<Terms />} />
@@ -96,6 +97,7 @@ const App = (props) => {
 }
 
 const mapStateToProps = (state) => {
+  console.log(state)
   return {
     user: state.account.user
   };

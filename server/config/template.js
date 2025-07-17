@@ -1,12 +1,7 @@
-const { orderSuccess } = require("./htmlTemplates/orderSuccess");
-const { adminOrderSuccess } = require("./htmlTemplates/adminOrderSuccess");
-const { campaignTemplate } = require("./htmlTemplates/newsletterTemplate");
-const { orderUpdate } = require("./htmlTemplates/orderUpdate");
-const { orderProductsUpdate } = require("./htmlTemplates/orderProductsUpdate");
-const { orderShippingInfoUpdate } = require("./htmlTemplates/orderShippingInfoUpdate"); 
-const { organizerSignupHtml } = require('./htmlTemplates/organizerSignupHtml');
-
-exports.newsLetterEmail = (campaignData) => {
+const { organizerSignupHtml } = require('./htmlTemplates/Organizer/signUp');
+const { userSignUpHtml } = require('./htmlTemplates/User/signUp');
+const { invoiceEmailHtml } = require('./htmlTemplates/User/orderSuccess');
+/*exports.newsLetterEmail = (campaignData) => {
   const message = {
     subject: campaignData.heading,
     text: campaignData.heading,
@@ -14,7 +9,7 @@ exports.newsLetterEmail = (campaignData) => {
     headers: { 'Content-Type': 'text/html' },
   }
   return message
-}
+}*/
 
 exports.resetEmail = (host, resetToken) => {
   const message = {
@@ -24,6 +19,7 @@ exports.resetEmail = (host, resetToken) => {
         'You are receiving this because you have requested to reset your password for your account.\n\n' +
         'Please click on the following link, or paste this into your browser to complete the process:\n\n' 
       }${host}/reset-password/${resetToken}\n\n` +
+      `This link will expire in 1 hour\n\n` +
       `If you did not request this, please ignore this email and your password will remain unchanged.\n`
   };
 
@@ -52,8 +48,9 @@ exports.signinEmail = user => {
 
 exports.signupEmail = user => {
   const message = {
-    subject: 'Account Registration',
-    text: `Hi ${user.name}! Thank you for creating an account with us!`
+    subject: `Hi ${user.name}! Thank you for creating an account with us!`,
+    html: userSignUpHtml(user),
+    headers: { 'Content-Type': 'text/html' }
   };
 
   return message;
@@ -61,7 +58,7 @@ exports.signupEmail = user => {
 
 exports.organizerSignup = organizer => {
   const message = {
-    subject: 'Organizer Registration',
+    subject: `Hi ${organizer.companyName}! Thank you for creating an account with us!`,
     html: organizerSignupHtml(organizer),
     headers: { 'Content-Type': 'text/html' }
   };
@@ -94,16 +91,14 @@ exports.organizerDeactivateAccount = () => {
 exports.orderConfirmationEmail = order => {
   const message = {
     subject: `Order Confirmation #${order._id}`,
-    text:
-    `Hi ${order?.user?.name}! Thank you for your order!. \n\n`,
-    html: orderSuccess(order),
+    html: invoiceEmailHtml(order),
     headers: { 'Content-Type': 'text/html' },
   };
 
   return message;
 };
 
-exports.adminOrderConfirmationEmail = order => {
+/*exports.adminOrderConfirmationEmail = order => {
   const message = {
     subject: `YOU HAVE A NEW ORDER #${order._id}`,
     text:
@@ -125,9 +120,9 @@ exports.organizerOrderConfirmationEmail = order => {
   };
 
   return message;
-}
+}*/
 
-exports.ticketCheckin = order => { // here once a ticket is scanned send a notification email
+/*exports.ticketCheckin = order => { // here once a ticket is scanned send a notification email
   let msg = null;
   if (order.status === 'Delivered' || order.status === 'Cancelled' || order.status === 'Shipped') {
     msg = `has been ${order.status}`
@@ -144,7 +139,7 @@ exports.ticketCheckin = order => { // here once a ticket is scanned send a notif
   };
 
   return message;
-};
+};*/
 
 exports.notifyAdminWithdrawalEmail = () => {
   const message = {

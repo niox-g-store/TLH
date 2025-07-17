@@ -173,7 +173,6 @@ const OrderViewer = (props) => {
                     const hasDiscount = ticket?.discount;
                     const hasCoupon = ticket?.coupon;
                     const ticketId = ticket.ticketId;
-                    const qrData = invoice.find((e) => e.ticketId === ticketId);
 
                     return (
                       <div key={index} className='mb-3 border-bottom pb-2'>

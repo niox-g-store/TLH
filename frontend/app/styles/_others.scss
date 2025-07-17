@@ -87,3 +87,16 @@
     }
   }
 }
+
+.forgot-password-form {
+  background-color: white;
+  height: 100vh;
+  padding: 10em 1em 0em 1em;
+  width: 100%;
+  form {
+    @include media-breakpoint-down(md) {
+      width: 100%;
+    }
+    width: 50%;
+  }
+}

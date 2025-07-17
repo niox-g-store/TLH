@@ -361,7 +361,7 @@ router.post('/forgot', async (req, res) => {
 
     const existingUser = await User.findOne({ email });
 
-    if (existingUser.banned) {
+    if (existingUser?.banned) {
       return res.status(400).json({ error: 'You cannot make this request' })
     }
 

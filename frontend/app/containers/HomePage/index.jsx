@@ -32,7 +32,7 @@ class Home extends React.PureComponent {
   let video, images = null
   const eventImages = [event1, event3, event2, event4];
 
-  if (homeMedia && homeMedia.length > 0) {
+  /*if (homeMedia && homeMedia.length > 0) {
     const defaultMedia = homeMedia.find(media => media.default === true);
 
     if (defaultMedia) {
@@ -47,12 +47,12 @@ class Home extends React.PureComponent {
         return media.mediaUrl
       })
       .map(media => API_URL + media.mediaUrl);
-  }
+  }*/
 
   return (
     <>
     {popOverEvents?.length > 0 && <PopupComponent data={popOverEvents} type={"image"}/>}
-    <HomeBanner media={video}/>
+    <HomeBanner />
       <HeroBanner
         heading="Discover The Link Hangouts Experience"
         desc="We are a vibrant lifestyle company based in Lagos, Nigeria, dedicated to curating and orchestrating exceptional events, parties, and hangouts that bring people together to create lasting memories."

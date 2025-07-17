@@ -194,9 +194,9 @@ class MailgunService {
     }
   }
 
-  async sendEmail(email, type, data, selectedProductsLength=null) {  // send email
+  async sendEmail(email, type, data, attachment = null) {  // send email
     try {
-      const message = prepareTemplate(type, host, data, selectedProductsLength);
+      const message = prepareTemplate(type, host, data);
 
       let config;
 
@@ -209,13 +209,28 @@ class MailgunService {
           text: data[1],
           html: data[1]
         }*/
-      config = {
-        from: `The Link Hangouts <${message.sender}>`,
-        to: email,
-        subject: message.subject,
-        text: message.text,
-        html: message.html
-      };
+      if (attachment) {
+        config = {
+          from: `The Link Hangouts <${message.sender}>`,
+          to: email,
+          subject: message.subject,
+          text: message.text,
+          html: message.html,
+          attachment: attachment.map((pdf) => ({
+            data: pdf.data,
+            filename: pdf.filename,
+            contentType: pdf.contentType
+          }))
+        };
+      } else {
+        config = {
+          from: `The Link Hangouts <${message.sender}>`,
+          to: email,
+          subject: message.subject,
+          text: message.text,
+          html: message.html,
+        };
+      }
 
 
       let result = null;
@@ -233,7 +248,7 @@ class MailgunService {
 }
 
 
-const prepareTemplate = (type, host, data, selectedProductsLength=null) => {
+const prepareTemplate = (type, host, data) => {
   let message;
 
   switch (type) {
@@ -300,7 +315,7 @@ const prepareTemplate = (type, host, data, selectedProductsLength=null) => {
       break;
 
     case 'order-products-update':
-      message = template.orderProductsUpdateEmail(data, selectedProductsLength);
+      message = template.orderProductsUpdateEmail(data);
       message.sender = order;
       break;
 

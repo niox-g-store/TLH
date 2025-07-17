@@ -38,7 +38,7 @@ export const resetBanks = () => {
   };
 }
 
-export const resetPasswordChange = (name, value) => {
+export const accountResetPasswordChange = (name, value) => {
   let formData = {};
   formData[name] = value
   return  {
@@ -80,52 +80,6 @@ export const fetchProfile = () => {
       handleError(error, dispatch, title);
     } finally {
       dispatch(setProfileLoading(false));
-    }
-  };
-};
-
-export const resetPassword = (token, navigate) => {
-  return async (dispatch, getState) => {
-    try {
-      const rules = {
-        password: 'required|min:6',
-        confirmPassword: 'required|min:6|same:password'
-      };
-      const user = getState().resetPassword.resetFormData;
-
-      const { isValid, errors } = allFieldsValidation(user, rules, {
-        'required.password': 'Password is required.',
-        'min.password': 'Password must be at least 6 characters.',
-        'required.confirmPassword': 'Confirm password is required.',
-        'min.confirmPassword':
-          'Confirm password must be at least 6 characters.',
-        'same.confirmPassword':
-          'Confirm password and password fields must match.'
-      });
-
-      if (!isValid) {
-        return dispatch({
-          type: SET_RESET_PASSWORD_FORM_ERRORS,
-          payload: errors
-        });
-      }
-
-      const response = await axios.post(`${API_URL}/auth/reset/${token}`, user);
-      const successfulOptions = {
-        title: `${response.data.message}`,
-        position: 'tr',
-        autoDismiss: 1
-      };
-
-      if (response.data.success == true) {
-        navigate('/login');
-      }
-
-      dispatch(showNotification('success', successfulOptions.title));
-      dispatch({ type: RESET_PASSWORD_RESET });
-    } catch (error) {
-      const title = `Please try to reset again!`;
-      handleError(error, dispatch, title);
     }
   };
 };

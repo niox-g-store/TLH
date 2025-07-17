@@ -10,7 +10,8 @@ import { showNotification } from '../Notification/actions';
 import {
   FORGOT_PASSWORD_CHANGE,
   FORGOT_PASSWORD_RESET,
-  SET_FORGOT_PASSWORD_FORM_ERRORS
+  SET_FORGOT_PASSWORD_FORM_ERRORS,
+  F_PWD_LOADING
 } from './constants';
 import handleError from '../../utils/error';
 import { allFieldsValidation } from '../../utils/validation';
@@ -23,8 +24,16 @@ export const forgotPasswordChange = (name, value) => {
   };
 };
 
+export const isFPwdLoading = (v) => {
+  return {
+    type: F_PWD_LOADING,
+    payload: v
+  }
+}
+
 export const forgotPassowrd = (navigate) => {
   return async (dispatch, getState) => {
+    dispatch(isFPwdLoading(true))
     try {
       const rules = {
         email: 'required|email'
@@ -59,6 +68,8 @@ export const forgotPassowrd = (navigate) => {
     } catch (error) {
       const title = `Please try again!`;
       handleError(error, dispatch, title);
+    } finally {
+      dispatch(isFPwdLoading(false))
     }
   };
 };

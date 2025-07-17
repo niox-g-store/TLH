@@ -7,18 +7,25 @@
 import {
   FORGOT_PASSWORD_CHANGE,
   FORGOT_PASSWORD_RESET,
-  SET_FORGOT_PASSWORD_FORM_ERRORS
+  SET_FORGOT_PASSWORD_FORM_ERRORS,
+  F_PWD_LOADING
 } from './constants';
 
 const initialState = {
   forgotFormData: {
     email: ''
   },
-  formErrors: {}
+  formErrors: {},
+  isLoading: false
 };
 
 const forgotPasswordReducer = (state = initialState, action) => {
   switch (action.type) {
+    case F_PWD_LOADING:
+      return {
+        ...state,
+        isLoading: action.payload
+      }
     case FORGOT_PASSWORD_CHANGE:
       return {
         ...state,

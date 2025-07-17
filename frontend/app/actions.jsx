@@ -18,7 +18,8 @@ import * as user from '../app/containers/User/actions';
 import * as guest from '../app/containers/Guest/actions';
 import * as organizer from '../app/containers/Organizer/actions';
 import * as scan from '../app/containers/Scan/actions';
-import * as forgotPassword from '../app/containers/ForgotPassword/action';;
+import * as forgotPassword from '../app/containers/ForgotPassword/action';
+import * as resetPassword from '../app/containers/ResetPassword/actions';
 
 export default function mapDispatchToProps (dispatch) {
   return bindActionCreators(
@@ -42,6 +43,7 @@ export default function mapDispatchToProps (dispatch) {
       ...organizer,
       ...scan,
       ...forgotPassword,
+      ...resetPassword,
     },
     dispatch
   );

@@ -5,7 +5,7 @@
 
 .btn-primary {
     background-color: var(--primary_color);
-    padding: 20px 25px;
+    padding: 15px 20px;
     border: none;
     color: #fff;
     border-radius: 10px;
@@ -14,7 +14,7 @@
 
 .button-container .secondary {
     background-color: var(--bg-secondary);
-    padding: 20px 25px;
+    padding: 15px 20px;
     border: 1px solid #fff;
     color: #fff;
     border-radius: 10px;
@@ -23,7 +23,7 @@
 
 .button-container .other {
     background-color: var(--neutral_bg_color);
-    padding: 20px 25px;
+    padding: 15px 20px;
     border: none;
     color: #fff;
     border-radius: 10px;
@@ -32,4 +32,12 @@
 
 .third-btn {
     color: black;
+}
+.button-container .last {
+    background-color: white;
+    padding: 15px 20px;
+    border: 1px solid var(--primary_color);
+    color: var(--primary_color);
+    border-radius: 10px;
+    cursor: pointer;
 }

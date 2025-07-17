@@ -18,7 +18,7 @@ const AccountSecurityForm = (props) => {
   const {
     isLightMode, resetFormData,
     handleToggle2FA, resetAccountPassword,
-    resetPasswordChange, formErrors,
+    accountResetPasswordChange, formErrors,
     isLoading
   } = props;
 
@@ -26,6 +26,7 @@ const AccountSecurityForm = (props) => {
     e.preventDefault();
     resetAccountPassword();
   };
+
   return (
     <div data-aos="fade-up" className="container-lg px-4 mb-5">
       { isLoading && <LoadingIndicator /> }
@@ -46,7 +47,7 @@ const AccountSecurityForm = (props) => {
               value={resetFormData.password}
               error={formErrors['password']}
               onInputChange={(name, value) => {
-                resetPasswordChange(name, value);
+                accountResetPasswordChange(name, value);
               }}              
             />
             <Input
@@ -58,7 +59,7 @@ const AccountSecurityForm = (props) => {
               value={resetFormData.confirmPassword}
               error={formErrors['confirmPassword']}
               onInputChange={(name, value) => {
-                resetPasswordChange(name, value);
+                accountResetPasswordChange(name, value);
               }}              
             />
             <CButton type="submit" className="linear-grad p-white mb-4">
@@ -69,7 +70,7 @@ const AccountSecurityForm = (props) => {
           <hr />
 
           {/* 2FA Toggle */}
-          {/*<div className='mb-3'>
+          {/*<div className='mb-3'> // if authenticated show this
             <div className='d-flex justify-content-between align-items-center'>
               <label className={`${isLightMode ? 'p-black' : 'p-white'} fw-bold mb-0`}>
                 Two-Factor Authentication (2FA)
@@ -101,12 +102,6 @@ const AccountSecurityForm = (props) => {
 };
 
 class AccountSecurity extends React.PureComponent {
-  componentDidMount() {
-    const token = this.props.match.params.token;
-    if (token) {
-      this.props.resetPassword(token);
-    }
-  }
   render () {
     return (
       <AccountSecurityForm {...this.props} />
