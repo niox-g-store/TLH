@@ -108,7 +108,7 @@ const ManagerOrderList = (props) => {
   );
 };
 
-class AdminOrder extends React.PureComponent {
+class UserOrder extends React.PureComponent {
   componentDidMount() {
     this.props.userOrders();
   }
@@ -125,4 +125,4 @@ const mapStateToProps = state => ({
   orderIsLoading: state.order.isLoading
 });
 
-export default connect(mapStateToProps, actions)(withRouter(AdminOrder));
+export default connect(mapStateToProps, actions)(withRouter(UserOrder));

@@ -30,11 +30,11 @@
     { "to": "/security", "name": "Account Security", "prefix": "/dashboard", "provider": ["Email"], "icon": "MdOutlineSecurity" }
   ],
   "ROLE MEMBER": [
-    { "to": "", "name": "Events", "prefix": "/dashboard" },
+    { "to": "", "name": "Dashboard", "prefix": "/dashboard" },
     { "to": "/orders/my-orders", "name": "Orders", "prefix": "/dashboard" },
     { "to": "/gallery", "name": "Gallery", "prefix": "" },
     { "to": "/shop", "name": "Shop", "prefix": "" },
     { "to": "/account", "name": "Account Details", "prefix": "/dashboard" },
-    { "to": "/security", "name": "Account Security", "prefix": "/dashbard" }
+    { "to": "/security", "name": "Account Security", "prefix": "/dashboard" }
   ]
 }

@@ -1,5 +1,5 @@
 const ResolveImage = (image, type = null) => {
-  if (type === 'profile' && image === 'http://localhost:3030/apiundefined') {
+  if (type === 'profile' && (image === 'http://localhost:3030/apiundefined' || image === 'http://localhost:3030/api')) {
     return '/assets/profile-icon.png'
   }
   if (type) {

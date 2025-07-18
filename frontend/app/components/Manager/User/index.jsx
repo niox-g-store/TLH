@@ -71,6 +71,7 @@ const ManagerUserHelper = (props) => {
                   <CCardText>
                     <strong>Email:</strong> {user.email || 'N/A'}<br />
                     <strong>Username:</strong> {user.userName || 'N/A'}<br />
+                    <strong>Phone Number:</strong> {user.phoneNumber || 'N/A'}<br />
                     <strong>Role:</strong> {user.role || 'N/A'}<br />
                     <strong>Provider:</strong> {user.provider || 'N/A'}<br />
                     <strong>Created At:</strong> {formatDate(user.createdAt)}<br />

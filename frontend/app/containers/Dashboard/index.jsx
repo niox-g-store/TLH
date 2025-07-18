@@ -14,7 +14,7 @@ import dashboardLinks from './links.json';
 import { isDisabledOrganizerAccount } from '../../utils/app';
 import Admin from '../Admin';
 import Organizer from '../Organizer';
-import Customer from '../Customer/Dashboard';
+import Customer from '../Customer/';
 import DisabledOrganizerAccount from '../Organizer/DisabledAccount';
 import LoadingIndicator from '../../components/store/LoadingIndicator';
 
@@ -83,7 +83,7 @@ class Dashboard extends React.PureComponent {
           />
         ) : (
           <Customer
-            user={user}
+            {...this.props}
             isMenuOpen={isMenuOpen}
             links={dashboardLinks[ROLES.Member]}
             toggleMenu={toggleDashboardMenu}

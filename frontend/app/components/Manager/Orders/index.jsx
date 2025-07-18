@@ -23,6 +23,7 @@ import Button from '../../Common/HtmlTags/Button';
 import ManagerPagination from '../Pagination';
 import LoadingIndicator from '../../store/LoadingIndicator';
 import Input from '../../Common/HtmlTags/Input';
+import { getCartPriceSummary } from '../../store/CartSummary';
 
 const OrderWithCoupon = ({ order, cart }) => {
   const discount = cart?.tickets.find((i) => i.coupon !== null);
@@ -116,7 +117,9 @@ const ManagerOrderList = (props) => {
 
 
       <CRow className='gy-4'>
-      {currentOrders.map((order, idx) => (
+      {currentOrders.map((order, idx) => {
+        const { total } = getCartPriceSummary(order?.cart?.tickets)
+        return (
        <CCol md={6} key={idx}>
         <Link to={`/dashboard/order/${order._id}`}>
       <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}>
@@ -158,21 +161,17 @@ const ManagerOrderList = (props) => {
             {order.guest?.name ? <><strong>Guest Name:</strong> {order.guest.name}</> : <><strong>User name: {order.user.name}</strong></>}
           </CCol>
         </CRow>
-        {order?.cart?.tickets.find((item) => item.coupon) && <OrderWithCoupon cart={order?.cart} order={order}/>}
-        {order?.discountAmount > 0 && <OrderWithDiscountAmount order={order}/>}
-        {order?.discountAmount < 1 && !order?.cart?.tickets.find((item) => item.coupon) &&
           <div className='mt-2'>
             <CRow>
               <CCol><strong>Total:</strong></CCol>
-              <CCol className='text-end fw-bold'>₦{order?.cart?.total.toLocaleString()}</CCol>
+              <CCol className={`text-end fw-bold ${order.paymentStatus === 'success' ? 'text-success' : 'text-danger'}`}>₦{total}</CCol>
             </CRow>
           </div>
-        }
       </CCardBody>
     </CCard>
   </Link>
   </CCol>
-))}
+)})}
       </CRow>
         <ManagerPagination
           isLightMode={isLightMode}

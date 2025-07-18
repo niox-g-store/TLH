@@ -50,20 +50,32 @@ const App = (props) => {
     document.body.classList.toggle('dark-mode', !isLight);
   }, []);
 
-  const hideHeaderFooterPaths = ['/login', '/signup',
-    '/organizer-signup', '/dashboard', '/forgot-password', '/reset-password'
+  const hideHeader = [ '/login',
+                        '/signup',
+                        '/organizer-signup',
+                        '/dashboard',
+                        '/forgot-password',
+                        '/reset-password'
   ];
-  const hideFooter = ['/event/', '/terms', '/privacy', '/faq', '/gallery', '/order', '/forgot-password']
-  const showHeaderFooter = (USER.role === ROLES.Member ||
-                            !hideHeaderFooterPaths.some(path => location.pathname.startsWith(path))
+  const hideFooter = [ '/event/', '/terms',
+                       '/privacy', '/dashboard',
+                       '/faq', '/gallery',
+                       '/order', '/forgot-password',
+                       '/login', '/signup',
+                       '/organizer-signup',
+                       '/reset-password'
+  ]
+  const showHeader = (USER.role === ROLES.Member ||
+                            !hideHeader.some(path => location.pathname.startsWith(path))
                             );
-  const showFooter = (USER.role === ROLES.Member || !hideFooter.some(path => location.pathname.startsWith(path)))
+  //const showFooter = (USER.role === ROLES.Member || !hideFooter.some(path => location.pathname.startsWith(path)))
+  const showFooter = (!hideFooter.some(path => location.pathname.startsWith(path)))
 
   return (
     <>
       <ScrollToTop />
       <Notification />
-      {showHeaderFooter && <Navigation />}
+      {showHeader && <Navigation />}
       <Routes>
         <Route path='*' element={<Page404 />} />
         <Route path='/' element={<Home />} />
@@ -91,12 +103,13 @@ const App = (props) => {
         <Route path='/dashboard/*' element={<Authentication><Dashboard /></Authentication>} />
       </Routes>
 
-      {showHeaderFooter && showFooter && <Footer />}
+      {showFooter && <Footer />}
     </>
   );
 }
 
 const mapStateToProps = (state) => {
+  console.log(state)
   return {
     user: state.account.user
   };

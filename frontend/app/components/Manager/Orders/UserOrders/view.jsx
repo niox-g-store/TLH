@@ -18,23 +18,26 @@ import { connect } from 'react-redux';
 import ResolveImage from '../../../store/ResolveImage';
 import actions from '../../../../actions';
 import { formatDate } from '../../../../utils/formatDate';
-import TopSlideConfirmModal from '../../../store/ConfirmModal';
-import { getCartPriceSummary } from '../../../store/CartSummary';
 import { renderTicketBreakdown } from '../../../store/TicketSummary';
-
+import { getCartPriceSummary } from '../../../store/CartSummary';
 const OrderViewer = (props) => {
-  const { order = {}, user,
-          isLightMode, orderIsLoading,
-          setDeleteOrderVisibility, deleteOrderVisibility,
-          deleteOrder, secondDiscount, setSecondDiscount,
-          invoice, downloadInvoice
-        } = props;
+  const {
+    order = {},
+    user,
+    isLightMode,
+    orderIsLoading,
+    setDeleteOrderVisibility,
+    deleteOrderVisibility,
+    deleteOrder,
+    secondDiscount,
+    setSecondDiscount,
+    invoice,
+    downloadInvoice
+  } = props;
+
   const navigate = useNavigate();
   const { subTotal, total } = getCartPriceSummary(order?.cart?.tickets);
-
   const isAdmin = user?.role === ROLES.Admin;
-  const isOrganizer = user?.role === ROLES.Organizer;
-  const isMember = user?.role === ROLES.Member;
 
   const firstImage =
     order?.cart?.tickets?.[0]?.eventId?.imageUrls?.[0] || '';
@@ -46,14 +49,13 @@ const OrderViewer = (props) => {
 
     if (ticketWithCoupon) {
       const { couponPercentage, couponAmount, price } = ticketWithCoupon;
-      secDiscount = couponPercentage > 0 
-        ? (price * couponPercentage) / 100 
+      secDiscount = couponPercentage > 0
+        ? (price * couponPercentage) / 100
         : couponAmount;
 
       setSecondDiscount(secDiscount);
     }
   }, [order?.cart?.tickets]);
-
 
   return (
     <div data-aos='fade-up' className='container-lg px-4 d-flex flex-column mb-custom-5em'>
@@ -74,7 +76,6 @@ const OrderViewer = (props) => {
                 style={{ width: '100%', height: '300px', objectFit: 'cover' }}
               />
               <CCardBody>
-                <h3>{order?.guest ? 'Guest' : 'User'}</h3>
                 <CCardTitle className='d-flex' style={{ justifyContent: 'space-between' }}>
                   <p className='mb-0'><strong>Id:</strong> {order?._id || 'N/A'}</p>
                   <CBadge color={order?.status === 'true' ? 'success' : 'danger'} className='mb-2'>
@@ -99,38 +100,20 @@ const OrderViewer = (props) => {
                     <strong>Date:</strong> {order?.createdAt ? formatDate(order.createdAt) : 'N/A'}
                   </CCol>
                 </CRow>
-
-                    <div className='mt-2'>
-                      <CRow>
-                        <CCol><strong>SubTotal:</strong></CCol>
-                        <CCol className='text-end'>
+                  <div className='mt-2'>
+                    <CRow>
+                      <CCol><strong>SubTotal:</strong></CCol>
+                      <CCol className='text-end'>
                         ₦{subTotal}
                       </CCol>
-                      </CRow>
-                      <CRow>
-                        <CCol><strong>Total:</strong></CCol>
-                        <CCol className='text-end fw-bold text-success'>
+                    </CRow>
+                    <CRow>
+                      <CCol><strong>Total:</strong></CCol>
+                      <CCol className='text-end fw-bold text-success'>
                         ₦{total}
                       </CCol>
-                      </CRow>
-                    </div>
-                <hr />
-
-                {isAdmin && (
-                  <>
-                    <CRow>
-                      <CCol><strong>Paystack Ref:</strong></CCol>
-                      <CCol className='text-end'>{order?.payStackReference || 'N/A'}</CCol>
                     </CRow>
-                    <CRow>
-                      <CCol><strong>Paystack Fees:</strong></CCol>
-                      <CCol className='text-end'>
-                        ₦{order?.paymentFees ? order.paymentFees.toLocaleString() : '0'}
-                      </CCol>
-                    </CRow>
-                  </>
-                )}
-
+                  </div>
               </CCardBody>
             </CCard>
           </CCol>
@@ -152,17 +135,16 @@ const OrderViewer = (props) => {
                         <p><strong>Ticket Type:</strong> {ticket?.ticketType || 'N/A'}</p>
                         <p><strong>Quantity:</strong> x {quantity}</p>
                           {renderTicketBreakdown(ticket, isLightMode)}
-
                         {invoice
                           .filter((inv) => inv.ticketId === ticketId)
                           .map((inv, idx) => (
-                          <Button
-                            key={inv.code || idx}
-                            text={`Download (${idx + 1})`}
-                            onClick={() => downloadInvoice(inv, order._id)}
-                            style={{ padding: '10px 15px', margin: '1em 0em 0.5em 0em' }}
-                          />
-                        ))}
+                            <Button
+                              key={inv.code || idx}
+                              text={`Download (${idx + 1})`}
+                              onClick={() => downloadInvoice(inv, order._id)}
+                              style={{ padding: '10px 15px', margin: '1em 0em 0.5em 0em' }}
+                            />
+                          ))}
                       </div>
                     );
                   })
@@ -170,20 +152,6 @@ const OrderViewer = (props) => {
               </CCardBody>
             </CCard>
           </CCol>
-                {isAdmin && (
-                  <>
-                    <CRow style={{ marginTop: '1em', justifyContent: 'center' }}>
-                      <Button onClick={() => setDeleteOrderVisibility(true)} text={"Delete order"} cls="text-danger mt-2"/>
-                    </CRow>
-                    <TopSlideConfirmModal
-                      visible={deleteOrderVisibility}
-                      text={"Confirm to delete order"}
-                      onConfirm={(v) => deleteOrder(v, navigate)}
-                      onClose={() => setDeleteOrderVisibility(false)}
-                      confirmValue={order._id}
-                    />
-                  </>
-                )}
         </CRow>
       </div>
     </div>
@@ -191,19 +159,19 @@ const OrderViewer = (props) => {
 };
 
 class ViewOrder extends React.PureComponent {
-  componentDidMount () {
+  componentDidMount() {
     const orderId = this.props.match.params.id;
     this.props.fetchOrder(orderId);
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     if (this.props.match.params.id !== prevProps.match.params.id) {
       const orderId = this.props.match.params.id;
       this.props.fetchOrder(orderId);
     }
   }
 
-  render () {
+  render() {
     return (
       <OrderViewer {...this.props} />
     );
@@ -217,7 +185,6 @@ const mapStateToProps = state => ({
   orderIsLoading: state.order.isLoading,
   deleteOrderVisibility: state.order.deleteOrderVisibility,
   secondDiscount: state.order.secondDiscount,
-
   invoice: state.order.invoice
 });
 

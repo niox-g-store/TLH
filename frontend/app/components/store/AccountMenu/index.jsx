@@ -94,9 +94,6 @@ const AccountMenu = (props) => {
               <CiLogout size={25}/>&nbsp;&nbsp;Logout
             </div>
       </CSidebarNav>
-        <CSidebarHeader>
-          <CSidebarToggler />
-      </CSidebarHeader>
     </CSidebar>
 
 
