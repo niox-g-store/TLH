@@ -119,9 +119,7 @@ const OrganizerSignUp = (props) => {
                   <div className='forget-pass-sec'>
                     <div className='remember-me signup'>
                       <Input name='checkbox' checked={isSubscribed} onInputChange={(n, v) => subscribeChange()} type='checkbox' />&nbsp;&nbsp;
-                      <div className='form-label'>
                         <label className='p-black'>I want to recieve updates about The link hangouts</label>
-                      </div>
                     </div>
                   </div>
                   <div className='create-account-links'>

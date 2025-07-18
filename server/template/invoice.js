@@ -122,7 +122,7 @@ return `
             <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black; text-align: right;">${price}</p>
           </div>
           <div style="width: 18%; padding: 4px 8px;">
-            <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black; font-weight: bold; text-align: right;">
+            <p style="padding: 4px 0px 4px 0; margin-bottom: 1px; color: black; font-weight: bold; text-align: right;">
               ${hasDiscount && !hasCoupon ? discountPrice : hasCoupon ? couponAmount : price}
             </p>
           </div>

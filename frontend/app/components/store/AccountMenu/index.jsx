@@ -67,16 +67,16 @@ const AccountMenu = (props) => {
   };
   return (
     <>
-    <CSidebar className="border-end bg-black" position='fixed' visible={isMenuOpen}>
+    <CSidebar className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white'} border-end`} position='fixed' visible={isMenuOpen}>
       <CSidebarHeader className='sidebarheader'>
         <CSidebarBrand as={'div'}>
             <Link to={"/"}>
-            <div className="logo">
+            <div style={{ padding: '2em 7.85em 2em 1em' }} className="logo bg-black">
                 <div className="logo-image" alt="LogoImage" />
             </div>
             </Link>
         </CSidebarBrand>
-        <IoCloseOutline className={"p-white cursor-pointer d-lg-none"} size={30} onClick={toggleMenu}/>
+        <IoCloseOutline style={{ zIndex: '900000' }} className={"p-white cursor-pointer d-lg-none"} size={30} onClick={toggleMenu}/>
       </CSidebarHeader>
 
       <CSidebarNav style={{ scrollbarWidth: 'thin' }} data-aos="fade-up">
@@ -84,14 +84,14 @@ const AccountMenu = (props) => {
               const PREFIX = link.prefix ? link.prefix : '';
                 const IconComponent = iconMap[link.icon];
               return (
-                <CNavItem key={index} className='p-white item-hover margin-btm-sm' href={PREFIX + link.to}>
+                <CNavItem key={index} className={`${isLightMode ? 'p-black' : 'p-white'} item-hover margin-btm-sm`} href={PREFIX + link.to}>
                     {IconComponent && <IconComponent style={{ marginRight: '8px' }} />}
                     {link.name}
                 </CNavItem>
               );
             })}
-            <div onClick={signOut} className='p-white' style={{ padding: '.75em', cursor: 'pointer' }}>
-              <CiLogout className='p-white' size={25}/>&nbsp;&nbsp;Logout
+            <div onClick={signOut} style={{ padding: '.75em', cursor: 'pointer' }}>
+              <CiLogout size={25}/>&nbsp;&nbsp;Logout
             </div>
       </CSidebarNav>
         <CSidebarHeader>
@@ -104,14 +104,14 @@ const AccountMenu = (props) => {
 
 
 
-    <CSidebar className="border-end bg-black d-lg-none" position='fixed' visible={isMenuOpen}>
+    <CSidebar className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white'} border-end d-lg-none`} position='fixed' visible={isMenuOpen}>
         <CSidebarHeader className='sidebarheader'>
         <CSidebarBrand as={'div'}>
+            <div style={{ padding: '2em 0em' }} className="logo bg-black">
             <Link to={"/"}>
-            <div className="logo">
                 <div className="logo-image" alt="LogoImage" />
-            </div>
             </Link>
+            </div>
         </CSidebarBrand>
         <IoCloseOutline className={"p-white cursor-pointer d-lg-none close-icon"} size={30} onClick={toggleMenu}/>
       </CSidebarHeader>
@@ -119,7 +119,7 @@ const AccountMenu = (props) => {
       <CFormSwitch
                 label={isLightMode ? 'Light Mode' : 'Dark Mode'}
                 id='themeToggleSwitch'
-                className='switch me-3 text-white d-flex align-items-center gap-2'
+                className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white'} switch me-3 d-flex align-items-center gap-2`}
                 checked={isLightMode}
                 onChange={handleThemeToggle}
               />
@@ -128,14 +128,14 @@ const AccountMenu = (props) => {
               const PREFIX = link.prefix ? link.prefix : '';
                 const IconComponent = iconMap[link.icon];
               return (
-                <CNavItem key={index} className='p-white item-hover margin-btm-sm' href={PREFIX + link.to}>
+                <CNavItem key={index} className={`${isLightMode ? 'p-black' : 'p-white'} item-hover margin-btm-sm`} href={PREFIX + link.to}>
                     {IconComponent && <IconComponent style={{ marginRight: '8px' }} />}
                     {link.name}
                 </CNavItem>
               );
             })}
-            <div onClick={signOut} className='p-white' style={{ padding: '.75em', cursor: 'pointer' }}>
-              <CiLogout className='p-white' size={25}/>&nbsp;&nbsp;Logout
+            <div onClick={signOut} style={{ padding: '.75em', cursor: 'pointer' }}>
+              <CiLogout size={25}/>&nbsp;&nbsp;Logout
             </div>
         </CSidebarNav>
             <CSidebarHeader>

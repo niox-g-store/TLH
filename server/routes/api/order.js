@@ -18,6 +18,7 @@ const { customAlphabet } = require('nanoid');
 const QRCode = require('qrcode');
 const keys = require('../../config/keys');
 const orderQueue = require('../../queues/orderQueue');
+const { generateInvoice } = require('../../utils/invoiceService');
 
 const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', 8);
 

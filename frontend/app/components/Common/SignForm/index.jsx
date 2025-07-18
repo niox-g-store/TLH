@@ -116,9 +116,7 @@ const SignForm = (props) => {
                     onInputChange={(n, v) => subscribeChange()}
                   />
                 </div>
-                <div className="form-label">
                   <label className="p-black">I want to receive updates about The Link Hangouts</label>
-                </div>
               </div>
             </div>
 

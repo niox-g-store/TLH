@@ -76,9 +76,7 @@ const LoginForm = (props) => {
                   onInputChange={(n, v) => rememberMeChange()}
                 />
                 &nbsp;&nbsp;
-                <div className="form-label">
                   <label className="p-black">Remember Me</label>
-                </div>
               </div>
 
               <div className="forget-pass">

@@ -270,7 +270,7 @@ const prepareTemplate = (type, host, data) => {
 
     case 'signup':
       message = template.signupEmail(data);
-      message.sender = security;
+      message.sender = management;
       break;
 
     case 'organizer-signup':
