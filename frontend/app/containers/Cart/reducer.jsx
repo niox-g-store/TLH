@@ -30,7 +30,7 @@ import { getSelectedTicketsFromStorage, saveSelectedTicketsToStorage } from '../
 const initialState = {
   isOpen: false,
   tickets: [],
-  items: [], // For products
+  items: [], // For products  
   cartId: null,
   total: 0,
   loading: false,
