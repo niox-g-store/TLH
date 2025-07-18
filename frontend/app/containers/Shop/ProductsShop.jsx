@@ -3,16 +3,48 @@ import Card from '../../components/store/Card';
 import Pagination from '../../components/store/Pagination';
 import Input from '../../components/Common/HtmlTags/Input';
 import LoadingIndicator from '../../components/store/LoadingIndicator';
+import SelectOption from '../../components/store/SelectOption';
 
-const ProductsShop = ({ products = [], isLoading }) => {
+const ProductsShop = ({ products = [], isLoading, filterProducts }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [sortOrder, setSortOrder] = useState(0);
+
+  const sortOptions = [
+    { value: 0, label: 'Newest First' },
+    { value: 1, label: 'Price: High to Low' },
+    { value: 2, label: 'Price: Low to High' }
+  ];
 
   const filteredProducts = products.filter(product => 
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    const getPrice = (product) => {
+      return product.discountPrice > 0 
+        ? product.price - (product.price * (product.discountPrice / 100))
+        : product.price;
+    };
+
+    switch (sortOrder) {
+      case 1: // Price: High to Low
+        return getPrice(b) - getPrice(a);
+      case 2: // Price: Low to High
+        return getPrice(a) - getPrice(b);
+      default: // Newest First
+        return new Date(b.createdAt) - new Date(a.createdAt);
+    }
+  });
+
   const handleSearch = (name, value) => {
     setSearchTerm(value);
+  };
+
+  const handleSortChange = (selectedOption) => {
+    setSortOrder(selectedOption.value);
+    if (filterProducts) {
+      filterProducts('sorting', selectedOption.value);
+    }
   };
 
   if (isLoading) {
@@ -25,19 +57,34 @@ const ProductsShop = ({ products = [], isLoading }) => {
         <div className="products-header">
           <h2 className="head1">Our Products</h2>
           
-          <Input 
-            placeholder="Search products by name"
-            type="search"
-            value={searchTerm}
-            onInputChange={handleSearch}
-          />
+          <div className="shop-filters">
+            <div className="search-filter">
+              <Input 
+                placeholder="Search products by name"
+                type="search"
+                value={searchTerm}
+                onInputChange={handleSearch}
+              />
+            </div>
+            
+            <div className="sort-filter">
+              <SelectOption
+                label="Sort by"
+                placeholder="Select sorting option"
+                value={sortOptions.find(option => option.value === sortOrder)}
+                options={sortOptions}
+                handleSelectChange={handleSortChange}
+                multi={false}
+              />
+            </div>
+          </div>
         </div>
 
         <div className="products-list-wrapper">
-          {filteredProducts.length > 0 ? (
+          {sortedProducts.length > 0 ? (
             <div className="products-grid">
               <Pagination
-                items={filteredProducts}
+                items={sortedProducts}
                 itemsPerPage={12}
                 renderItem={(product, index) => (
                   <Card 

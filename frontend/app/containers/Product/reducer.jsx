@@ -4,12 +4,9 @@
  *
  */
 
-
-
 import {
   FETCH_PRODUCTS,
   FETCH_STORE_PRODUCTS,
-  SET_NEW_ARRIVALS,
   FETCH_PRODUCT,
   FETCH_STORE_PRODUCT,
   PRODUCT_CHANGE,
@@ -17,35 +14,23 @@ import {
   PRODUCT_SHOP_CHANGE,
   SET_PRODUCT_FORM_ERRORS,
   SET_PRODUCT_FORM_EDIT_ERRORS,
-  SET_PRODUCT_SHOP_FORM_ERRORS,
   RESET_PRODUCT,
-  RESET_PRODUCT_SHOP,
   ADD_PRODUCT,
   REMOVE_PRODUCT,
-  FETCH_PRODUCTS_SELECT,
   SET_PRODUCTS_LOADING,
   SET_ADVANCED_FILTERS,
   RESET_ADVANCED_FILTERS,
-
-  SET_PRODUCT_BOUGHT,
-  SET_BEST_SELLING,
-  SET_MIN_MAX_VALUE,
   PRODUCT_SLUG_CHANGED,
 } from './constants';
 
 const initialState = {
-
-  productBought: 0,
   products: [],
   storeProducts: [],
-  bestSelling: [],
-  newArrivals: [],
   product: {
     _id: ''
   },
   storeProduct: {},
   productSlugChange: false,
-  productsSelect: [],
   productFormData: {
     sku: '',
     name: '',
@@ -53,13 +38,8 @@ const initialState = {
     quantity: 1,
     price: 1,
     discountPrice: 0,
-    image: {},
-    isActive: true,
-    taxable: { value: 0, label: 'No' },
-    /*brand: {
-      value: 0,
-      label: 'No Options Selected'
-    }*/
+    image: [],
+    isActive: true
   },
   isLoading: false,
   productShopData: {
@@ -67,24 +47,14 @@ const initialState = {
   },
   formErrors: {},
   editFormErrors: {},
-  shopFormErrors: {},
   advancedFilters: {
-    name: 'all',
-    category: 'all',
-    /*brand: 'all',*/
-    min: 1,
-    max: 100000000,
+    min: 0,
+    max: 1000000,
     rating: 0,
-    order: 0,
-    totalPages: 1,
-    currentPage: 1,
-    count: 0,
-    limit: 12,
+    order: 0, // 0: newest first, 1: price high to low, 2: price low to high
     page: 1,
-  },
-
-  minPriceValue: 0,
-  maxPriceValue: 0,
+    limit: 12
+  }
 };
 
 const productReducer = (state = initialState, action) => {
@@ -94,31 +64,10 @@ const productReducer = (state = initialState, action) => {
         ...state,
         productSlugChange: action.payload
       };
-    case SET_MIN_MAX_VALUE:
-      return {
-        ...state,
-        minPriceValue: action.payload.minValue,
-        maxPriceValue: action.payload.maxValue
-      };
-    case SET_BEST_SELLING:
-      return {
-        ...state,
-        bestSelling: action.payload
-      }
-    case SET_PRODUCT_BOUGHT:
-      return {
-        ...state,
-        productBought: action.payload
-      };
     case FETCH_PRODUCTS:
       return {
         ...state,
         products: action.payload
-      };
-    case SET_NEW_ARRIVALS:
-      return {
-        ...state,
-        newArrivals: action.payload
       };
     case FETCH_STORE_PRODUCTS:
       return {
@@ -138,29 +87,22 @@ const productReducer = (state = initialState, action) => {
         productSlugChange: false,
         productShopData: {
           quantity: 1
-        },
-        shopFormErrors: {}
+        }
       };
     case SET_PRODUCTS_LOADING:
       return {
         ...state,
         isLoading: action.payload
       };
-    case FETCH_PRODUCTS_SELECT:
-      return { ...state, productsSelect: action.payload };
     case ADD_PRODUCT:
       return {
         ...state,
         products: [...state.products, action.payload]
       };
     case REMOVE_PRODUCT:
-      const index = state.products.findIndex(b => b._id === action.payload);
       return {
         ...state,
-        products: [
-          ...state.products.slice(0, index),
-          ...state.products.slice(index + 1)
-        ]
+        products: state.products.filter(p => p._id !== action.payload)
       };
     case PRODUCT_CHANGE:
       return {
@@ -196,11 +138,6 @@ const productReducer = (state = initialState, action) => {
         ...state,
         editFormErrors: action.payload
       };
-    case SET_PRODUCT_SHOP_FORM_ERRORS:
-      return {
-        ...state,
-        shopFormErrors: action.payload
-      };
     case RESET_PRODUCT:
       return {
         ...state,
@@ -211,26 +148,14 @@ const productReducer = (state = initialState, action) => {
           quantity: 1,
           price: 1,
           discountPrice: 0,
-          image: {},
-          isActive: true,
-          taxable: { value: 0, label: 'No' },
-          /*brand: {
-            value: 0,
-            label: 'No Options Selected'
-          }*/
+          image: [],
+          isActive: true
         },
         product: {
           _id: ''
         },
-        formErrors: {}
-      };
-    case RESET_PRODUCT_SHOP:
-      return {
-        ...state,
-        productShopData: {
-          quantity: 1
-        },
-        shopFormErrors: {}
+        formErrors: {},
+        editFormErrors: {}
       };
     case SET_ADVANCED_FILTERS:
       return {
@@ -244,18 +169,12 @@ const productReducer = (state = initialState, action) => {
       return {
         ...state,
         advancedFilters: {
-          name: 'all',
-          category: 'all',
-          /*brand: 'all',*/
-          min: 1,
-          max: 100000000,
+          min: 0,
+          max: 1000000,
           rating: 0,
           order: 0,
-          totalPages: 1,
-          currentPage: 1,
-          count: 0,
-          limit: 12,
           page: 1,
+          limit: 12
         }
       };
     default:

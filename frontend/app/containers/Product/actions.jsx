@@ -4,14 +4,15 @@
  *
  */
 
-import { goBack } from 'connected-react-router';
-import { success } from 'react-notification-system-redux';
 import axios from 'axios';
+import { showNotification } from '../Notification/actions';
+import handleError from '../../utils/error';
+import { allFieldsValidation } from '../../utils/validation';
+import { API_URL } from '../../constants';
 
 import {
   FETCH_PRODUCTS,
   FETCH_STORE_PRODUCTS,
-  SET_NEW_ARRIVALS,
   FETCH_PRODUCT,
   FETCH_STORE_PRODUCT,
   PRODUCT_CHANGE,
@@ -22,84 +23,11 @@ import {
   RESET_PRODUCT,
   ADD_PRODUCT,
   REMOVE_PRODUCT,
-  FETCH_PRODUCTS_SELECT,
   SET_PRODUCTS_LOADING,
   SET_ADVANCED_FILTERS,
   RESET_ADVANCED_FILTERS,
-
-  SET_PRODUCT_BOUGHT,
-  SET_BEST_SELLING,
-  SET_MIN_MAX_VALUE,
+  PRODUCT_SLUG_CHANGED,
 } from './constants';
-
-import { API_URL, ROLES } from '../../constants';
-import handleError from '../../utils/error';
-import { formatSelectOptions, unformatSelectOptions } from '../../utils/select';
-import { allFieldsValidation } from '../../utils/validation';
-import { currencyFunction } from '../../components/Common/currency/currency_function';
-const fx = require('money');
-
-
-export const minMaxPriceCalculator = () => {
-  return async (dispatch, getState) => {
-    try{
-      const s = getState().currency;
-      const sL = s.select_currency.length;
-      const selectCurrency =  sL > 0 ? s.select_currency : s.default_currency;
-
-      const response = await axios.get(`${API_URL}/product/fetch_product_min_max_price`)
-      const { minPrice, maxPrice } = response.data;
-
-      // round min to it's neareast lowest 10th and max to it's nearest highest 10th
-      // i.e min = 2500 to lowest 10th = 1500 and for max = 5600 to highest 10th = 6600
-      // const mi = Math.floor((minPrice[0] / 1000) - 1) * 1000
-      const mi = minPrice[0]
-      const ma = Math.floor((maxPrice[0] / 1000) + 1) * 1000
-
-      // convert min and max to current currency rate
-      const min = await currencyFunction(s.all_currency, selectCurrency, mi)
-      const max = await currencyFunction(s.all_currency, selectCurrency, ma)
-
-      if (minPrice && maxPrice) {
-        dispatch({
-          type: SET_MIN_MAX_VALUE,
-          payload: { minValue: min, maxValue: max }
-        })
-      }
-    } catch (error) {
-      handleError(error, dispatch);
-    }
-  }
-}
-
-
-/**
- * converts from foreign currency to naira, fetch rate from db
- * @param {*} all_currency 
- * @param {*} selectCurrency 
- * @param {*} price 
- */
-const currFunction = async (selectCurrency, price) => {
-  let currencyData = {};
-  fx.base = 'USD';
-  const currencyRate = await axios.get(`${API_URL}/currency_rate/get_currencies`);
-  const cD = currencyRate.data.currencies;
-  for (let items in cD){
-    const rateObject = cD[items].rate;
-
-    for (let key in rateObject) {
-      currencyData[key] = rateObject[key];
-    }
-  }
-  fx.rates = currencyData;
-
-  const itemPrice = fx.convert(price, {
-    from: selectCurrency.toUpperCase(),
-    to: "NGN",
-  })
-  return itemPrice;
-}
-
 
 export const productChange = (name, value) => {
   let formData = {};
@@ -113,7 +41,6 @@ export const productChange = (name, value) => {
 export const productEditChange = (name, value) => {
   let formData = {};
   formData[name] = value;
-
   return {
     type: PRODUCT_EDIT_CHANGE,
     payload: formData
@@ -123,7 +50,6 @@ export const productEditChange = (name, value) => {
 export const productShopChange = (name, value) => {
   let formData = {};
   formData[name] = value;
-
   return {
     type: PRODUCT_SHOP_CHANGE,
     payload: formData
@@ -131,12 +57,12 @@ export const productShopChange = (name, value) => {
 };
 
 export const resetProduct = () => {
-  return async (dispatch, getState) => {
-    dispatch({ type: RESET_PRODUCT });
+  return {
+    type: RESET_PRODUCT
   };
 };
 
-export const setProductLoading = value => {
+export const setProductLoading = (value) => {
   return {
     type: SET_PRODUCTS_LOADING,
     payload: value
@@ -144,78 +70,30 @@ export const setProductLoading = value => {
 };
 
 export const resetAdvancedFilters = () => {
-  return async(dispatch) => {
-    dispatch({
-      type: RESET_ADVANCED_FILTERS
-    })
-  }
-}
-
-export const filterProducts2 = (n, v) => {
-  return async (dispatch, getState) => {
-    const advancedFilters = getState().product.advancedFilters;
-    const payload = productsFilterOrganizer(n, v, advancedFilters);
-
-    dispatch({ type: SET_ADVANCED_FILTERS, payload });
+  return {
+    type: RESET_ADVANCED_FILTERS
   };
 };
 
-// fetch/filter store products api
-export const filterProducts = (n, val) => {
+export const filterProducts = (filterType, value) => {
   return async (dispatch, getState) => {
     try {
-      // since multiple currencies are available and in case of where number (n)
-      // is in a foreign amount, convert it to the actual amount that matches with price in
-      // the db, by collecting selectCurrency and checking if it's usd or gbp
-      let v = null;
-      const currency = getState().currency;
-      const sL = currency.select_currency.length;
-      const selectCurrency =  sL > 0 ? currency.select_currency : currency.default_currency;
-      if (['gbp', 'usd'].includes(selectCurrency[0])) {
-        // convert n from usd to ngn
-        if (val) {
-          const temp = await currFunction(selectCurrency[0], val[0])
-          const tt = await currFunction(selectCurrency[0], val[1])
-          v = [temp, tt]
-        }
-      } else {
-        v = val
-      }
-
       dispatch(setProductLoading(true));
       const advancedFilters = getState().product.advancedFilters;
-      const payload = productsFilterOrganizer(n, v, advancedFilters);
+      const payload = productsFilterOrganizer(filterType, value, advancedFilters);
+      
       dispatch({ type: SET_ADVANCED_FILTERS, payload });
-      const sortOrder = getSortOrder(payload.order);
-      const response = await axios.get(`${API_URL}/product/list`, {
-        params: { ...payload, sortOrder }
+      
+      const response = await axios.get(`${API_URL}/product/store`, {
+        params: payload
       });
-      const { products, totalPages, currentPage, count } = response.data;
-
+      
+      const { products } = response.data;
+      
       dispatch({
         type: FETCH_STORE_PRODUCTS,
         payload: products
       });
-
-      const newPayload = {
-        ...payload,
-        totalPages,
-        currentPage,
-        count
-      };
-      dispatch({
-        type: SET_ADVANCED_FILTERS,
-        payload: newPayload
-      });
-
-
-      // fetch best selling products
-      const bestSellingResponse = await axios.get(`${API_URL}/product_count/best_selling`);
-
-      dispatch({
-        type: SET_BEST_SELLING,
-        payload: bestSellingResponse.data.fetchedProducts
-      })
     } catch (error) {
       handleError(error, dispatch);
     } finally {
@@ -224,17 +102,14 @@ export const filterProducts = (n, val) => {
   };
 };
 
-// fetch store product api
-export const fetchStoreProduct = slug => {
-  return async (dispatch, getState) => {
+// Fetch store product by slug
+export const fetchStoreProduct = (slug) => {
+  return async (dispatch) => {
     dispatch(setProductLoading(true));
-
     try {
       const response = await axios.get(`${API_URL}/product/item/${slug}`);
-
-      const inventory = response.data.product.quantity;
-      const product = { ...response.data.product, inventory };
-
+      const product = response.data.product;
+      
       dispatch({
         type: FETCH_STORE_PRODUCT,
         payload: product
@@ -242,7 +117,7 @@ export const fetchStoreProduct = slug => {
     } catch (error) {
       if (error.response && error.response.status === 404) {
         dispatch({
-          type: 'PRODUCT_SLUG_CHANGED',
+          type: PRODUCT_SLUG_CHANGED,
           payload: true
         });
       }
@@ -253,52 +128,14 @@ export const fetchStoreProduct = slug => {
   };
 };
 
-export const fetchNewArrivalsProducts = () => {
-  return async (dispatch, getState) => {
-    dispatch(setProductLoading(true));
-
-    try {
-      const response = await axios.get(`${API_URL}/product/new_arrivals`);
-      const products = response.data.products;
-
-      dispatch({
-        type: SET_NEW_ARRIVALS,
-        payload: products
-      });
-    } catch (error) {
-      handleError(error, dispatch);
-    } finally {
-      dispatch(setProductLoading(false));
-    }
-  };
-};
-
-export const fetchProductsSelect = () => {
-  return async (dispatch, getState) => {
-    try {
-      const response = await axios.get(`${API_URL}/product/list/select`);
-
-      const formattedProducts = formatSelectOptions(response.data.products);
-
-      dispatch({
-        type: FETCH_PRODUCTS_SELECT,
-        payload: formattedProducts
-      });
-    } catch (error) {
-      handleError(error, dispatch);
-    }
-  };
-};
-
-// fetch store products api
+// Fetch store products
 export const fetchProducts = () => {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     try {
       dispatch(setProductLoading(true));
-
       const response = await axios.get(`${API_URL}/product/store`);
       const { products } = response.data;
-
+      
       dispatch({
         type: FETCH_STORE_PRODUCTS,
         payload: products
@@ -311,425 +148,239 @@ export const fetchProducts = () => {
   };
 };
 
-// fetch product api
-export const fetchProduct = id => {
-  return async (dispatch, getState) => {
+// Admin: Fetch all products
+export const fetchAllProducts = () => {
+  return async (dispatch) => {
     try {
-      const response = await axios.get(`${API_URL}/product/${id}`);
+      dispatch(setProductLoading(true));
+      const response = await axios.get(`${API_URL}/product`);
+      const { products } = response.data;
       
-      const inventory = response.data.product.quantity;
+      dispatch({
+        type: FETCH_PRODUCTS,
+        payload: products
+      });
+    } catch (error) {
+      handleError(error, dispatch);
+    } finally {
+      dispatch(setProductLoading(false));
+    }
+  };
+};
 
-      /*const brand = response.data.product.brand;
-      const isBrand = brand ? true : false;
-      const brandData = formatSelectOptions(
-        isBrand && [brand],
-        !isBrand,
-        'fetchProduct'
-      );
-
-      response.data.product.brand = brandData[0];*/
-
-      const product = { ...response.data.product, inventory };
-
+// Admin: Fetch single product
+export const fetchProduct = (id) => {
+  return async (dispatch) => {
+    try {
+      dispatch(setProductLoading(true));
+      const response = await axios.get(`${API_URL}/product/${id}`);
+      const product = response.data.product;
+      
       dispatch({
         type: FETCH_PRODUCT,
         payload: product
       });
     } catch (error) {
       handleError(error, dispatch);
-    }
-  };
-};
-
-// add product api
-export const addProduct = () => {
-  return async (dispatch, getState) => {
-    dispatch(setProductLoading(true))
-    try {
-      const rules = {
-        sku: 'required|alpha_dash',
-        name: 'required',
-        description: 'required|max:5000',
-        quantity: 'required|numeric',
-        price: 'required|numeric',
-        taxable: 'required',
-        image: 'required',
-        discountPrice: 'required|numeric|min:0|max:100',
-        /*brand: 'required'*/
-      };
-
-      const product = getState().product.productFormData;
-      /*const user = getState().account.user;
-      const brands = getState().brand.brandsSelect;
-
-      const brand = unformatSelectOptions([product.brand]);*/
-
-      /*const newProduct = {
-        sku: product.sku,
-        name: product.name,
-        description: product.description,
-        price: product.price,
-        quantity: product.quantity,
-        image: product.image,
-        isActive: product.isActive,
-        taxable: product.taxable.value,
-        brand:
-          user.role !== ROLES.Merchant
-            ? brand !== 0
-              ? brand
-              : null
-            : brands[1].value
-      };*/
-
-
-      const generateSKU = (productName) => {
-        // Extract meaningful parts of the product name
-        const keywords = productName.toUpperCase().replace(/[^A-Z0-9\s]/g, "").split(" ").filter(word => word.length > 2).slice(0, 3);
-    
-        const randomCode = Math.random().toString(36).substr(2, 4).toUpperCase();
-    
-        return `${keywords.join("-")}-${randomCode}`;
-    }
-    
-
-      const newProduct = {
-        sku: product.sku.length > 1 ? product.sku : generateSKU(product.name),
-        name: product.name,
-        description: product.description,
-        price: product.price,
-        quantity: product.quantity,
-        image: product.image,
-        isActive: product.isActive,
-        taxable: product.taxable.value,
-        discountPrice: product.discountPrice,
-      };
-
-
-      const { isValid, errors } = allFieldsValidation(newProduct, rules, {
-        'required.sku': 'Sku is required.',
-        'alpha_dash.sku':
-          'Sku may have alpha-numeric characters, as well as dashes and underscores only.',
-        'required.name': 'Name is required.',
-        'required.description': 'Description is required.',
-        'max.description':
-          'Description may not be greater than 5000 characters.',
-        'required.quantity': 'Quantity is required.',
-        'required.price': 'Price is required.',
-        'required.taxable': 'Taxable is required.',
-        'required.image': 'Please upload files with jpg, jpeg, png format.',
-        'required.discount': 'Discount is required.',
-        'discount.min': 'Discount cannot be less than 0.',
-        'discount.max': 'Discount cannot be greater than 100.',
-        'discount.numeric': 'Discount must be a number.',
-      });
-
-      if (!isValid) {
-        return dispatch({ type: SET_PRODUCT_FORM_ERRORS, payload: errors });
-      }
-      const formData = new FormData();
-      if (newProduct.image) {
-        for (const key in newProduct) {
-          if (newProduct.hasOwnProperty(key)) {
-            if (key === 'brand' && newProduct[key] === null) {
-              continue;
-            } else {
-              formData.set(key, newProduct[key]);
-            }
-          }
-        }
-      }
-      const response = await axios.post(`${API_URL}/product/add`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-
-      const successfulOptions = {
-        title: `${response.data.message}`,
-        position: 'tr',
-        autoDismiss: 1
-      };
-
-      if (response.data.success === true) {
-        dispatch(success(successfulOptions));
-        dispatch({
-          type: ADD_PRODUCT,
-          payload: response.data.product
-        });
-        dispatch(resetProduct());
-        dispatch(goBack());
-      }
-    } catch (error) {
-      handleError(error, dispatch);
     } finally {
       dispatch(setProductLoading(false));
     }
   };
 };
 
-// update Product api
-export const updateProduct = () => {
+// Admin: Add product
+export const addProduct = (navigate) => {
   return async (dispatch, getState) => {
     dispatch(setProductLoading(true));
     try {
       const rules = {
         name: 'required',
-        sku: 'required|alpha_dash',
-        slug: 'required|alpha_dash',
         description: 'required|max:5000',
         quantity: 'required|numeric',
         price: 'required|numeric',
-        discountPrice: 'required|numeric|min:0|max:100',
-        taxable: 'required',
-        /*brand: 'required'*/
+        image: 'required'
       };
 
-      const product = getState().product.product;
-
-
-      const generateSKU = (productName) => {
-        // Extract meaningful parts of the product name
-        const keywords = productName.toUpperCase().replace(/[^A-Z0-9\s]/g, "").split(" ").filter(word => word.length > 2).slice(0, 3);
-    
-        const randomCode = Math.random().toString(36).substr(2, 4).toUpperCase();
-    
-        return `${keywords.join("-")}-${randomCode}`;
-    }
-
-      // const brand = unformatSelectOptions([product.brand]);
-
+      const product = getState().product.productFormData;
+      
       const newProduct = {
         name: product.name,
-        sku: product.sku.length > 1 ? product.sku : generateSKU(product.name),
-        slug: product.slug,
         description: product.description,
-        quantity: product.quantity,
         price: product.price,
-        discountPrice: product.discountPrice,
-        taxable: product.taxable,
-        // brand: brand != 0 ? brand : null
+        discountPrice: product.discountPrice || 0,
+        quantity: product.quantity,
+        sku: product.sku,
+        image: product.image,
+        isActive: product.isActive
       };
 
       const { isValid, errors } = allFieldsValidation(newProduct, rules, {
         'required.name': 'Name is required.',
-        'required.sku': 'Sku is required.',
-        'alpha_dash.sku':
-          'Sku may have alpha-numeric characters, as well as dashes and underscores only.',
-        'required.slug': 'Slug is required.',
-        'alpha_dash.slug':
-          'Slug may have alpha-numeric characters, as well as dashes and underscores only.',
         'required.description': 'Description is required.',
-        'max.description':
-          'Description may not be greater than 5000 characters.',
+        'max.description': 'Description may not be greater than 5000 characters.',
         'required.quantity': 'Quantity is required.',
+        'numeric.quantity': 'Quantity must be a number.',
         'required.price': 'Price is required.',
-        'required.taxable': 'Taxable is required.',
-        // 'required.brand': 'Brand is required.',
-        'required.discount': 'Discount is required.',
-        'discount.min': 'Discount cannot be less than 0.',
-        'discount.max': 'Discount cannot be greater than 100.',
-        'discount.numeric': 'Discount must be a number.',
+        'numeric.price': 'Price must be a number.',
+        'required.image': 'Image is required.'
       });
 
       if (!isValid) {
-        return dispatch({
-          type: SET_PRODUCT_FORM_EDIT_ERRORS,
-          payload: errors
-        });
+        return dispatch({ type: SET_PRODUCT_FORM_ERRORS, payload: errors });
       }
 
-      const response = await axios.put(`${API_URL}/product/${product._id}`, {
-        product: newProduct
+      const formData = new FormData();
+      for (const key in newProduct) {
+        if (newProduct.hasOwnProperty(key)) {
+          if (key === 'image') {
+            for (const file of newProduct.image) {
+              formData.append('images', file);
+            }
+          } else {
+            formData.set(key, newProduct[key]);
+          }
+        }
+      }
+
+      const response = await axios.post(`${API_URL}/product/add`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
       });
 
-      const successfulOptions = {
-        title: `${response.data.message}`,
-        position: 'tr',
-        autoDismiss: 1
-      };
-
       if (response.data.success === true) {
-        dispatch(success(successfulOptions));
+        dispatch(showNotification('success', response.data.message));
+        dispatch({
+          type: ADD_PRODUCT,
+          payload: response.data.product
+        });
         dispatch(resetProduct());
-        dispatch(goBack());
+        navigate(-1);
       }
     } catch (error) {
-      handleError(error, dispatch);
+      handleError(error, dispatch, 'Error saving product, try again!');
     } finally {
       dispatch(setProductLoading(false));
     }
   };
 };
 
-// activate product api
-export const activateProduct = (id, value) => {
+// Admin: Update product
+export const updateProduct = (navigate) => {
   return async (dispatch, getState) => {
+    dispatch(setProductLoading(true));
     try {
-      const response = await axios.put(`${API_URL}/product/${id}/active`, {
-        product: {
-          isActive: value
-        }
+      const rules = {
+        name: 'required',
+        description: 'required|max:5000',
+        quantity: 'required|numeric',
+        price: 'required|numeric'
+      };
+
+      const product = getState().product.product;
+      
+      const updatedProduct = {
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        discountPrice: product.discountPrice || 0,
+        quantity: product.quantity,
+        sku: product.sku,
+        image: product.image || [],
+        isActive: product.isActive,
+        removeImage: product.removeImage || []
+      };
+
+      const { isValid, errors } = allFieldsValidation(updatedProduct, rules, {
+        'required.name': 'Name is required.',
+        'required.description': 'Description is required.',
+        'max.description': 'Description may not be greater than 5000 characters.',
+        'required.quantity': 'Quantity is required.',
+        'numeric.quantity': 'Quantity must be a number.',
+        'required.price': 'Price is required.',
+        'numeric.price': 'Price must be a number.'
       });
 
-      const successfulOptions = {
-        title: `${response.data.message}`,
-        position: 'tr',
-        autoDismiss: 1
-      };
+      if (!isValid) {
+        return dispatch({ type: SET_PRODUCT_FORM_EDIT_ERRORS, payload: errors });
+      }
+
+      const formData = new FormData();
+      for (const key in updatedProduct) {
+        if (updatedProduct.hasOwnProperty(key)) {
+          if (key === 'image') {
+            for (const file of updatedProduct.image) {
+              formData.append('images', file);
+            }
+          } else if (key === 'removeImage') {
+            updatedProduct.removeImage.forEach((url) => {
+              formData.append('removeImage', url);
+            });
+          } else {
+            formData.set(key, updatedProduct[key]);
+          }
+        }
+      }
+
+      const response = await axios.put(`${API_URL}/product/${product._id}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
 
       if (response.data.success === true) {
-        dispatch(success(successfulOptions));
+        dispatch(showNotification('success', response.data.message));
+        dispatch(resetProduct());
+        navigate(-1);
       }
     } catch (error) {
-      handleError(error, dispatch);
+      handleError(error, dispatch, 'Error updating product, try again!');
+    } finally {
+      dispatch(setProductLoading(false));
     }
   };
 };
 
-// delete product api
-export const deleteProduct = id => {
-  return async (dispatch, getState) => {
+// Admin: Delete product
+export const deleteProduct = (id, navigate) => {
+  return async (dispatch) => {
     try {
-      const response = await axios.delete(`${API_URL}/product/delete/${id}`);
-
-      const successfulOptions = {
-        title: `${response.data.message}`,
-        position: 'tr',
-        autoDismiss: 1
-      };
+      const response = await axios.delete(`${API_URL}/product/${id}`);
 
       if (response.data.success === true) {
-        dispatch(success(successfulOptions));
-        dispatch({
-          type: REMOVE_PRODUCT,
-          payload: id
-        });
-        dispatch(goBack());
+        dispatch(showNotification('success', response.data.message));
+        dispatch({ type: REMOVE_PRODUCT, payload: id });
+        navigate(-1);
       }
     } catch (error) {
-      handleError(error, dispatch);
+      handleError(error, dispatch, 'Error deleting product');
     }
   };
 };
 
-
-// fetch product count total count
-export const fetchProductBoughtCount = () => {
-  return async (dispath, getState) => {
-    const response = await axios.get(`${API_URL}/cart/get_total_product`);
-    const user = getState().account.user;
-    if (user.role === ROLES.Admin) {
-      dispath({
-        type: SET_PRODUCT_BOUGHT,
-        payload: response.data.productCount
-    })
-    }
-  }
-}
-
-const productsFilterOrganizer = (n, v, s) => {
-  switch (n) {
-    case 'category':
-      return {
-        name: s.name,
-        category: v,
-        brand: 'all',
-        min: s.min,
-        max: s.max,
-        rating: s.rating,
-        order: s.order,
-        page: s.currentPage,
-        limit: s.limit
-      };
-    case 'brand':
-      return {
-        name: s.name,
-        category: 'all',
-        brand: v,
-        min: s.min,
-        max: s.max,
-        rating: s.rating,
-        order: s.order,
-        page: s.currentPage,
-        limit: s.limit
-      };
+const productsFilterOrganizer = (filterType, value, state) => {
+  switch (filterType) {
     case 'sorting':
       return {
-        name: s.name,
-        category: s.category,
-        brand: s.brand,
-        min: s.min,
-        max: s.max,
-        rating: s.rating,
-        order: v,
-        page: s.currentPage,
-        limit: s.limit
+        ...state,
+        order: value,
+        page: 1
       };
     case 'price':
       return {
-        name: s.name,
-        category: s.category,
-        brand: s.brand,
-        min: v[0],
-        max: v[1],
-        rating: s.rating,
-        order: s.order,
-        page: s.currentPage,
-        limit: s.limit
+        ...state,
+        min: value[0],
+        max: value[1],
+        page: 1
       };
     case 'rating':
       return {
-        name: s.name,
-        category: s.category,
-        brand: s.brand,
-        min: s.min,
-        max: s.max,
-        rating: v,
-        order: s.order,
-        page: s.currentPage,
-        limit: s.limit
+        ...state,
+        rating: value,
+        page: 1
       };
     case 'pagination':
       return {
-        name: s.name,
-        category: s.category,
-        brand: s.brand,
-        min: s.min,
-        max: s.max,
-        rating: s.rating,
-        order: s.order,
-        page: v ?? s.currentPage,
-        limit: s.limit
+        ...state,
+        page: value
       };
     default:
-      return {
-        name: s.name,
-        category: 'all',
-        /*brand: 'all',*/
-        min: s.min,
-        max: s.max,
-        rating: s.rating,
-        order: s.order,
-        page: s.currentPage,
-        limit: s.limit
-      };
+      return state;
   }
-};
-
-const getSortOrder = value => {
-  let sortOrder = {};
-  switch (value) {
-    case 0:
-      sortOrder._id = -1;
-      break;
-    case 1:
-      sortOrder.price = -1;
-      break;
-    case 2:
-      sortOrder.price = 1;
-      break;
-
-    default:
-      break;
-  }
-
-  return sortOrder;
 };

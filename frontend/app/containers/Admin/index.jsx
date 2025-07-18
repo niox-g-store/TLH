@@ -49,6 +49,10 @@ import ManagerGuests from '../../components/Manager/Guest';
 import ManagerOrganizers from '../../components/Manager/Organizer';
 import OrganizerView from '../../components/Manager/Organizer/View';
 
+import ManagerProduct from '../../components/Manager/Product';
+import AddProduct from '../../components/Manager/Product/Add';
+import EditProduct from '../../components/Manager/Product/Edit';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@coreui/coreui/dist/css/coreui.min.css';
 
@@ -97,6 +101,10 @@ const Admin = (props) => {
 
           <Route path='organizers' element={<ManagerOrganizers {...props} />} />
           <Route path='organizer/:id' element={<OrganizerView {...props} />} />
+          
+          <Route path='products' element={<ManagerProduct {...props} />} />
+          <Route path='products/add' element={<AddProduct {...props} />} />
+          <Route path='products/edit/:id' element={<EditProduct {...props} />} />
           
           <Route path='*' element={<Page404 />} />
         </Routes>

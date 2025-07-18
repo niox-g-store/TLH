@@ -22,6 +22,31 @@
     .head1 {
       margin-bottom: 30px;
     }
+
+    .shop-filters {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      align-items: end;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+
+      .search-filter,
+      .sort-filter {
+        min-width: 250px;
+      }
+
+      @include media-breakpoint-down(md) {
+        flex-direction: column;
+        gap: 1rem;
+        
+        .search-filter,
+        .sort-filter {
+          width: 100%;
+          min-width: auto;
+        }
+      }
+    }
   }
 
   .products-grid {
