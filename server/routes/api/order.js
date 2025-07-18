@@ -368,8 +368,29 @@ router.put('/edit/order/', async (req, res) => {
           })
         }
       }
-      // call background jobs
-      await orderQueue.add('new-order', { qrAssigner, newOrder, adminEmails, organizerEmailsAndData });
+
+      // Check if this is a product order
+      const hasProducts = cartDoc.items.some(item => item.type === 'product');
+      const hasTickets = cartDoc.items.some(item => item.type !== 'product');
+      
+      // Decrease product quantities
+      if (hasProducts) {
+        await decreaseProductQuantity(cartDoc.items.filter(item => item.type === 'product'));
+      }
+      
+      // Decrease ticket quantities
+      if (hasTickets) {
+        await decreaseQuantity(cartDoc.items.filter(item => item.type !== 'product'));
+      }
+
+      // call background jobs with product order flag
+      await orderQueue.add('new-order', { 
+        qrAssigner, 
+        newOrder, 
+        adminEmails, 
+        organizerEmailsAndData,
+        isProductOrder: hasProducts && !hasTickets
+      });
 
 
       // decrease quantity if the order has been successful
@@ -697,6 +718,18 @@ const decreaseQuantity = (tickets) => {
   }));
 
   return Ticket.bulkWrite(bulkOptions);
+};
+
+const decreaseProductQuantity = async (products) => {
+  const Product = require('../../models/product');
+  const bulkOptions = products.map(item => ({
+    updateOne: {
+      filter: { _id: item.productId },
+      update: { $inc: { quantity: -item.quantity } }
+    }
+  }));
+
+  return Product.bulkWrite(bulkOptions);
 };
 
 
