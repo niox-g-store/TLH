@@ -21,7 +21,7 @@ import { formatDate } from '../../../../utils/formatDate';
 import { renderTicketBreakdown } from '../../../store/TicketSummary';
 import { getCartPriceSummary } from '../../../store/CartSummary';
 const OrderViewer = (props) => {
-  const {
+  let {
     order = {},
     user,
     isLightMode,
@@ -34,6 +34,7 @@ const OrderViewer = (props) => {
     invoice,
     downloadInvoice
   } = props;
+  isLightMode = false;
 
   const navigate = useNavigate();
   const { subTotal, total } = getCartPriceSummary(order?.cart?.tickets);

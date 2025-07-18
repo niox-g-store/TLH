@@ -25,53 +25,6 @@ import LoadingIndicator from '../../store/LoadingIndicator';
 import Input from '../../Common/HtmlTags/Input';
 import { getCartPriceSummary } from '../../store/CartSummary';
 
-const OrderWithCoupon = ({ order, cart }) => {
-  const discount = cart?.tickets.find((i) => i.coupon !== null);
-  return (
-    <>
-          <div className='mt-2'>
-            <CRow>
-              <CCol><strong>SubTotal:</strong></CCol>
-              <CCol className='text-end'>₦{order.amountBeforeDiscount.toLocaleString()}</CCol>
-            </CRow>
-            {discount.couponAmount > 0 && <CRow>
-              <CCol><strong>Coupon:</strong></CCol>
-              <CCol className='text-end text-danger'>-₦{discount.couponDiscount.toLocaleString()}</CCol>
-            </CRow>}
-            {discount.couponPercentage > 0 && <CRow>
-              <CCol><strong>Coupon:</strong></CCol>
-              <CCol className='text-end fw-bold text-danger'>{discount.couponPercentage}%OFF</CCol>
-            </CRow>}
-            <CRow>
-              <CCol><strong>Total:</strong></CCol>
-              <CCol className='text-end fw-bold text-success'>₦{order?.cart?.total.toLocaleString()}</CCol>
-            </CRow>
-          </div>
-    </>
-  )
-}
-
-const OrderWithDiscountAmount = ({order}) => {
-  return (
-    <>
-          <div className='mt-2'>
-            <CRow>
-              <CCol><strong>Subtotal:</strong></CCol>
-              <CCol className='text-end'>₦{order.amountBeforeDiscount.toLocaleString()}</CCol>
-            </CRow>
-            <CRow>
-              <CCol><strong>Discount:</strong></CCol>
-              <CCol className='text-end text-danger'>-₦{order.discountAmount.toLocaleString()}</CCol>
-            </CRow>
-            <CRow>
-              <CCol><strong>Total:</strong></CCol>
-              <CCol className='text-end fw-bold text-success'>₦{order?.cart?.total.toLocaleString()}</CCol>
-            </CRow>
-          </div>
-    </>
-  )
-}
-
 const ManagerOrderList = (props) => {
   const { isLightMode, user, orderIsLoading, orders } = props;
   const [currentPage, setCurrentPage] = useState(1);

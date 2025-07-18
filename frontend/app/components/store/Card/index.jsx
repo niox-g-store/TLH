@@ -8,7 +8,7 @@ import { IoLocationOutline } from "react-icons/io5";
 import { LuCalendarDays } from "react-icons/lu";
 import { RxLapTimer } from "react-icons/rx";
 
-const Card = ({ event, type = "event" }) => {
+const Card = ({ event, type = "event", product }) => {
   const navigate = useNavigate();
 
   if (type === "gallery") {
@@ -30,7 +30,29 @@ const Card = ({ event, type = "event" }) => {
         </button>
       </div>
     );
-  }
+  } else if (type === "shop") {
+    return (
+      <div className="card-wrapper">
+        <div className="card-body">
+          <img
+          src={ResolveImage(`${API_URL}${product.imageUrls[0]}` || '')}
+          alt="Event"
+          width={100}
+          height={100}
+          loading="lazy"
+        />
+          <h3 className="card-title">{product.name}</h3>
+          <p className='event-date p-black'>{product.price}</p>
+        </div>
+        <button
+          className="card-button"
+          onClick={() => navigate(`/product/${product.slug}`)}
+        >
+          View Details
+        </button>
+      </div>
+    );
+  } else {
 
   // Default: Event Card
   return (
@@ -82,6 +104,7 @@ const Card = ({ event, type = "event" }) => {
     </div>
     </Link>
   );
+}
 };
 
 export default Card;

@@ -22,9 +22,11 @@ import { GoBack } from '../../../../containers/goBack/inedx';
 import { getCartPriceSummary } from '../../../store/CartSummary';
 
 const ManagerOrderList = (props) => {
-  const { isLightMode, orderIsLoading, orders } = props;
+  let { isLightMode, orderIsLoading, orders } = props;
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 10;
+
+  isLightMode = false;
 
   const totalPages = Math.ceil(orders.length / ordersPerPage);
   const startIndex = (currentPage - 1) * ordersPerPage;
