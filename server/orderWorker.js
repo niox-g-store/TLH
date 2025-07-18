@@ -45,9 +45,7 @@ const queueSendEmailToAdmin = async(data, adminEmails) => {
   // here use a loop as admin users are not expected to be much so no need
   // to create a mailing list to send to multiple admins
   for (const i of adminEmails) {
-    if (i.email !== 'testadmin@gmail.com' ) {
       await mailgun.sendEmail(i.email, 'admin-order-confirmation', data);
-    }
   }
 }
 
