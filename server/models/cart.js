@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// Cart Item Schema
-const CartItemSchema = new Schema({
+// Ticket Item Schema
+const TicketItemSchema = new Schema({
   ticketId: {
     type: Schema.Types.ObjectId,
     ref: 'Ticket'
@@ -55,12 +55,79 @@ const CartItemSchema = new Schema({
   },
   discountPrice: {
     type: Number
+  },
+  type: {
+    type: String,
+    default: 'ticket'
   }
 });
 
+// Product Item Schema
+const ProductItemSchema = new Schema({
+  productId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Product'
+  },
+  productName: {
+    type: String,
+    required: true
+  },
+  productSlug: {
+    type: String
+  },
+  quantity: {
+    type: Number,
+    default: 1
+  },
+  productQuantity: {
+    type: Number,
+  },
+  price: {
+    type: Number,
+    required: true
+  },
+  finalPrice: {
+    type: Number,
+    required: true
+  },
+  discount: {
+    type: Boolean,
+    default: false
+  },
+  discountPrice: {
+    type: Number,
+    default: 0
+  },
+  discountPercentage: {
+    type: Number,
+    default: 0
+  },
+  needsDelivery: {
+    type: Boolean,
+    default: false
+  },
+  deliveryInfo: {
+    name: String,
+    email: String,
+    phoneNumber: String,
+    address: {
+      street: String,
+      city: String,
+      state: String,
+      country: String
+    }
+  },
+  type: {
+    type: String,
+    default: 'product'
+  }
+});
+
+// General Cart Item Schema (can be either ticket or product)
+const CartItemSchema = new Schema({}, { discriminatorKey: 'type', _id: false });
 // Cart Schema
 const CartSchema = new Schema({
-  tickets: [CartItemSchema],
+  items: [Schema.Types.Mixed], // Can contain both tickets and products
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
@@ -95,9 +162,14 @@ CartSchema.pre('save', function(next) {
   
   // Calculate total
   let total = 0;
-  if (this.tickets && this.tickets.length > 0) {
-    total = this.tickets.reduce((sum, item) => {
-      const itemPrice = item.discount && item.discountPrice ? item.discountPrice : item.price;
+  if (this.items && this.items.length > 0) {
+    total = this.items.reduce((sum, item) => {
+      let itemPrice;
+      if (item.type === 'product') {
+        itemPrice = item.finalPrice;
+      } else {
+        itemPrice = item.discount && item.discountPrice ? item.discountPrice : item.price;
+      }
       return sum + (itemPrice * item.quantity);
     }, 0);
   }

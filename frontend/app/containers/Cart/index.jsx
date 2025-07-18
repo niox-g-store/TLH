@@ -47,9 +47,14 @@ const CartViewer = (props) => {
 
   const calculateTotal = () => {
     return items.reduce((total, item) => {
-      const itemPrice = item.discount && item.discountPrice 
-        ? item.discountPrice 
-        : item.price;
+      let itemPrice;
+      if (item.type === 'product') {
+        itemPrice = item.finalPrice;
+      } else {
+        itemPrice = item.discount && item.discountPrice 
+          ? item.discountPrice 
+          : item.price;
+      }
       return total + (itemPrice * item.quantity);
     }, 0);
   };
@@ -57,7 +62,12 @@ const CartViewer = (props) => {
   const handleQuantityChange = (ticketId, newQuantity) => {
     if (newQuantity < 1) return;
     
-    updateCartItem(ticketId, { quantity: newQuantity });
+    if (items.find(item => item.ticketId === itemId)) {
+      updateCartItem(itemId, { quantity: newQuantity });
+    } else {
+      // Handle product quantity update
+      updateCartItem(itemId, { quantity: newQuantity });
+    }
   };
 
   const handleUserCheckout = () => {
@@ -93,12 +103,26 @@ const CartViewer = (props) => {
             <>
               <div className="cart-items">
                 {items.map((item) => (
-                  <div key={item.ticketId} className="cart-item">
+                  <div key={item.ticketId || item.productId} className="cart-item">
                     <div className="item-details">
-                      <h4>{item.eventName}</h4>
-                      <p className="ticket-type">{item.ticketType}</p>
+                      <h4>{item.eventName || item.productName}</h4>
+                      <p className="ticket-type">{item.ticketType || 'Product'}</p>
+                      {item.type === 'product' && (
+                        <p className="delivery-info">
+                          {item.needsDelivery ? '🚚 Delivery' : '📍 Pickup at event'}
+                        </p>
+                      )}
                       <p className="ticket-price">
-                        {item.discount && item.discountPrice ? (
+                        {item.type === 'product' ? (
+                          item.discount ? (
+                            <>
+                              <span className="original-price">₦{item.price.toLocaleString()}</span>
+                              <span className="discount-price">₦{item.finalPrice.toLocaleString()}</span>
+                            </>
+                          ) : (
+                            <span>₦{item.price.toLocaleString()}</span>
+                          )
+                        ) : item.discount && item.discountPrice ? (
                           <>
                             <span className="original-price">₦{item.price.toLocaleString()}</span>
                             <span className="discount-price">₦{item.discountPrice.toLocaleString()}</span>
@@ -112,22 +136,22 @@ const CartViewer = (props) => {
                     <div className="item-actions">
                       <div className="quantity-controls">
                         <button 
-                          onClick={() => handleQuantityChange(item.ticketId, item.quantity - 1)}
+                          onClick={() => handleQuantityChange(item.ticketId || item.productId, item.quantity - 1)}
                           disabled={item.quantity <= 1}
                         >
                           <FaMinus size={12} />
                         </button>
-                        <span>{item.quantity <= item.ticketQuantity ? item.quantity : item.ticketQuantity}</span>
+                        <span>{item.quantity <= (item.ticketQuantity || item.productQuantity) ? item.quantity : (item.ticketQuantity || item.productQuantity)}</span>
                         <button
-                          onClick={() => handleQuantityChange(item.ticketId, item.quantity + 1)}
-                          disabled={item.quantity >= item.ticketQuantity}
+                          onClick={() => handleQuantityChange(item.ticketId || item.productId, item.quantity + 1)}
+                          disabled={item.quantity >= (item.ticketQuantity || item.productQuantity)}
                         >
                           <FaPlus size={12} />
                         </button>
                       </div>
                       <button
                         className="remove-item" 
-                        onClick={() => removeFromCart(item.ticketId)}
+                        onClick={() => removeFromCart(item.ticketId || item.productId)}
                       >
                         <FaTrash size={16} />
                       </button>
@@ -143,7 +167,7 @@ const CartViewer = (props) => {
                 </div>
 
                 {/* coupon */}
-                {authenticated &&
+                {authenticated && items.some(item => item.type !== 'product') &&
                 <div className="cart-coupon-container">
                   <Input
                     value={coupon.code || ''}

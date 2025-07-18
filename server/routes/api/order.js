@@ -35,7 +35,10 @@ const assignQrCode = async (order, cart) => {
       userOrGuestId = await User.findOne({ _id: userOrGuestId }).populate('organizer')
     }
 
-    for (const ticketItem of cart.tickets) {
+    // Only process ticket items for QR codes
+    const ticketItems = cart.items.filter(item => item.type !== 'product');
+    
+    for (const ticketItem of ticketItems) {
       const { coupon,
               ticketType,
               eventName,
@@ -165,6 +168,7 @@ router.post('/add', async (req, res) => {
       finalAmount,
       events,
       tickets,
+      products,
       discountPrice,
       amountBeforeDiscount,
       payStackId,
@@ -194,6 +198,7 @@ router.post('/add', async (req, res) => {
       user,
       guest,
       events,
+      products: products || [],
       coupon: coupon ? coupon.couponId : null,
       tickets,
       finalAmount,
