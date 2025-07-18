@@ -42,8 +42,8 @@ const verifyGoogleToken = async (token) => {
  */
 const checkIfEmail = (input) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(input) ? true : false
-}
+  return emailRegex.test(input.trim());
+};
 
 
 router.post('/login', async (req, res) => {
