@@ -318,8 +318,8 @@ export const initializeCart = () => {
           dispatch({
             type: SET_CART_ITEMS,
             payload: response.data.cart.tickets || []
-          });
-          
+              tickets: response.data.cart.tickets || [],
+              items: response.data.cart.items || []
           dispatch({
             type: HANDLE_CART_TOTAL,
             payload: response.data.cart.total || 0

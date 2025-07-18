@@ -262,26 +262,34 @@ router.put('/:cartId/update', async (req, res) => {
     }
     
     // Find and update the item
-    const itemIndex = cart.items.findIndex(
-      item => {
-        if (ticketId) {
-          return item.ticketId?.toString() === ticketId;
-        }
-        if (productId) {
-          return item.productId?.toString() === productId;
-        }
-        return false;
-      }
-    );
+    let itemIndex = -1;
+    let isTicket = false;
+    
+    if (ticketId) {
+      itemIndex = cart.tickets.findIndex(
+        ticket => ticket.ticketId?.toString() === ticketId
+      );
+      isTicket = true;
+    } else if (productId) {
+      itemIndex = cart.items.findIndex(
+        item => item.productId?.toString() === productId
+      );
+    }
     
     if (itemIndex === -1) {
       return res.status(404).json({ error: 'Item not found in cart' });
     }
     
     // Update the item with the provided updates
-    Object.keys(updates).forEach(key => {
-      cart.items[itemIndex][key] = updates[key];
-    });
+    if (isTicket) {
+      Object.keys(updates).forEach(key => {
+        cart.tickets[itemIndex][key] = updates[key];
+      });
+    } else {
+      Object.keys(updates).forEach(key => {
+        cart.items[itemIndex][key] = updates[key];
+      });
+    }
     
     await cart.save();
     

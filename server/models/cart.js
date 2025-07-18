@@ -162,15 +162,19 @@ CartSchema.pre('save', function(next) {
   
   // Calculate total
   let total = 0;
+  
+  // Calculate total from tickets
+  if (this.tickets && this.tickets.length > 0) {
+    total += this.tickets.reduce((sum, ticket) => {
+      const ticketPrice = ticket.discount && ticket.discountPrice ? ticket.discountPrice : ticket.price;
+      return sum + (ticketPrice * ticket.quantity);
+    }, 0);
+  }
+  
+  // Calculate total from products
   if (this.items && this.items.length > 0) {
-    total = this.items.reduce((sum, item) => {
-      let itemPrice;
-      if (item.type === 'product') {
-        itemPrice = item.finalPrice;
-      } else {
-        itemPrice = item.discount && item.discountPrice ? item.discountPrice : item.price;
-      }
-      return sum + (itemPrice * item.quantity);
+    total += this.items.reduce((sum, item) => {
+      return sum + (item.finalPrice * item.quantity);
     }, 0);
   }
   
