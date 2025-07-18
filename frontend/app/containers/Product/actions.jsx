@@ -240,6 +240,12 @@ export const fetchStoreProduct = slug => {
         payload: product
       });
     } catch (error) {
+      if (error.response && error.response.status === 404) {
+        dispatch({
+          type: 'PRODUCT_SLUG_CHANGED',
+          payload: true
+        });
+      }
       handleError(error, dispatch);
     } finally {
       dispatch(setProductLoading(false));
@@ -284,17 +290,18 @@ export const fetchProductsSelect = () => {
   };
 };
 
-// fetch products api
+// fetch store products api
 export const fetchProducts = () => {
   return async (dispatch, getState) => {
     try {
       dispatch(setProductLoading(true));
 
-      const response = await axios.get(`${API_URL}/product`);
+      const response = await axios.get(`${API_URL}/product/store`);
+      const { products } = response.data;
 
       dispatch({
-        type: FETCH_PRODUCTS,
-        payload: response.data.products
+        type: FETCH_STORE_PRODUCTS,
+        payload: products
       });
     } catch (error) {
       handleError(error, dispatch);

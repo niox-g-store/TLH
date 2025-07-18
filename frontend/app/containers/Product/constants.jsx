@@ -28,3 +28,4 @@ export const RESET_ADVANCED_FILTERS = 'src/Product/RESET_ADVANCED_FILTERS';
 export const SET_PRODUCT_BOUGHT = 'src/Product/SET_PRODUCT_BOUGHT';
 export const SET_BEST_SELLING = 'src/Product/SET_BEST_SELLING';
 export const SET_MIN_MAX_VALUE = 'src/Product/SET_MIN_MAX_VALUE';
+export const PRODUCT_SLUG_CHANGED = 'src/Product/PRODUCT_SLUG_CHANGED';

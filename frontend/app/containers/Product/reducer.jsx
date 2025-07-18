@@ -30,6 +30,7 @@ import {
   SET_PRODUCT_BOUGHT,
   SET_BEST_SELLING,
   SET_MIN_MAX_VALUE,
+  PRODUCT_SLUG_CHANGED,
 } from './constants';
 
 const initialState = {
@@ -43,6 +44,7 @@ const initialState = {
     _id: ''
   },
   storeProduct: {},
+  productSlugChange: false,
   productsSelect: [],
   productFormData: {
     sku: '',
@@ -87,6 +89,11 @@ const initialState = {
 
 const productReducer = (state = initialState, action) => {
   switch (action.type) {
+    case PRODUCT_SLUG_CHANGED:
+      return {
+        ...state,
+        productSlugChange: action.payload
+      };
     case SET_MIN_MAX_VALUE:
       return {
         ...state,
@@ -128,6 +135,7 @@ const productReducer = (state = initialState, action) => {
       return {
         ...state,
         storeProduct: action.payload,
+        productSlugChange: false,
         productShopData: {
           quantity: 1
         },
