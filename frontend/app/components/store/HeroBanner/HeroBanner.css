@@ -2,10 +2,10 @@
   background-color: var(--neutral_bg_color);
   padding: 3.74rem 0 0 0;
   margin-top: -5px;
+  position: relative;
 }
 
 .row-wrapper-content-with-image {
-
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -15,6 +15,8 @@
   color: #fff;
   flex: 0 0 50%;
   max-width: 50%;
+  padding: 0;
+  margin: 0 !important;
 }
 
 .col-banner-content p {

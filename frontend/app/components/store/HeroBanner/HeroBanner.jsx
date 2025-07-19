@@ -17,20 +17,21 @@ const HeroBanner = (props) => {
           <div className="row-wrapper-content-with-image">
             <div className="col-banner-content ">
               <h1 className={`${className} p-white`} data-aos="fade-up">{heading}</h1>
-              <p className={`p-info p-white text-justify`} data-aos="fade-up" data-aos-delay="600">
+              <p className={`p-info p-white text-justify`} data-aos="fade-up" data-aos-delay="300">
                 {desc}
               </p>
               <div
                 className="row-banner-btns"
                 data-aos="fade-up"
-                data-aos-delay="400">
+                data-aos-delay="300"
+                style={{ padding: 0, margin: 0, height: 'fit-content' }}>
                 {PButton}
                 {SButton}
               </div>
             </div>
             <div className="col-banner-image" data-aos="fade-up">
               {bannerImage.map((element, index) => (
-                <img loading="lazy" className={`banner-image-${index} ${className}`} data-aos="fade-up" data-aos-delay="600" key={index} src={element} style={{ maxWidth }} alt="banner-image" />
+                <img loading="lazy" className={`banner-image-${index} ${className}`} data-aos="fade-up" data-aos-delay="300" key={index} src={element} style={{ maxWidth }} alt="banner-image" />
               ))}
             </div>
           </div>

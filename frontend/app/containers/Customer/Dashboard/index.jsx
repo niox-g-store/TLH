@@ -24,7 +24,7 @@ const CustomerDashboardForm = (props) => {
   }
 
   return (
-    <div data-aos="fade-up" className='container-lg px-4 d-flex flex-column mb-custom-5em'>
+    <div className='container-lg px-4 d-flex flex-column mb-custom-5em'>
       <h2 style={{ margin: 0 }} className={`${isLightMode ? 'p-black' : 'p-white'}`}>
         Welcome to Your Dashboard
       </h2>
@@ -34,7 +34,7 @@ const CustomerDashboardForm = (props) => {
       {latestEvents.length > 0 && (
         <div className="featured-events-section mb-5">
           <h3 className={`${isLightMode ? 'p-black' : 'p-white'} mb-4`}>Latest Events</h3>
-          <div data-aos="fade-up" className="events-slider">
+          <div className="events-slider">
             <FadeSlider
               dots={true}
               infinite={true}
@@ -42,8 +42,9 @@ const CustomerDashboardForm = (props) => {
               slidesToShow={1}
               slidesToScroll={1}
               autoplay={true}
-              autoplaySpeed={3000}
+              autoplaySpeed={2000}
               arrows={false}
+              fade={false}
             >
               {latestEvents.map((event, index) => (
                 <div key={index} className="slider-event-card">

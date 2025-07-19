@@ -157,7 +157,7 @@ import { withRouter } from '../../../withRouter';
 };*/
 
 const ManagerAccountForm = (props) => {
-  const {
+  let {
     user,
     accountChange,
     updateProfile,
@@ -169,6 +169,9 @@ const ManagerAccountForm = (props) => {
     accountEditFormErrors
   } = props;
   const navigate = useNavigate()
+
+  if (user.role === ROLES.Member) { isLightMode = false }
+  const isUserAllowed = user => user.role === ROLES.Member
 
   const [editPicModal, setEditPicModal] = useState(false);
   const [profileUpload, setProfileUpload] = useState([]);
@@ -185,6 +188,7 @@ const ManagerAccountForm = (props) => {
           <CCardTitle className={`${isLightMode ? 'p-black': 'p-white'} font-size-30`}>Account Details</CCardTitle>
         </CCardHeader>
         <CCardBody>
+          {!isUserAllowed(user) &&
           <div style={{ width: 'fit-content' }} className='d-flex align-items-center justify-content-center mb-4'>
               <img
                 src={resolveImage(API_URL + user?.imageUrl, 'profile')}
@@ -193,6 +197,7 @@ const ManagerAccountForm = (props) => {
               />
             <CButton className='ms-3 purple-bg p-white' onClick={() => setEditPicModal(true)}>{user?.imageUrl.length > 0 ? 'Edit' : 'Add a profile picture'}</CButton>
           </div>
+          }
 
           <CForm onSubmit={handleSubmit}>
             <CRow className="mb-3 g-3">
@@ -246,6 +251,8 @@ const ManagerAccountForm = (props) => {
                   onPhoneChange={(v) => accountChange('phoneNumber', v)}
                 />
               </CCol>
+              {!isUserAllowed(user) &&
+              <>
               <CCol md={6} className={`${isLightMode ? 'p-black': 'p-white'}`}>
                 <Input
                   type='email'
@@ -291,6 +298,7 @@ const ManagerAccountForm = (props) => {
                   onChange={(e) => accountChange('bio', e.target.value)}
                 />
               </CCol>
+              </>}
             </CRow>
 
             <div className="d-flex justify-content-center mt-3">
