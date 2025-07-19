@@ -21,11 +21,15 @@ import {
   FETCH_ALL_EVENTS,
   SELECT_EVENT,
   VIEWING_EVENT,
-  EVENT_CHANGED
+  EVENT_CHANGED,
+  FETCH_MY_AT_EVENTS,
+  FETCH_MY_G_EVENTS
 } from './constants';
 
 const initialState = {
   events: [],
+  guestEvents: [],
+  myEvents: [],
   userEvents: [],
   event: {
     _id: ''
@@ -79,6 +83,16 @@ const initialState = {
 
 const eventReducer = (state = initialState, action) => {
   switch (action.type) {
+    case FETCH_MY_AT_EVENTS:
+      return {
+        ...state,
+        myEvents: action.payload
+      }
+    case FETCH_MY_G_EVENTS:
+      return {
+        ...state,
+        guestEvents: action.payload
+      }
     case EVENT_CHANGED:
       return {
         ...state,

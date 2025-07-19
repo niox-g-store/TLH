@@ -13,7 +13,9 @@ import {
   SET_LOGIN_LOADING,
   SET_LOGIN_FORM_ERRORS,
   SET_LOGIN_SUBMITTING,
-  REMEMBER_ME
+  REMEMBER_ME,
+  TWO_FA_PROMPT,
+  SET_TWO_FACTOR_USER
 } from './constants';
 import { setAuth, clearAuth } from '../Authentication/actions';
 import setToken from '../../utils/token';
@@ -37,6 +39,55 @@ export const rememberMeChange = () => {
   return {
     type: REMEMBER_ME
   }
+}
+
+export const twoFaPromptToggle = (v) => {
+  return {
+    type: TWO_FA_PROMPT,
+    payload: v
+  }
+}
+
+export const setTwoFaUser = (id, rememberMe) => {
+  return {
+    type: SET_TWO_FACTOR_USER,
+    payload: {
+      id,
+      rememberMe
+    }
+  }
+}
+
+export const twoFaLogin = (code) => {
+  return async (dispatch) => {
+    dispatch({ type: SET_LOGIN_LOADING, payload: true });
+    try {
+      const { id, rememberMe } = getState().login.twoFaUser;
+      const response = await axios.post(`${API_URL}/auth/confirm-twofa`, { code, id, rememberMe });
+      const userid = response.data.user.id
+      if (response.data.user.banned) {
+        dispatch(showNotification('error', "Try again"));
+        return
+      }
+
+      localStorage.setItem('token', response.data.token);
+
+      setToken(response.data.token);
+
+      dispatch(setAuth());
+      dispatch(showNotification('success', 'Welcome!'));
+
+      dispatch({ type: LOGIN_RESET });
+    } catch (error) {
+      const title = `Please try to login again!`;
+      handleError(error, dispatch, title);
+      return;
+    } finally {
+      dispatch({ type: SET_LOGIN_SUBMITTING, payload: false });
+      dispatch({ type: SET_LOGIN_LOADING, payload: false });
+      return;
+    }
+  };
 }
 
 export const login = () => {
@@ -63,10 +114,15 @@ export const login = () => {
 
     try {
       const response = await axios.post(`${API_URL}/auth/login`, user);
-      const userid = response.data.user.id
-      if (response.data.user.banned) {
+      if (response?.data?.user?.banned || response?.data?.banned) {
         dispatch(showNotification('error', "Try again"));
         return
+      }
+
+      // two fa prompt
+      if (response.status === 201 && response.success === true) {
+        dispatch(setTwoFaUser(response.data.id, response.data.rememberMe))
+        return dispatch(twoFaPromptToggle(true));
       }
 
       localStorage.setItem('token', response.data.token);

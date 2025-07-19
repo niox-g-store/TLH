@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { ROLES, EMAIL_PROVIDER } = require('../utils/constants');
+const crypto = require('crypto');
 
 // User Schema
 const UserSchema = new mongoose.Schema({
@@ -44,7 +45,7 @@ const UserSchema = new mongoose.Schema({
     type: String
   },
   twoFactor: {
-    type: String
+    type: String,
   },
   isTwoFactorActive: {
     type: Boolean,

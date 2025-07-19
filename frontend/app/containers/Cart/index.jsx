@@ -17,7 +17,8 @@ import Input from '../../components/Common/HtmlTags/Input';
 const CartViewer = (props) => {
   const {
     isOpen, 
-      items, 
+      tickets,
+      items,
       total,
       loading,
       toggleCart, 
@@ -45,11 +46,18 @@ const CartViewer = (props) => {
   } = props;
   const navigate = useNavigate();
 
+  const allItems = [...tickets, ...items];
+
   const calculateTotal = () => {
-    return items.reduce((total, item) => {
-      const itemPrice = item.discount && item.discountPrice 
-        ? item.discountPrice 
-        : item.price;
+    return allItems.reduce((total, item) => {
+      let itemPrice;
+      if (item.type === 'product') {
+        itemPrice = item.finalPrice;
+      } else {
+        itemPrice = item.discount && item.discountPrice 
+          ? item.discountPrice 
+          : item.price;
+      }
       return total + (itemPrice * item.quantity);
     }, 0);
   };
@@ -57,7 +65,12 @@ const CartViewer = (props) => {
   const handleQuantityChange = (ticketId, newQuantity) => {
     if (newQuantity < 1) return;
     
-    updateCartItem(ticketId, { quantity: newQuantity });
+    if (items.find(item => item.ticketId === itemId)) {
+      updateCartItem(itemId, { quantity: newQuantity });
+    } else {
+      // Handle product quantity update
+      updateCartItem(itemId, { quantity: newQuantity });
+    }
   };
 
   const handleUserCheckout = () => {
@@ -69,8 +82,8 @@ const CartViewer = (props) => {
         {/* Cart Icon */}
         <div className={`cart-icon ${items.length > 0 ? 'has-items' : ''}`} onClick={toggleCart}>
           <FaShoppingCart size={24} />
-          {items.length > 0 && (
-            <span className="cart-count">{items.reduce((total, item) => total + item.quantity, 0)}</span>
+          {allItems.length > 0 && (
+            <span className="cart-count">{allItems.reduce((total, item) => total + item.quantity, 0)}</span>
           )}
         </div>
 
@@ -85,20 +98,34 @@ const CartViewer = (props) => {
 
           {loading ? (
             <LoadingIndicator />
-          ) : items.length === 0 ? (
+          ) : allItems.length === 0 ? (
             <div className="empty-cart">
               <p>Your cart is empty</p>
             </div>
           ) : !showGuestForm ? (
             <>
               <div className="cart-items">
-                {items.map((item) => (
-                  <div key={item.ticketId} className="cart-item">
+                {allItems.map((item) => (
+                  <div key={item.ticketId || item.productId} className="cart-item">
                     <div className="item-details">
-                      <h4>{item.eventName}</h4>
-                      <p className="ticket-type">{item.ticketType}</p>
+                      <h4>{item.eventName || item.productName}</h4>
+                      <p className="ticket-type">{item.ticketType || 'Product'}</p>
+                      {item.type === 'product' && (
+                        <p className="delivery-info">
+                          {item.needsDelivery ? '🚚 Delivery' : '📍 Pickup at event'}
+                        </p>
+                      )}
                       <p className="ticket-price">
-                        {item.discount && item.discountPrice ? (
+                        {item.type === 'product' ? (
+                          item.discount ? (
+                            <>
+                              <span className="original-price">₦{item.price.toLocaleString()}</span>
+                              <span className="discount-price">₦{item.finalPrice.toLocaleString()}</span>
+                            </>
+                          ) : (
+                            <span>₦{item.price.toLocaleString()}</span>
+                          )
+                        ) : item.discount && item.discountPrice ? (
                           <>
                             <span className="original-price">₦{item.price.toLocaleString()}</span>
                             <span className="discount-price">₦{item.discountPrice.toLocaleString()}</span>
@@ -112,22 +139,22 @@ const CartViewer = (props) => {
                     <div className="item-actions">
                       <div className="quantity-controls">
                         <button 
-                          onClick={() => handleQuantityChange(item.ticketId, item.quantity - 1)}
+                          onClick={() => handleQuantityChange(item.ticketId || item.productId, item.quantity - 1)}
                           disabled={item.quantity <= 1}
                         >
                           <FaMinus size={12} />
                         </button>
-                        <span>{item.quantity <= item.ticketQuantity ? item.quantity : item.ticketQuantity}</span>
+                        <span>{item.quantity <= (item.ticketQuantity || item.productQuantity) ? item.quantity : (item.ticketQuantity || item.productQuantity)}</span>
                         <button
-                          onClick={() => handleQuantityChange(item.ticketId, item.quantity + 1)}
-                          disabled={item.quantity >= item.ticketQuantity}
+                          onClick={() => handleQuantityChange(item.ticketId || item.productId, item.quantity + 1)}
+                          disabled={item.quantity >= (item.ticketQuantity || item.productQuantity)}
                         >
                           <FaPlus size={12} />
                         </button>
                       </div>
                       <button
                         className="remove-item" 
-                        onClick={() => removeFromCart(item.ticketId)}
+                        onClick={() => removeFromCart(item.ticketId || item.productId)}
                       >
                         <FaTrash size={16} />
                       </button>
@@ -143,7 +170,7 @@ const CartViewer = (props) => {
                 </div>
 
                 {/* coupon */}
-                {authenticated &&
+                {authenticated && tickets.length > 0 &&
                 <div className="cart-coupon-container">
                   <Input
                     value={coupon.code || ''}
@@ -164,12 +191,12 @@ const CartViewer = (props) => {
                 {discountAmount > 0 && (
                 <div className="cart-discount-info">
                   <p className='mb-0'>Coupon Applied: {appliedCoupon[0].code}</p>
-                  <p className='mb-0'>Applied to Event: {items.filter((item) =>
+                  <p className='mb-0'>Applied to Event: {tickets.filter((item) =>
                                                    couponValidTickets?.some((td) => td === item.ticketId))
                                                    .map((item) => item.eventName)
                                                    .join(', ')}
                   </p>
-                  <p className='mb-0'>Applied to Ticket: {items.filter((item) =>
+                  <p className='mb-0'>Applied to Ticket: {tickets.filter((item) =>
                                                    couponValidTickets?.some((td) => td === item.ticketId))
                                                    .map((item) => item.ticketType)
                                                    .join(', ')}
@@ -241,6 +268,7 @@ const mapStateToProps = (state) => {
   return {
     authenticated: state.authentication.authenticated,
     isOpen: state.cart.isOpen,
+    tickets: state.cart.tickets,
     items: state.cart.items,
     total: state.cart.total,
     loading: state.cart.loading,

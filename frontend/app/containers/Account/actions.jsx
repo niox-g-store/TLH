@@ -24,8 +24,13 @@ import {
   PASSWORD_CHANGE,
   SET_TWO_FACTOR,
   SET_RESET_PASSWORD_FORM_ERRORS,
-  RESET_PASSWORD_RESET
+  RESET_PASSWORD_RESET,
+  SET_TWO_FACTOR_CODE,
+  TWO_FACTOR_ERROR,
+  SHOW_TWO_FA_SETUP,
+  CLEAR_TWO_FACTOR
 } from './constants';
+
 import handleError from '../../utils/error';
 import { API_URL } from '../../constants';
 import { showNotification } from '../Notification/actions';
@@ -179,7 +184,6 @@ export const updateProfile = (navigate) => {
 
       dispatch({ type: FETCH_PROFILE, payload: response.data.user });
       dispatch(showNotification('success', successfulOptions.title));
-      navigate(0)
     } catch (error) {
       handleError(error, dispatch);
     }
@@ -283,3 +287,101 @@ export const deleteBank = (id) => {
     }
   }
 }
+
+export const twoFaVerificationCodeChange = (name, value) => {
+  let formData= {};
+  formData[name] = value;
+  return {
+    type: SET_TWO_FACTOR_CODE,
+    payload: formData
+  }
+}
+
+export const setShow2FASetup = (v) => {
+  return {
+    type: SHOW_TWO_FA_SETUP,
+    payload: v
+  }
+}
+
+export const setupTwoFactor = () => {
+  return async (dispatch) => {
+    dispatch(setProfileLoading(true));
+    try {
+      const response = await axios.post(`${API_URL}/auth/2fa/setup`, {}, {
+        headers: {
+          Authorization: localStorage.getItem('token'),
+        }
+      });
+
+      dispatch({
+        type: SET_TWO_FACTOR,
+        payload: {
+          qrCodeUrl: response.data.qrCodeUrl,
+          secret: response.data.secret
+        }
+      });
+    } catch (error) {
+      handleError(error, dispatch, "Failed to setup 2FA");
+    } finally {
+      dispatch(setProfileLoading(false));
+    }
+  };
+};
+
+export const verifyTwoFactor = () => {
+  return async (dispatch, getState) => {
+    dispatch(setProfileLoading(true));
+    try {
+      const { secret, code } = getState().account.twoFactor;
+
+      const rules = {
+        code: 'required|min:6|max:6',
+      };
+
+      const twoFa = {
+        code: String(code),
+      };
+
+      const { isValid, errors } = allFieldsValidation(twoFa, rules, {
+        'required.code': 'Code is required.',
+        'min.code': 'Enter a 6 digit code.',
+        'max.code': 'Code cannot be longer than 6 digit code.',
+      });
+
+      if (!isValid) {
+        return dispatch({
+          type: TWO_FACTOR_ERROR,
+          payload: errors
+        });
+      }
+
+      const response = await axios.post(`${API_URL}/auth/2fa/verify`, {
+        token: code,
+        secret: secret
+      }, {
+        headers: {
+          Authorization: localStorage.getItem('token'),
+        }
+      });
+
+      const options = {
+        title: `${response.data.message}`,
+        position: 'tr',
+        autoDismiss: 1
+      };
+
+      if (response.data.success) {
+        dispatch(showNotification('success', options.title));
+        dispatch({ type: CLEAR_TWO_FACTOR })
+      } else {
+        dispatch(showNotification('error', 'Invalid verification code.'));
+      }
+
+    } catch (error) {
+      handleError(error, dispatch, "2FA verification failed");
+    } finally {
+      dispatch(setProfileLoading(false));
+    }
+  };
+};

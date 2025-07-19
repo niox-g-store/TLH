@@ -9,6 +9,7 @@ const { ROLES } = require('../../utils/constants');
 const Event = require('../../models/event');
 const Ticket = require('../../models/ticket');
 const Organizer = require('../../models/organizer');
+const Guest = require('../../models/guest');
 const { updateEventStatus } = require("../../utils/event");
 const { deleteFilesFromPath } = require("../../utils/deleteFiles");
 
@@ -37,6 +38,39 @@ const removeImagesFromEvent = (event, removeImageUrls) => {
 
   return event;
 }
+
+router.get('/my-user-events', auth, async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const events = await Event.find({
+      registeredAttendees: userId
+    });
+
+    res.status(200).json({ events }).sort('-createdAt');
+  } catch (error) {
+    console.error('Error fetching my events:', error);
+    res.status(400).json({ message: 'Server Error' });
+  }
+});
+
+router.get('/guest-events', auth, async (req, res) => {
+  try {
+    const userEmail = req.user.email;
+    const guests = await Guest.find({ email: userEmail });
+    if (!guests.length) {
+      return res.status(200).json({ events: [] });
+    }
+    const guestIds = guests.map(g => g._id);
+
+    const events = await Event.find({
+      unregisteredAttendees: { $in: guestIds }
+    }).sort('-createdAt');
+    res.status(200).json({ events });
+  } catch (error) {
+    res.status(400).json({ message: 'Server Error' });
+  }
+});
 
 // fetch all events for everyone
 router.get('/all_event', async (req, res) => {
@@ -417,6 +451,7 @@ router.post(
     }
   }
 )
+
 
 
 router.delete(

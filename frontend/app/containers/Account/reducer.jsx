@@ -21,8 +21,12 @@ import {
 
   PASSWORD_CHANGE,
   SET_TWO_FACTOR,
+  SET_TWO_FACTOR_CODE,
   SET_RESET_PASSWORD_FORM_ERRORS,
-  RESET_PASSWORD_RESET
+  RESET_PASSWORD_RESET,
+  TWO_FACTOR_ERROR,
+  SHOW_TWO_FA_SETUP,
+  CLEAR_TWO_FACTOR
 } from './constants';
 
 const initialState = {
@@ -41,7 +45,15 @@ const initialState = {
     bio: '',
     phoneNumber: '',
   },
+  twoFactor: {
+    qrCodeUrl: '',
+    secret: '',
+    code: ''
+  },
+  twoFactorFormError: {},
+  show2FASetup: false,
   isLoading: false,
+
   resetFormData: {
     password: '',
     confirmPassword: ''
@@ -60,6 +72,45 @@ const initialState = {
 
 const accountReducer = (state = initialState, action) => {
   switch (action.type) {
+    case CLEAR_TWO_FACTOR:
+      return {
+        ...state,
+        show2FASetup: false,
+        twoFactorFormError: {},
+        twoFactor: {
+          qrCodeUrl: '',
+          secret: '',
+          code: ''
+        }
+      }
+    case SHOW_TWO_FA_SETUP:
+      return {
+        ...state,
+        show2FASetup: action.payload
+      };
+    case TWO_FACTOR_ERROR:
+      return {
+        ...state,
+        twoFactorFormError: action.payload
+      }
+    case SET_TWO_FACTOR:
+      return {
+        ...state,
+        twoFactor: {
+          ...state.twoFactor,
+          qrCodeUrl: action.payload.qrCodeUrl,
+          secret: action.payload.secret
+        }
+      };
+
+    case SET_TWO_FACTOR_CODE:
+      return {
+        ...state,
+        twoFactor: {
+          ...state.twoFactor,
+          ...action.payload
+        }
+      };
     case PASSWORD_CHANGE:
       return {
         ...state,

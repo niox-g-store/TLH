@@ -32,6 +32,7 @@ const Card = ({ event, type = "event", product }) => {
     );
   } else if (type === "shop") {
     return (
+      <Link to={`/product/${product.slug}`}>
       <div className="card-wrapper">
         <div className="card-body">
           <img
@@ -51,6 +52,7 @@ const Card = ({ event, type = "event", product }) => {
           View Details
         </button>
       </div>
+      </Link>
     );
   } else {
 

@@ -18,14 +18,16 @@ import {
   CModalBody
 } from '@coreui/react';
 import React, { useState } from 'react';
+import actions from '../../../actions';
+import { connect } from 'react-redux';
 import { ROLES } from '../../../constants';
 import Input from '../../Common/HtmlTags/Input';
 import Button from '../../Common/HtmlTags/Button';
 import AdvancedUpload from '../../store/AdanceFileUpload';
-import DescriptionBox from '../../store/DescriptionBox';
 import { API_URL } from '../../../constants';
 import ResolveImage from '../../store/ResolveImage';
 import { useNavigate, Link } from 'react-router-dom';
+import { withRouter } from '../../../withRouter';
  
 // import BankSelector from '../../Common/Banks';
 
@@ -154,7 +156,7 @@ import { useNavigate, Link } from 'react-router-dom';
   );
 };*/
 
-const ManagerAccount = (props) => {
+const ManagerAccountForm = (props) => {
   const {
     user,
     accountChange,
@@ -333,5 +335,22 @@ const ManagerAccount = (props) => {
     </div>
   );
 };
+class ManagerAccount extends React.PureComponent {
+  componentDidUpdate(prevProps) {
+    if (this.props.match.params.id !== prevProps.match.params.id) {
+      this.props.fetchProfile();
+    }
+  }
+  render() {
+    return (
+      <ManagerAccountForm {...this.props} />
+    );
+  }
+}
 
-export default ManagerAccount;
+const mapStateToProps = state => ({
+  accountEditFormErrors: state.account.editFormErrors,
+  user: state.account.user
+});
+
+export default connect(mapStateToProps, actions)(withRouter(ManagerAccount));

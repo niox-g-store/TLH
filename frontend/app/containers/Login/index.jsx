@@ -14,7 +14,10 @@ const Login = (props) => {
       isLoading,
       isSubmitting,
       rememberMeChange,
-      rememberMe
+      rememberMe,
+      twoFaLogin,
+      twoFaPromptToggle,
+      twoFaPrmpt
   } = props;
   if (authenticated) return <Navigate to='/dashboard' />;
   return (
@@ -31,7 +34,8 @@ const mapStateToProps = (state) => {
     formErrors: state.login.formErrors,
     isLoading: state.login.isLoading,
     isSubmitting: state.login.isSubmitting,
-    rememberMe: state.login.rememberMe
+    rememberMe: state.login.rememberMe,
+    twoFaPrmpt: state.login.twoFaPrmpt
   };
 };
 

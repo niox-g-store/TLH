@@ -6,6 +6,7 @@ import { BackIcon } from "../Icons/Back";
 import Input from "../HtmlTags/Input";
 import SigninProvider from "../../store/SignInProvider";
 import LoadingIndicator from "../../store/LoadingIndicator";
+import TwoFactorPrompt from "../../store/TwoFactorPrompt";
 
 const logo = "./assets/login.JPG";
 const LoginForm = (props) => {
@@ -18,7 +19,8 @@ const LoginForm = (props) => {
     isSubmitting,
     rememberMeChange,
     rememberMe,
-    googleSignin
+    googleSignin,
+    twoFaPrmpt,
   } = props;
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -114,6 +116,7 @@ const LoginForm = (props) => {
           </div>
         </div>
       </div>
+      {twoFaPrmpt && <TwoFactorPrompt {...props}/> }
     </div>
   );
 };

@@ -18,7 +18,7 @@ import {
   SET_GUEST_INFO,
   SHOW_GUEST_FORM,
   SET_GUEST_FORM_ERRORS,
-
+  ADD_PRODUCT_TO_CART,
   SELECTED_TICKETS,
   DELETE_SELECTED_TICKETS,
   SET_CART_COUPON,
@@ -29,7 +29,8 @@ import { getSelectedTicketsFromStorage, saveSelectedTicketsToStorage } from '../
 
 const initialState = {
   isOpen: false,
-  items: [],
+  tickets: [],
+  items: [], // For products
   cartId: null,
   total: 0,
   loading: false,
@@ -112,18 +113,29 @@ const cartReducer = (state = initialState, action) => {
     case ADD_TO_CART:
       return {
         ...state,
+        tickets: [...state.tickets, action.payload]
+      };
+    case ADD_PRODUCT_TO_CART:
+      return {
+        ...state,
         items: [...state.items, action.payload]
       };
     case REMOVE_FROM_CART:
       return {
         ...state,
-        items: state.items.filter(item => item.ticketId !== action.payload)
+        tickets: state.tickets.filter(item => item.ticketId !== action.payload),
+        items: state.items.filter(item => item.productId !== action.payload)
       };
     case UPDATE_CART_ITEM:
       return {
         ...state,
-        items: state.items.map(item => 
+        tickets: state.tickets.map(item => 
           item.ticketId === action.payload.ticketId
+            ? { ...item, ...action.payload.updates }
+            : item
+        ),
+        items: state.items.map(item => 
+          item.productId === action.payload.productId
             ? { ...item, ...action.payload.updates }
             : item
         )
@@ -132,6 +144,7 @@ const cartReducer = (state = initialState, action) => {
       localStorage.removeItem('selectedTickets');
       return {
         ...state,
+        tickets: [],
         items: [],
         total: 0,
         cartId: null,
@@ -151,7 +164,8 @@ const cartReducer = (state = initialState, action) => {
     case SET_CART_ITEMS:
       return {
         ...state,
-        items: action.payload
+        tickets: action.payload.tickets || [],
+        items: action.payload.items || []
       };
     case HANDLE_CART_TOTAL:
       return {

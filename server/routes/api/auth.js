@@ -14,7 +14,8 @@ const { OAuth2Client } = require('google-auth-library');
 const { clientID } = keys.google
 const client = new OAuth2Client(clientID);
 const { secret, tokenLife } = keys.jwt;
-
+const QRCode = require('qrcode');
+const speakeasy = require('speakeasy');
 
 const normalizeCompanyName = (str) => {
   if (!str) return '';
@@ -45,6 +46,58 @@ const checkIfEmail = (input) => {
   return emailRegex.test(input.trim());
 };
 
+router.post('/confirm-twofa', async (req, res) => {
+  try {
+    console.log(1)
+    const { code, id, rememberMe } = req.body;
+
+    const user = await User.findById(id);
+    if (!user || !user.twoFactor) {
+      return res.status(400).json({ error: '2FA not set up for this user.' });
+    }
+
+    const isVerified = speakeasy.totp.verify({
+      secret: user.twoFactor,
+      encoding: 'base32',
+      token: code,
+      window: 1 // Optional: allows slight time drift
+    });
+
+    if (!isVerified) {
+      return res.status(401).json({ error: 'Invalid 2FA code.' });
+    }
+
+    const payload = { id: user.id };
+    const token = jwt.sign(payload, secret, { expiresIn: rememberMe ? '30d' : tokenLife });
+
+    if (!token) {
+      throw new Error('Token generation failed');
+    }
+
+    await mailgun.sendEmail(
+      user.email,
+      'signin',
+      user
+    );
+
+    return res.status(200).json({
+      success: true,
+      token: `Bearer ${token}`,
+      user: {
+        id: user.id,
+        name: user.name,
+        companyName: user.companyName,
+        email: user.email,
+        role: user.role,
+        banned: user.banned
+      }
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: 'Your request could not be processed. Please try again.'
+    });
+  }
+});
 
 router.post('/login', async (req, res) => {
   try {
@@ -92,6 +145,16 @@ router.post('/login', async (req, res) => {
         success: false,
         error: 'Password Incorrect'
       });
+    }
+    
+    // check 2fa
+    if (user.isTwoFactorActive) {
+      return res.status(201).json({
+        success: true,
+        id: user.id,
+        rememberMe,
+        banned: user.banned
+      })
     }
 
     const payload = {
@@ -635,6 +698,54 @@ router.post('/google/signin', async (req, res) => {
     return res.status(400).json({
       error: "Error logging ing with google account"
     })
+  }
+});
+
+router.post('/2fa/setup', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(400).json({ error: 'User not found' });
+
+    const secret = speakeasy.generateSecret({
+      name: `The Link Hangout (${user.email})`,
+    });
+
+    user.twoFactor = secret.base32;
+    await user.save();
+
+    const qrCodeUrl = await QRCode.toDataURL(secret.otpauth_url);
+
+    res.status(200).json({
+      qrCodeUrl,
+      secret: secret.base32,
+    });
+  } catch (err) {
+    res.status(400).json({ error: 'Failed to setup 2FA' });
+  }
+});
+
+router.post('/2fa/verify', auth, async (req, res) => {
+  try {
+    const { token, secret } = req.body;
+
+    const verified = speakeasy.totp.verify({
+      secret,
+      encoding: 'base32',
+      token,
+      window: 1, // allow slight time drift
+    });
+
+    if (!verified) {
+      return res.status(400).json({ error: 'Invalid verification code' });
+    }
+
+    const user = await User.findById(req.user.id);
+    user.isTwoFactorActive = true;
+    await user.save();
+
+    res.status(200).json({ success: true, message: 'Two-factor authentication enabled' });
+  } catch (err) {
+    res.status(400).json({ error: '2FA verification failed' });
   }
 });
 

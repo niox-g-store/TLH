@@ -14,7 +14,7 @@ router.post('/add', async (req, res) => {
     
     // Create a new cart with the item
     const cart = new Cart({
-      tickets: [item],
+      items: [item],
       user: user ? user._id : null
     });
     
@@ -32,6 +32,34 @@ router.post('/add', async (req, res) => {
   }
 });
 
+// Create a new cart for products
+router.post('/add-product', async (req, res) => {
+  try {
+    const { item, user } = req.body;
+
+    if (!item) {
+      return res.status(400).json({ error: 'No items provided' });
+    }
+    
+    // Create a new cart with the product item
+    const cart = new Cart({
+      items: [item],
+      user: user ? user._id : null
+    });
+    
+    await cart.save();
+    
+    return res.status(200).json({
+      success: true,
+      cartId: cart._id,
+      cart
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: 'Your request could not be processed. Please try again.'
+    });
+  }
+});
 // Get cart by ID
 router.get('/:cartId', async (req, res) => {
   try {
@@ -93,18 +121,18 @@ router.put('/:cartId/add', async (req, res) => {
     }
     
     // Check if item already exists in cart
-    const existingItemIndex = cart.tickets.findIndex(
-      ticket => ticket.ticketId.toString() === item.ticketId
+    const existingItemIndex = cart.items.findIndex(
+      cartItem => cartItem.ticketId?.toString() === item.ticketId
     );
     
     if (existingItemIndex !== -1) {
       // Update quantity if item exists and if the cart quantity doesn't suppase item.ticketQuantity
-      if (cart.tickets[existingItemIndex].quantity < item.ticketQuantity) {
-        cart.tickets[existingItemIndex].quantity += 1;
+      if (cart.items[existingItemIndex].quantity < item.ticketQuantity) {
+        cart.items[existingItemIndex].quantity += 1;
       }
     } else {
       // Add new item to cart
-      cart.tickets.push(item);
+      cart.items.push(item);
     }
     
     // Update cart expiration
@@ -123,14 +151,66 @@ router.put('/:cartId/add', async (req, res) => {
   }
 });
 
+// Add product to cart
+router.put('/:cartId/add-product', async (req, res) => {
+  try {
+    const cartId = req.params.cartId;
+    const { item } = req.body;
+    
+    if (!item) {
+      return res.status(400).json({ error: 'No item provided' });
+    }
+    
+    const cart = await Cart.findById(cartId);
+    
+    if (!cart) {
+      return res.status(404).json({ error: 'Cart not found' });
+    }
+    
+    // Check if cart is expired
+    if (cart.expiresAt && new Date() > cart.expiresAt) {
+      await cart.deleteOne();
+      return res.status(400).json({ error: 'Cart has expired' });
+    }
+    
+    // Check if product already exists in cart
+    const existingItemIndex = cart.items.findIndex(
+      cartItem => cartItem.productId?.toString() === item.productId
+    );
+    
+    if (existingItemIndex !== -1) {
+      // Update quantity if item exists
+      if (cart.items[existingItemIndex].quantity < item.productQuantity) {
+        cart.items[existingItemIndex].quantity += 1;
+      }
+    } else {
+      // Add new product to cart
+      cart.items.push(item);
+    }
+    
+    // Update cart expiration
+    cart.expiresAt = new Date(+new Date() + 7*24*60*60*1000); // 7 days from now
+    
+    await cart.save();
+    
+    return res.status(200).json({
+      success: true,
+      cart
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: 'Your request could not be processed. Please try again.'
+    });
+  }
+});
 // Remove item from cart
 router.put('/:cartId/remove', async (req, res) => {
   try {
     const cartId = req.params.cartId;
-    const { ticketId } = req.body;
+    const { ticketId, productId } = req.body;
     
-    if (!ticketId) {
-      return res.status(400).json({ error: 'No ticket ID provided' });
+    if (!ticketId && !productId) {
+      return res.status(400).json({ error: 'No item ID provided' });
     }
     
     const cart = await Cart.findById(cartId);
@@ -140,8 +220,16 @@ router.put('/:cartId/remove', async (req, res) => {
     }
     
     // Remove item from cart
-    cart.tickets = cart.tickets.filter(
-      ticket => ticket.ticketId.toString() !== ticketId
+    cart.items = cart.items.filter(
+      item => {
+        if (ticketId) {
+          return item.ticketId?.toString() !== ticketId;
+        }
+        if (productId) {
+          return item.productId?.toString() !== productId;
+        }
+        return true;
+      }
     );
     
     await cart.save();
@@ -161,9 +249,9 @@ router.put('/:cartId/remove', async (req, res) => {
 router.put('/:cartId/update', async (req, res) => {
   try {
     const cartId = req.params.cartId;
-    const { ticketId, updates } = req.body;
+    const { ticketId, productId, updates } = req.body;
     
-    if (!ticketId || !updates) {
+    if ((!ticketId && !productId) || !updates) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
     
@@ -174,8 +262,16 @@ router.put('/:cartId/update', async (req, res) => {
     }
     
     // Find and update the item
-    const itemIndex = cart.tickets.findIndex(
-      ticket => ticket.ticketId.toString() === ticketId
+    const itemIndex = cart.items.findIndex(
+      item => {
+        if (ticketId) {
+          return item.ticketId?.toString() === ticketId;
+        }
+        if (productId) {
+          return item.productId?.toString() === productId;
+        }
+        return false;
+      }
     );
     
     if (itemIndex === -1) {
@@ -184,7 +280,7 @@ router.put('/:cartId/update', async (req, res) => {
     
     // Update the item with the provided updates
     Object.keys(updates).forEach(key => {
-      cart.tickets[itemIndex][key] = updates[key];
+      cart.items[itemIndex][key] = updates[key];
     });
     
     await cart.save();

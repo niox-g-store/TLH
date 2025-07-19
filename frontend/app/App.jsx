@@ -19,6 +19,8 @@ import FAQs from './containers/Faq';
 import Events from './containers/Events';
 import Gallery from './containers/Gallery';
 import GalleryView from './containers/Gallery/view';
+import Shop from './containers/Shop';
+import ProductView from './containers/Product/View';
 import OrganizerSignUp from './containers/Organizer/SignUp';
 import Dashboard from './containers/Dashboard';
 import Page404 from './containers/Page404';
@@ -88,6 +90,9 @@ const App = (props) => {
 
         <Route path='/gallery' element={<Gallery />} />
         <Route path='/gallery/:slug' element={<GalleryView />} />
+
+        <Route path='/shop' element={<Shop />} />
+        <Route path='/product/:slug' element={<ProductView />} />
 
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<Signup />} />

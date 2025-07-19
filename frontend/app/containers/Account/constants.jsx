@@ -22,3 +22,7 @@ export const PASSWORD_CHANGE = 'src/Account/PASSWORD_CHANGE';
 export const RESET_PASSWORD_RESET = 'src/Account/RESET_PASSWORD_RESET';
 export const SET_RESET_PASSWORD_FORM_ERRORS = 'src/Account/SET_RESET_PASSWORD_FORM_ERRORS';
 export const SET_TWO_FACTOR = 'src/Account/SET_TWO_FACTOR';
+export const SET_TWO_FACTOR_CODE = 'src/Account/SET_TWO_FACTOR_CODE';
+export const TWO_FACTOR_ERROR = 'src/Account/TWO_FACTOR_ERROR';
+export const SHOW_TWO_FA_SETUP = 'src/Account/SHOW_TWO_FA_SETUP';
+export const CLEAR_TWO_FACTOR = 'src/Account/CLEAR_TWO_FACTOR';

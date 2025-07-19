@@ -2,16 +2,21 @@ import { NavLink } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { CgMenuRightAlt } from 'react-icons/cg';
 import { IoMdClose } from 'react-icons/io';
+import { isProviderAllowed } from '../../../utils/app';
 
 const UserHeaderHelper = (props) => {
-    const { links, doLogout, toggleMenu, isMenuOpen } = props;
+    const { links, doLogout, toggleMenu, isMenuOpen, user } = props;
+
+    const filteredLinks = links?.filter(
+      (link) => !(!isProviderAllowed(user?.provider) && link.to === '/security')
+    );
 
     return (
         <>
             <div className="nav d-lg-flex align-self-end header-lg">
               <ul>
                 {
-                    links && links.map((link, index) => {
+                    links && filteredLinks.map((link, index) => {
                         const PREFIX = link.prefix ? link.prefix : '';
                         return (
                             <li key={index}>
@@ -56,7 +61,7 @@ const UserHeaderHelper = (props) => {
               <div className="nav">
                 <ul>
                 {
-                    links && links.map((link, index) => {
+                    links && filteredLinks.map((link, index) => {
                         const PREFIX = link.prefix ? link.prefix : '';
                         return (
                             <li key={index}>

@@ -21,3 +21,5 @@ export const FETCH_ALL_EVENTS = 'src/Event/FETCH_ALL_EVENTS';
 export const SELECT_EVENT = 'src/Event/SELECT_EVENT';
 export const VIEWING_EVENT = 'src/Event/VIEWING_EVENT';
 export const EVENT_CHANGED = 'src/Event/EVENT_CHANGED';
+export const FETCH_MY_AT_EVENTS = 'src/Event/FETCH_MY_AT_EVENTS';
+export const FETCH_MY_G_EVENTS = 'src/Event/FETCH_MY_G_EVENTS';

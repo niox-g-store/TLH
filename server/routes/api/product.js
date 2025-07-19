@@ -1,0 +1,263 @@
+const express = require('express');
+const router = express.Router();
+const multer = require('multer');
+const crypto = require('crypto');
+const path = require("path");
+const auth = require('../../middleware/auth');
+const role = require('../../middleware/role');
+const { ROLES } = require('../../utils/constants');
+const Product = require('../../models/product');
+const { deleteFilesFromPath } = require("../../utils/deleteFiles");
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, process.cwd() + "/file_manager/uploads/products");
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + crypto.randomBytes(4).toString('hex');
+    cb(null, `${uniqueSuffix}${path.extname(file.originalname)}`);
+  }
+});
+const upload = multer({ storage });
+
+// GET /product/store - Get all products for store (public)
+router.get('/store', async (req, res) => {
+  try {
+    const products = await Product.find({ isActive: true })
+      .sort('-createdAt');
+    
+    return res.status(200).json({ products });
+  } catch (error) {
+    return res.status(400).json({
+      error: 'Your request could not be processed. Please try again.'
+    });
+  }
+});
+
+// GET /product/item/:slug - Get single product by slug (public)
+router.get('/item/:slug', async (req, res) => {
+  try {
+    const slug = req.params.slug;
+    const product = await Product.findOne({ slug, isActive: true });
+
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found.' });
+    }
+
+    return res.status(200).json({ product });
+  } catch (error) {
+    return res.status(400).json({
+      error: 'Your request could not be processed. Please try again.'
+    });
+  }
+});
+
+// GET /product - Get all products (Admin only)
+router.get(
+  '/',
+  auth,
+  role.check(ROLES.Admin),
+  async (req, res) => {
+    try {
+      const products = await Product.find().sort('-createdAt');
+      return res.status(200).json({ products });
+    } catch (error) {
+      return res.status(400).json({
+        error: 'Your request could not be processed. Please try again.'
+      });
+    }
+  }
+);
+
+// GET /product/:id - Get single product (Admin only)
+router.get(
+  '/:id',
+  auth,
+  role.check(ROLES.Admin),
+  async (req, res) => {
+    try {
+      const productId = req.params.id;
+      const product = await Product.findById(productId);
+
+      if (!product) {
+        return res.status(404).json({ error: 'Product not found.' });
+      }
+
+      return res.status(200).json({ product });
+    } catch (error) {
+      return res.status(400).json({
+        error: 'Your request could not be processed. Please try again.'
+      });
+    }
+  }
+);
+
+// POST /product/add - Add new product (Admin only)
+router.post(
+  '/add',
+  auth,
+  role.check(ROLES.Admin),
+  upload.array('images', 5),
+  async (req, res) => {
+    try {
+      const {
+        name,
+        description,
+        price,
+        discountPrice = 0,
+        quantity,
+        sku,
+        isActive = true
+      } = req.body;
+
+      const files = req.files;
+
+      if (!name || !description || !price || !quantity) {
+        return res.status(400).json({ error: 'All required fields must be filled.' });
+      }
+
+      if (!files || files.length === 0) {
+        return res.status(400).json({ error: 'At least one image file is required.' });
+      }
+
+      const existingProduct = await Product.findOne({ name });
+      if (existingProduct) {
+        files.forEach(file => {
+          deleteFilesFromPath([`/uploads/products/${file.filename}`]);
+        });
+        return res.status(400).json({ error: 'A product with this name already exists.' });
+      }
+
+      const imageUrls = files.map((file) => `/uploads/products/${file.filename}`);
+
+      const product = new Product({
+        name,
+        description,
+        price,
+        discountPrice,
+        quantity,
+        sku: sku || `PRD-${Date.now()}`,
+        imageUrls,
+        isActive: isActive !== undefined ? isActive : true
+      });
+
+      await product.save();
+
+      return res.status(200).json({
+        success: true,
+        message: 'Product has been added successfully!',
+        product
+      });
+    } catch (error) {
+      return res.status(400).json({
+        error: 'Your request could not be processed. Please try again.'
+      });
+    }
+  }
+);
+
+// PUT /product/:id - Update product (Admin only)
+router.put(
+  '/:id',
+  auth,
+  role.check(ROLES.Admin),
+  upload.array('images', 5),
+  async (req, res) => {
+    try {
+      const productId = req.params.id;
+      const {
+        name,
+        description,
+        price,
+        discountPrice,
+        quantity,
+        sku,
+        isActive,
+        removeImage
+      } = req.body;
+
+      const files = req.files;
+
+      const product = await Product.findById(productId);
+      if (!product) {
+        return res.status(404).json({ error: 'Product not found.' });
+      }
+
+      // Update product fields
+      product.name = name || product.name;
+      product.description = description || product.description;
+      product.price = price || product.price;
+      product.discountPrice = discountPrice || product.discountPrice;
+      product.quantity = quantity || product.quantity;
+      product.sku = sku || product.sku;
+      product.isActive = isActive !== undefined ? isActive : product.isActive;
+
+      // Handle image removal
+      if (removeImage && Array.isArray(removeImage)) {
+        const normalizedPaths = removeImage.map(url => {
+          const parts = url.split('/api/');
+          return '/' + parts[1] || url;
+        });
+        
+        product.imageUrls = product.imageUrls.filter(imagePath => {
+          return !normalizedPaths.includes(imagePath.replace(/\\/g, '/'));
+        });
+        
+        deleteFilesFromPath(normalizedPaths);
+      }
+
+      // Handle new image uploads
+      if (files && files.length > 0) {
+        const newImagePaths = files.map(file => `/uploads/products/${file.filename}`);
+        product.imageUrls = [...product.imageUrls, ...newImagePaths];
+      }
+
+      await product.save();
+
+      return res.status(200).json({
+        success: true,
+        message: 'Product updated successfully!',
+        product
+      });
+    } catch (error) {
+      return res.status(400).json({
+        error: 'Your request could not be processed. Please try again.'
+      });
+    }
+  }
+);
+
+// DELETE /product/:id - Delete product (Admin only)
+router.delete(
+  '/:id',
+  auth,
+  role.check(ROLES.Admin),
+  async (req, res) => {
+    try {
+      const productId = req.params.id;
+      const product = await Product.findById(productId);
+
+      if (!product) {
+        return res.status(404).json({ error: 'Product not found.' });
+      }
+
+      // Delete associated images
+      if (product.imageUrls && product.imageUrls.length > 0) {
+        deleteFilesFromPath(product.imageUrls);
+      }
+
+      await product.deleteOne();
+
+      return res.status(200).json({
+        success: true,
+        message: 'Product deleted successfully!'
+      });
+    } catch (error) {
+      return res.status(400).json({
+        error: 'Your request could not be processed. Please try again.'
+      });
+    }
+  }
+);
+
+module.exports = router;

@@ -39,11 +39,14 @@ const orderSchema = new mongoose.Schema({
   events: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Event',
-    required: true
   }],
   tickets: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Ticket'
+  }],
+  products: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Product'
   }],
   coupon: {
     type: mongoose.Schema.Types.ObjectId,

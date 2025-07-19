@@ -30,7 +30,9 @@ import {
   FETCH_ALL_EVENTS,
   SELECT_EVENT,
   VIEWING_EVENT,
-  EVENT_CHANGED
+  EVENT_CHANGED,
+  FETCH_MY_AT_EVENTS,
+  FETCH_MY_G_EVENTS
 } from './constants';
 
 import { API_URL } from '../../constants';
@@ -441,6 +443,34 @@ export const fetchAllEvents = () => {
       })
     } catch (error) {
       handleError(error, dispatch, 'error fetching events!!')
+    }
+  }
+}
+
+export const fetchMyEvents = () => {
+  return async(dispatch) => {
+    try {
+      const response = await axios.get(`${API_URL}/event/my-user-events`);
+      dispatch({
+        type: FETCH_MY_AT_EVENTS,
+        payload: response.data.events
+      })
+    } catch (error) {
+      handleError(error, dispatch, 'error fetching my events!!')
+    }
+  }
+}
+
+export const fetchMyGuestEvents = () => {
+  return async(dispatch) => {
+    try {
+      const response = await axios.get(`${API_URL}/event/guest-events`);
+      dispatch({
+        type: FETCH_MY_G_EVENTS,
+        payload: response.data.events
+      })
+    } catch (error) {
+      handleError(error, dispatch, 'error fetching guest events!!')
     }
   }
 }

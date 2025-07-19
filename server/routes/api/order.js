@@ -35,7 +35,10 @@ const assignQrCode = async (order, cart) => {
       userOrGuestId = await User.findOne({ _id: userOrGuestId }).populate('organizer')
     }
 
-    for (const ticketItem of cart.tickets) {
+    // Only process ticket items for QR codes
+    const ticketItems = cart.items.filter(item => item.type !== 'product');
+    
+    for (const ticketItem of ticketItems) {
       const { coupon,
               ticketType,
               eventName,
@@ -165,10 +168,13 @@ router.post('/add', async (req, res) => {
       finalAmount,
       events,
       tickets,
+      products,
       discountPrice,
       amountBeforeDiscount,
       payStackId,
       billingEmail,
+      address,
+      phoneNumber,
       coupon
     } = req.body;
     const ID = await newObjectId();
@@ -194,6 +200,9 @@ router.post('/add', async (req, res) => {
       user,
       guest,
       events,
+      phoneNumber: phoneNumber || null,
+      address: address || null,
+      products: products || [],
       coupon: coupon ? coupon.couponId : null,
       tickets,
       finalAmount,
@@ -363,19 +372,39 @@ router.put('/edit/order/', async (req, res) => {
           })
         }
       }
-      // call background jobs
-      await orderQueue.add('new-order', { qrAssigner, newOrder, adminEmails, organizerEmailsAndData });
+
+      // Check if this is a product order
+      const hasProducts = cartDoc.products.some(item => item.type === 'product');
+      const hasTickets = cartDoc.tickets.some(item => item.type !== 'product');
+      
+      // Decrease product quantities
+      if (hasProducts) {
+        await decreaseProductQuantity(cartDoc.products.filter(item => item.type === 'product'));
+      }
+      
+      // Decrease ticket quantities
+      if (hasTickets) {
+        await decreaseQuantity(cartDoc.tickets.filter(item => item.type !== 'product'));
+      }
+
+      // call background jobs with product order flag
+      await orderQueue.add('new-order', { 
+        qrAssigner, 
+        newOrder, 
+        adminEmails, 
+        organizerEmailsAndData,
+        isProductOrder: hasProducts && !hasTickets
+      });
 
 
       // decrease quantity if the order has been successful
-      decreaseQuantity(cartDoc.tickets);
+      // decreaseQuantity(cartDoc.tickets);
 
   
         return res.status(200).json({
           success: true,
           message: `Your order has been placed successfully!`,
           order: { _id: updateOrder._id },
-          // paystack_access_code: paystackData.access_code,
         });
       }
     } catch (error) {
@@ -510,6 +539,7 @@ router.get(
     return res.status(200).json({ order, invoice });
 
   } catch (error) {
+    console.log(error)
     return res.status(400).json({
       error: 'Your request could not be processed. Please try again.'
     });
@@ -632,7 +662,7 @@ router.get(
 });
 
 // DELETE /order/id/:id
-router.delete('/id/:id', auth, async (req, res) => {
+router.delete('/id/:id', auth, role.check(ROLES.Admin), async (req, res) => {
   try {
     const orderId = req.params.id;
     const currentUser = req.user;
@@ -692,6 +722,18 @@ const decreaseQuantity = (tickets) => {
   }));
 
   return Ticket.bulkWrite(bulkOptions);
+};
+
+const decreaseProductQuantity = async (products) => {
+  const Product = require('../../models/product');
+  const bulkOptions = products.map(item => ({
+    updateOne: {
+      filter: { _id: item.productId },
+      update: { $inc: { quantity: -item.quantity } }
+    }
+  }));
+
+  return Product.bulkWrite(bulkOptions);
 };
 
 
