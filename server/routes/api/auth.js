@@ -48,7 +48,6 @@ const checkIfEmail = (input) => {
 
 router.post('/confirm-twofa', async (req, res) => {
   try {
-    console.log(1)
     const { code, id, rememberMe } = req.body;
 
     const user = await User.findById(id);
@@ -64,7 +63,7 @@ router.post('/confirm-twofa', async (req, res) => {
     });
 
     if (!isVerified) {
-      return res.status(401).json({ error: 'Invalid 2FA code.' });
+      return res.status(400).json({ error: 'Invalid 2FA code.' });
     }
 
     const payload = { id: user.id };
@@ -146,9 +145,8 @@ router.post('/login', async (req, res) => {
         error: 'Password Incorrect'
       });
     }
-    
     // check 2fa
-    if (user.isTwoFactorActive) {
+    if (user?.isTwoFactorActive) {
       return res.status(201).json({
         success: true,
         id: user.id,
@@ -639,7 +637,7 @@ router.post('/register/google', async (req, res) => {
 
 router.post('/google/signin', async (req, res) => {
   try {
-    const { credential } = req.body;
+    const { credential, rememberMe } = req.body;
     const user = await verifyGoogleToken(credential);
 
     if (!user.email) {
@@ -670,7 +668,7 @@ router.post('/google/signin', async (req, res) => {
       id: existingEmail.id
     };
 
-    const token = jwt.sign(payload, secret, { expiresIn: tokenLife });
+    const token = jwt.sign(payload, secret, { expiresIn: rememberMe ? '30d' : tokenLife });
 
     if (!token) {
       throw new Error();

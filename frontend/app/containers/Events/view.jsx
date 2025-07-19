@@ -7,7 +7,7 @@ import Row from '../../components/Common/Row';
 import Col from '../../components/Common/Col';
 import Button from '../../components/Common/HtmlTags/Button';
 import { API_URL } from '../../constants';
-import ResolveImage from '../../components/store/ResolveImage';
+import resolveImage from '../../components/store/ResolveImage';
 import { formatReadableDate } from '../../components/store/Card/functions';
 import { MdOutlineAddShoppingCart, MdShoppingCart } from 'react-icons/md';
 import Page404 from '../Page404';
@@ -107,7 +107,7 @@ const EventViewer = (props) => {
           <div className='lg-view-event'>
             <div className='event-card'>
               <FadeSlider
-                dots={!!(event && event.imageUrls.length > 1)}
+                dots={!!(event && event?.imageUrls?.length > 1)}
                 infinite
                 speed={500}
                 slidesToShow={1}
@@ -119,7 +119,7 @@ const EventViewer = (props) => {
                 swipeToSlide
                 beforeChange={handleBeforeChange}
               >
-                {event && event.imageUrls?.map((url, idx) => (
+                {event && event?.imageUrls?.map((url, idx) => (
                   <div key={idx} className='event-image-wrapper'>
                     {isVideo(url)
                       ? (
@@ -135,7 +135,7 @@ const EventViewer = (props) => {
                         </video>
                         )
                       : (
-                        <img src={ResolveImage(`${API_URL}${url}`)} alt={`event-${idx}`} className='event-image' />
+                        <img src={resolveImage(`${API_URL}${url}`)} alt={`event-${idx}`} className='event-image' />
                         )}
                   </div>
                 ))}
@@ -162,7 +162,7 @@ const EventViewer = (props) => {
 
         <div style={{ cursor: 'pointer' }} className='host-des' onClick={() => setShowOrganizerModal(true)}>
           <p>your host</p>
-          <img src={ResolveImage(API_URL + event?.user?.imageUrl, 'profile')} style={{ borderRadius: '50%', width: '5%', height: '3em' }} />
+          <img src={resolveImage(API_URL + event?.user?.imageUrl, 'profile')} style={{ borderRadius: '50%', width: '5%', height: '3em' }} />
           &nbsp; &nbsp; &nbsp; <span className='p-purple'>{event?.user?.companyName}</span>
         </div>
 
@@ -173,7 +173,7 @@ const EventViewer = (props) => {
           </CModalHeader>
           <CModalBody style={{ background: 'white' }}>
             <div className='text-center'>
-              <img src={ResolveImage(API_URL + event?.user?.imageUrl)} alt='Organizer' style={{ width: '100px', height: '100px', borderRadius: '10px' }} />
+              <img src={resolveImage(API_URL + event?.user?.imageUrl)} alt='Organizer' style={{ width: '100px', height: '100px', borderRadius: '10px' }} />
               <p className='mt-2'><CgProfile /> {event?.user?.companyName}</p>
               {event?.user?.contactEmail?.length > 3 && (
                 <p><MdEmail /> {event.user.contactEmail}</p>
@@ -322,19 +322,18 @@ const EventViewer = (props) => {
 
           <div className='event-card d-lg-none mobile-view-event'>
             <FadeSlider
-              dots={!!(event && event.imageUrls.length > 1)}
+              dots={!!(event && event?.imageUrls?.length > 1)}
               infinite
               speed={500}
               slidesToShow={1}
               slidesToScroll={1}
               fade
               autoplay
-              autoplaySpeed={2000}
               arrows={false}
               swipeToSlide
               beforeChange={handleBeforeChange}
             >
-              {event && event.imageUrls?.map((url, idx) => (
+              {event && event?.imageUrls?.map((url, idx) => (
                 <div key={idx} className='event-image-wrapper'>
                   {isVideo(url)
                     ? (
@@ -350,7 +349,7 @@ const EventViewer = (props) => {
                       </video>
                       )
                     : (
-                      <img src={ResolveImage(`${API_URL}${url}`)} alt={`event-${idx}`} className='event-image' />
+                      <img src={resolveImage(`${API_URL}${url}`)} alt={`event-${idx}`} className='event-image' />
                       )}
                 </div>
               ))}
@@ -375,7 +374,7 @@ const EventViewer = (props) => {
               </p>
         <div style={{ cursor: 'pointer' }} className='host-des' onClick={() => setShowOrganizerModal(true)}>
           <p>your host</p>
-          <img src={ResolveImage(API_URL + event?.user?.imageUrl, 'profile')} style={{ borderRadius: '50%', width: '14%', height: '3em' }} />
+          <img src={resolveImage(API_URL + event?.user?.imageUrl, 'profile')} style={{ borderRadius: '50%', width: '14%', height: '3em' }} />
           &nbsp; &nbsp; &nbsp; <span className='p-purple'>{event?.user?.companyName}</span>
         </div>
 
@@ -386,7 +385,7 @@ const EventViewer = (props) => {
           </CModalHeader>
           <CModalBody style={{ background: 'white' }}>
             <div className='text-center'>
-              <img src={ResolveImage(API_URL + event?.user?.imageUrl, 'profile')} alt='Organizer' style={{ width: '100px', height: '100px', borderRadius: '10px' }} />
+              <img src={resolveImage(API_URL + event?.user?.imageUrl, 'profile')} alt='Organizer' style={{ width: '100px', height: '100px', borderRadius: '10px' }} />
               <p className='mt-2'><CgProfile /> {event?.user?.companyName}</p>
               {event?.user?.contactEmail?.length > 3 && (
                 <p><MdEmail /> {event.user.contactEmail}</p>

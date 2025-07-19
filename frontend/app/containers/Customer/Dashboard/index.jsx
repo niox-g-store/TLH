@@ -3,23 +3,25 @@ import { connect } from 'react-redux';
 import actions from '../../../actions';
 import FadeSlider from '../../../components/store/FadeSliderTwo';
 import { API_URL } from '../../../constants';
-import ResolveImage from '../../../components/store/ResolveImage';
+import resolveImage from '../../../components/store/ResolveImage';
 import { formatReadableDate } from '../../../components/store/Card/functions';
 import { Link } from 'react-router-dom';
 import Button from '../../../components/Common/HtmlTags/Button';
 import LoadingIndicator from '../../../components/store/LoadingIndicator';
+import { IoLocationOutline } from 'react-icons/io5';
+import { LuCalendarDays } from 'react-icons/lu';
 
-const CustomerDashboardHelper = (props) => {
+const CustomerDashboardForm = (props) => {
   let { events = [], isLoading, isLightMode, guestEvents, myEvents } = props;
-  isLightMode = false;
-  if (isLoading) {
-    return <LoadingIndicator isLightMode={isLightMode} />;
-  }
-
   const latestEvents = events.slice(0, 8);
   const gridEvents = events.slice(0, 6);
   const gridMyEvents = myEvents.slice(0, 6);
   const gridGuestEvents = guestEvents.slice(0, 6);
+
+  isLightMode = false;
+  if (isLoading) {
+    return <LoadingIndicator />;
+  }
 
   return (
     <div data-aos="fade-up" className='container-lg px-4 d-flex flex-column mb-custom-5em'>
@@ -48,7 +50,7 @@ const CustomerDashboardHelper = (props) => {
                   <Link to={`/event/${event.slug}`}>
                     <div className="event-slide">
                       <img
-                        src={ResolveImage(`${API_URL}${event.imageUrls?.[0]}` || '')}
+                        src={resolveImage(`${API_URL}${event.imageUrls?.[0]}` || '')}
                         alt={event.name}
                         className="slider-event-image"
                       />
@@ -79,16 +81,23 @@ const CustomerDashboardHelper = (props) => {
               <Link data-aos="fade-up" key={index} to={`/event/${event.slug}`} className="grid-event-card">
                 <div className="grid-event-image">
                   <img
-                    src={ResolveImage(`${API_URL}${event.imageUrls?.[0]}` || '')}
+                    src={resolveImage(`${API_URL}${event.imageUrls?.[0]}` || '')}
                     alt={event.name}
                   />
                 </div>
-                <div className="grid-event-content">
+                <div className="d-flex flex-column grid-event-content">
                   <h4 className="grid-event-title">{event.name}</h4>
                   <p className="grid-event-date">
+                  <span className='event-view-icon'><LuCalendarDays size={20} color='white'/></span>
                     {formatReadableDate(event.startDate).day}
                   </p>
-                  <p className="grid-event-location">{event.location}</p>
+                  <p className="grid-event-location">
+                  <span className='event-view-icon'><IoLocationOutline size={20} color='white'/></span>
+                    {event.location}
+                  </p>
+                  <div className='view-event align-self-center'>
+                    <Button type={"last"} text={"View event"} />
+                  </div>
                 </div>
               </Link>
             ))}
@@ -116,16 +125,23 @@ const CustomerDashboardHelper = (props) => {
         <Link data-aos="fade-up" key={index} to={`/event/${event.slug}`} className="grid-event-card">
           <div className="grid-event-image">
             <img
-              src={ResolveImage(`${API_URL}${event.imageUrls?.[0]}` || '')}
+              src={resolveImage(`${API_URL}${event.imageUrls?.[0]}` || '')}
               alt={event.name}
             />
           </div>
-          <div className="grid-event-content">
-            <h4 className="grid-event-title">{event.name}</h4>
-            <p className="grid-event-date">
-              {formatReadableDate(event.startDate).day}
-            </p>
-            <p className="grid-event-location">{event.location}</p>
+          <div className="d-flex flex-column grid-event-content">
+                  <h4 className="grid-event-title">{event.name}</h4>
+                  <p className="grid-event-date">
+                  <span className='event-view-icon'><LuCalendarDays size={20} color='white'/></span>
+                    {formatReadableDate(event.startDate).day}
+                  </p>
+                  <p className="grid-event-location">
+                  <span className='event-view-icon'><IoLocationOutline size={20} color='white'/></span>
+                    {event.location}
+                  </p>
+                  <div className='view-event align-self-center'>
+                    <Button type={"last"} text={"View event"} />
+                  </div>
           </div>
         </Link>
       ))}
@@ -144,16 +160,23 @@ const CustomerDashboardHelper = (props) => {
         <Link data-aos="fade-up" key={index} to={`/event/${event.slug}`} className="grid-event-card">
           <div className="grid-event-image">
             <img
-              src={ResolveImage(`${API_URL}${event.imageUrls?.[0]}` || '')}
+              src={resolveImage(`${API_URL}${event.imageUrls?.[0]}` || '')}
               alt={event.name}
             />
           </div>
-          <div className="grid-event-content">
-            <h4 className="grid-event-title">{event.name}</h4>
-            <p className="grid-event-date">
-              {formatReadableDate(event.startDate).day}
-            </p>
-            <p className="grid-event-location">{event.location}</p>
+          <div className="d-flex flex-column grid-event-content">
+                  <h4 className="grid-event-title">{event.name}</h4>
+                  <p className="grid-event-date">
+                  <span className='event-view-icon'><LuCalendarDays size={20} color='white'/></span>
+                    {formatReadableDate(event.startDate).day}
+                  </p>
+                  <p className="grid-event-location">
+                  <span className='event-view-icon'><IoLocationOutline size={20} color='white'/></span>
+                    {event.location}
+                  </p>
+                  <div className='view-event align-self-center'>
+                    <Button type={"last"} text={"View event"} />
+                  </div>
           </div>
         </Link>
       ))}
@@ -180,7 +203,7 @@ class CustomerDashboard extends React.PureComponent {
   }
 
   render() {
-    return <CustomerDashboardHelper {...this.props} />;
+    return <CustomerDashboardForm {...this.props} />;
   }
 }
 

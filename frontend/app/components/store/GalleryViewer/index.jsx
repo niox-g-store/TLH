@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { FaTimes, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import './style.css';
 import { API_URL } from '../../../constants';
-import ResolveImage from '../ResolveImage';
+import resolveImage from '../ResolveImage';
 import { formatReadableDate } from '../Card/functions';
 import VideoDevice from '../../Common/VideoDevice';
 import VideoOverlay from '../../Common/VideoOverlay';
@@ -11,14 +11,15 @@ import { FaRegEye } from "react-icons/fa";
 
 const GalleryViewer = (props) => {
   const { gallery } = props;
+  const controlTimeoutRef = useRef(null); // Ref to store the timeout ID
+  const lightboxRef = useRef(null);
+  const touchStartX = useRef(0);
+  
   const { bannerUrl, media } = gallery;
   const bannerImage = bannerUrl;
   const [selectedMediaIndex, setSelectedMediaIndex] = useState(null);
   const [showControls, setShowControls] = useState(true); // New state for controls visibility
-  const controlTimeoutRef = useRef(null); // Ref to store the timeout ID
 
-  const lightboxRef = useRef(null);
-  const touchStartX = useRef(0);
 
   // Function to reset the control hide timer
   const resetControlTimeout = useCallback(() => {
@@ -104,7 +105,7 @@ const GalleryViewer = (props) => {
       <div className="gallery-banner shadow-lg">
         {bannerImage && (
           <img
-            src={ResolveImage(API_URL + bannerImage)}
+            src={resolveImage(API_URL + bannerImage)}
             alt="Gallery Banner"
             className="object-cover w-full h-full"
             loading="lazy"
@@ -138,7 +139,7 @@ const GalleryViewer = (props) => {
               <div className="image-placeholder-container">
                 {/* BlurhashCanvas was removed from your provided code, keeping it out */}
                 <img
-                  src={ResolveImage(API_URL + item.mediaUrl)}
+                  src={resolveImage(API_URL + item.mediaUrl)}
                   alt={`Gallery Image ${index + 1}`}
                   className="gallery-item-image"
                   loading="lazy"
@@ -188,14 +189,14 @@ const GalleryViewer = (props) => {
 
             {currentMedia.mediaType === 'image' && (
               <img
-                src={ResolveImage(API_URL + currentMedia.mediaUrl)}
+                src={resolveImage(API_URL + currentMedia.mediaUrl)}
                 alt={`Full Gallery Image ${selectedMediaIndex + 1}`}
                 className="lightbox-media"
               />
             )}
             {currentMedia.mediaType === 'video' && (
               <video
-                src={ResolveImage(API_URL + currentMedia.mediaUrl)}
+                src={resolveImage(API_URL + currentMedia.mediaUrl)}
                 // Remove 'controls' attribute from here, as we want custom controls
                 autoPlay
                 loop

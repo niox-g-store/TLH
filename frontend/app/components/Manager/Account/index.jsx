@@ -25,7 +25,7 @@ import Input from '../../Common/HtmlTags/Input';
 import Button from '../../Common/HtmlTags/Button';
 import AdvancedUpload from '../../store/AdanceFileUpload';
 import { API_URL } from '../../../constants';
-import ResolveImage from '../../store/ResolveImage';
+import resolveImage from '../../store/ResolveImage';
 import { useNavigate, Link } from 'react-router-dom';
 import { withRouter } from '../../../withRouter';
  
@@ -187,7 +187,7 @@ const ManagerAccountForm = (props) => {
         <CCardBody>
           <div style={{ width: 'fit-content' }} className='d-flex align-items-center justify-content-center mb-4'>
               <img
-                src={ResolveImage(API_URL + user?.imageUrl, 'profile')}
+                src={resolveImage(API_URL + user?.imageUrl, 'profile')}
                 alt="Profile"
                 style={{ width: 120, height: 120, borderRadius: '50%', objectFit: 'cover' }}
               />

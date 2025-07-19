@@ -1,7 +1,7 @@
 import "./style.css";
 import { getRegistrationStatus, formatDateRange, formatReadableDate } from "./functions";
 import { useNavigate } from "react-router-dom";
-import ResolveImage from "../ResolveImage";
+import resolveImage from "../ResolveImage";
 import { API_URL } from "../../../constants";
 import { Link } from "react-router-dom";
 import { IoLocationOutline } from "react-icons/io5";
@@ -11,11 +11,19 @@ import { RxLapTimer } from "react-icons/rx";
 const Card = ({ event, type = "event", product }) => {
   const navigate = useNavigate();
 
+  const formatPrice = (price) => {
+    return `₦${price.toLocaleString()}`;
+  };
+
+  const getDiscountedPrice = (price, discountPercentage) => {
+    return price - (price * (discountPercentage / 100));
+  };
+
   if (type === "gallery") {
     return (
       <div className="card-wrapper">
         <div className="card-body">
-          <img loading="lazy" src={ResolveImage(API_URL + event.bannerUrl)} alt={event.name} width={100} height={100} />
+          <img loading="lazy" src={resolveImage(API_URL + event.bannerUrl)} alt={event.name} width={100} height={100} />
           <h3 className="card-title">{event.name}</h3>
           <p className='event-date p-black'>
             <span className='event-view-icon-' style={{ paddingLeft: '0' }}><LuCalendarDays size={20} color='#9172EC'/></span>
@@ -36,14 +44,29 @@ const Card = ({ event, type = "event", product }) => {
       <div className="card-wrapper">
         <div className="card-body">
           <img
-          src={ResolveImage(`${API_URL}${product.imageUrls[0]}` || '')}
+          src={resolveImage(`${API_URL}${product.imageUrls[0]}` || '')}
           alt="Event"
           width={100}
           height={100}
           loading="lazy"
         />
-          <h3 className="card-title">{product.name}</h3>
-          <p className='event-date p-black'>{product.price}</p>
+          <h3 className="card-title mt-2">{product.name}</h3>
+          <div className="product-pricing mt-3">
+              {product.discountPrice > 0 ? (
+                <div className="price-with-discount">
+                  <span className="original-price">
+                    {formatPrice(product.price)}
+                  </span>
+                  <span className="discounted-price">
+                    {formatPrice(getDiscountedPrice(product.price, product.discountPrice))}
+                  </span>
+                </div>
+              ) : (
+                <span className="regular-price p-black">
+                  {formatPrice(product.price)}
+                </span>
+              )}
+            </div>
         </div>
         <button
           className="card-button"
@@ -62,7 +85,7 @@ const Card = ({ event, type = "event", product }) => {
     <div className="card-wrapper">
       <div className="card-body">
         <img
-          src={ResolveImage(`${API_URL}${event.imageUrls[0]}` || '')}
+          src={resolveImage(`${API_URL}${event.imageUrls[0]}` || '')}
           alt="Event"
           width={100}
           height={100}

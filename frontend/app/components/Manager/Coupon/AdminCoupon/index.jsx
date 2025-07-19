@@ -13,7 +13,7 @@ import {
   CPaginationItem
 } from '@coreui/react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import ResolveImage from '../../../store/ResolveImage';
+import resolveImage from '../../../store/ResolveImage';
 import { GoBack } from '../../../../containers/goBack/inedx';
 import { withRouter } from '../../../../withRouter';
 import { connect } from 'react-redux';
@@ -85,7 +85,7 @@ const AdminCouponHelper = (props) => {
             <Link to={`/dashboard/coupons/edit/${coupon._id}`}>
               <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}>
                 <CImage
-                  src={ResolveImage(coupon.image, 'coupon')}
+                  src={resolveImage(coupon.image, 'coupon')}
                   alt={coupon.event?.name || 'Coupon'}
                   style={{ width: '40%', objectFit: 'cover' }}
                 />

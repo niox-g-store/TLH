@@ -18,7 +18,7 @@ const CartViewer = (props) => {
   const {
     isOpen, 
       tickets,
-      items,
+      products,
       total,
       loading,
       toggleCart, 
@@ -46,7 +46,7 @@ const CartViewer = (props) => {
   } = props;
   const navigate = useNavigate();
 
-  const allItems = [...tickets, ...items];
+  const allItems = [...tickets, ...products];
 
   const calculateTotal = () => {
     return allItems.reduce((total, item) => {
@@ -62,10 +62,10 @@ const CartViewer = (props) => {
     }, 0);
   };
 
-  const handleQuantityChange = (ticketId, newQuantity) => {
+  const handleQuantityChange = (itemId, newQuantity) => {
     if (newQuantity < 1) return;
     
-    if (items.find(item => item.ticketId === itemId)) {
+    if (allItems.find(item => item.ticketId === itemId)) {
       updateCartItem(itemId, { quantity: newQuantity });
     } else {
       // Handle product quantity update
@@ -80,7 +80,7 @@ const CartViewer = (props) => {
     return (
       <>
         {/* Cart Icon */}
-        <div className={`cart-icon ${items.length > 0 ? 'has-items' : ''}`} onClick={toggleCart}>
+        <div className={`cart-icon ${allItems.length > 0 ? 'has-items' : ''}`} onClick={toggleCart}>
           <FaShoppingCart size={24} />
           {allItems.length > 0 && (
             <span className="cart-count">{allItems.reduce((total, item) => total + item.quantity, 0)}</span>
@@ -269,7 +269,7 @@ const mapStateToProps = (state) => {
     authenticated: state.authentication.authenticated,
     isOpen: state.cart.isOpen,
     tickets: state.cart.tickets,
-    items: state.cart.items,
+    products: state.cart.products,
     total: state.cart.total,
     loading: state.cart.loading,
     error: state.cart.error,

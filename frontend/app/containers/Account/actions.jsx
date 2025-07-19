@@ -184,6 +184,7 @@ export const updateProfile = (navigate) => {
 
       dispatch({ type: FETCH_PROFILE, payload: response.data.user });
       dispatch(showNotification('success', successfulOptions.title));
+      navigate(0)
     } catch (error) {
       handleError(error, dispatch);
     }

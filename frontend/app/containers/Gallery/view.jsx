@@ -5,7 +5,6 @@ import actions from '../../actions';
 import { connect } from 'react-redux';
 import FadeSlider from '../../components/store/FadeSlider';
 import { API_URL } from '../../constants';
-import ResolveImage from '../../components/store/ResolveImage'; // Assuming this handles relative paths
 import { formatReadableDate } from '../../components/store/Card/functions';
 import Page404 from '../Page404';
 import LoadingIndicator from '../../components/store/LoadingIndicator';

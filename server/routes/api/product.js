@@ -80,7 +80,7 @@ router.get(
       const product = await Product.findById(productId);
 
       if (!product) {
-        return res.status(404).json({ error: 'Product not found.' });
+        return res.status(400).json({ error: 'Product not found.' });
       }
 
       return res.status(200).json({ product });
@@ -120,7 +120,12 @@ router.post(
         return res.status(400).json({ error: 'At least one image file is required.' });
       }
 
-      const existingProduct = await Product.findOne({ name });
+      const normalizedName = name.trim().toLowerCase();
+
+      const existingProduct = await Product.findOne({
+        // Compare case-insensitively using a regex
+        name: { $regex: `^${normalizedName}$`, $options: 'i' }
+      });
       if (existingProduct) {
         files.forEach(file => {
           deleteFilesFromPath([`/uploads/products/${file.filename}`]);
@@ -165,7 +170,7 @@ router.put(
   async (req, res) => {
     try {
       const productId = req.params.id;
-      const {
+      let {
         name,
         description,
         price,
@@ -175,12 +180,13 @@ router.put(
         isActive,
         removeImage
       } = req.body;
+      if (!Array.isArray(removeImage)) { removeImage = Array(removeImage) }
 
       const files = req.files;
 
       const product = await Product.findById(productId);
       if (!product) {
-        return res.status(404).json({ error: 'Product not found.' });
+        return res.status(400).json({ error: 'Product not found.' });
       }
 
       // Update product fields
@@ -193,7 +199,7 @@ router.put(
       product.isActive = isActive !== undefined ? isActive : product.isActive;
 
       // Handle image removal
-      if (removeImage && Array.isArray(removeImage)) {
+      if (!removeImage.includes(undefined) && Array.isArray(removeImage)) {
         const normalizedPaths = removeImage.map(url => {
           const parts = url.split('/api/');
           return '/' + parts[1] || url;

@@ -8,7 +8,7 @@ import { CCard, CCardBody, CCardTitle, CCardText, CBadge, CButton, CImage } from
 import LoadingIndicator from '../../../store/LoadingIndicator';
 import Button from '../../../Common/HtmlTags/Button';
 import { formatDate } from '../../../../utils/formatDate';
-import ResolveImage from '../../../store/ResolveImage';
+import resolveImage from '../../../store/ResolveImage';
 import { API_URL } from '../../../../constants';
 import { GoBack } from '../../../../containers/goBack/inedx';
 
@@ -40,7 +40,7 @@ const OrganizerViewer = (props) => {
     {organizer?.user?.imageUrl && (
       <div className='mb-3 text-center'>
         <CImage
-          src={ResolveImage(API_URL + organizer.user.imageUrl, 'profile')}
+          src={resolveImage(API_URL + organizer.user.imageUrl, 'profile')}
           style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '50%' }}
         />
       </div>
@@ -96,7 +96,7 @@ const OrganizerViewer = (props) => {
                     <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'}`}>
                       <div className='d-flex admin-view-organizer'>
                         <CImage
-                          src={ResolveImage(API_URL + (ev.imageUrls?.[0] || ''))}
+                          src={resolveImage(API_URL + (ev.imageUrls?.[0] || ''))}
                           alt={ev.name}
                           style={{ width: '40%', objectFit: 'cover', height: '100%' }}
                         />

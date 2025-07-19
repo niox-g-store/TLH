@@ -159,21 +159,17 @@ const CartSchema = new Schema({
 CartSchema.pre('save', function (next) {
   this.updatedAt = new Date();
 
-  // Calculate total
+  // Calculate tickets total
   let total = 0;
-  if (this.items && this.items.length > 0) {
-    total = this.items.reduce((sum, item) => {
+  if (this.tickets && this.tickets.length > 0) {
+    total = this.tickets.reduce((sum, item) => {
       let itemPrice;
-      if (item.type === 'product') {
-        itemPrice = item.finalPrice;
-      } else {
-        itemPrice = item.discount && item.discountPrice ? item.discountPrice : item.price;
-      }
+      itemPrice = item.discount && item.discountPrice ? item.discountPrice : item.price;
       return sum + (itemPrice * item.quantity);
     }, 0);
   }
   // Products total
-  if (this.products?.length > 0) {
+  if (this.products && this.products?.length > 0) {
     total += this.products.reduce((sum, product) => {
       return sum + (product.finalPrice * product.quantity);
     }, 0);

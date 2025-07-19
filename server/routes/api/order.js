@@ -36,7 +36,7 @@ const assignQrCode = async (order, cart) => {
     }
 
     // Only process ticket items for QR codes
-    const ticketItems = cart.items.filter(item => item.type !== 'product');
+    const ticketItems = cart.tickets.filter(item => item.type !== 'product');
     
     for (const ticketItem of ticketItems) {
       const { coupon,
@@ -204,7 +204,7 @@ router.post('/add', async (req, res) => {
       address: address || null,
       products: products || [],
       coupon: coupon ? coupon.couponId : null,
-      tickets,
+      tickets: tickets || [],
       finalAmount,
       discountAmount: discountPrice || 0,
       amountBeforeDiscount,
@@ -539,7 +539,6 @@ router.get(
     return res.status(200).json({ order, invoice });
 
   } catch (error) {
-    console.log(error)
     return res.status(400).json({
       error: 'Your request could not be processed. Please try again.'
     });
@@ -548,8 +547,9 @@ router.get(
 
 router.post('/invoice-download', auth, async (req, res) => {
   try {
+    const { product } = req.body;
     const invoice = req.body.invoice;
-    const pdfBuffer = await generateInvoice(invoice, true);
+    const pdfBuffer = await generateInvoice(invoice);
 
     res.set({
       'Content-Type': 'application/pdf',
@@ -558,6 +558,7 @@ router.post('/invoice-download', auth, async (req, res) => {
     });
     return res.send(pdfBuffer);
   } catch (error) {
+    console.log(error)
     res.status(400).json({ message: 'Failed to generate invoice.' });
   }
 });

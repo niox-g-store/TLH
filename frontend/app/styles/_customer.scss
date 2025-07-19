@@ -88,13 +88,15 @@
                         font-weight: 600;
                         margin-bottom: 0.5rem;
                         color: black;
+                        //color: var(--primary_color);
                     }
 
                     .grid-event-date,
                     .grid-event-location {
                         font-size: 0.9rem;
                         color: black;
-                        margin-bottom: 0.25rem;
+                        //color: var(--primary_color);
+                        margin: 1rem 0rem;
                     }
                 }
             }

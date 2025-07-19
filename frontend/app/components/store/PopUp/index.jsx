@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import './style.css';
 import { API_URL } from '../../../constants';
-import ResolveImage from '../ResolveImage';
+import resolveImage from '../ResolveImage';
 import CountdownTimer from '../CountDownTimer';
 import { Link } from 'react-router-dom';
 import RowCarousel from '../RowCarousel';
@@ -28,7 +28,7 @@ const PopupComponent = ({ data, type }) => {
               <div style={{ height: '13em', width: '100%' }}>
                 <Link to={`/event/${item.slug}`}>
                   <div
-                    style={{background: `url(${ResolveImage(API_URL + item.imageUrls[0])})`}}
+                    style={{background: `url(${resolveImage(API_URL + item.imageUrls[0])})`}}
                     alt={index}
                     className="popup-image"
                   />

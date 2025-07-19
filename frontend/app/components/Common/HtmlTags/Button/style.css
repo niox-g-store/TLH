@@ -41,3 +41,26 @@
     border-radius: 10px;
     cursor: pointer;
 }
+
+.button-container .last:hover {
+  background-color: var(--primary_color);
+  color: white;
+}
+
+.button-container .last.closed {
+  padding: 15px 20px;
+  margin: 10px 0 0 0;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  color: gray;
+}
+
+.button-container .last.soon {
+  padding: 15px 20px;
+  margin: 10px 0 0 0;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  color: var(--primary_color);
+}

@@ -59,10 +59,13 @@ export const setTwoFaUser = (id, rememberMe) => {
 }
 
 export const twoFaLogin = (code) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     dispatch({ type: SET_LOGIN_LOADING, payload: true });
     try {
       const { id, rememberMe } = getState().login.twoFaUser;
+      if (code.length > 6 || code.length < 6) {
+        return dispatch(showNotification('error', 'Invalid code'))
+      }
       const response = await axios.post(`${API_URL}/auth/confirm-twofa`, { code, id, rememberMe });
       const userid = response.data.user.id
       if (response.data.user.banned) {
@@ -93,6 +96,7 @@ export const twoFaLogin = (code) => {
 export const login = () => {
   return async (dispatch, getState) => {
     let user = getState().login.loginFormData;
+    const rememberMe = getState().login.rememberMe
 
     const rules = {
       email: 'required',
@@ -108,19 +112,23 @@ export const login = () => {
     if (!isValid) {
       return dispatch({ type: SET_LOGIN_FORM_ERRORS, payload: errors });
     }
+    const data = {
+      ...user,
+      rememberMe
+    }
 
     dispatch({ type: SET_LOGIN_SUBMITTING, payload: true });
     dispatch({ type: SET_LOGIN_LOADING, payload: true });
 
     try {
-      const response = await axios.post(`${API_URL}/auth/login`, user);
+      const response = await axios.post(`${API_URL}/auth/login`, data);
       if (response?.data?.user?.banned || response?.data?.banned) {
         dispatch(showNotification('error', "Try again"));
         return
       }
 
       // two fa prompt
-      if (response.status === 201 && response.success === true) {
+      if (response.status === 201 && response.data.success === true) {
         dispatch(setTwoFaUser(response.data.id, response.data.rememberMe))
         return dispatch(twoFaPromptToggle(true));
       }
@@ -150,8 +158,12 @@ export const googleSignin = (credential) => {
     try {
       dispatch({ type: SET_LOGIN_SUBMITTING, payload: true });
       dispatch({ type: SET_LOGIN_LOADING, payload: true });
-                                     
-      const response = await axios.post(`${API_URL}/auth/google/signin`, credential);
+      const rememberMe = getState().login.rememberMe
+      const data = {
+        ...credential,
+        rememberMe
+      }
+      const response = await axios.post(`${API_URL}/auth/google/signin`, data);
       const userid = response.data.user.id
       localStorage.setItem('token', response.data.token);
 

@@ -35,7 +35,7 @@ const UserHeaderHelper = (props) => {
                 </ul>
             </div>
 
-              <div className="buttons header-lg-buttons">
+              <div style={{ flex: '0 0 12%' }} className="buttons header-lg-buttons">
                 <div className="logout-button">
                   <Link to="/" className="button " onClick={doLogout}>
                     Logout

@@ -21,6 +21,8 @@ import {
   SET_ADVANCED_FILTERS,
   RESET_ADVANCED_FILTERS,
   PRODUCT_SLUG_CHANGED,
+
+  PRODUCT_IMAGE_REMOVE,
 } from './constants';
 
 const initialState = {
@@ -54,11 +56,17 @@ const initialState = {
     order: 0, // 0: newest first, 1: price high to low, 2: price low to high
     page: 1,
     limit: 12
-  }
+  },
+  imageToRemove: []
 };
 
 const productReducer = (state = initialState, action) => {
   switch (action.type) {
+    case PRODUCT_IMAGE_REMOVE:
+      return {
+        ...state,
+        imageToRemove: [...state.imageToRemove, action.payload]
+      }
     case PRODUCT_SLUG_CHANGED:
       return {
         ...state,
@@ -155,7 +163,8 @@ const productReducer = (state = initialState, action) => {
           _id: ''
         },
         formErrors: {},
-        editFormErrors: {}
+        editFormErrors: {},
+        imageToRemove: []
       };
     case SET_ADVANCED_FILTERS:
       return {

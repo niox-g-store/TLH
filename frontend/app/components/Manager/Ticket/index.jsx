@@ -12,7 +12,7 @@ import {
   CPaginationItem
 } from '@coreui/react';
 import Button from '../../Common/HtmlTags/Button';
-import ResolveImage from '../../store/ResolveImage';
+import resolveImage from '../../store/ResolveImage';
 import GetTicketPrice from '../../store/GetTicketPricing';
 import { ROLES } from '../../../constants';
 import { useNavigate } from 'react-router-dom';
@@ -120,7 +120,7 @@ export const ManagerTicketHelper = (props) => {
             <Link to={`/dashboard/tickets/edit/${ticket._id}`}>
               <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden card-for-mobile`}>
                 <CImage
-                  src={ResolveImage(ticket.image, 'ticket')}
+                  src={resolveImage(ticket.image, 'ticket')}
                   alt={ticket.type}
                   style={{ width: '40%', objectFit: 'cover' }}
                 />

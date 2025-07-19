@@ -45,11 +45,10 @@ router.get('/my-user-events', auth, async (req, res) => {
 
     const events = await Event.find({
       registeredAttendees: userId
-    });
+    }).sort('-createdAt');
 
-    res.status(200).json({ events }).sort('-createdAt');
+    res.status(200).json({ events });
   } catch (error) {
-    console.error('Error fetching my events:', error);
     res.status(400).json({ message: 'Server Error' });
   }
 });

@@ -137,6 +137,7 @@ const EditProductForm = (props) => {
               onFilesChange={(files) => productEditChange('image', files)}
               limit={5}
               vLimit={0}
+              imageLimit={10 * 1024 * 1024}
             />
             
             <h5 style={{ paddingTop: '1em' }}>Current product images</h5>
@@ -160,8 +161,8 @@ const EditProductForm = (props) => {
         </Row>
       </form>
 
-      <Row>
-        <div className='edit-product-actions mt-3'>
+      <Row style={{ justifyContent: 'center' }}>
+        <div style={{ gap: '2em' }} className='edit-product-actions mt-3 d-flex'>
           <Button onClick={handleSubmit} style={{ padding: '10px 20px' }} text='Update Product' />
           <Button
             onClick={() => deleteProduct(product._id, navigate)}

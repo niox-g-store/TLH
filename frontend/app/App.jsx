@@ -65,7 +65,9 @@ const App = (props) => {
                        '/order', '/forgot-password',
                        '/login', '/signup',
                        '/organizer-signup',
-                       '/reset-password'
+                       '/reset-password',
+                       '/shop',
+                       '/product'
   ]
   const showHeader = (USER.role === ROLES.Member ||
                             !hideHeader.some(path => location.pathname.startsWith(path))
@@ -114,7 +116,6 @@ const App = (props) => {
 }
 
 const mapStateToProps = (state) => {
-  console.log(state)
   return {
     user: state.account.user
   };

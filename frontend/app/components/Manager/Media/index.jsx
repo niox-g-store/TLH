@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'; // Import useRef
+import React, { useState } from 'react';
 import {
   CRow,
   CCol,
@@ -7,7 +7,7 @@ import {
   CImage,
 } from '@coreui/react';
 import Button from '../../Common/HtmlTags/Button';
-import ResolveImage from '../../store/ResolveImage';
+import resolveImage from '../../store/ResolveImage';
 import { API_URL } from '../../../constants';
 import { useNavigate, Link } from 'react-router-dom';
 import { formatDate } from '../../../utils/formatDate';
@@ -127,7 +127,7 @@ const ManagerMediaHelper = (props) => {
                       </div>
                     ) : (
                       <CImage
-                        src={ResolveImage(`${API_URL}${media.mediaUrl}`)}
+                        src={resolveImage(`${API_URL}${media.mediaUrl}`)}
                         alt={`Media ${media._id}`}
                         style={{ maxWidth: '100%', maxHeight: '200px', objectFit: 'contain' }}
                       />

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import actions from '../../actions';
 import LoadingIndicator from '../../components/store/LoadingIndicator';
 import Page404 from '../Page404';
-import ResolveImage from '../../components/store/ResolveImage';
+import resolveImage from '../../components/store/ResolveImage';
 import { API_URL } from '../../constants';
 import Button from '../../components/Common/HtmlTags/Button';
 import Switch from '../../components/store/Switch';
@@ -122,7 +122,7 @@ const ProductViewer = (props) => {
         <div className="product-details">
           <div className="product-image-section">
             <img 
-              src={ResolveImage(`${API_URL}${product.imageUrls?.[0]}` || '')}
+              src={resolveImage(`${API_URL}${product.imageUrls?.[0]}` || '')}
               alt={product.name}
               className="product-main-image"
             />
@@ -298,6 +298,11 @@ class ProductView extends React.PureComponent {
     if (slug) {
       this.props.fetchStoreProduct(slug);
     }
+  }
+
+  componentWillUnmount() {
+    this.props.vewingEventToggler(false);
+    this.props.resetProductSlugChange()
   }
 
   componentDidUpdate(prevProps) {

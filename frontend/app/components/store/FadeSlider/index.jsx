@@ -12,7 +12,7 @@ const FadeSlider = (props) => {
     slidesToScroll,
     fade,
     autoplay,
-    autoplaySpeed,
+    autoplaySpeed = 2000,
     children,
     nextArrow,
     prevArrow,

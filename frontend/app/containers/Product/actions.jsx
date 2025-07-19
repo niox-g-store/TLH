@@ -27,7 +27,10 @@ import {
   SET_ADVANCED_FILTERS,
   RESET_ADVANCED_FILTERS,
   PRODUCT_SLUG_CHANGED,
+
+  PRODUCT_IMAGE_REMOVE,
 } from './constants';
+import { vewingEventToggler } from '../Events/actions';
 
 export const productChange = (name, value) => {
   let formData = {};
@@ -75,6 +78,13 @@ export const resetAdvancedFilters = () => {
   };
 };
 
+export const productImageToRemove = (v) => {
+  return {
+    type: PRODUCT_IMAGE_REMOVE,
+    payload: v
+  }
+}
+
 export const filterProducts = (filterType, value) => {
   return async (dispatch, getState) => {
     try {
@@ -102,9 +112,17 @@ export const filterProducts = (filterType, value) => {
   };
 };
 
+export const resetProductSlugChange = () => {
+  return {
+    type: PRODUCT_SLUG_CHANGED,
+    paylaod: false
+  }
+}
+
 // Fetch store product by slug
 export const fetchStoreProduct = (slug) => {
   return async (dispatch) => {
+    dispatch(vewingEventToggler(true))
     dispatch(setProductLoading(true));
     try {
       const response = await axios.get(`${API_URL}/product/item/${slug}`);
@@ -276,6 +294,7 @@ export const updateProduct = (navigate) => {
       };
 
       const product = getState().product.product;
+      const removeImage = getState().product.imageToRemove || [];
       
       const updatedProduct = {
         name: product.name,
@@ -286,7 +305,6 @@ export const updateProduct = (navigate) => {
         sku: product.sku,
         image: product.image || [],
         isActive: product.isActive,
-        removeImage: product.removeImage || []
       };
 
       const { isValid, errors } = allFieldsValidation(updatedProduct, rules, {
@@ -310,15 +328,14 @@ export const updateProduct = (navigate) => {
             for (const file of updatedProduct.image) {
               formData.append('images', file);
             }
-          } else if (key === 'removeImage') {
-            updatedProduct.removeImage.forEach((url) => {
-              formData.append('removeImage', url);
-            });
           } else {
             formData.set(key, updatedProduct[key]);
           }
         }
       }
+      removeImage.forEach((str) => {
+        formData.append('removeImage', str);
+      });
 
       const response = await axios.put(`${API_URL}/product/${product._id}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
@@ -352,35 +369,4 @@ export const deleteProduct = (id, navigate) => {
       handleError(error, dispatch, 'Error deleting product');
     }
   };
-};
-
-const productsFilterOrganizer = (filterType, value, state) => {
-  switch (filterType) {
-    case 'sorting':
-      return {
-        ...state,
-        order: value,
-        page: 1
-      };
-    case 'price':
-      return {
-        ...state,
-        min: value[0],
-        max: value[1],
-        page: 1
-      };
-    case 'rating':
-      return {
-        ...state,
-        rating: value,
-        page: 1
-      };
-    case 'pagination':
-      return {
-        ...state,
-        page: value
-      };
-    default:
-      return state;
-  }
 };

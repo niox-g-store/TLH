@@ -12,7 +12,7 @@ import {
   CPaginationItem
 } from '@coreui/react';
 import Button from '../../Common/HtmlTags/Button';
-import ResolveImage from '../../store/ResolveImage';
+import resolveImage from '../../store/ResolveImage';
 import { API_URL } from '../../../constants';
 import { useNavigate, Link } from 'react-router-dom';
 import Input from '../../Common/HtmlTags/Input';
@@ -22,7 +22,7 @@ import { connect } from 'react-redux';
 import ManagerPagination from '../Pagination';
 
 const ManagerProductHelper = (props) => {
-  const { isLightMode, products = [], fetchAllProducts } = props;
+  const { isLightMode, products = [] } = props;
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
@@ -88,18 +88,18 @@ const ManagerProductHelper = (props) => {
           {currentProducts.map((product, idx) => (
             <CCol md={6} key={idx}>
               <Link to={`/dashboard/products/edit/${product._id}`}>
-                <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}>
+                <CCard as={'div'} className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}>
                   <CImage
-                    src={ResolveImage(product.imageUrls && product.imageUrls[0] ? `${API_URL}${product.imageUrls[0]}` : '')}
+                    src={resolveImage(product.imageUrls && product.imageUrls[0] ? `${API_URL}${product.imageUrls[0]}` : '')}
                     alt={product.name}
                     style={{ width: '40%', objectFit: 'cover' }}
                   />
-                  <CCardBody>
+                  <CCardBody as={'div'}>
                     <CCardTitle className='mb-2'>{product.name}</CCardTitle>
                     <CBadge color={product.isActive ? 'success' : 'danger'} className='mb-2'>
                       {product.isActive ? 'Active' : 'Inactive'}
                     </CBadge>
-                    <CCardText className='mt-2'>
+                    <CCardText as={'div'} className='mt-2'>
                       <strong>SKU:</strong> {product.sku}<br />
                       <strong>Price:</strong> {formatPrice(product.price, product.discountPrice)}<br />
                       <strong>Quantity:</strong> {product.quantity}<br />
@@ -114,7 +114,6 @@ const ManagerProductHelper = (props) => {
       ) : (
         <div className={`text-center py-5 ${isLightMode ? 'p-black' : 'p-white'}`}>
           <h3>No products found</h3>
-          <p>Try adjusting your search criteria</p>
         </div>
       )}
 

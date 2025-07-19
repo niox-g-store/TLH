@@ -15,7 +15,7 @@ import LoadingIndicator from '../../../store/LoadingIndicator';
 import { GoBack } from '../../../../containers/goBack/inedx';
 import { withRouter } from '../../../../withRouter';
 import { connect } from 'react-redux';
-import ResolveImage from '../../../store/ResolveImage';
+import resolveImage from '../../../store/ResolveImage';
 import actions from '../../../../actions';
 import { formatDate } from '../../../../utils/formatDate';
 import TopSlideConfirmModal from '../../../store/ConfirmModal';
@@ -69,7 +69,7 @@ const OrderViewer = (props) => {
           <CCol>
             <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'}`}>
               <CImage
-                src={ResolveImage(API_URL + firstImage)}
+                src={resolveImage(API_URL + firstImage)}
                 alt='Event'
                 style={{ width: '100%', height: '300px', objectFit: 'cover' }}
               />

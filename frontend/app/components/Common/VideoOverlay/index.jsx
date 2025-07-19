@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import ResolveImage from '../../store/ResolveImage';
+import resolveImage from '../../store/ResolveImage';
 import { API_URL } from '../../../constants';
 import './style.css';
 
@@ -30,7 +30,7 @@ const VideoOverlay = ({ videoUrl }) => {
     <div className="video-overlay-container">
       <video
         ref={videoRef}
-        src={ResolveImage(API_URL + videoUrl)}
+        src={resolveImage(API_URL + videoUrl)}
         preload="metadata"
         className="gallery-item-video"
         muted

@@ -13,7 +13,7 @@ import {
 } from '@coreui/react';
 import { FaEye } from 'react-icons/fa';
 import Button from '../../Common/HtmlTags/Button';
-import ResolveImage from '../../store/ResolveImage';
+import resolveImage from '../../store/ResolveImage';
 import { ROLES, API_URL } from '../../../constants';
 import { useNavigate, Link } from 'react-router-dom';
 import { formatDate } from '../../../utils/formatDate';
@@ -54,7 +54,7 @@ const ManagerGalleryHelper = (props) => {
               <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white`}>
                 <CCardBody className='d-flex align-items-center'>
                   <CImage
-                    src={ResolveImage(mostViewedGallery.bannerUrl ? `${API_URL}${mostViewedGallery.bannerUrl}` : '')}
+                    src={resolveImage(mostViewedGallery.bannerUrl ? `${API_URL}${mostViewedGallery.bannerUrl}` : '')}
                     alt={mostViewedGallery.name}
                     style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px', marginRight: '1rem' }}
                   />
@@ -77,7 +77,7 @@ const ManagerGalleryHelper = (props) => {
               <Link to={`/dashboard/gallery/edit/${gallery._id}`} style={{ textDecoration: 'none' }}>
                 <CCard style={{ height: '95%' }} className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}>
                   <CImage
-                    src={ResolveImage(gallery.bannerUrl ? `${API_URL}${gallery.bannerUrl}` : '')}
+                    src={resolveImage(gallery.bannerUrl ? `${API_URL}${gallery.bannerUrl}` : '')}
                     alt={gallery.name}
                     style={{ width: '40%', objectFit: 'cover' }}
                   />

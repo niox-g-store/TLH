@@ -12,7 +12,7 @@ import {
   CPaginationItem,
 } from '@coreui/react';
 import { useState } from 'react';
-import ResolveImage from '../../store/ResolveImage';
+import resolveImage from '../../store/ResolveImage';
 import { ROLES, API_URL } from '../../../constants';
 import { useNavigate, Link } from 'react-router-dom';
 import { formatDate } from '../../../utils/formatDate';
@@ -78,7 +78,7 @@ const ManagerOrderList = (props) => {
       <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}>
       <div style={{ width: '40%' }}>
         <CImage
-          src={ResolveImage(API_URL + order?.events[0]?.imageUrls[0] || '')}
+          src={resolveImage(API_URL + order?.events[0]?.imageUrls[0] || '')}
           alt='Order Event'
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />

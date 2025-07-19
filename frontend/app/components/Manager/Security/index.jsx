@@ -28,9 +28,8 @@ const AccountSecurityForm = (props) => {
     isLoading, user, setupTwoFactor, secretKey,
     twoFactorFormError, setShow2FASetup, show2FASetup
   } = props;
-  if (user.role === ROLES.Member) { isLightMode = false }
-
   const [copied, setCopied] = useState(false);
+  if (user.role === ROLES.Member) { isLightMode = false }
 
   const handleSubmit = (e) => {
     e.preventDefault();

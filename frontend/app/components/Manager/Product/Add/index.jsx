@@ -130,6 +130,7 @@ const AddProductForm = (props) => {
               onFilesChange={(files) => productChange('image', files)}
               limit={5}
               vLimit={0}
+              imageLimit={10 * 1024 * 1024}
             />
           </Col>
 

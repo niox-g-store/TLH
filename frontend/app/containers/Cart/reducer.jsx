@@ -30,7 +30,7 @@ import { getSelectedTicketsFromStorage, saveSelectedTicketsToStorage } from '../
 const initialState = {
   isOpen: false,
   tickets: [],
-  items: [], // For products
+  products: [], // For products
   cartId: null,
   total: 0,
   loading: false,
@@ -118,13 +118,13 @@ const cartReducer = (state = initialState, action) => {
     case ADD_PRODUCT_TO_CART:
       return {
         ...state,
-        items: [...state.items, action.payload]
+        products: [...state.products, action.payload]
       };
     case REMOVE_FROM_CART:
       return {
         ...state,
         tickets: state.tickets.filter(item => item.ticketId !== action.payload),
-        items: state.items.filter(item => item.productId !== action.payload)
+        products: state.products.filter(item => item.productId !== action.payload)
       };
     case UPDATE_CART_ITEM:
       return {
@@ -134,7 +134,7 @@ const cartReducer = (state = initialState, action) => {
             ? { ...item, ...action.payload.updates }
             : item
         ),
-        items: state.items.map(item => 
+        products: state.products.map(item => 
           item.productId === action.payload.productId
             ? { ...item, ...action.payload.updates }
             : item
@@ -145,7 +145,7 @@ const cartReducer = (state = initialState, action) => {
       return {
         ...state,
         tickets: [],
-        items: [],
+        products: [],
         total: 0,
         cartId: null,
         selectedTickets: [],
@@ -165,7 +165,7 @@ const cartReducer = (state = initialState, action) => {
       return {
         ...state,
         tickets: action.payload.tickets || [],
-        items: action.payload.items || []
+        products: action.payload.products || []
       };
     case HANDLE_CART_TOTAL:
       return {

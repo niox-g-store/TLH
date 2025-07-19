@@ -246,7 +246,6 @@ router.put(
             const fullPath = path.join(process.cwd(), "/file_manager", mediaUrl);
             blurhash = await encodeImageToBlurhash(fullPath);
           } else if (mediaType === 'other') {
-            console.warn(`Unsupported media type uploaded: ${file.mimetype}. Skipping Blurhash.`);
             continue;
           }
           newMediaItems.push({ mediaUrl, mediaType, blurhash });
@@ -321,7 +320,6 @@ router.delete(
         message: 'Gallery deleted successfully!'
       });
     } catch (error) {
-      console.error(error);
       return res.status(400).json({
         error: 'Your request could not be processed. Please try again.'
       });

@@ -34,16 +34,17 @@ import {
   APPLY_COUPON_TO_CART
 } from './constants';
 import { ticketStatusChecker } from '../Ticket/actions';
+
 // Add product to cart
 export const addProductToCart = (item) => {
   return async (dispatch, getState) => {
     try {
       dispatch(setCartLoading(true));
       
-      const { items } = getState().cart;
+      const { products } = getState().cart;
       
       // Check if this product is already in the cart
-      const existingItem = items.find(cartItem => cartItem.productId === item.productId);
+      const existingItem = products.find(cartItem => cartItem.productId === item.productId);
       if (existingItem) {
         dispatch(showNotification('info', 'This product is already in your cart'));
         dispatch(toggleCart());
@@ -67,7 +68,7 @@ export const addProductToCart = (item) => {
           type: SET_CART_ITEMS,
           payload: {
             tickets: response.data.cart.tickets || [],
-            items: response.data.cart.items || []
+            products: response.data.cart.products || []
           }
         });
         
@@ -160,7 +161,7 @@ export const calculateCouponDiscount = (coupon) => {
     try {
       const state = getState();
       const cart = state.cart;
-      const cartItems = [...cart.items];
+      const cartItems = [...cart.tickets];
 
       let originalTotal = 0;
       let discountAmount = 0;
@@ -317,7 +318,10 @@ export const initializeCart = () => {
         if (response.data.cart) {
           dispatch({
             type: SET_CART_ITEMS,
-            payload: response.data.cart.tickets || []
+            payload: { 
+              tickets: response.data.cart.tickets || [],
+              products: response.data.products || []
+            }
           });
           
           dispatch({
@@ -433,7 +437,7 @@ export const addToCart = (item) => {
           type: SET_CART_ITEMS,
           payload: {
             tickets: response.data.cart.tickets || [],
-            items: response.data.cart.items || []
+            products: response.data.cart.products || []
           }
         });
         
@@ -586,7 +590,7 @@ export const checkout = (navigate, guest=null) => {
       }
       const user = getState().account.user;
       const cart = getState().cart;
-      const cartItems = cart.items || [];
+      const cartItems = cart.tickets || [];
       const ticketIds = cartItems.map(item => item.ticketId);
       const eventIds = cartItems.map(item => item.eventId);
       const price = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -652,9 +656,7 @@ export const checkout = (navigate, guest=null) => {
               return;
             }
         }
-
       }
-
 
       const ps = await payStackHelper({
         cart: cartId,

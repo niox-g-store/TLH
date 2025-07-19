@@ -16,7 +16,7 @@ import {
   CPagination,
   CPaginationItem
 } from '@coreui/react';
-import ResolveImage from '../../../store/ResolveImage';
+import resolveImage from '../../../store/ResolveImage';
 import { ROLES, API_URL } from '../../../../constants';
 import { useNavigate, Link } from 'react-router-dom';
 import { formatDate } from '../../../../utils/formatDate';
@@ -103,7 +103,7 @@ const AdminEventView = (props) => {
               <Link to={`/dashboard/events/edit/${event._id}`}>
                 <CCard style={{ height: '95%' }} className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}>
                   <CImage
-                    src={ResolveImage(event.imageUrls && event.imageUrls[0] ? `${API_URL}${event.imageUrls[0]}` : '')}
+                    src={resolveImage(event.imageUrls && event.imageUrls[0] ? `${API_URL}${event.imageUrls[0]}` : '')}
                     alt={event.title}
                     style={{ width: '40%', objectFit: 'cover' }}
                   />
