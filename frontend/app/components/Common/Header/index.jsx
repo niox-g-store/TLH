@@ -19,6 +19,7 @@ const Header = (props) => {
     links,
     isViewingEvent
   } = props;
+  const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -34,10 +35,12 @@ const Header = (props) => {
     signOut();
     return <Navigate to="/login" replace />
   };
+  const headersList = ['/event/', '/product/', '/shop/', '/dashboard']
+  const showHeader = !headersList.some(path => location.pathname.startsWith(path))
 
   return (
     <>
-      <header className={`${scrolled ? "scrolled d-block" : "d-none"} ${isViewingEvent ? 'bg-black' : ''}`} data-aos={scrolled ?? "fade-down"} data-aos-delay={scrolled ?? "50"}>
+      <header className={`${scrolled ? "scrolled d-block" : !showHeader ? 'd-block' : 'd-none'} ${isViewingEvent ? 'bg-black' : ''}`} data-aos={scrolled ?? "fade-down"} data-aos-delay={scrolled ?? "50"}>
         <div className="container">
           <div className="navigation">
             <div className="logo">
