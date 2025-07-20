@@ -2,7 +2,6 @@ import React from 'react';
 
 const HomeBanner = (props) => {
   const { media = "/uploads/videos/purple.mp4" } = props;
-  console.log(media)
 
   /*const isVideo = (url) => {
     const videoExtensions = ['.mp4', '.webm', '.mov'];

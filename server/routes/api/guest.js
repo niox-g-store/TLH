@@ -44,7 +44,6 @@ router.post('/add', async (req, res) => {
       guest
     });
   } catch (error) {
-    console.log(error)
     return res.status(400).json({
       error: 'Could not create guest. Please try again.'
     });

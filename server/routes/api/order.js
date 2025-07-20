@@ -562,7 +562,6 @@ router.post('/invoice-download', auth, async (req, res) => {
     });
     return res.send(pdfBuffer);
   } catch (error) {
-    console.log(error)
     res.status(400).json({ message: 'Failed to generate invoice.' });
   }
 });

@@ -41,7 +41,6 @@ const ProductViewer = (props) => {
       deliveryFee: 0
     }
   })*/;
-  console.log(deliveryInfo)
 
   if (isLoading) {
     return <LoadingIndicator />;
