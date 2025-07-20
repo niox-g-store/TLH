@@ -25,11 +25,11 @@ const TwoFactorPrompt = ({ twoFaLogin, twoFaPromptToggle, twoFaPrmpt }) => {
   };
 
   return (
-    <CModal visible={twoFaPrmpt} onClose={() => twoFaPromptToggle(false)} centered>
+    <CModal className='d-flex flex-column w-100' style={{ justifyContent: 'center' }} visible={twoFaPrmpt} onClose={() => twoFaPromptToggle(false)}>
       <CModalHeader onClose={() => twoFaPromptToggle(false)}>
         <CModalTitle>Enter 2FA Code</CModalTitle>
       </CModalHeader>
-      <CModalBody>
+      <CModalBody className='w-100'>
         <CForm onSubmit={handleSubmit}>
           <CFormInput
             type="text"

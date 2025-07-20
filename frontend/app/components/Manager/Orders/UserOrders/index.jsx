@@ -49,7 +49,7 @@ const ManagerOrderList = (props) => {
 
       <CRow className='gy-4'>
         {currentOrders.map((order, idx) => {
-          const { total } = getCartPriceSummary(order?.cart?.tickets)
+          const { total } = getCartPriceSummary(order?.cart?.tickets, order?.cart?.products)
           return (
           <CCol md={6} key={idx}>
             <Link to={`/dashboard/order/${order._id}`}>

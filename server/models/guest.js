@@ -14,12 +14,12 @@ const guestSchema = new mongoose.Schema({
   eventId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Event',
-    required: true
+    default: null
   },
   ticketId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Ticket',
-    required: true
+    default: null
   },
   checkedIn: {
     type: Boolean,

@@ -23,3 +23,11 @@
     }
 
 }
+
+.checkbox-wrapper {
+    display: flex;
+    gap: 1em;
+    input {
+        width: 1em !important;
+    }
+}

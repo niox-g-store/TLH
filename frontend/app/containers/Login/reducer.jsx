@@ -80,6 +80,11 @@ const loginReducer = (state = initialState, action) => {
           userName: '',
           password: '',
         },
+        rememberMe: false,
+        twoFaUser: {
+          id: '',
+          rememberMe: false
+        },
         formErrors: {},
         isLoading: false
       };

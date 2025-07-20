@@ -18,15 +18,15 @@ router.get('', auth, role.check(ROLES.Admin), async (req, res) => {
 // Create a new guest profile
 router.post('/add', async (req, res) => {
   try {
-    const { email, name, eventId, ticketId } = req.body;
-    
+    const { email, name, eventId, ticketId, isBuyingProduct = false } = req.body;
+
     if (!email) {
       return res.status(400).json({ error: 'No email provided' });
     }
     if (!name) {
         return res.status(40).json({ error: 'No email provided' })
     }
-    if (!eventId || !ticketId) {
+    if ((!eventId || !ticketId) && (isBuyingProduct === false)) {
         return res.status(400).json({ error: 'No event details provided' })
     }
 
@@ -44,6 +44,7 @@ router.post('/add', async (req, res) => {
       guest
     });
   } catch (error) {
+    console.log(error)
     return res.status(400).json({
       error: 'Could not create guest. Please try again.'
     });

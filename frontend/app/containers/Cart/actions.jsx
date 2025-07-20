@@ -31,7 +31,10 @@ import {
   ADD_PRODUCT_TO_CART,
   SHOW_GUEST_FORM,
   SET_CART_COUPON,
-  APPLY_COUPON_TO_CART
+  APPLY_COUPON_TO_CART,
+
+  SELECTED_PRODUCTS,
+  DELETE_SELECTED_PRODUCTS,
 } from './constants';
 import { ticketStatusChecker } from '../Ticket/actions';
 
@@ -64,6 +67,10 @@ export const addProductToCart = (item) => {
       }
       
       if (response.data.cart) {
+        dispatch({
+          type: SELECTED_PRODUCTS,
+          payload: item.productId
+        })
         dispatch({
           type: SET_CART_ITEMS,
           payload: {
@@ -279,7 +286,7 @@ export const applyCoupon = () => {
     try {
       const cart = getState().cart;
       const coupon = cart.coupon;
-      const cartItems = cart.items;
+      const cartItems = cart.tickets;
       if (coupon?.code?.length < 1) {
         return handleError({ message: 'Enter a valid coupon' }, dispatch)
       }
@@ -320,7 +327,7 @@ export const initializeCart = () => {
             type: SET_CART_ITEMS,
             payload: { 
               tickets: response.data.cart.tickets || [],
-              products: response.data.products || []
+              products: response.data.cart.products || []
             }
           });
           
@@ -345,7 +352,13 @@ export const addGuest = (navigate) => {
     try {
       const { name, email } = getState().cart.guestInfo;
       const cart = getState().cart;
-      const { eventId, ticketId, } = cart.items[0]
+      let eventId = null;
+      let ticketId = null;
+
+      if (cart?.tickets.length > 0) {
+        eventId = cart?.tickets[0].eventId
+        ticketId = cart?.tickets[0].ticketId
+      }
       const rules = {
         name: 'required',
         email: 'required',
@@ -353,8 +366,9 @@ export const addGuest = (navigate) => {
       const guestForm = {
         name,
         email,
-        eventId,
-        ticketId
+        eventId: eventId,
+        ticketId: ticketId,
+        isBuyingProduct: (eventId === null && ticketId === null) ? true : false
       }
       const { isValid, errors } = allFieldsValidation(guestForm, rules, {
        'required.name': 'Name is required.',
@@ -458,7 +472,7 @@ export const addToCart = (item) => {
 };
 
 // Remove item from cart
-export const removeFromCart = (ticketId) => {
+export const removeFromCart = (ticketId, productId) => {
   return async (dispatch, getState) => {
     try {
       dispatch(setCartLoading(true));
@@ -468,23 +482,36 @@ export const removeFromCart = (ticketId) => {
       if (!cartId) {
         throw new Error('No cart found');
       }
-      
-      const response = await axios.put(`${API_URL}/cart/${cartId}/remove`, { ticketId });
+      let response = null;
+      if (productId) {
+        response = await axios.put(`${API_URL}/cart/${cartId}/remove`, { productId });
+      } else {
+        response = await axios.put(`${API_URL}/cart/${cartId}/remove`, { ticketId });
+      }
       
       if (response.data.cart) {
-        if (response.data.cart.tickets.length === 0) {
-            dispatch(clearCart());
+        const ticketsLength = response.data.cart.tickets.length
+        const productLength = response.data.cart.products.length
+        if (ticketsLength && productLength) {
+          dispatch(clearCart());
+        }
+        if (ticketId) {
+          dispatch({
+            type: DELETE_SELECTED_TICKETS,
+            payload: ticketId
+          })
+        } else if (productId) {
+          dispatch({
+            type: DELETE_SELECTED_PRODUCTS,
+            payload: productId
+          })
         }
 
-        dispatch({
-          type: DELETE_SELECTED_TICKETS,
-          payload: ticketId
-        })
         dispatch({
           type: SET_CART_ITEMS,
           payload: {
             tickets: response.data.cart.tickets || [],
-            items: response.data.cart.items || []
+            products: response.data.cart.products || []
           }
         });
         
@@ -504,7 +531,7 @@ export const removeFromCart = (ticketId) => {
 };
 
 // Update cart item quantity
-export const updateCartItem = (ticketId, updates) => {
+export const updateCartItem = (ticketId, productId, updates) => {
   return async (dispatch, getState) => {
     try {
       dispatch(setCartLoading(true));
@@ -513,7 +540,7 @@ export const updateCartItem = (ticketId, updates) => {
       
       // If not authenticated, don't allow quantity changes
       if (!authenticated && updates.quantity > 1) {
-        dispatch(showNotification('info', 'Please sign in to increase ticket quantity'));
+        dispatch(showNotification('info', 'Please sign in to make changes to cart'));
         return;
       }
       
@@ -522,18 +549,26 @@ export const updateCartItem = (ticketId, updates) => {
       if (!cartId) {
         throw new Error('No cart found');
       }
+      let response = null;
+      if (productId) {
+        response = await axios.put(`${API_URL}/cart/${cartId}/update`, { 
+          productId,
+          updates 
+        });
+      } else {
       
-      const response = await axios.put(`${API_URL}/cart/${cartId}/update`, { 
-        ticketId, 
-        updates 
-      });
+       response = await axios.put(`${API_URL}/cart/${cartId}/update`, { 
+          ticketId, 
+          updates 
+        });
+      }
       
       if (response.data.cart) {
         dispatch({
           type: SET_CART_ITEMS,
           payload: {
             tickets: response.data.cart.tickets || [],
-            items: response.data.cart.items || []
+            products: response.data.cart.products || []
           }
         });
         
@@ -590,9 +625,10 @@ export const checkout = (navigate, guest=null) => {
       }
       const user = getState().account.user;
       const cart = getState().cart;
-      const cartItems = cart.tickets || [];
-      const ticketIds = cartItems.map(item => item.ticketId);
-      const eventIds = cartItems.map(item => item.eventId);
+      const cartItems = cart?.tickets || [];
+      const ticketIds = cartItems.map(item => item?.ticketId);
+      const eventIds = cartItems.map(item => item?.eventId);
+      const products = cart?.products || [];
       const price = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
       const discountPrice = cartItems.reduce((sum, item) => sum + item.discountAmount, 0);
       const { cartId, total } = cart
@@ -636,9 +672,10 @@ export const checkout = (navigate, guest=null) => {
           cart: cartId,
           user: { email: userEmail, name: user_name, _id: userId},
           guest: email && name && _id ? { email, name, _id } : null,
-          events: eventIds,
-          tickets: ticketIds,
+          events: eventIds || [],
+          tickets: ticketIds || [],
           finalAmount: total,
+          products,
           discountPrice: discountPrice,
           amountBeforeDiscount: price,
           billingEmail: email !== undefined || null ? email : userEmail,
@@ -662,9 +699,10 @@ export const checkout = (navigate, guest=null) => {
         cart: cartId,
         user: { email: userEmail, name: user_name, _id: userId},
         guest: { email, name, _id },
-        events: eventIds,
-        tickets: ticketIds,
+        events: eventIds || [],
+        tickets: ticketIds || [],
         finalAmount: total,
+        products,
         discountPrice: discountPrice,
         amountBeforeDiscount: price,
         coupon: appliedCoupon ? appliedCoupon[0] : null,

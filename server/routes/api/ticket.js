@@ -175,7 +175,7 @@ router.put(
           quantity,
           description,
           discount,
-          discountPrice
+          discountPrice: discount ? discountPrice : 0
         },
         { new: true }
       );

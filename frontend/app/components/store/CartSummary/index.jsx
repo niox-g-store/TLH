@@ -1,6 +1,15 @@
-export function getCartPriceSummary(tickets = []) {
+export function getCartPriceSummary(tickets = [], products=[]) {
   let subTotal = 0;
   let total = 0;
+
+
+  // calculate product first
+  products.forEach(product => {
+    const productPrice = product.price;
+    subTotal += productPrice * product.quantity;
+
+    total += productPrice * product.quantity;
+  })
 
   tickets.forEach(ticket => {
     const originalPrice = ticket.price || 0;
@@ -8,7 +17,7 @@ export function getCartPriceSummary(tickets = []) {
     const discountPrice = hasDiscount ? ticket.discountPrice : originalPrice;
 
     // Subtotal adds original price
-    subTotal += originalPrice;
+    subTotal += originalPrice * ticket.quantity;
 
     // Apply discount
     let finalPrice = discountPrice;

@@ -21,12 +21,8 @@ const orderSchema = new mongoose.Schema({
     city: {
       type: String
     },
-    state: {
-      type: String
-    },
-    country: {
-      type: String
-    },
+    island: { type: Boolean },
+    mainland: { type: Boolean },
   },
   phoneNumber: {
     type: String

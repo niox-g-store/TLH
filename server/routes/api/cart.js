@@ -222,13 +222,13 @@ router.put('/:cartId/remove', async (req, res) => {
 
     if (ticketId) {
       cart.tickets = cart.tickets.filter(
-        (ticket) => ticket._id.toString() !== ticketId
+        (ticket) => ticket.ticketId.toString() !== ticketId
       );
     }
 
     if (productId) {
       cart.products = cart.products.filter(
-        (product) => product._id.toString() !== productId
+        (product) => product.productId.toString() !== productId
       );
     }
 

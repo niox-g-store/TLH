@@ -22,10 +22,21 @@ import {
   SELECTED_TICKETS,
   DELETE_SELECTED_TICKETS,
   SET_CART_COUPON,
-  APPLY_COUPON_TO_CART
+  APPLY_COUPON_TO_CART,
+
+  SELECTED_PRODUCTS,
+  DELETE_SELECTED_PRODUCTS,
 } from './constants';
 
-import { getSelectedTicketsFromStorage, saveSelectedTicketsToStorage } from '../../utils/selectedTickets';
+import {
+  getSelectedTicketsFromStorage,
+  saveSelectedTicketsToStorage,
+ } from '../../utils/selectedTickets';
+
+ import {
+  getSelectedProductsFromStorage,
+  saveSelectedProductsToStorage
+ } from '../../utils/selectedProducts';
 
 const initialState = {
   isOpen: false,
@@ -35,6 +46,7 @@ const initialState = {
   total: 0,
   loading: false,
   selectedTickets: getSelectedTicketsFromStorage(),
+  selectedProducts: getSelectedProductsFromStorage(),
   error: null,
   guestInfo: {},
   showGuestForm: false,
@@ -95,6 +107,21 @@ const cartReducer = (state = initialState, action) => {
         selectedTickets: updated
       };
 
+    case DELETE_SELECTED_PRODUCTS:
+      const sUpdat = state.selectedProducts.filter(t => t !== action.payload);
+      saveSelectedProductsToStorage(sUpdat);
+      return {
+        ...state,
+        selectedProducts: sUpdat
+      };
+    case SELECTED_PRODUCTS:
+      const sUpdated = [action.payload, ...state.selectedProducts];
+      saveSelectedProductsToStorage(sUpdated);
+      return {
+        ...state,
+        selectedProducts: sUpdated
+      };
+
     case TOGGLE_CART:
       return {
         ...state,
@@ -142,6 +169,7 @@ const cartReducer = (state = initialState, action) => {
       };
     case CLEAR_CART:
       localStorage.removeItem('selectedTickets');
+      localStorage.removeItem('selectedProducts');
       return {
         ...state,
         tickets: [],
@@ -149,6 +177,7 @@ const cartReducer = (state = initialState, action) => {
         total: 0,
         cartId: null,
         selectedTickets: [],
+        selectedProducts: [],
         guestInfo: {},
         guestErrors: {},
         coupon: {

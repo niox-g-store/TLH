@@ -20,7 +20,7 @@ import Events from './containers/Events';
 import Gallery from './containers/Gallery';
 import GalleryView from './containers/Gallery/view';
 import Shop from './containers/Shop';
-import ProductView from './containers/Product/View';
+import ProductView from './containers/Product/view';
 import OrganizerSignUp from './containers/Organizer/SignUp';
 import Dashboard from './containers/Dashboard';
 import Page404 from './containers/Page404';
@@ -116,6 +116,7 @@ const App = (props) => {
 }
 
 const mapStateToProps = (state) => {
+  console.log(state)
   return {
     user: state.account.user
   };

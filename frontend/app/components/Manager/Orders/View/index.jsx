@@ -30,7 +30,7 @@ const OrderViewer = (props) => {
           invoice, downloadInvoice
         } = props;
   const navigate = useNavigate();
-  const { subTotal, total } = getCartPriceSummary(order?.cart?.tickets);
+  const { subTotal, total } = getCartPriceSummary(order?.cart?.tickets, order?.cart?.products);
 
   const isAdmin = user?.role === ROLES.Admin;
   const isOrganizer = user?.role === ROLES.Organizer;

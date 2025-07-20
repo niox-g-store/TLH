@@ -571,7 +571,7 @@ router.post('/register/google', async (req, res) => {
     // check if user email already exist
     const email = user.email.trim().toLowerCase()
     const existingEmail = await User.findOne({ email })
-    if (existingEmail.banned) {
+    if (existingEmail?.banned) {
       return res.status(400).json({ error: 'You cannot sign up at this time' })
     }    
     if (existingEmail) {
@@ -694,7 +694,7 @@ router.post('/google/signin', async (req, res) => {
     });
   } catch (eror) {
     return res.status(400).json({
-      error: "Error logging ing with google account"
+      error: "cannot login with google account at this time"
     })
   }
 });

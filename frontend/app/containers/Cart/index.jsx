@@ -42,7 +42,7 @@ const CartViewer = (props) => {
       amountBeforeDiscount,
       appliedCoupon,
       ticketDiscounts,
-      couponValidTickets
+      couponValidTickets,
   } = props;
   const navigate = useNavigate();
 
@@ -64,12 +64,12 @@ const CartViewer = (props) => {
 
   const handleQuantityChange = (itemId, newQuantity) => {
     if (newQuantity < 1) return;
-    
+
     if (allItems.find(item => item.ticketId === itemId)) {
-      updateCartItem(itemId, { quantity: newQuantity });
+      updateCartItem(itemId, null, { quantity: newQuantity });
     } else {
       // Handle product quantity update
-      updateCartItem(itemId, { quantity: newQuantity });
+      updateCartItem(null, itemId, { quantity: newQuantity });
     }
   };
 
@@ -110,11 +110,25 @@ const CartViewer = (props) => {
                     <div className="item-details">
                       <h4>{item.eventName || item.productName}</h4>
                       <p className="ticket-type">{item.ticketType || 'Product'}</p>
-                      {item.type === 'product' && (
-                        <p className="delivery-info">
-                          {item.needsDelivery ? '🚚 Delivery' : '📍 Pickup at event'}
-                        </p>
-                      )}
+                      {item.type === 'product' && 
+                        item?.needsDelivery ?
+                          (
+                            <p className="delivery-info">
+                              🚚 Delivery
+                              <p className='mb-0 mt-0'>{item.deliveryInfo.name}</p>
+                              <p className='mb-0 mt-0'>{item.deliveryInfo.email}</p>
+                              <p className='mb-0 mt-0'>{item.deliveryInfo.phoneNumber}</p>
+                              <p className='mb-0 mt-0'>{item.deliveryInfo.address.street}</p>
+                              <p className='mb-0 mt-0'>{item.deliveryInfo.address.city}</p>
+                              <p className='mb-0 mt-0'>{item.deliveryInfo.address.state}</p>
+                              <p className='mb-0 mt-0'>{item.deliveryInfo.address.island ? "Island" : "Mainland"}</p>
+                            </p>
+                          ) : (
+                            <p className="delivery-info">
+                              📍 Pickup at event
+                            </p>
+                          )
+                      }
                       <p className="ticket-price">
                         {item.type === 'product' ? (
                           item.discount ? (
@@ -154,7 +168,13 @@ const CartViewer = (props) => {
                       </div>
                       <button
                         className="remove-item" 
-                        onClick={() => removeFromCart(item.ticketId || item.productId)}
+                        onClick={() => {
+                          item.type === 'product' ?
+                            removeFromCart(null, item.productId)
+                          :
+                            removeFromCart(item.ticketId, null)
+                          }
+                        }
                       >
                         <FaTrash size={16} />
                       </button>

@@ -161,7 +161,7 @@ const newObjectId = async() => {
 
 router.post('/add', async (req, res) => {
   try {
-    const {
+    let {
       cart,
       guest,
       user,
@@ -178,6 +178,7 @@ router.post('/add', async (req, res) => {
       coupon
     } = req.body;
     const ID = await newObjectId();
+    products = products.map(i => i.productId)
 
     const cartDoc = await Cart.findById(cart);
     if (!cartDoc) {
@@ -426,6 +427,7 @@ router.get(
     // Base order query
     let orderDoc = await Order.findOne({ _id: orderId })
       .populate('events')
+      .populate('products')
       .populate({
         path: 'cart',
         populate: {
@@ -477,17 +479,19 @@ router.get(
         paymentStatus: paymentDetails?.data.status || "",
         paymentDate: paymentDetails?.data.paid_at || "",
         paymentCurrency: paymentDetails?.data.currency || "",
+        products: orderDoc?.products
       };
     }
 
     // === User Logic ===
-    else if (currentUser.role === ROLES.User) {
+    else if (currentUser.role === ROLES.Member) {
       if (orderDoc?.payStackId?.length > 0) { paymentDetails = await PaymentHandler(orderDoc?.payStackId); }
       order = {
         ...order,
         paymentStatus: paymentDetails?.data?.status || "",
         paymentDate: paymentDetails?.data?.paid_at || "",
         paymentCurrency: paymentDetails?.data?.currency || "",
+        products: orderDoc?.products || []
       };
     }
 

@@ -158,7 +158,7 @@ export const googleSignin = (credential) => {
     try {
       dispatch({ type: SET_LOGIN_SUBMITTING, payload: true });
       dispatch({ type: SET_LOGIN_LOADING, payload: true });
-      const rememberMe = getState().login.rememberMe
+      const rememberMe = getState().login.rememberMe;
       const data = {
         ...credential,
         rememberMe

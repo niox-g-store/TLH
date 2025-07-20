@@ -9,28 +9,40 @@ import { API_URL } from '../../constants';
 import Button from '../../components/Common/HtmlTags/Button';
 import Switch from '../../components/store/Switch';
 import Input from '../../components/Common/HtmlTags/Input';
+import FadeSlider from '../../components/store/FadeSliderTwo';
+import Cart from '../Cart';
 
 const ProductViewer = (props) => {
   const {
     product = {},
     isLoading,
     productSlugChange,
-    addProductToCart
+    addProductToCart,
+    selectedProducts,
+    authenticated,
+    user
   } = props;
+  console.log(user)
+  console.log(authenticated)
+  const name = user?.organizer ? user?.organizer?.companyName : user?.name
+  const phoneNumber = user?.phoneNumber.length > 0 ? user.phoneNumber : ''
+  console.log(name, phoneNumber)
 
   const [quantity, setQuantity] = useState(1);
   const [needsDelivery, setNeedsDelivery] = useState(false);
   const [deliveryInfo, setDeliveryInfo] = useState({
-    name: '',
-    email: '',
-    phoneNumber: '',
+    name: authenticated ? name : '',
+    email: authenticated ? user.email : '',
+    phoneNumber: phoneNumber,
     address: {
       street: '',
       city: '',
-      state: '',
-      country: 'Nigeria'
+      state: 'Lagos',
+      island: false,
+      mainland: false,
     }
   });
+  console.log(deliveryInfo)
 
   if (isLoading) {
     return <LoadingIndicator />;
@@ -113,7 +125,10 @@ const ProductViewer = (props) => {
            deliveryInfo.phoneNumber.trim() !== '' &&
            deliveryInfo.address.street.trim() !== '' &&
            deliveryInfo.address.city.trim() !== '' &&
-           deliveryInfo.address.state.trim() !== '';
+           deliveryInfo.address.state.trim() !== '' &&
+           (deliveryInfo.address.island !== false ||
+            deliveryInfo.address.mainland !== false
+           );
   };
 
   return (
@@ -121,11 +136,28 @@ const ProductViewer = (props) => {
       <div className="container">
         <div className="product-details">
           <div className="product-image-section">
-            <img 
-              src={resolveImage(`${API_URL}${product.imageUrls?.[0]}` || '')}
-              alt={product.name}
-              className="product-main-image"
-            />
+          <FadeSlider
+            dots={true}
+            infinite={true}
+            speed={500}
+            slidesToShow={1}
+            slidesToScroll={1}
+            autoplay={true}
+            autoplaySpeed={2000}
+            arrows={false}
+            fade={product?.imageUrls?.length > 1 ? false : true}
+          >
+            {product?.imageUrls?.map((item, index) => {
+              return (
+                <img 
+                  key={index}
+                  src={resolveImage(`${API_URL}${item}` || '')}
+                  alt={product.name}
+                  className="product-main-image"
+                />
+              )
+            })}
+          </FadeSlider>
           </div>
           
           <div className="product-info-section">
@@ -160,7 +192,7 @@ const ProductViewer = (props) => {
 
             <div className="product-seller-info">
               <div className="seller-badge">
-                <h4>🏪 Sold by The Link Hangouts</h4>
+                <h4>Sold by The Link Hangouts</h4>
                 <p>This product is sold directly by The Link Hangouts. No organizers are affiliated with product sales.</p>
               </div>
             </div>
@@ -175,14 +207,14 @@ const ProductViewer = (props) => {
               <div className="quantity-controls">
                 <button 
                   onClick={() => handleQuantityChange(-1)}
-                  disabled={quantity <= 1}
+                  disabled={quantity <= 1 || selectedProducts.includes(product._id)}
                 >
                   -
                 </button>
                 <span>{quantity}</span>
                 <button 
                   onClick={() => handleQuantityChange(1)}
-                  disabled={quantity >= product.quantity}
+                  disabled={quantity >= product.quantity || selectedProducts.includes(product._id)}
                 >
                   +
                 </button>
@@ -210,11 +242,12 @@ const ProductViewer = (props) => {
             {needsDelivery && (
               <div className="delivery-form">
                 <h4>Delivery Information</h4>
+                <h4 className='info-text'>📍 Lagos Delivery only!!</h4>
                 
                 <div className="form-row">
                   <Input
                     type="text"
-                    label="Full Name"
+                    label="* Full Name"
                     name="name"
                     placeholder="Enter your full name"
                     value={deliveryInfo.name}
@@ -225,7 +258,7 @@ const ProductViewer = (props) => {
                 <div className="form-row">
                   <Input
                     type="email"
-                    label="Email Address"
+                    label="* Email Address"
                     name="email"
                     placeholder="Enter your email"
                     value={deliveryInfo.email}
@@ -236,7 +269,7 @@ const ProductViewer = (props) => {
                 <div className="form-row">
                   <Input
                     type="tel"
-                    label="Phone Number"
+                    label="* Phone Number"
                     name="phoneNumber"
                     placeholder="Enter your phone number"
                     value={deliveryInfo.phoneNumber}
@@ -247,7 +280,7 @@ const ProductViewer = (props) => {
                 <div className="form-row">
                   <Input
                     type="text"
-                    label="Street Address"
+                    label="* Street Address"
                     name="address.street"
                     placeholder="Enter your street address"
                     value={deliveryInfo.address.street}
@@ -258,36 +291,66 @@ const ProductViewer = (props) => {
                 <div className="form-row-group">
                   <Input
                     type="text"
-                    label="City"
+                    label="* City"
                     name="address.city"
                     placeholder="Enter your city"
                     value={deliveryInfo.address.city}
                     onInputChange={handleDeliveryInfoChange}
                   />
-                  
+
                   <Input
                     type="text"
                     label="State"
                     name="address.state"
+                    disabled={true}
                     placeholder="Enter your state"
                     value={deliveryInfo.address.state}
                     onInputChange={handleDeliveryInfoChange}
                   />
                 </div>
+                  <p className='p-purple mb-0'>Select your delivery location in lagos</p>
+                  <p className='p-purple'>Delivery prices are fixed </p>
+                  <Input
+                    type="checkbox"
+                    label="Mainland (₦5,000)"
+                    name="address.mainland"
+                    disabled={deliveryInfo.address.island}
+                    value={deliveryInfo.address.mainland}
+                    onInputChange={handleDeliveryInfoChange}
+                  />
+                  <br />
+                  <Input
+                    type="checkbox"
+                    label="Island (₦8,500)"
+                    name="address.island"
+                    disabled={deliveryInfo.address.mainland}
+                    value={deliveryInfo.address.island}
+                    onInputChange={handleDeliveryInfoChange}
+                  />
               </div>
             )}
 
             <div className="product-actions">
-              <Button 
-                text={product.quantity > 0 ? "Add to Cart" : "Out of Stock"}
-                disabled={product.quantity <= 0 || !isFormValid()}
-                onClick={handleAddToCart}
-                style={{ padding: '15px 30px', fontSize: '16px' }}
+              {!selectedProducts.includes(product._id) ?
+                <Button 
+                  text={product.quantity > 0 ? "Add to Cart" : "Out of Stock"}
+                  disabled={product.quantity <= 0 || !isFormValid()}
+                  onClick={handleAddToCart}
+                  style={{ padding: '15px 30px', fontSize: '16px' }}
+                />
+                :
+                <Button 
+                  text={"Selected"}
+                  disabled={true}
+                  cls={'p-grey'}
+                  style={{ padding: '15px 30px', fontSize: '16px' }}
               />
+              }
             </div>
           </div>
         </div>
       </div>
+      <Cart />
     </div>
   );
 };
@@ -318,9 +381,12 @@ class ProductView extends React.PureComponent {
 }
 
 const mapStateToProps = state => ({
+  authenticated: state.authentication.authenticated,
+  user: state.account.user,
   product: state.product.storeProduct,
   isLoading: state.product.isLoading,
-  productSlugChange: state.product.productSlugChange
+  productSlugChange: state.product.productSlugChange,
+  selectedProducts: state.cart.selectedProducts
 });
 
 export default connect(mapStateToProps, actions)(withRouter(ProductView));

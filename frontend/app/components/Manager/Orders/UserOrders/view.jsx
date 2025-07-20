@@ -37,11 +37,13 @@ const OrderViewer = (props) => {
   isLightMode = false;
 
   const navigate = useNavigate();
-  const { subTotal, total } = getCartPriceSummary(order?.cart?.tickets);
+  const { subTotal, total } = getCartPriceSummary(order?.cart?.tickets, order?.cart?.products);
   const isAdmin = user?.role === ROLES.Admin;
+  const hasProducts = order?.products?.length > 0
+  const hasEvents = order?.events?.length > 0
 
-  const firstImage =
-    order?.cart?.tickets?.[0]?.eventId?.imageUrls?.[0] || '';
+  const firstImage = order?.cart?.tickets?.[0]?.eventId?.imageUrls?.[0] || '';
+  const productFirstImage = order?.products?.[0]?.imageUrls?.[0] || '';
   const totalPrice = order?.cart?.tickets?.reduce((sum, ticket) => sum + ((ticket?.price * ticket.quantity) || 0), 0);
 
   useEffect(() => {
@@ -72,7 +74,7 @@ const OrderViewer = (props) => {
           <CCol>
             <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'}`}>
               <CImage
-                src={resolveImage(API_URL + firstImage)}
+                src={resolveImage(hasEvents ? API_URL + firstImage : API_URL + productFirstImage )}
                 alt='Event'
                 style={{ width: '100%', height: '300px', objectFit: 'cover' }}
               />
@@ -149,7 +151,23 @@ const OrderViewer = (props) => {
                       </div>
                     );
                   })
-                  : <p>No tickets in cart.</p>}
+                  : hasProducts ?
+                  (
+                    order.cart.products.map((product, index) => (
+                      <div key={index} className='mb-3 border-bottom pb-2'>
+                        <p><strong>Product name: </strong>{product.productName || 'N/A'}</p>
+                        <p><strong>Quantity: </strong> x {product.quantity || 'N/A'}</p>
+                        <p><strong>Price: </strong>{product.price || 'N/A'}</p>
+                        {product.discount &&
+                          <p><strong>Discount: </strong>{product.discountPrice || 'N/A'}</p>
+                        }
+                        <p>Delivery information 📍</p>
+                        {product.needsDelivery ? product.deliveryInfo : 'Pickup at Next Event' }
+                      </div>
+                    ))
+                  )
+                  :
+                  <p>No tickets in cart.</p>}
               </CCardBody>
             </CCard>
           </CCol>

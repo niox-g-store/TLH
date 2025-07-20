@@ -34,6 +34,9 @@
         justify-content: flex-start;
         flex-direction: column;
       }
+      .input-search {
+        margin: 0.5em 0em;
+      }
       .search-filter,
       .sort-filter {
         box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.12);
@@ -99,6 +102,9 @@
 
   .product-image-section {
     flex: 1;
+    @include media-breakpoint-up(md) {
+      width: 50%;
+    }
 
     .product-main-image {
       width: 100%;
@@ -321,6 +327,8 @@
       }
     }
     .product-actions {
+      width: 100%;
+      justify-items: center !important;
       button {
         width: 100%;
         max-width: 300px;

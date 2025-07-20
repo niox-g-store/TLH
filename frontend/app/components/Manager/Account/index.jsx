@@ -209,6 +209,7 @@ const ManagerAccountForm = (props) => {
                   disabled
                 />
               </CCol>
+              {user.provider === 'Email' &&
               <CCol md={6} className={`${isLightMode ? 'p-black': 'p-white'}`}>
                 <Input
                   type="text"
@@ -220,6 +221,7 @@ const ManagerAccountForm = (props) => {
                   onInputChange={(e, v) => accountChange('userName', v)}
                 />
               </CCol>
+              }
             </CRow>
 
             <CRow className="mb-3 g-3">

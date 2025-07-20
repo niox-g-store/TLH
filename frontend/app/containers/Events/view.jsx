@@ -521,10 +521,11 @@ const EventViewer = (props) => {
   <CModalBody>
     <p className='font-size-15 text-wrap text-break' dangerouslySetInnerHTML={{ __html: selectedTicketWithDescription?.description || '' }} />
   </CModalBody>
-  <CModalBody className="d-flex justify-content-center">
+  <CModalBody style={{ borderRadius: '10px' }} className="d-flex justify-content-center">
     <Button
       text={"Add to Cart"}
-      className="linear-grad p-white"
+      cls="linear-grad p-white"
+      containerstyle = {{ borderRadius: '10px' }}
       onClick={() => {
         const t = selectedTicketWithDescription;
         addToCart({
