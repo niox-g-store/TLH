@@ -29,8 +29,22 @@ import {
   PRODUCT_SLUG_CHANGED,
 
   PRODUCT_IMAGE_REMOVE,
+  SET_DELIVERY_INFO,
+  SET_NEEDS_DELIVERY
 } from './constants';
 import { vewingEventToggler } from '../Events/actions';
+
+export const setNeedsDelivery = (v) => {
+  return {
+    type: SET_NEEDS_DELIVERY,
+    payload: v
+  }
+}
+
+export const setDeliveryInfo = (info) => ({
+  type: SET_DELIVERY_INFO,
+  payload: info
+});
 
 export const productChange = (name, value) => {
   let formData = {};
@@ -121,17 +135,38 @@ export const resetProductSlugChange = () => {
 
 // Fetch store product by slug
 export const fetchStoreProduct = (slug) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     dispatch(vewingEventToggler(true))
     dispatch(setProductLoading(true));
     try {
       const response = await axios.get(`${API_URL}/product/item/${slug}`);
       const product = response.data.product;
-      
+      const authenticated = getState().authentication.authenticated;
+      const user = getState().account.user;
       dispatch({
         type: FETCH_STORE_PRODUCT,
         payload: product
       });
+
+      // get user from state so a logged in user stays auto filled
+      const name = user?.organizer ? user?.organizer?.companyName : user?.name
+      const phoneNumber = user?.phoneNumber.length > 0 ? user.phoneNumber : ''
+      dispatch({
+        type: SET_DELIVERY_INFO,
+        payload: {
+          name: authenticated ? name : '',
+          email: authenticated ? user.email : '',
+          phoneNumber: phoneNumber,
+          address: {
+            street: '',
+            city: '',
+            state: 'Lagos',
+            island: false,
+            mainland: false,
+            deliveryFee: 0
+          }
+        }
+      })
     } catch (error) {
       if (error.response && error.response.status === 404) {
         dispatch({

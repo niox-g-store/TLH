@@ -162,7 +162,7 @@ const EventViewer = (props) => {
 
         <div style={{ cursor: 'pointer' }} className='host-des' onClick={() => setShowOrganizerModal(true)}>
           <p>your host</p>
-          <img src={resolveImage(API_URL + event?.user?.imageUrl, 'profile')} style={{ borderRadius: '50%', width: '5%', height: '3em' }} />
+          <img src={resolveImage(API_URL + event?.user?.imageUrl, 'profile')} style={{ borderRadius: '50%', width: '6%', height: '3em' }} />
           &nbsp; &nbsp; &nbsp; <span className='p-purple'>{event?.user?.companyName}</span>
         </div>
 

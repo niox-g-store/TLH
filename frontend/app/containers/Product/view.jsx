@@ -20,17 +20,15 @@ const ProductViewer = (props) => {
     addProductToCart,
     selectedProducts,
     authenticated,
-    user
+    user,
+    deliveryInfo,
+    setDeliveryInfo,
+    needsDelivery,
+    setNeedsDelivery
   } = props;
-  console.log(user)
-  console.log(authenticated)
-  const name = user?.organizer ? user?.organizer?.companyName : user?.name
-  const phoneNumber = user?.phoneNumber.length > 0 ? user.phoneNumber : ''
-  console.log(name, phoneNumber)
-
+  
   const [quantity, setQuantity] = useState(1);
-  const [needsDelivery, setNeedsDelivery] = useState(false);
-  const [deliveryInfo, setDeliveryInfo] = useState({
+  /*const [deliveryInfo, setDeliveryInfo] = useState({
     name: authenticated ? name : '',
     email: authenticated ? user.email : '',
     phoneNumber: phoneNumber,
@@ -40,8 +38,9 @@ const ProductViewer = (props) => {
       state: 'Lagos',
       island: false,
       mainland: false,
+      deliveryFee: 0
     }
-  });
+  })*/;
   console.log(deliveryInfo)
 
   if (isLoading) {
@@ -75,23 +74,24 @@ const ProductViewer = (props) => {
     }
   };
 
-  const handleDeliveryInfoChange = (name, value) => {
-    if (name.includes('.')) {
-      const [parent, child] = name.split('.');
-      setDeliveryInfo(prev => ({
-        ...prev,
-        [parent]: {
-          ...prev[parent],
-          [child]: value
-        }
-      }));
-    } else {
-      setDeliveryInfo(prev => ({
-        ...prev,
-        [name]: value
-      }));
+const handleDeliveryInfoChange = (name, value) => {
+  const updatedInfo = JSON.parse(JSON.stringify(deliveryInfo));
+
+  if (name.includes('.')) {
+    const [parent, child] = name.split('.');
+    if (!updatedInfo[parent]) updatedInfo[parent] = {};
+    updatedInfo[parent][child] = value;
+
+    if (child === 'island' || child === 'mainland') {
+      updatedInfo[parent]['deliveryFee'] = child === 'island' ? 8500 : 5000;
     }
-  };
+  } else {
+    updatedInfo[name] = value;
+  }
+
+  setDeliveryInfo(updatedInfo);
+};
+
 
   const handleAddToCart = () => {
     const finalPrice = product.discountPrice > 0 
@@ -386,7 +386,10 @@ const mapStateToProps = state => ({
   product: state.product.storeProduct,
   isLoading: state.product.isLoading,
   productSlugChange: state.product.productSlugChange,
-  selectedProducts: state.cart.selectedProducts
+  selectedProducts: state.cart.selectedProducts,
+
+  deliveryInfo: state.product.deliveryInfo,
+  needsDelivery: state.product.needsDelivery
 });
 
 export default connect(mapStateToProps, actions)(withRouter(ProductView));

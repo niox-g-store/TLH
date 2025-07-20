@@ -114,7 +114,9 @@ const ProductItemSchema = new Schema({
       street: String,
       city: String,
       state: String,
-      country: String
+      island: Boolean,
+      mainland: Boolean,
+      deliveryFee: Number
     }
   },
   type: {

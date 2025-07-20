@@ -37,7 +37,7 @@ const Header = (props) => {
 
   return (
     <>
-      <header className={`${scrolled ? "scrolled" : ""} ${isViewingEvent ? 'bg-black' : ''}`} data-aos={scrolled ?? "fade-down"} data-aos-delay={scrolled ?? "50"}>
+      <header className={`${scrolled ? "scrolled d-block" : "d-none"} ${isViewingEvent ? 'bg-black' : ''}`} data-aos={scrolled ?? "fade-down"} data-aos-delay={scrolled ?? "50"}>
         <div className="container">
           <div className="navigation">
             <div className="logo">

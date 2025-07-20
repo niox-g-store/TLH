@@ -102,16 +102,16 @@ const GalleryViewer = (props) => {
   return (
     <div className="gallery-viewer-container bg-gray-100 min-h-screen">
       {/* Banner Section (unchanged) */}
-      <div className="gallery-banner shadow-lg">
-        {bannerImage && (
+      <div style={{ background: `url(${resolveImage(API_URL + bannerImage || '')})` }} className="gallery-banner shadow-lg">
+        {/*bannerImage && (
           <img
             src={resolveImage(API_URL + bannerImage)}
             alt="Gallery Banner"
             className="object-cover w-full h-full"
             loading="lazy"
           />
-        )}
-        <div className="gallery-info">
+        )*/}
+        {bannerImage && <div className="gallery-info">
           <h2 data-aos="fade-up" className="gallery-title">{gallery.name}</h2>
           {gallery.description && gallery.description.length > 0 && <p className='font-size-20 p-white' dangerouslySetInnerHTML={{ __html: gallery.description }}></p>}
 
@@ -124,6 +124,7 @@ const GalleryViewer = (props) => {
             {gallery.views || 0}
           </p>
         </div>
+        }
       </div>
 
 

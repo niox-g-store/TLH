@@ -103,8 +103,13 @@
 // hero banner fix for events, gallery, shop  july-20-2025
 .events, .gallery-page, .shop {
   .hero-banner .container {
-   position: absolute;
+    position: absolute;
     bottom: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    padding: 0;
+    .row-wrapper-content-with-image {
+      padding: 0em 1em;
+    }
   }
 }
 

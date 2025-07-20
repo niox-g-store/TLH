@@ -38,63 +38,6 @@ import {
 } from './constants';
 import { ticketStatusChecker } from '../Ticket/actions';
 
-// Add product to cart
-export const addProductToCart = (item) => {
-  return async (dispatch, getState) => {
-    try {
-      dispatch(setCartLoading(true));
-      
-      const { products } = getState().cart;
-      
-      // Check if this product is already in the cart
-      const existingItem = products.find(cartItem => cartItem.productId === item.productId);
-      if (existingItem) {
-        dispatch(showNotification('info', 'This product is already in your cart'));
-        dispatch(toggleCart());
-        return;
-      }
-      
-      const cartId = localStorage.getItem(CART_ID);
-      let response;
-      
-      if (cartId) {
-        response = await axios.put(`${API_URL}/cart/${cartId}/add-product`, { item });
-      } else {
-        response = await axios.post(`${API_URL}/cart/add-product`, { item });
-        if (response.data.cartId) {
-          dispatch(setCartId(response.data.cartId));
-        }
-      }
-      
-      if (response.data.cart) {
-        dispatch({
-          type: SELECTED_PRODUCTS,
-          payload: item.productId
-        })
-        dispatch({
-          type: SET_CART_ITEMS,
-          payload: {
-            tickets: response.data.cart.tickets || [],
-            products: response.data.cart.products || []
-          }
-        });
-        
-        dispatch({
-          type: HANDLE_CART_TOTAL,
-          payload: response.data.cart.total || 0
-        });
-      }
-      
-      dispatch(toggleCart());
-    } catch (error) {
-      handleError(error, dispatch);
-      dispatch(setCartError('Failed to add product to cart'));
-    } finally {
-      dispatch(setCartLoading(false));
-    }
-  };
-};
-
 // Toggle cart visibility
 export const toggleCart = () => {
   return {
@@ -278,7 +221,62 @@ export const calculateCouponDiscount = (coupon) => {
   }
 }
 
-
+// Add product to cart
+export const addProductToCart = (item) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch(setCartLoading(true));
+      
+      const { products } = getState().cart;
+      
+      // Check if this product is already in the cart
+      const existingItem = products.find(cartItem => cartItem.productId === item.productId);
+      if (existingItem) {
+        dispatch(showNotification('info', 'This product is already in your cart'));
+        dispatch(toggleCart());
+        return;
+      }
+      
+      const cartId = localStorage.getItem(CART_ID);
+      let response;
+      
+      if (cartId) {
+        response = await axios.put(`${API_URL}/cart/${cartId}/add-product`, { item });
+      } else {
+        response = await axios.post(`${API_URL}/cart/add-product`, { item });
+        if (response.data.cartId) {
+          dispatch(setCartId(response.data.cartId));
+        }
+      }
+      
+      if (response.data.cart) {
+        dispatch({
+          type: SELECTED_PRODUCTS,
+          payload: item.productId
+        })
+        dispatch({
+          type: SET_CART_ITEMS,
+          payload: {
+            tickets: response.data.cart.tickets || [],
+            products: response.data.cart.products || []
+          }
+        });
+        
+        dispatch({
+          type: HANDLE_CART_TOTAL,
+          payload: response.data.cart.total || 0
+        });
+      }
+      
+      dispatch(toggleCart());
+    } catch (error) {
+      handleError(error, dispatch);
+      dispatch(setCartError('Failed to add product to cart'));
+    } finally {
+      dispatch(setCartLoading(false));
+    }
+  };
+};
 
 export const applyCoupon = () => {
   return async(dispatch, getState) => {

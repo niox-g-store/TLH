@@ -8,7 +8,7 @@ const DevicePage = () => {
   const toggleClick = () => {
     setState(!state);
   };
-  const ModalImg = "./assets/events/event_5.jpg";
+  const ModalImg = "./uploads/images/w-1.jpeg";
 
   return (
     <>

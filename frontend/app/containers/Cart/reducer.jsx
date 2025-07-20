@@ -58,7 +58,8 @@ const initialState = {
   discountAmount: 0,
   appliedCoupon: null,
   ticketDiscounts: [],
-  couponValidTickets: []
+  couponValidTickets: [],
+
 };
 
 const cartReducer = (state = initialState, action) => {

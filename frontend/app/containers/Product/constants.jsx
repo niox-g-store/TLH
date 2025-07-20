@@ -21,3 +21,5 @@ export const SET_ADVANCED_FILTERS = 'src/Product/SET_ADVANCED_FILTERS';
 export const RESET_ADVANCED_FILTERS = 'src/Product/RESET_ADVANCED_FILTERS';
 export const PRODUCT_SLUG_CHANGED = 'src/Product/PRODUCT_SLUG_CHANGED';
 export const PRODUCT_IMAGE_REMOVE = 'src/Product/PRODUCT_IMAGE_REMOVE';
+export const SET_DELIVERY_INFO = 'src/Product/SET_DELIVERY_INFO';
+export const SET_NEEDS_DELIVERY = 'src/Product/SET_NEEDS_DELIVERY';

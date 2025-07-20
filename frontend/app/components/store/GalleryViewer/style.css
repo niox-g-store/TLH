@@ -162,14 +162,6 @@
   pointer-events: none; /* Prevent clicks when hidden */
 }
 
-.gallery-info {
-  position: absolute;
-  z-index: 100;
-  top: 50%;
-  left: 1em;
-  color: white;
-}
-
 .gallery-info h2, p {
   padding: .1em;
   width: fit-content;

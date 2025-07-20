@@ -23,6 +23,8 @@ import {
   PRODUCT_SLUG_CHANGED,
 
   PRODUCT_IMAGE_REMOVE,
+  SET_DELIVERY_INFO,
+  SET_NEEDS_DELIVERY
 } from './constants';
 
 const initialState = {
@@ -57,11 +59,24 @@ const initialState = {
     page: 1,
     limit: 12
   },
-  imageToRemove: []
+  imageToRemove: [],
+
+  deliveryInfo: null,
+  needsDelivery: false
 };
 
 const productReducer = (state = initialState, action) => {
   switch (action.type) {
+    case SET_NEEDS_DELIVERY:
+      return {
+        ...state,
+        needsDelivery: action.payload
+      }
+    case SET_DELIVERY_INFO:
+      return {
+        ...state,
+        deliveryInfo: action.payload
+      };
     case PRODUCT_IMAGE_REMOVE:
       return {
         ...state,
