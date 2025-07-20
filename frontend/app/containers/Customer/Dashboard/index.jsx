@@ -44,7 +44,7 @@ const CustomerDashboardForm = (props) => {
               autoplay={true}
               autoplaySpeed={2000}
               arrows={false}
-              fade={false}
+              fade={latestEvents.length > 1 ? false : true}
             >
               {latestEvents.map((event, index) => (
                 <div key={index} className="slider-event-card">

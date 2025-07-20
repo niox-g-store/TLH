@@ -41,7 +41,7 @@ const Card = ({ event, type = "event", product }) => {
   } else if (type === "shop") {
     return (
       <Link to={`/product/${product.slug}`}>
-      <div className="card-wrapper">
+      <div className="card-wrapper shop">
         <div className="card-body">
           <img
           src={resolveImage(`${API_URL}${product.imageUrls[0]}` || '')}
