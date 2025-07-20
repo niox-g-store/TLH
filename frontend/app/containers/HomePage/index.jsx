@@ -53,6 +53,7 @@ class Home extends React.PureComponent {
     <>
     {popOverEvents?.length > 0 && <PopupComponent data={popOverEvents} type={"image"}/>}
     <HomeBanner />
+      <div className="home">
       <HeroBanner
         heading="Discover The Link Hangouts Experience"
         desc="We are a vibrant lifestyle company based in Lagos, Nigeria, dedicated to curating and orchestrating exceptional events, parties, and hangouts that bring people together to create lasting memories."
@@ -62,6 +63,7 @@ class Home extends React.PureComponent {
         SButton={<SButton link={"/gallery"} content="See Gallery" />}
         className={"border-10"}
       />
+      </div>
 
       <BrandSection />
       <DevicePage />
