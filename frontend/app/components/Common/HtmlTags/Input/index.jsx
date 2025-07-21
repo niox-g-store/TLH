@@ -228,7 +228,6 @@ const Input = props => {
           onChange={e => {
             _onChange(e)
           }}
-          style={{ position: 'relative', top: '-1px' }}
           disabled={disabled}
           className={className}
         />
