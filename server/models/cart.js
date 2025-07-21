@@ -171,11 +171,16 @@ CartSchema.pre('save', function (next) {
     }, 0);
   }
   // Products total
-  if (this.products && this.products?.length > 0) {
+  if (this.products && this.products.length > 0) {
     total += this.products.reduce((sum, product) => {
-      return sum + (product.finalPrice * product.quantity);
+      const productTotal = product.finalPrice * product.quantity;
+      const deliveryFee = product.needsDelivery && product.deliveryInfo?.address?.deliveryFee
+        ? product.deliveryInfo.address.deliveryFee
+        : 0;
+      return sum + productTotal + deliveryFee;
     }, 0);
   }
+
   this.total = total;
   next();
 });

@@ -5,7 +5,7 @@ exports.productOrderEmailHtml = (order) => {
         return `₦${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     };
 
-    const productItems = order.cart.items.filter(item => item.type === 'product');
+    const productItems = order.cart.products.filter(item => item.type === 'product');
     const productNames = productItems.map(item => item.productName);
     const uniqueProductNames = [...new Set(productNames)];
 
@@ -72,8 +72,12 @@ exports.productOrderEmailHtml = (order) => {
                         <td class="padding-mobile" style="padding: 30px 40px;">
                             <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 15px 0;">Hi ${order.name},</p>
 
+                            <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 15px 0;">
+                                Thanks for shopping with The Link Hangouts! We’re excited to let you know that your order has been successfully received and is now being processed.
+                            </p>
+
                             <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 20px 0;">
-                                Thanks for your purchase! Your order for ${productNamesFormatted} has been confirmed.
+                                Your order for ${productNamesFormatted} has been confirmed.
                             </p>
 
                             <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 10px 0; font-weight: bold;">Here are the details:</p>
@@ -104,26 +108,39 @@ exports.productOrderEmailHtml = (order) => {
 
                             <hr style="border: none; border-top: 1px dashed #cccccc; margin: 20px 0;" />
 
-                            <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 10px 0; font-weight: bold;">Important Information:</p>
+                            <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 10px 0; font-weight: bold;">Delivery Information</p>
+                            <ul style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; padding-left: 20px; margin: 0 0 15px 0; list-style: disc;">
+                                <li style="margin-bottom: 5px;">For orders with 3 items or fewer, expect delivery within 2–5 working days.</li>
+                                <li>For orders with more than 3 items, delivery will take 5–7 working days.</li>
+                            </ul>
+                            <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 30px 0;">
+                                You will receive a shipping confirmation once your order is dispatched.
+                            </p>
+
+                            <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 10px 0; font-weight: bold;">Additional Notes:</p>
                             <ul style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; padding-left: 20px; margin: 0 0 30px 0; list-style: none;">
                                 ${productItems.some(p => p.needsDelivery) ? `
                                     <li style="margin-bottom: 10px; position: relative; padding-left: 10px;">
-                                        <span style="position: absolute; left: 0;">🚚</span> Products marked for delivery will be shipped to your provided address
+                                        <span style="position: absolute; left: 0;">&#x1F69A;</span> Products marked for delivery will be shipped to your provided address
                                     </li>
                                 ` : ''}
                                 ${productItems.some(p => !p.needsDelivery) ? `
                                     <li style="margin-bottom: 10px; position: relative; padding-left: 10px;">
-                                        <span style="position: absolute; left: 0;">📍</span> Products for pickup will be available at our next event
+                                        <span style="position: absolute; left: 0;">&#x1F4CD;</span> Products for pickup will be available at our next event
                                     </li>
                                 ` : ''}
                                 <li style="margin-bottom: 10px; position: relative; padding-left: 10px;">
-                                    <span style="position: absolute; left: 0;">🏪</span> All products are sold directly by The Link Hangouts
+                                    <span style="position: absolute; left: 0;">&#x1F3DA;</span> All products are sold directly by The Link Hangouts
                                 </li>
                             </ul>
 
-                            <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 15px 0;">Need help? Contact us anytime at <a href="mailto:support@thelinkhangout.com" style="color: #007BFF; text-decoration: none;">support@thelinkhangout.com</a></p>
+                            <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 15px 0;">
+                                If you have any questions or need assistance, feel free to reply to this email or reach out to our team at <a href="mailto:support@linknhangouts.com" style="color: #007BFF; text-decoration: none;">support@linknhangouts.com</a>.
+                            </p>
 
-                            <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0;">Thanks for shopping with us!<br>– The Link Hangouts Team</p>
+                            <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0;">
+                                Thanks again for being part of the LinknHangouts community! We can’t wait for you to enjoy your items.
+                            </p>
                             <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #007BFF; margin: 10px 0 0 0;"><a href="https://thelinkhangout.com" target="_blank" style="color: #007BFF; text-decoration: none;">🌐 thelinkhangout.com</a></p>
                         </td>
                     </tr>

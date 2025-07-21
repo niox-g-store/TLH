@@ -1,21 +1,22 @@
-const { getCartPriceSummary } = require('./cartSummary');
-
-exports.productInvoiceGenerator = (order) => {
-  const user = order.user || order.guest;
-  const name = user?.organizer ? user.organizer.companyName : user.name;
-  const email = order.billingEmail;
-  const orderId = order._id;
+exports.productInvoiceGenerator = (order, product) => {
+  const name = order?.name;
+  const email = order?.billingEmail;
+  const orderId = order?._id;
   const date = new Date(order.createdAt).toLocaleDateString();
-  const productItems = order.cart.items.filter(item => item.type === 'product');
+  const Naira = "₦";
 
-  const calculateTotal = () => {
-    return productItems.reduce((sum, item) => sum + (item.finalPrice * item.quantity), 0);
-  };
+  // Determine delivery information and fee more robustly
+  const deliveryInfo = product.needsDelivery ? product.deliveryInfo : null;
+  const actualDeliveryFee = deliveryInfo?.address?.deliveryFee || 0; // Default to 0 if not defined or if no delivery
+  
+  // Calculate total: product finalPrice + actualDeliveryFee if delivery is needed
+  const total = product.finalPrice + (product.needsDelivery ? actualDeliveryFee : 0);
 
-  const total = calculateTotal();
+  // Format deliveryFee using actualDeliveryFee
+  const formattedDeliveryFee = `${Naira}${actualDeliveryFee.toLocaleString()}`;
 
   return `
-    <div id="root" style="font-family: sans-serif; color: #fff; background-color: white; padding: 20px;">
+  <div id="root" style="font-family: sans-serif; color: #fff; background-color: white; padding: 20px;">
       <div class="app">
         <div style="display: flex; flex-direction: column;" class="page invoice-wrapper">
           <div style="display: flex; justify-content: space-between;">
@@ -25,7 +26,7 @@ exports.productInvoiceGenerator = (order) => {
                   <img style="max-width: 113px; border-radius: 10px;" src="https://thelinkhangout.com/black_logo.png" alt="logo"/>
                 </div>
                 <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black;">THE LINK HANGOUTS</p>
-                <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black;">Entertainment Service & Products.</p>
+                <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black;">Entertainment Service.</p>
               </div>
             </div>
             <div style="width: 50%; text-align: right;">
@@ -36,8 +37,13 @@ exports.productInvoiceGenerator = (order) => {
           <div style="display: flex; justify-content: space-between; margin-top: 40px;">
             <div style="width: 55%;">
               <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black; font-weight: bold;">Billed To:</p>
-              <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black;">${name}</p>
-              <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black;">${email}</p>
+              <p style="padding: 0px 12px 0px 0; margin-bottom: 1px; color: black;">${name}</p>
+              <p style="padding: 0px 12px 0px 0; margin-bottom: 1px; color: black;">${email}</p>
+              ${product.needsDelivery ? `
+              <p style="padding: 0px 12px 0px 0; margin-bottom: 1px; color: black;">${deliveryInfo.phoneNumber}</p>
+              <p style="padding: 0px 12px 0px 0; margin-bottom: 1px; color: black;">${deliveryInfo.address.street || ''} ${deliveryInfo.address.city || ''} ${deliveryInfo.address.state}</p>
+              <p style="padding: 0px 12px 0px 0; margin-bottom: 1px; color: black;">${deliveryInfo.address.island ? 'Island' : 'Mainland'} Delivery</p>
+              ` : ' <p style="padding: 0px 12px 0px 0; margin-bottom: 1px; color: black;">Pickup at event</p>'}
             </div>
             <div style="width: 45%;">
               <div style="display: flex; margin-bottom: 5px;">
@@ -60,65 +66,110 @@ exports.productInvoiceGenerator = (order) => {
           </div>
 
           <div style="display: flex; background: black; margin-top: 30px; padding: 10px 0;">
-            <div style="width: 40%; padding: 0 8px;">
+            <div style="width: 46%; padding: 0 8px;">
               <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: white; font-weight: bold;">Product</p>
             </div>
-            <div style="width: 15%; padding: 0 8px;">
+            <div style="width: 12%; padding: 0 8px;">
               <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: white; font-weight: bold; text-align: right;">Qty</p>
             </div>
-            <div style="width: 20%; padding: 0 8px;">
+            <div style="width: 12%; padding: 0 8px;">
               <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: white; font-weight: bold; text-align: right;">Price</p>
             </div>
-            <div style="width: 25%; padding: 0 8px;">
-              <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: white; font-weight: bold; text-align: right;">Total</p>
+            <div style="width: 12%; padding: 0 8px;">
+              <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: white; font-weight: bold; text-align: right;">Delivery Fee</p>
+            </div>
+            <div style="width: 12%; padding: 0 8px;">
+              <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: white; font-weight: bold; text-align: right;">Paid</p>
             </div>
           </div>
 
-          ${productItems.map(product => `
-            <div style="display: flex; align-items: center; padding-bottom: 10px; border-bottom: 1px solid #eee;">
-              <div style="width: 40%; padding: 4px 8px;">
-                <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black; font-weight: bold;">${product.productName}</p>
-                <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black; font-size: 12px;">
-                  ${product.needsDelivery ? '🚚 Delivery' : '📍 Pickup at event'}
-                </p>
-              </div>
-              <div style="width: 15%; padding: 4px 8px;">
-                <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black; text-align: right;">${product.quantity}</p>
-              </div>
-              <div style="width: 20%; padding: 4px 8px;">
-                <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black; text-align: right;">₦${product.finalPrice.toLocaleString()}</p>
-              </div>
-              <div style="width: 25%; padding: 4px 8px;">
-                <p style="padding: 4px 0px 4px 0; margin-bottom: 1px; color: black; font-weight: bold; text-align: right;">
-                  ₦${(product.finalPrice * product.quantity).toLocaleString()}
-                </p>
-              </div>
+          <div style="display: flex; align-items: center; padding-bottom: 10px;">
+            <div style="width: 46%; padding: 4px 8px;">
+              <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black; font-weight: bold;">${product.productName}</p>
             </div>
-          `).join('')}
+            <div style="width: 12%; padding: 4px 8px;">
+              <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black; text-align: right;">${product.quantity}</p>
+            </div>
+            <div style="width: 12%; padding: 4px 8px;">
+              <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black; text-align: right;">${(product.price).toLocaleString()}</p>
+            </div>
+            <div style="width: 12%; padding: 4px 8px;">
+              <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black; text-align: right;">${product.needsDelivery ? formattedDeliveryFee : '₦0'}</p>
+            </div>
+            <div style="width: 12%; padding: 4px 8px;">
+              <p style="padding: 4px 0px 4px 0; margin-bottom: 1px; color: black; font-weight: bold; text-align: right;">
+                ${Naira}${(total).toLocaleString()}
+              </p>
+            </div>
+          </div>
 
           <div style="margin-top: 20px; width: 50%; align-self: end;">
-            <div style="display: flex; background-color: black;">
+            ${product.discount ?
+              `
+              <div style="display: flex;">
+                <div style="width: 100%; padding: 5px;">
+                <p style="margin: 0; padding: 8px; font-size: 14px; color: black;">
+                    Original
+                    <span style="text-decoration: line-through; float: right; font-weight: bold; color: red">${Naira}${(product.price).toLocaleString()}</span>
+                    </span>
+                  </p>
+                </div>
+              </div>
+              <div style="display: flex;">
+                <div style="width: 100%; padding: 5px;">
+                  <p style="margin: 0; padding: 8px; font-size: 14px; color: black;">
+                    Discount
+                    <span style="float: right; font-weight: bold; color: black;">
+                    -${Naira}${(product.price - product.discountPrice).toLocaleString()}
+                    </span>
+                  </p>
+                </div>
+              </div>
+
+              <div style="display: flex; background-color: black;">
               <div style="width: 100%; padding: 5px;">
                 <p style="margin: 0; padding: 8px; font-size: 14px; color: white;">
                   Total
                   <span style="float: right; font-weight: bold; color: white;">
-                    ₦${total.toLocaleString()}
+                    ${Naira}${(total).toLocaleString()}
                   </span>
                 </p>
               </div>
-            </div>
+              </div>
+              `
+            : // No discount
+              `<div style="display: flex;">
+                <div style="width: 100%; padding: 5px;">
+                  <p style="margin: 0; padding: 8px; font-size: 14px; color: black;">
+                    Price
+                    <span style="float: right; font-weight: bold; color: black;">
+                      ${Naira}${(product.price).toLocaleString()}
+                    </span>
+                  </p>
+                </div>
+              </div>
+
+              <div style="display: flex; background-color: black;">
+                <div style="width: 100%; padding: 5px;">
+                  <p style="margin: 0; padding: 8px; font-size: 14px; color: white;">
+                    Total
+                    <span style="float: right; font-weight: bold; color: white;">
+                      ${Naira}${(total).toLocaleString()}
+                    </span>
+                  </p>
+                </div>
+              </div>    
+              `
+            }
           </div>
 
           <div style="margin-top: 20px;">
-            <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black; font-weight: bold;">Thank you for your order!</p>
-            <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black;">
-              ${productItems.some(p => p.needsDelivery) ? 'Items marked for delivery will be shipped to your address.' : ''}
-              ${productItems.some(p => !p.needsDelivery) ? 'Items for pickup will be available at our next event.' : ''}
-            </p>
+            <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black; font-weight: bold;">Thank you for your order</p>
           </div>
-
+          <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black;">${product.needsDelivery ? 'Items marked for delivery will be shipped to your address.' : 'Items for pickup will be available at our next event.'}</p>
         </div>
       </div>
     </div>
+
   `;
 };

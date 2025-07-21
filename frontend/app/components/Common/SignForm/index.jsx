@@ -114,9 +114,9 @@ const SignForm = (props) => {
                     name="checkbox"
                     checked={isSubscribed}
                     onInputChange={(n, v) => subscribeChange()}
+                    label="I want to receive updates about The Link Hangouts"
                   />
                 </div>
-                  <label className="p-black">I want to receive updates about The Link Hangouts</label>
               </div>
             </div>
 

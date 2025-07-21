@@ -30,7 +30,8 @@ const OrderViewer = (props) => {
           invoice, downloadInvoice
         } = props;
   const navigate = useNavigate();
-  const { subTotal, total } = getCartPriceSummary(order?.cart?.tickets, order?.cart?.products);
+  const { subTotal, total, deliveryFee } = getCartPriceSummary(order?.cart?.tickets, order?.cart?.products);
+  const hasProducts = order?.products?.length > 0
 
   const isAdmin = user?.role === ROLES.Admin;
   const isOrganizer = user?.role === ROLES.Organizer;
@@ -107,6 +108,15 @@ const OrderViewer = (props) => {
                         ₦{subTotal}
                       </CCol>
                       </CRow>
+
+                      {deliveryFee > 0 &&
+                        <CRow>
+                          <CCol><strong>Delivery fee: </strong></CCol>
+                          <CCol className='text-end'>
+                            ₦{deliveryFee.toLocaleString()}
+                          </CCol>
+                        </CRow>
+                      }
                       <CRow>
                         <CCol><strong>Total:</strong></CCol>
                         <CCol className='text-end fw-bold text-success'>
@@ -166,7 +176,38 @@ const OrderViewer = (props) => {
                       </div>
                     );
                   })
-                  : <p>No tickets in cart.</p>}
+                  : <p>No tickets in cart.</p>
+                }
+
+                { hasProducts &&
+                  (
+                    order.cart.products.map((product, index) => (
+                      <div key={index} className='mb-3 border-bottom pb-2'>
+                        <p><strong>Product name: </strong>{product.productName || 'N/A'}</p>
+                        <p><strong>Quantity: </strong> x {product.quantity || 'N/A'}</p>
+                        <p><strong>Price: </strong>₦{(product.price).toLocaleString() || 'N/A'}</p>
+                        {product.discount &&
+                          <p><strong>Discount: </strong>₦{(product.discountPrice).toLocaleString() || 'N/A'}</p>
+                        }
+                        <p>📍 Delivery information</p>
+                        {product.needsDelivery ?
+                        <div style={{ border: '1px solid white', borderRadius: '10px', padding: '10px' }}>
+                          <p>{product?.deliveryInfo?.name}</p>
+                          <p>{product?.deliveryInfo?.email}</p>
+                          <p>{product?.deliveryInfo?.phoneNumber}</p>
+                          <p>{product?.deliveryInfo?.address?.street}</p>
+                          <p>{product?.deliveryInfo?.address?.city}</p>
+                          <p>{product?.deliveryInfo?.address?.state}</p>
+                          <p>{product?.deliveryInfo?.address?.island ? 'Island Delivery' : 'Mainland Delivery'}</p>
+                          <p>Delivery fee: ₦{product?.deliveryInfo?.address?.deliveryFee.toLocaleString()}</p>
+                        </div>
+                        :
+                          'Pickup at Next Event'
+                        }
+                      </div>
+                    ))
+                  )
+                }
               </CCardBody>
             </CCard>
           </CCol>

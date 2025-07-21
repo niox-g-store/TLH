@@ -314,7 +314,7 @@ const handleDeliveryInfoChange = (name, value) => {
                     label="Mainland (₦5,000)"
                     name="address.mainland"
                     disabled={deliveryInfo.address.island}
-                    value={deliveryInfo.address.mainland}
+                    checked={deliveryInfo.address.mainland}
                     onInputChange={handleDeliveryInfoChange}
                   />
                   <br />
@@ -323,7 +323,7 @@ const handleDeliveryInfoChange = (name, value) => {
                     label="Island (₦8,500)"
                     name="address.island"
                     disabled={deliveryInfo.address.mainland}
-                    value={deliveryInfo.address.island}
+                    checked={deliveryInfo.address.island}
                     onInputChange={handleDeliveryInfoChange}
                   />
               </div>

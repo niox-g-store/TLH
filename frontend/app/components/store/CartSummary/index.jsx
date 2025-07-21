@@ -1,11 +1,17 @@
-export function getCartPriceSummary(tickets = [], products=[]) {
+export function getCartPriceSummary (tickets = [], products=[]) {
   let subTotal = 0;
   let total = 0;
+  let deliveryFee = 0;
 
 
   // calculate product first
   products.forEach(product => {
-    const productPrice = product.price;
+    const productPrice = product.finalPrice;
+    const needsDelivery = product.needsDelivery;
+    if (needsDelivery) {
+      deliveryFee += product.deliveryInfo.address.deliveryFee;
+      total += product.deliveryInfo.address.deliveryFee;
+    }
     subTotal += productPrice * product.quantity;
 
     total += productPrice * product.quantity;
@@ -20,7 +26,7 @@ export function getCartPriceSummary(tickets = [], products=[]) {
     subTotal += originalPrice * ticket.quantity;
 
     // Apply discount
-    let finalPrice = discountPrice;
+    let finalPrice = discountPrice * ticket.quantity;
 
     // Apply coupon if any
     if (ticket.coupon) {
@@ -39,5 +45,6 @@ export function getCartPriceSummary(tickets = [], products=[]) {
   return {
     subTotal: subTotal.toLocaleString(),
     total: total.toLocaleString(),
+    deliveryFee: deliveryFee
   };
 }

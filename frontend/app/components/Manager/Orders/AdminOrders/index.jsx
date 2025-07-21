@@ -47,14 +47,17 @@ const ManagerOrderList = (props) => {
 
       <CRow className='gy-4'>
         {currentOrders.map((order, idx) => {
-          const { total } = getCartPriceSummary(order?.cart?.tickets, order?.cart?.products)
+          const { total } = getCartPriceSummary(order?.cart?.tickets, order?.cart?.products);
+          const hasProducts = order?.products?.length > 0
+          const productFirstImage = order?.products?.[0]?.imageUrls?.[0] || '';
+
           return (
           <CCol md={6} key={idx}>
             <Link to={`/dashboard/order/${order._id}`}>
               <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}>
                 <div style={{ width: '40%' }}>
                   <CImage
-                    src={resolveImage(API_URL + order.events[0].imageUrls[0] || '')}
+                    src={hasProducts ? resolveImage(API_URL + productFirstImage || '') : resolveImage(API_URL + order?.events[0]?.imageUrls[0] || '')}
                     alt='Order Event'
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />

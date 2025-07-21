@@ -7,7 +7,6 @@ const { checkedInEmailHtml } = require('./htmlTemplates/User/scanTicket');
 const { accountSuspendedEmailHtml } = require('./htmlTemplates/Organizer/suspendAccount');
 const { accountResumedEmailHtml } = require('./htmlTemplates/Organizer/resumeAccount');
 const { accountBannedEmailHtml } = require('./htmlTemplates/Organizer/banAccount');
-const { adminNewProductOrderHtml } = require('./htmlTemplates/Admin/productOrderSuccess');
 const { productOrderEmailHtml } = require('./htmlTemplates/User/productOrderSuccess');
 /*exports.newsLetterEmail = (campaignData) => {
   const message = {
@@ -144,18 +143,6 @@ exports.organizerOrderConfirmationEmail = order => {
     text:
       `You Have A New Order \n\n`,
     html: organizerNewOrderHtml(order),
-    headers: { 'Content-Type': 'text/html' },
-  };
-
-  return message;
-}
-
-exports.adminProductOrderConfirmationEmail = order => {
-  const message = {
-    subject: `YOU HAVE A NEW PRODUCT ORDER #${order._id}`,
-    text:
-      `You Have A New Product Order \n\n`,
-    html: adminNewProductOrderHtml(order),
     headers: { 'Content-Type': 'text/html' },
   };
 

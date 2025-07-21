@@ -134,25 +134,26 @@ const CartViewer = (props) => {
                           <span>₦{item.price.toLocaleString()}</span>
                         )}
                       </p>
-                      {item.type === 'product' && 
-                        item?.needsDelivery ?
-                          (
-                            <>
+                      {item.type === 'product' ? (
+                        item.needsDelivery ? (
+                          <>
                             <h5 className="mt-3 delivery-info">🚚 Delivery Information</h5>
-                              <p className='mb-0 mt-3'>{item.deliveryInfo.name}</p>
-                              <p className='mb-0 mt-0'>{item.deliveryInfo.email}</p>
-                              <p className='mb-0 mt-0'>{item.deliveryInfo.phoneNumber}</p>
-                              <p className='mb-0 mt-0'>{item.deliveryInfo.address.street}</p>
-                              <p className='mb-0 mt-0'>{item.deliveryInfo.address.city}</p>
-                              <p className='mb-0 mt-0'>{item.deliveryInfo.address.state}</p>
-                              <p className='mb-0 mt-0'>{item.deliveryInfo.address.island ? "Island" : "Mainland"}</p>
-                            </>
-                          ) : (
-                            <p className="delivery-info">
-                              📍 Pickup at event
-                            </p>
-                          )
-                      }
+                            <p className="mb-0 mt-3">{item.deliveryInfo.name}</p>
+                            <p className="mb-0 mt-0">{item.deliveryInfo.email}</p>
+                            <p className="mb-0 mt-0">{item.deliveryInfo.phoneNumber}</p>
+                            <p className="mb-0 mt-0">{item.deliveryInfo.address.street}</p>
+                            <p className="mb-0 mt-0">{item.deliveryInfo.address.city}</p>
+                            <p className="mb-0 mt-0">{item.deliveryInfo.address.state}</p>
+                            <p className="mb-0 mt-0">{item.deliveryInfo.address.island ? "Island" : "Mainland"}</p>
+                          </>
+                        ) : (
+                          <p className="delivery-info">
+                            📍 Pickup at event
+                          </p>
+                        )
+                      ) : (
+                        ''
+                      )}
                     </div>
                     
                     <div className="item-actions">
@@ -190,9 +191,9 @@ const CartViewer = (props) => {
               
               <div className="cart-footer">
                 <div className="cart-total">
-                  <span>Total:</span><span>₦{(total || calculateTotal()).toLocaleString()}</span>
-                  <br />
-                  {findDeliveryFee > 0 && <p>Delivery fee: {findDeliveryFee}</p>}
+                  {findDeliveryFee > 0 && <p className='mt-0'>Subtotal: ₦{((-findDeliveryFee) + total || calculateTotal()).toLocaleString()}</p>}
+                  {findDeliveryFee > 0 && <p className='mt-0'>Delivery fee: ₦{findDeliveryFee.toLocaleString()}</p>}
+                  <p className='mb-3'><span>Total:</span> ₦{(total || calculateTotal()).toLocaleString()}</p>
                 </div>
 
                 {/* coupon */}
@@ -214,7 +215,7 @@ const CartViewer = (props) => {
                 </div>
                 }
 
-                {discountAmount > 0 && (
+                {couponValidTickets.length > 0 && (
                 <div className="cart-discount-info">
                   <p className='mb-0'>Coupon Applied: {appliedCoupon[0].code}</p>
                   <p className='mb-0'>Applied to Event: {tickets.filter((item) =>

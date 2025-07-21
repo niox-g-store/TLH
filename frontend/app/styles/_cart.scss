@@ -1,11 +1,13 @@
 
 .events {
     .hero-banner {
-        background: url("/assets/events/event_6.jpg");
-        @include backgroundControl();
-        background-size: cover;
+        background: url("/assets/events/event_9.jpg");
+        background-size: cover !important;
         padding-top: 35%;
+        background-position: top !important;
         @include media-breakpoint-down(md){
+            background: url("/assets/events/event_6.jpg");
+            @include backgroundControl();
             padding-top: 60%;
             height: 65vh;
         }
@@ -347,6 +349,7 @@
 
 .cart-total {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   margin-bottom: 15px;
   font-size: 18px;

@@ -40,7 +40,7 @@ const FadeSlider = (props) => {
       slidesToScroll={slidesToScroll}
       fade={fade}
       autoplay={autoplay}
-      autoplaySpeed={autoplaySpeed}
+      autoplaySpeed={2000}
       nextArrow={nextArrow}
       prevArrow={prevArrow}
       arrows={arrows}

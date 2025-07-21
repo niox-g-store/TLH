@@ -10,6 +10,7 @@ const User = require('../../models/user');
 const Organizer = require('../../models/organizer');
 const Guest = require('../../models/guest');
 const QRCODE = require('../../models/qrCode');
+const Product = require('../../models/product');
 const auth = require('../../middleware/auth');
 const role = require('../../middleware/role');
 const { ROLES } = require('../../utils/constants');
@@ -281,9 +282,11 @@ router.put('/edit/order/', async (req, res) => {
     const cartDoc = await Cart.findById(updateOrder.cart)
       .populate('tickets.eventId')
       .populate('tickets.ticketId')
+      .populate('products')
     if (status) {
       // add user to registered attendees or unregistered attendees
-      const cartEvents = cartDoc.tickets.map(e => e.eventId)
+      const cartEvents = cartDoc.tickets.map(e => e.eventId);
+
       let quantity = 0;
       for (const item of cartDoc.tickets) { quantity += item.quantity }
 
@@ -377,12 +380,12 @@ router.put('/edit/order/', async (req, res) => {
       // Check if this is a product order
       const hasProducts = cartDoc.products.some(item => item.type === 'product');
       const hasTickets = cartDoc.tickets.some(item => item.type !== 'product');
-      
+
       // Decrease product quantities
       if (hasProducts) {
         await decreaseProductQuantity(cartDoc.products.filter(item => item.type === 'product'));
       }
-      
+
       // Decrease ticket quantities
       if (hasTickets) {
         await decreaseQuantity(cartDoc.tickets.filter(item => item.type !== 'product'));
@@ -394,9 +397,8 @@ router.put('/edit/order/', async (req, res) => {
         newOrder, 
         adminEmails, 
         organizerEmailsAndData,
-        isProductOrder: hasProducts && !hasTickets
+        isProductOrder: hasProducts
       });
-
 
       // decrease quantity if the order has been successful
       // decreaseQuantity(cartDoc.tickets);
@@ -576,6 +578,7 @@ router.get(
     const user = req.user;
     let orders = await Order.find()
       .populate('events')
+      .populate('products')
       .populate({
         path: 'cart',
         populate: {
@@ -646,6 +649,7 @@ router.get(
     const user = req.user;
     let orders = await Order.find({'user._id': user._id})
       .populate('events')
+      .populate('products')
       .populate({
         path: 'cart',
         populate: {
@@ -692,6 +696,7 @@ router.delete('/id/:id', auth, role.check(ROLES.Admin), async (req, res) => {
       // increase quantity only if the order status === 'true'
       if (order.status === 'true') {
         await increaseQuantity(order.cart.tickets);
+        await increaseProductQuantity(order?.cart?.products);
       }
     }
 
@@ -729,16 +734,23 @@ const decreaseQuantity = (tickets) => {
 };
 
 const decreaseProductQuantity = async (products) => {
-  const Product = require('../../models/product');
   const bulkOptions = products.map(item => ({
     updateOne: {
       filter: { _id: item.productId },
       update: { $inc: { quantity: -item.quantity } }
     }
   }));
-
   return Product.bulkWrite(bulkOptions);
 };
 
+const increaseProductQuantity = async (products) => {
+  const bulkOptions = products.map(item => ({
+    updateOne: {
+      filter: { _id: item.productId },
+      update: { $inc: { quantity: item.quantity } }
+    }
+  }));
+  return Product.bulkWrite(bulkOptions);
+};
 
 module.exports = router;

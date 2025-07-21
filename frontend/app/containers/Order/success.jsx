@@ -18,7 +18,6 @@ const OrderSuccess = ({ authenticated }) => {
     <div className="order-success-container">
       <div className="order-success-card">
         <div className="success-icon">
-          {/*<FaCheckCircle size={80} color="#28a745" />*/}
           <FaCheckCircle size={80} color="#9172EC" />
         </div>
 
@@ -27,12 +26,13 @@ const OrderSuccess = ({ authenticated }) => {
         <p className="order-id">Order ID: {isGuest ? guestOrderID : id}</p>
         
         <div className="order-details">
-          <p>Your ticket purchase was successful. You will receive a confirmation email shortly with your ticket details.</p>
+          {/* Professional text covering both products and tickets for all users */}
+          <p>Your order has been successfully placed! You will receive a confirmation email shortly with all the details, including information on how to access your tickets or delivery/pickup arrangements for your products.</p>
           
           {isGuest ? (
             <div className="guest-message">
-              <p>As a guest user, you can access your ticket using the link sent to your email.</p>
-              <p>Want to manage all your tickets in one place?</p>
+              <p>As a guest user, you can access your order details using the link sent to your email.</p>
+              <p>Want to manage all your orders in one place?</p>
               <div className="action-buttons">
                 <Link to="/signup" className="primary-button"><Button text={"Create an Account"} /></Link>
                 <Link to="/events" className="secondary-button"><Button type="secondary" text={"Explore More Events"} /></Link>
@@ -40,7 +40,7 @@ const OrderSuccess = ({ authenticated }) => {
             </div>
           ) : (
             <div className="user-message">
-              <p>You can view and manage your tickets in your dashboard.</p>
+              <p>You can view and manage all your orders in your dashboard.</p>
               <div className="action-buttons">
                 <Link to="/dashboard/orders/my-orders"><Button className="primary" text={"View My Orders"} /></Link>
                 <Link to="/events"><Button type="secondary" text={"Explore More Events"} /></Link>

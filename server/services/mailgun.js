@@ -317,11 +317,7 @@ const prepareTemplate = (type, host, data) => {
       message = template.productOrderConfirmationEmail(data);
       message.sender = order;
       break;
-
-    case 'admin-product-order-confirmation':
-      message = template.adminProductOrderConfirmationEmail(data);
-      message.sender = order;
-      break;
+      
     case 'ticket-check-in':
       message = template.ticketCheckin(data.userName, data.eventName, data.ticketCode, data.scannedAt);
       message.sender = sender

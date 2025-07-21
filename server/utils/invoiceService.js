@@ -3,9 +3,9 @@ const pdf = require('html-pdf-node');
 const { invoiceGenerator } = require('../template/invoice');
 const { productInvoiceGenerator } = require('../template/productInvoice');
 
-exports.generateInvoice = async (qrArray, isProduct = false) => {
+exports.generateInvoice = async (qrArray, isProduct = false, product) => {
   try {
-    const invoiceHtml = isProduct ? productInvoiceGenerator(qrArray) : invoiceGenerator(qrArray);
+    const invoiceHtml = isProduct ? productInvoiceGenerator(qrArray, product) : invoiceGenerator(qrArray);
 
     const file = { content: invoiceHtml };
     const options = {

@@ -13,13 +13,15 @@ orderQueue.process('new-order', async (job, done) => {
     const { qrAssigner, newOrder, adminEmails, organizerEmailsAndData, isProductOrder } = job.data;
     
     let invoice = null;
-    if (!isProductOrder && qrAssigner && qrAssigner.length > 0) {
-      invoice = await queueGenerateInvoice(qrAssigner, newOrder);
-    } else if (isProductOrder) {
+    if (isProductOrder) {
       invoice = await queueGenerateProductInvoice(newOrder);
+      await queueSendEmailToUser(newOrder, invoice, isProductOrder);
+    }
+    if (qrAssigner && qrAssigner.length > 0) {
+      invoice = await queueGenerateInvoice(qrAssigner, newOrder);
+      await queueSendEmailToUser(newOrder, invoice, false);
     }
     
-    await queueSendEmailToUser(newOrder, invoice, isProductOrder);
     await queueSendEmailToAdmin(newOrder, adminEmails, isProductOrder);
     if (organizerEmailsAndData.length > 0) {
         await queueSendEmailToOrganizer(organizerEmailsAndData);
@@ -43,22 +45,26 @@ const queueGenerateInvoice = async(qrAssigner, updateOrder) => {
   }
   return invoice;
 }
-
 const queueGenerateProductInvoice = async(updateOrder) => {
-  const invoiceGenerator = await generateInvoice(updateOrder, true);
-  return [{
-    filename: `${updateOrder._id}_product_invoice`,
-    data: invoiceGenerator,
-    contentType: 'application/pdf'
-  }];
+  const invoice = [];
+  for (let item = 0;  item < updateOrder.cart.products.length; item++) {
+    const invoiceGenerator = await generateInvoice(updateOrder, true, updateOrder.cart.products[item]);
+    invoice.push({
+      filename: `${updateOrder._id}_product_invoice${item}`,
+      data: invoiceGenerator,
+      contentType: 'application/pdf'
+    });
+  }
+  return invoice;
 }
+
 const queueSendEmailToUser = async(data, invoice, isProductOrder = false) => {
   const emailType = isProductOrder ? 'product-order-confirmation' : 'order-confirmation';
   await mailgun.sendEmail(data.billingEmail, emailType, data, invoice);
 }
 
 const queueSendEmailToAdmin = async(data, adminEmails, isProductOrder = false) => {
-  const emailType = isProductOrder ? 'admin-product-order-confirmation' : 'admin-order-confirmation';
+  const emailType = 'admin-order-confirmation';
   // here use a loop as admin users are not expected to be much so no need
   // to create a mailing list to send to multiple admins
   for (const i of adminEmails) {

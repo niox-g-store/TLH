@@ -66,7 +66,7 @@ exports.adminNewOrderHtml = (order) => {
                             <hr style="border: none; border-top: 1px dashed #cccccc; margin: 20px 0;" />
 
                             <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 5px 0;">
-                                <strong>🧾 Order #:</strong> ${order._id}
+                                <strong>Order #:</strong> ${order._id}
                             </p>
                             <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 20px 0;">
                                 <strong>Date:</strong> ${moment(order.createdAt).format('MMMM D, YYYY')}
@@ -86,6 +86,26 @@ exports.adminNewOrderHtml = (order) => {
                                 <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 20px 0;">
                                     <strong>Venue:</strong> ${ticket.eventId.location}
                                 </p>
+                            `).join('')}
+
+                            ${order.cart.products.map(product => `
+                                <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 5px 0;">
+                                    <strong>Product:</strong> ${product.productName}
+                                </p>
+                                <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 5px 0;">
+                                    <strong>Quantity:</strong> ${product.quantity}
+                                </p>
+                                <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 5px 0;">
+                                    <strong>Price:</strong> ${formatCurrency(product.finalPrice)}
+                                </p>
+                                <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 20px 0;">
+                                    <strong>Delivery:</strong> ${product.needsDelivery ? 'Will be delivered to customer' : 'Customer will pick up'}
+                                </p>
+                                ${product.needsDelivery ? `
+                                    <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 20px 0;">
+                                        <strong>${product.deliveryInfo.address.island ? 'Island' : 'Mainland'} Delivery</strong>
+                                    </p>
+                                ` : ''}
                             `).join('')}
 
                             <hr style="border: none; border-top: 1px dashed #cccccc; margin: 20px 0;" />
