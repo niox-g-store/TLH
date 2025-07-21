@@ -56,8 +56,7 @@ const ForgotPasswordForm = (props) => {
               text='Send Email'
             />
             <Link className='mt-md-0' to={'/login'}>
-            <Button className='padding_top_extender' type='last' text='Back to login'>
-              </Button>
+              <Button className='last' text='Back to login' />
             </Link>
           </div>
         </form>

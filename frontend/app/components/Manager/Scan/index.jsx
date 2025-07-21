@@ -51,7 +51,7 @@ const ManagerScannerView = (props) => {
   }
 
   return (
-    <div className='container-lg px-4 d-flex flex-column'>
+    <div style={{ paddingBottom: '5em' }} className='container-lg px-4 d-flex flex-column'>
       {isLoading && <LoadingIndicator />}
       <CCard>
         <CCardBody className={`${isLightMode ? 'bg-white' : 'bg-black'} d-flex flex-column`}>

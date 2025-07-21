@@ -18,6 +18,8 @@
     gap: 1em;
     justify-content: center;
     margin: 1em 0em 2em 0em;
+    font-size: 18px;
+    align-items: center;
 }
 
 .pagination li {
@@ -26,8 +28,8 @@
 
 .pagination .active {
     background: var(--primary_color);
-    padding: 2px 5px;
-    border-radius: 3px;
+    padding: 6px 12px;
+    border-radius: 8px;
     color: white;
 }
 

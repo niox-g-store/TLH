@@ -56,6 +56,7 @@
       scrollbar-width: none; // Hide scrollbar for Firefox
       -ms-overflow-style: none; // Hide scrollbar for IE/Edge
       gap: 0em;
+      width: 100%;
 
       
       @include media-breakpoint-down(md) {

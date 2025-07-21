@@ -65,7 +65,7 @@ const ResetPasswordForm = (props) => {
           <div style={{ justifyContent: 'space-between' }} className='mt-5 d-flex flex-md-row align-items-md-center'>
             <Button text='Change Password'/>
               <Link className='mt-md-0' to={'/login'}>
-                <Button className='padding_top_extender' type='last' text='Back to login' />
+                <Button className='last' text='Back to login' />
               </Link>
           </div>
         </form>

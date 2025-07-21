@@ -117,3 +117,10 @@
 .modal-dialog {
   width: 100%;
 }
+
+.popup-content {
+  width: 50%;
+  @include media-breakpoint-down(md) {
+    width: 100%;
+  }
+}

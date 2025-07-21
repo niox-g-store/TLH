@@ -15,8 +15,8 @@
 
 .popup-close {
   position: absolute;
-  top: 20%;
-  right: 20%;
+  top: 15%;
+  right: 45%;
   background: white;
   color: #000;
   border: none;
@@ -37,7 +37,6 @@
   color: white;
   text-align: center;
   z-index: 10000;
-  height: 30em;
 }
 
 .popup-image {
@@ -106,6 +105,6 @@
     width: 97%;
   }
   .popup-close {
-    right: 15px;
+    right: 45%;
   }
 }

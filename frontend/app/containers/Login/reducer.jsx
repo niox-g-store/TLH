@@ -85,6 +85,7 @@ const loginReducer = (state = initialState, action) => {
           id: '',
           rememberMe: false
         },
+        twoFaPrmpt: false,
         formErrors: {},
         isLoading: false
       };

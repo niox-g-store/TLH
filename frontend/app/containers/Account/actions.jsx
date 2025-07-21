@@ -132,16 +132,19 @@ export const resetAccountPassword = () => {
       handleError(error, dispatch, title);
     } finally {
       dispatch(setProfileLoading(false))
-    }
+    updateProfile}
   };
 };
 
-export const updateProfile = (navigate) => {
+export const updateProfile = (navigate, google) => {
   return async (dispatch, getState) => {
     const profile = getState().account.user;
-    const rules = {
-      userName: 'required|username_format',
-    };
+    let rules = null;
+    if (!google) {
+     rules = {
+        userName: 'required|username_format',
+      };
+    }
 
     const newProfile = {
       name: profile.name,

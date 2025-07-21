@@ -172,13 +172,14 @@ const ManagerAccountForm = (props) => {
 
   if (user.role === ROLES.Member) { isLightMode = false }
   const isUserAllowed = user => user.role === ROLES.Member
+  const google = user.provider !== 'Email';
 
   const [editPicModal, setEditPicModal] = useState(false);
   const [profileUpload, setProfileUpload] = useState([]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    updateProfile(navigate);
+    updateProfile(navigate, google);
   };
 
   return (

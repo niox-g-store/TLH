@@ -64,7 +64,7 @@ const AccountSecurityForm = (props) => {
           </CCardTitle>
 
           {/* Password Change Section */}
-          <CForm className={`${isLightMode ? 'p-black' : 'p-white'}`} onSubmit={handleSubmit}>
+          <CForm className={`${isLightMode ? 'p-black' : 'p-white'} d-flex flex-column`} onSubmit={handleSubmit}>
             <Input
               type="password"
               name="password"
