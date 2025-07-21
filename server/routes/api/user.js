@@ -48,7 +48,8 @@ router.get('/search', auth, role.check(ROLES.Admin), async (req, res) => {
         ]
       },
       { password: 0, _id: 0 }
-    ).populate('organizer', 'companyName');
+    ).populate('organizer', 'companyName')
+    .sort('-createdAt');
 
     return res.status(200).json({
       users
@@ -128,6 +129,23 @@ router.put('/', auth, upload.single('image'), async (req, res) => {
     const update = req.body;
     let userDoc;
 
+    if (update.userName) {
+      const usernameRegex = /^[a-zA-Z0-9_-]+$/;
+      if (!usernameRegex.test(update.userName)) {
+        return res.status(400).json({
+          error: 'Username may only contain letters, numbers, underscores, and dashes.'
+        });
+      }
+
+      const existingUser = await User.findOne({ userName: update.userName, _id: { $ne: userId } });
+      if (existingUser) {
+        return res.status(400).json({
+          error: 'This username is already taken. Please choose a different one.'
+        });
+      }
+    }
+
+
     if (req.file) {
       update.imageUrl = `/uploads/profile/${req.file.filename}`;
     }
@@ -135,9 +153,8 @@ router.put('/', auth, upload.single('image'), async (req, res) => {
      update.organizer = null;
     }
 
-    userDoc = await User.findByIdAndUpdate(userId, update);
+    userDoc = await User.findByIdAndUpdate(userId, update, { new: true });
 
-    // If user has organizer linked, update that too
     if (userDoc.organizer) {
       const organizerUpdate = {};
       if (update.companyName) {
@@ -147,7 +164,7 @@ router.put('/', auth, upload.single('image'), async (req, res) => {
         organizerUpdate.phoneNumber = update.phoneNumber;
       }
       if (Object.keys(organizerUpdate).length > 0) {
-        await Organizer.findByIdAndUpdate(userDoc.organizer, organizerUpdate);
+        await Organizer.findByIdAndUpdate(userDoc.organizer, organizerUpdate, { new: true });
       }
     }
 
@@ -157,6 +174,7 @@ router.put('/', auth, upload.single('image'), async (req, res) => {
       user: userDoc
     });
   } catch (error) {
+    console.error("Error updating user:", error); // Log the error for debugging
     return res.status(400).json({
       error: 'Your request could not be processed. Please try again.'
     });
