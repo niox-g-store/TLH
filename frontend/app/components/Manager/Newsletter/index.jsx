@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   CRow,
   CCol,
@@ -16,15 +16,8 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Button from '../../Common/HtmlTags/Button';
 
-// Sample newsletter data
-const newsletters = Array.from({ length: 25 }, (_, i) => ({
-  email: `user${i + 1}@example.com`,
-  subscribedAt: new Date(Date.now() - i * 100000000).toLocaleDateString(),
-  status: i % 3 === 0 ? 'unsubscribed' : 'subscribed'
-}));
-
 const Newsletter = (props) => {
-  const { isLightMode, newsletters, userRole } = props;
+  const { isLightMode, newsletters, userRole, events } = props;
   const [currentPage, setCurrentPage] = useState(1);
   const newslettersPerPage = 10;
 
@@ -51,11 +44,15 @@ const Newsletter = (props) => {
           />
         </div>
       )}
-      {newsletters.map(newsletter => (
+      {currentNewsletters.length > 0 ?
+        currentNewsletters.map(newsletter => (
           <li key={newsletter.id}>
             <Link to={`/dashboard/newsletter/${newsletter.id}`}>{newsletter.title}</Link>
           </li>
-      ))}
+      ))
+      :
+       <p>You have not created any event</p>
+      }
 
       {/*<CRow className='gy-4'>
         {currentNewsletters.map((subscriber, idx) => (
@@ -107,6 +104,10 @@ const Newsletter = (props) => {
 
 
 class ManagerNewsletter extends React.PureComponent {
+  componentDidMount() {
+    this.props.fetchNewsletters();
+    this.props.getUserEvent();
+  }
   render () {
     return (
       <Newsletter {...this.props} />
@@ -116,6 +117,7 @@ class ManagerNewsletter extends React.PureComponent {
 
 const mapStateToProps = state => ({
   newsletters: state.newsletter.newsletters,
+  events: state.event.events,
   userRole: state.account.user.role,
 });
 

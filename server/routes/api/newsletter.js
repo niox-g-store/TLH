@@ -17,7 +17,7 @@ const auth = require('../../middleware/auth.js');
 const { ROLES } = require('../../constants');
 const { deleteFilesFromPath } = require("../../utils/deleteFiles");
 
-const { news, domain_unsubscribe } = keys.mailgun;
+const { news } = keys.mailgun;
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -191,8 +191,6 @@ router.post('/subscribe', async (req, res) => {
   }
 });
 
-
-
 // return all created campaign message
 router.get('/',
   auth,
@@ -346,131 +344,29 @@ router.post('/send',
       });
     }
 
-    // fetch campaign data
+    if (newsletterSelected) {
+      const newsletterCount = await Newsletter.countDocuments()
+      await mailgun.sendEmail(news, 'newsletter', camp);
 
-    const emails = [
-      ...fetchedNewsLetter.map((item) => item.email),
-      ...fetchedUsers.map((item) => item.email)
-    ]
+      await Campaign.findOneAndUpdate(
+          { _id: camp._id },
+          { sent: true,
+            sentDate: new Date(),
+            sentTo: newsletterCount
+          }
+        )
+        return res.status(200).json({
+          success: true,
+          message: `sent!!`,
+        });
 
-    await Campaign.findOneAndUpdate(
-        { _id: camp._id },
-        { sent: true,
-          sentDate: new Date(),
-          sentTo: sendTo.length
-        }
-      )
-      return res.status(200).json({
-        success: true,
-        message: `sent!!`,
-      });
-
-    const newEmails = []
-    for (const email of emails) {
-      if (newEmails.includes(email)) {
-        continue
-      } else { newEmails.push(email) }
     }
-
-    // create receipients variables
-    /*let emailsList = [];
-    newEmails.forEach((email, index) => {
-      emailsList.push(
-        {
-          [email]: { unique_id: index * 2 }
-        }
-      )
-    })*/
-   // fetch mailing list from mailgun and compare my mailing list emails
-   // with newEmails, fetch emails from newEmails that don't exist in mailing list email
-   // add the new emails to mailing list then send email, if no new user to add to mailing
-   // list, skip the entire adding to mailing list
-
-   const mailingListEmails = await mailgun.fetchMembers();
-   const suppressedList = []
-   for(const c of newEmails) {
-    if (mailingListEmails.includes(c)) {
-      continue
-    } else {
-      const sm = c.split('@')[0];
-      let name = sm.charAt(0).toUpperCase() + sm.slice(1)
-      name = name.replace(/[^a-zA-z]/g, '')
-      const cBase = Buffer.from(c).toString('base64');
-      suppressedList.push({
-        address: c,
-        name: name,
-        subscribed: true,
-        vars: {
-          unsubscribe_link: `${domain_unsubscribe}/${cBase}`,
-          name: name,
-        },
-      })
-    }
-   }
-   if (suppressedList.length > 0) {
-    // create multiple members
-    await mailgun.createMembers(suppressedList);
-   }
-   
-
-    // send receipients to mailgun
-    // check if length of emailsJson > 1000 as mailgun process
-    // 1000 emails at once
-    // await mailGunSender(emailsList, camp)
-    // await mailgun.sendEmail(news, 'newsletter', camp)
-    await mailgun.sendEmail(news, 'newsletter', camp);
-    await Campaign.findOneAndUpdate({ _id: camp._id }, { sent: true })
-    return res.status(200).json({
-      success: true,
-      message: `sent!!`,
-    });
-
   } catch (error) {
     return res.status(400).json({
       error: 'Error sending campaign Please try again.'
     })
   }
 })
-
-
-/**
- * sends email
- */
-/*const mailGunSender = async(emailList, campaign) => {
-  try {
-    const emailLength = emailList.length;
-
-    if (emailLength === 0) {
-      throw new Error('No emails to send.');
-    }
-
-    const batchSize = 1000;
-    const doubleEmailList = [];
-
-    for (let i = 0; i < emailList.length; i += batchSize) {
-      doubleEmailList.push(emailList.slice(i, i + batchSize));
-    }
-
-    await sendEmailBatch(doubleEmailList, campaign)
-  } catch (error) {
-    throw new Error (error)
-  }
-}
-
-const sendEmailBatch = async (batch, campaign) => {
-  for (const list of batch) {
-    let emailJSON = {}
-    for (const c of list) {
-      const e_mail = Object.keys(c)
-      emailJSON[e_mail] = c[e_mail]
-    }
-    await mailgun.sendEmail(emailJSON, 'newsletter', campaign)
-  }
-  await Campaign.findOneAndUpdate({ _id: campaign._id }, { sent: true })
-  return new Promise((resolve) => {
-    setTimeout(resolve, 1000);
-  });
-}; */
 
 
 // create and store a caomapign message to db
@@ -482,59 +378,27 @@ router.post('/create',
     try {
       const {
         title, content,
-        eventId, isDiscountedSelected,
-        isNewArrivalsSelected, footer, links,
+        eventId, shouldEmailContainUserName = false,
       } = req.body;
-      const files = req.files;
-
       if (!title || !content) {
         return res
           .status(400)
           .json({ error: 'You must enter title & content.' });
       }
+      const files = req.files;
+      const imageUrls = files.map((file) => `/uploads/newsletter/${file.filename}`);
+      const organizer = await Organizer.findById(req.user.organizer);
+      const user = await User.findById(req.user._id);
+      const event = await Event.findById(eventId)
 
-      let imageUrl, imageKey = null;
-      let bestSellingProducts = [], discountedProducts = [], newArrivals = [];
-      if (image) {
-        if (uploadType === 'cloud_storage' && image) {
-          try {
-            const result = await cloudinaryFileStorage(image, 'email/')
-            imageUrl = result.imageUrl;
-            imageKey = result.imageKey;
-          } catch (error) {
-            return res.status(400).json({
-              error: 'Error uploading image Please try again.'
-            })
-          }
-        } else if (image) {
-          const { imageUrl: s3ImageUrl, imageKey: s3ImageKey } = await s3Upload(image);
-          imageUrl = s3ImageUrl;
-          imageKey = s3ImageKey;
-        }
-      }
-
-      if (isBestSellingSelected === 'true') {
-        // grab best selling products
-        bestSellingProducts = await fetchBestSelling()
-      }
-      if (isDiscountedSelected === 'true') {
-        const fetchDiscount = await fetchDiscounted()
-        discountedProducts = fetchDiscount;
-      }
-      if (isNewArrivalsSelected === 'true') {
-        const newA = await fetchNewArrivals()
-        newArrivals = newA
-      }
       const newCampaign = new Campaign({
         title,
         content,
-        footer,
-        links,
-        imageUrl,
-        imageKey,
-        best_selling_products: bestSellingProducts,
-        discounted_products: discountedProducts,
-        new_arrivals: newArrivals,
+        imageUrls,
+        user: user._id,
+        event: event._id,
+        organizer: organizer._id,
+        shouldEmailContainUserName,
       });
 
       const savedCampaign = await newCampaign.save();
@@ -551,19 +415,5 @@ router.post('/create',
       });
     }
 });
-
-
-/**
- * generates unique code
- */
-const generateUniqueCode = () => {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  //const characters = '0123456789';
-  let code = '';
-  for (let i = 0; i < 5; i++) {
-      code += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return code
-}
 
 module.exports = router;

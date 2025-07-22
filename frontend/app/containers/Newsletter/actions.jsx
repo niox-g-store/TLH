@@ -1,10 +1,23 @@
-import { FETCH_NEWSLETTERS, CREATE_NEWSLETTER } from './constants';
+import {
+  FETCH_NEWSLETTERS,
+  CREATE_NEWSLETTER,
+  SET_NEWSLETTER_EVENT_ID
+} from './constants';
+
+import { API_URL } from '../../constants';
 
 export const fetchNewsletters = () => async dispatch => {
-  const response = await fetch('/api/newsletters');
-  const newsletters = await response.json();
+  const response = await fetch(`${API_URL}/newsletters`);
+  const { newsletters } = await response.data;
   dispatch({ type: FETCH_NEWSLETTERS, payload: newsletters });
 };
+
+export const setNewsletter = (eventId) => {
+  return {
+    type: SET_NEWSLETTER_EVENT_ID,
+    payload: eventId
+  }
+}
 
 export const createNewsletter = (data) => async dispatch => {
   const response = await fetch('/api/newsletters', {

@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { createNewsletter } from '../../../containers/Newsletter/actions';
+import actions from '../../../../actions';
+import { withRouter } from '../../../../withRouter';
+import { ROLES } from '../../../constants';
 import DescriptionBox from '../../../store/DescriptionBox';
 import Switch from '../../../store/Switch';
 import AdvancedUpload from '../../../store/AdanceFileUpload';
-import { ROLES } from '../../../constants';
-import actions from '../../../../actions';
 
-const AddNewsletter = (props) => {
+const AddNewsletterForm = (props) => {
   const { createNewsletter, userRole, formData  } = props;
 
   const handleInputChange = (name, value) => {
@@ -49,9 +49,29 @@ const AddNewsletter = (props) => {
   );
 };
 
+class AddNewsletter extends React.PureComponent {
+  componentDidMount () {
+    const eventId = this.props.match.params.id;
+    this.props.setNewsletter(eventId);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.match.params.id !== prevProps.match.params.id) {
+      const eventId = this.props.match.params.id;
+      this.props.setNewsletter(eventId);
+    }
+  }
+
+  render() {
+    return (
+      <AddNewsletterForm {...this.props} />
+    )
+  }
+}
+
 const mapStateToProps = state => ({
   userRole: state.account.user.role,
   formData: state.newsletter.formData
 });
 
-export default connect(mapStateToProps, actions)(AddNewsletter);
+export default connect(mapStateToProps, actions)(withRouter(AddNewsletter));

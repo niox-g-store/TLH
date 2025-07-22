@@ -299,7 +299,7 @@ const prepareTemplate = (type, host, data) => {
       message = template.newsLetterEmail(data);
       message.sender = news;
       break;
-      
+
     case 'newsletter-reminder':
       message = template.newsLetterEmail(data);
       break;

@@ -77,6 +77,7 @@ const Admin = (props) => {
           <Route path='account' element={<ManagerAccount {...props} />} />
           <Route path='security' element={<AccountSecurity {...props} />} />
           <Route path='newsletter' element={<ManagerNewsletter {...props} />} />
+          <Route path='settings' element={<Setting {...props} />} />
 
           <Route path='events/add' element={<AddEvent {...props} />} />
           <Route path='events/edit/:id' element={<EditEvent {...props} />} />
@@ -108,7 +109,10 @@ const Admin = (props) => {
           <Route path='products/add' element={<AddProduct {...props} />} />
           <Route path='products/edit/:id' element={<EditProduct {...props} />} />
 
-          <Route path='settings' element={<Setting {...props} />} />
+          {/*<Route path='newsletter/add' element={<ManagerNewsletter {...props} />} />*/}
+          {/*<Route path='newsletter/:id' element={<ManagerNewsletter {...props} />} />*/}
+
+          {/*<Route path='withdrawals' element={<ManagerNewsletter {...props} />} />*/}
           
           <Route path='*' element={<Page404 />} />
         </Routes>

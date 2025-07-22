@@ -20,6 +20,7 @@ import forgotPassword from './containers/ForgotPassword/reducer';
 import resetPassword from './containers/ResetPassword/reducer';
 import product from './containers/Product/reducer';
 import setting from './containers/Setting/reducer';
+import newsletter from './containers/Newsletter/reducer';
 
 const rootReducer = combineReducers({
   account,
@@ -43,5 +44,6 @@ const rootReducer = combineReducers({
   resetPassword,
   product,
   setting,
+  newsletter,
 });
 export default rootReducer;
