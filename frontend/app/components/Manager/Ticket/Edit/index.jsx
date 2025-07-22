@@ -104,6 +104,18 @@ const EditTicketForm = (props) => {
             />
         </Col>
 
+        <Col xs='12' lg='6' className={`${isLightMode ? 'p-black': 'p-white'}`}>
+          <p className="p-purple">For Undisclosed locations the ticket will contain the location you set here</p>
+          <Input
+            type='text'
+            label='Location'
+            name='location'
+            placeholder='Enter ticket location (Optional)'
+            value={ticket.location || ''}
+            onInputChange={(name, value) => editTicketChange(name, value)}
+          />
+        </Col>
+
         {/* Quantity */}
         <Col className={isLightMode ? 'p-black' : 'p-white'} xs='12' lg='6'>
           <Input

@@ -63,7 +63,7 @@ const ProductViewer = (props) => {
   };
 
   const getDiscountedPrice = (price, discountPercentage) => {
-    return price - (price * (discountPercentage / 100));
+    return discountPercentage
   };
 
   const handleQuantityChange = (change) => {
@@ -172,7 +172,7 @@ const handleDeliveryInfoChange = (name, value) => {
                     {formatPrice(getDiscountedPrice(product.price, product.discountPrice))}
                   </span>
                   <span className="discount-badge">
-                    {product.discountPrice}% OFF
+                    {(product.price - product.discountPrice) / 100}% OFF
                   </span>
                 </div>
               ) : (

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "../../../Common/HtmlTags/Button";
 import Row from '../../../Common/Row';
 import Col from '../../../Common/Col';
@@ -42,6 +42,8 @@ const AddTicketForm = (props) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const eventIdFromQuery = searchParams.get('event');
+
+  const [showLocationInput, setShowLocationInput] = useState(false);
 
   const handleSubmit = (e) =>  {
     e.preventDefault();
@@ -100,6 +102,30 @@ const AddTicketForm = (props) => {
             />
         </Col>
 
+        {/* Ticket Location */}
+        <Col className={isLightMode ? 'p-black' : 'p-white'} xs='12' lg='6'>
+          <p className="p-purple">For Undisclosed locations the ticket will contain the location you set here</p>
+          <SelectOption
+            label='Add Ticket Location? (Optional)'
+            options={[
+              { label: 'No', value: false },
+              { label: 'Yes', value: true }
+            ]}
+            value={showLocationInput}
+            handleSelectChange={(value) => setShowLocationInput(value.value)}
+          />
+          {showLocationInput && (
+            <Input
+              type='text'
+              label='Ticket Location'
+              name='location'
+              placeholder='Enter ticket location'
+              value={ticketFormData.location || ''}
+              onInputChange={(name, value) => ticketChange(name, value)}
+            />
+          )}
+        </Col>
+
         {/* Quantity */}
         <Col className={isLightMode ? 'p-black' : 'p-white'} xs='12' lg='6'>
           <Input
@@ -155,6 +181,7 @@ const AddTicketForm = (props) => {
             handleSelectChange={(value) => ticketChange('coupons', value)}
           />
         </Col>
+
       </Row>
 
       <Row className='mt-4'>

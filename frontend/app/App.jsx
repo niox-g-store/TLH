@@ -30,13 +30,15 @@ import PrivacyPolicy from './containers/Policy';
 import OrderSuccess from './containers/Order/success';
 import ForgotPassword from './containers/ForgotPassword';
 import ResetPassword from './containers/ResetPassword';
+import Maintenance from './containers/Maintenance';
 
 import ScrollToTop from './components/Common/ScrollToTop';
 
-const App = (props) => {
-  const { user } = props;
+const Appplication = (props) => {
+  const { user, settings, uuser } = props;
   const location = useLocation();
   const USER = user ?? user.role;
+  const { maintenance } = settings;
 
   useEffect(() => {
     AOS.init({
@@ -47,31 +49,48 @@ const App = (props) => {
       anchorPlacement: 'bottom-center'
     });
     AOS.refresh();
+
     const isLight = localStorage.getItem('isLightMode') === 'true';
     document.body.classList.toggle('light-mode', isLight);
     document.body.classList.toggle('dark-mode', !isLight);
   }, []);
 
-  const hideHeader = [ '/login',
-                        '/signup',
-                        '/organizer-signup',
-                        '/dashboard',
-                        '/forgot-password',
-                        '/reset-password'
+  if (maintenance) {
+    if (!uuser && !location.pathname.startsWith("/login")) {
+      return <Maintenance />
+    }
+    if (!uuser && location.pathname === '/login') {
+    }
+  }
+
+  const hideHeader = [
+    '/login',
+    '/signup',
+    '/organizer-signup',
+    '/dashboard',
+    '/forgot-password',
+    '/reset-password'
   ];
-  const hideFooter = [ '/event/', '/terms',
-                       '/privacy', '/dashboard',
-                       '/faq', '/gallery',
-                       '/order', '/forgot-password',
-                       '/login', '/signup',
-                       '/organizer-signup',
-                       '/reset-password',
-                       '/shop',
-                       '/product'
-  ]
+  const hideFooter = [
+    '/event/',
+    '/terms',
+    '/privacy',
+    '/dashboard',
+    '/faq',
+    '/gallery',
+    '/order',
+    '/forgot-password',
+    '/login',
+    '/signup',
+    '/organizer-signup',
+    '/reset-password',
+    '/shop',
+    '/product'
+  ];
+
   const showHeader = (USER.role === ROLES.Member ||
-                            !hideHeader.some(path => location.pathname.startsWith(path))
-                            );
+                      !hideHeader.some(path => location.pathname.startsWith(path))
+                     );
   //const showFooter = (USER.role === ROLES.Member || !hideFooter.some(path => location.pathname.startsWith(path)))
   const showFooter = (!hideFooter.some(path => location.pathname.startsWith(path)))
 
@@ -106,7 +125,7 @@ const App = (props) => {
         <Route path='/faq' element={<FAQs />} />
         <Route path='/terms' element={<Terms />} />
         <Route path='/privacy' element={<PrivacyPolicy />} />
-        
+
         <Route path='/dashboard/*' element={<Authentication><Dashboard /></Authentication>} />
       </Routes>
 
@@ -115,9 +134,23 @@ const App = (props) => {
   );
 }
 
+class App extends React.PureComponent {
+  componentDidMount() {
+    this.props.fetchSettings();
+    this.props.fetchHomeMedia();
+  }
+  render() {
+    return <Appplication {...this.props} />
+  }
+}
+
 const mapStateToProps = (state) => {
+  console.log(state)
   return {
-    user: state.account.user
+    uuser: state.account.user.role === ROLES.Admin,
+    authenticated: state.authentication.authenticated,
+    user: state.account.user,
+    settings: state.setting.settings
   };
 };
 

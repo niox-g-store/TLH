@@ -29,8 +29,8 @@ const AdvancedUploadHelper = ({ initialUrls = [], onRemoveUrlChange }) => {
     // This allows consistent rendering logic with the original AdvancedUpload.
     const processedInitialUrls = initialUrls.map((url) => {
       const isImage = /\.(jpeg|jpg|gif|png|webp)$/i.test(url);
-      const isVideo = /\.(mp4|webm|ogg)$/i.test(url);
-
+      const isVideo = /\.(mp4|webm|ogg|avi|mov|wmv|flv|mkv|3gp|mpeg|mpg|m4v)$/i.test(url);
+      
       return {
         name: url.substring(url.lastIndexOf('/') + 1), // Extract filename from URL
         type: isImage ? 'image/jpeg' : isVideo ? 'video/mp4' : 'application/octet-stream',

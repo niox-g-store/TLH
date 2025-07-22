@@ -40,6 +40,8 @@ const assignQrCode = async (order, cart) => {
     const ticketItems = cart.tickets.filter(item => item.type !== 'product');
     
     for (const ticketItem of ticketItems) {
+      const ticketLocation = await Ticket.findOne({ _id: ticketItem.ticketId })
+      console.log()
       const { coupon,
               ticketType,
               eventName,
@@ -52,7 +54,7 @@ const assignQrCode = async (order, cart) => {
               couponAmount,
               couponPercentage,
               eventId,
-              ticketId
+              ticketId,
       } = ticketItem;
 
       for (let i = 0; i < quantity; i++) {
@@ -117,7 +119,8 @@ const assignQrCode = async (order, cart) => {
           billingName: name,
           ownedByModel: isGuest ? 'Guest' : 'User',
           code: shortCode,
-          bytes: qrBuffer
+          bytes: qrBuffer,
+          ticketLocation: ticketLocation.location
         });
 
         const savedQr = await qr.save();
@@ -553,9 +556,16 @@ router.get(
 
 router.post('/invoice-download', auth, async (req, res) => {
   try {
-    const { product } = req.body;
+    const { productData = null, orderId = null } = req.body;
     const invoice = req.body.invoice;
-    const pdfBuffer = await generateInvoice(invoice);
+    let pdfBuffer = null;
+    if (productData && orderId) {
+      const order = await Order.findById(orderId).populate('guest');
+      order.name = order?.guest ? order.guest.name : order.user.name
+      pdfBuffer = await generateInvoice(order, true, productData)
+    } else {
+      pdfBuffer = await generateInvoice(invoice);
+    }
 
     res.set({
       'Content-Type': 'application/pdf',

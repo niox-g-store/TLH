@@ -204,6 +204,11 @@ const OrderViewer = (props) => {
                         :
                           'Pickup at Next Event'
                         }
+                        <Button
+                            text={`Download Product Inovice`}
+                            onClick={() => downloadInvoice(false, order._id, true, product)}
+                            style={{ padding: '10px 15px', margin: '1em 0em 0.5em 0em' }}
+                          />
                       </div>
                     ))
                   )

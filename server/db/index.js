@@ -1,6 +1,7 @@
 require('dotenv').config();
 const chalk = require('chalk');
 const mongoose = require('mongoose');
+const Setting = require('../models/setting');
 
 const keys = require('../config/keys');
 const { database } = keys;
@@ -12,6 +13,21 @@ const DB_PASS = database.PASS;
 const DB_AUTH_SOURCE = database.AUTH_SOURCE;
 
 const DB_URI = `mongodb://${DB_USER}:${encodeURIComponent(DB_PASS)}@${DB_HOST}:${DB_PORT}/${DB_NAME}?authSource=${DB_AUTH_SOURCE}`
+
+// create default settings for site
+const ensureDefaultSetting = async () => {
+  try {
+    const count = await Setting.countDocuments();
+    if (count === 0) {
+      await Setting.create({});
+      console.log('Default Setting instance created.');
+    } else {
+      console.log('Setting instance already exists. No new instance created.');
+    }
+  } catch (error) {
+    console.error('Error ensuring single Setting instance:', error);
+  }
+};
 
 // Setup MongoDB connection
 const setupDB = async () => {
@@ -28,9 +44,11 @@ const setupDB = async () => {
     });
 
     console.log(`${chalk.green('✓')} ${chalk.blue('MongoDB Connected!')}`);
+    await ensureDefaultSetting()
   } catch (error) {
     console.error(`${chalk.red('✗')} ${chalk.yellow('MongoDB Connection Error:')}`, error);
     process.exit(1);
   }
 };
+
 module.exports = setupDB;

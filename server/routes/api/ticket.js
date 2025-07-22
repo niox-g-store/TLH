@@ -103,7 +103,7 @@ router.post(
       const {
         type, price,
         discount, discountPrice,
-        quantity, description
+        quantity, description, location
       } = req.body;
       const coupons = req.body.coupons.length > 0 ? req.body.coupons.map(coupon => coupon.value) : [];
       const user = req.user._id;
@@ -114,6 +114,7 @@ router.post(
         price,
         quantity,
         description,
+        location,
         discount: discount || false,
         discountPrice: discountPrice || 0,
         coupons: coupons || []
@@ -153,7 +154,7 @@ router.put(
   role.check(ROLES.Admin, ROLES.Organizer),
   async (req, res) => {
     try {
-      const { type, discount, description, price, discountPrice, quantity } = req.body;
+      const { type, discount, description, price, discountPrice, quantity, location } = req.body;
       let coupons = [];
 
       if (Array.isArray(req.body.coupons) && req.body.coupons.length > 0) {
@@ -174,6 +175,7 @@ router.put(
           type,
           quantity,
           description,
+          location,
           discount,
           discountPrice: discount ? discountPrice : 0
         },

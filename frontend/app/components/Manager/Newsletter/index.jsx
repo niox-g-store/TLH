@@ -10,6 +10,11 @@ import {
   CPaginationItem,
   CBadge
 } from '@coreui/react';
+import { ROLES } from '../../../constants';
+import actions from '../../../actions';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import Button from '../../Common/HtmlTags/Button';
 
 // Sample newsletter data
 const newsletters = Array.from({ length: 25 }, (_, i) => ({
@@ -18,7 +23,8 @@ const newsletters = Array.from({ length: 25 }, (_, i) => ({
   status: i % 3 === 0 ? 'unsubscribed' : 'subscribed'
 }));
 
-const ManagerNewsletter = ({ isLightMode }) => {
+const Newsletter = (props) => {
+  const { isLightMode, newsletters, userRole } = props;
   const [currentPage, setCurrentPage] = useState(1);
   const newslettersPerPage = 10;
 
@@ -34,6 +40,22 @@ const ManagerNewsletter = ({ isLightMode }) => {
       </div>
         <h3 className={`${isLightMode ? 'p-black': 'p-white'}`}>Send reminders, newsletters, and campaign emails to users </h3>  
       <hr className={`${isLightMode ? 'p-black' : 'p-white'}`} />
+
+      {userRole === ROLES.Admin && (
+        <div className="admin-section">
+          <p>As an admin, you can send newsletters to subscribers, users, and organizers.</p>
+          <Button
+            className="primary"
+            text="Create Newsletter"
+            onClick={() => window.location.href = '/dashboard/newsletter/add'}
+          />
+        </div>
+      )}
+      {newsletters.map(newsletter => (
+          <li key={newsletter.id}>
+            <Link to={`/dashboard/newsletter/${newsletter.id}`}>{newsletter.title}</Link>
+          </li>
+      ))}
 
       {/*<CRow className='gy-4'>
         {currentNewsletters.map((subscriber, idx) => (
@@ -81,4 +103,20 @@ const ManagerNewsletter = ({ isLightMode }) => {
   );
 };
 
-export default ManagerNewsletter;
+
+
+
+class ManagerNewsletter extends React.PureComponent {
+  render () {
+    return (
+      <Newsletter {...this.props} />
+    )
+  }
+}
+
+const mapStateToProps = state => ({
+  newsletters: state.newsletter.newsletters,
+  userRole: state.account.user.role,
+});
+
+export default connect(mapStateToProps, actions)(ManagerNewsletter);

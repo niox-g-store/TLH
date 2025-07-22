@@ -71,20 +71,33 @@ export const userOrders = () => {
 }
 
 
-export const downloadInvoice = (invoice, orderId) => {
+export const downloadInvoice = (invoice, orderId, product=false, productData) => {
   return async (dispatch) => {
     dispatch(setOrderLoading(true));
     try {
-      const response = await axios.post(
-        `${API_URL}/order/invoice-download`,
-        { invoice },
-        { responseType: 'blob' } // important!
-      );
-      const blob = new Blob([response.data], { type: 'application/pdf' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = `${orderId}_invoice.pdf`;
-      link.click();
+      if (product) {
+        const response = await axios.post(
+          `${API_URL}/order/invoice-download`,
+          { orderId, productData },
+          { responseType: 'blob' } // important!
+        );
+        const blob = new Blob([response.data], { type: 'application/pdf' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `TheLinkHangout_${orderId}_product_invoice.pdf`;
+        link.click();
+      } else {
+        const response = await axios.post(
+          `${API_URL}/order/invoice-download`,
+          { invoice },
+          { responseType: 'blob' } // important!
+        );
+        const blob = new Blob([response.data], { type: 'application/pdf' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `TheLinkHangout_${orderId}_invoice.pdf`;
+        link.click();
+    }
     } catch (error) {
       handleError(error, dispatch);
     } finally {

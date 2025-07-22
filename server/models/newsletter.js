@@ -9,8 +9,8 @@ const NewsletterSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
-  updated: Date,
-  created: {
+  updatedAt: Date,
+  createdAt: {
     type: Date,
     default: Date.now
   }

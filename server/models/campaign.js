@@ -1,70 +1,51 @@
 const Mongoose = require('mongoose');
-const slugify = require('slugify'); // Import slugify
 const { Schema } = Mongoose;
 
 // Campaign Schema
 const CampaignSchema = new Schema({
-  heading: {
+  title: {
     type: String,
     default: null,
   },
-  sub_heading: {
+  content: {
     type: String,
     default: null,
   },
-  slug: {
-    type: String,
-    unique: true // Ensure slugs are unique
-  },
-  footer: {
-    type: Boolean,
-    default: true,
-  },
-  links: {
-    type: Boolean,
-    default: true,
-  },
-  imageKey: {
-    type: String,
-    default: null,
-  },
-  imageUrl: {
-    type: String,
-    default: null
-  },
+  imageUrls: [{ type: String }],
   sent: {
     type: Boolean,
     default: false,
   },
-  best_selling_products: {
-    type: Mongoose.Schema.Types.Mixed,
-    default: [],
+  sentTo: {
+    type: Number,
+    default: 0
   },
-  discounted_products: {
-    type: Mongoose.Schema.Types.Mixed,
-    default: [],
+  sentDate: {
+    type: Date
   },
-  new_arrivals: {
-    type: Mongoose.Schema.Types.Mixed,
-    default: [],
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
   },
-  updated: Date,
-  created: {
+  shouldEmailContainUserName: {
+    type: Boolean,
+    default: false
+  },
+  organizer: {
+    type: Schema.Types.ObjectId,
+    ref: 'Organizer',
+    default: null
+  },
+  event: {
+    type: Schema.Types.ObjectId,
+    ref: 'Event',
+    default: null
+  },
+  updatedAt: Date,
+  createdAt: {
     type: Date,
     default: Date.now
   }
-});
-
-// Middleware to generate slug before saving
-CampaignSchema.pre('save', function (next) {
-  if (this.heading) {
-    this.slug = slugify(this.heading, {
-      lower: true, // Convert to lowercase
-      strict: true, // Remove special characters
-      trim: true // Remove leading/trailing spaces
-    });
-  }
-  next();
 });
 
 module.exports = Mongoose.model('Campaign', CampaignSchema);

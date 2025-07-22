@@ -10,7 +10,7 @@ exports.productInvoiceGenerator = (order, product) => {
   const actualDeliveryFee = deliveryInfo?.address?.deliveryFee || 0; // Default to 0 if not defined or if no delivery
   
   // Calculate total: product finalPrice + actualDeliveryFee if delivery is needed
-  const total = product.finalPrice + (product.needsDelivery ? actualDeliveryFee : 0);
+  const total = ((product.finalPrice * product.quantity) + (product.needsDelivery ? actualDeliveryFee : 0));
 
   // Format deliveryFee using actualDeliveryFee
   const formattedDeliveryFee = `${Naira}${actualDeliveryFee.toLocaleString()}`;
@@ -120,7 +120,29 @@ exports.productInvoiceGenerator = (order, product) => {
                   <p style="margin: 0; padding: 8px; font-size: 14px; color: black;">
                     Discount
                     <span style="float: right; font-weight: bold; color: black;">
-                    -${Naira}${(product.price - product.discountPrice).toLocaleString()}
+                    -${Naira}${(product.price - product.discountPrice).toLocaleString()} x ${product.quantity}
+                    </span>
+                  </p>
+                </div>
+              </div>
+
+              <div style="display: flex;">
+                <div style="width: 100%; padding: 5px;">
+                  <p style="margin: 0; padding: 8px; font-size: 14px; color: black;">
+                    Discount price
+                    <span style="float: right; font-weight: bold; color: black;">
+                    ${Naira}${(product.discountPrice).toLocaleString()} x ${product.quantity}
+                    </span>
+                  </p>
+                </div>
+              </div>
+
+              <div style="display: flex;">
+                <div style="width: 100%; padding: 5px;">
+                  <p style="margin: 0; padding: 8px; font-size: 14px; color: black;">
+                    Delivery fee
+                    <span style="float: right; font-weight: bold; color: black;">
+                    ${product.needsDelivery ? formattedDeliveryFee : '₦0'}
                     </span>
                   </p>
                 </div>
@@ -143,7 +165,18 @@ exports.productInvoiceGenerator = (order, product) => {
                   <p style="margin: 0; padding: 8px; font-size: 14px; color: black;">
                     Price
                     <span style="float: right; font-weight: bold; color: black;">
-                      ${Naira}${(product.price).toLocaleString()}
+                      ${Naira}${(product.price).toLocaleString()} x ${product.quantity}
+                    </span>
+                  </p>
+                </div>
+              </div>
+
+              <div style="display: flex;">
+                <div style="width: 100%; padding: 5px;">
+                  <p style="margin: 0; padding: 8px; font-size: 14px; color: black;">
+                    Delivery fee
+                    <span style="float: right; font-weight: bold; color: black;">
+                    ${product.needsDelivery ? formattedDeliveryFee : '₦0'}
                     </span>
                   </p>
                 </div>

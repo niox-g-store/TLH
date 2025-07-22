@@ -23,10 +23,6 @@ module.exports = {
     user: process.env.FILE_MANAGER_USER,
     pwd: process.env.FILE_MANAGER_PASSWORD
   },
-  /*mailchimp: {
-    key: process.env.MAILCHIMP_KEY,
-    listKey: process.env.MAILCHIMP_LIST_KEY
-  },*/
   mailgun: {
     key: process.env.MAILGUN_KEY,
     domain: process.env.MAILGUN_DOMAIN,

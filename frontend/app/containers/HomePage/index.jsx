@@ -22,43 +22,43 @@ const event4 = "./assets/events/event_4.jpeg";
 
 class Home extends React.PureComponent {
   componentDidMount() {
-    //this.props.fetchHomeMedia();
     this.props.fetchVisibleEvents();
   }
   render () {
   const { authenticated, homeMedia, popOverEvents } = this.props;
   //if (authenticated) return <Navigate to='/dashboard' />;
 
-  let video, images = null
+  let video = null;
+  let images = null;
   const eventImages = [event1, event3, event2, event4];
 
-  /*if (homeMedia && homeMedia.length > 0) {
+  if (homeMedia && homeMedia.length > 0) {
     const defaultMedia = homeMedia.find(media => media.default === true);
 
     if (defaultMedia) {
       video = defaultMedia.mediaUrl;
     }
-    
+
     images = homeMedia
       .filter(media => {
         if (video && media.mediaUrl === video) {
           return false;
         }
-        return media.mediaUrl
+        return media.mediaUrl;
       })
       .map(media => API_URL + media.mediaUrl);
-  }*/
+  }
 
   return (
     <>
     {popOverEvents?.length > 0 && <PopupComponent data={popOverEvents} type={"image"}/>}
-    <HomeBanner />
+    <HomeBanner media={video}/>
       <div className="home">
       <HeroBanner
         heading="Discover The Link Hangouts Experience"
         desc="We are a vibrant lifestyle company based in Lagos, Nigeria, dedicated to curating and orchestrating exceptional events, parties, and hangouts that bring people together to create lasting memories."
-        //bannerImage={images && images.length > 3 ? images : eventImages}
-        bannerImage={eventImages}
+        bannerImage={images && images.length > 3 ? images : eventImages}
+        //bannerImage={eventImages}
         PButton={<PButton link={"/events"} content="Discover Events" />}
         SButton={<SButton link={"/gallery"} content="See Gallery" />}
         className={"border-10"}

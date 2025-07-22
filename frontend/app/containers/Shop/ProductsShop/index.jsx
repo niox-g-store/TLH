@@ -22,7 +22,7 @@ const ProductsShop = ({ products = [], isLoading, filterProducts }) => {
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     const getPrice = (product) => {
       return product.discountPrice > 0 
-        ? product.price - (product.price * (product.discountPrice / 100))
+        ? (product.price - product.discountPrice) / 100
         : product.price;
     };
 

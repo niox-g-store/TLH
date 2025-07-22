@@ -91,9 +91,9 @@ const AddProductForm = (props) => {
             <Input
               type='number'
               error={formErrors.discountPrice}
-              label='Discount Percentage (Optional)'
+              label='Discount Price (Optional)'
               name='discountPrice'
-              placeholder='Enter discount percentage (0-100)'
+              placeholder='Enter discount price'
               value={productFormData.discountPrice}
               onInputChange={productChange}
             />

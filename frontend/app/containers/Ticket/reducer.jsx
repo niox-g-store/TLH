@@ -25,6 +25,7 @@ const initialState = {
     quantity: '',
     discount: false,
     discountPrice: '',
+    location: '',
     coupons: []
   },
   ticketFormErrors: {},

@@ -15,7 +15,8 @@
     { "to": "/scan", "name": "Ticket Scanner", "prefix": "/dashboard", "icon": "IoScanOutline" },
     { "to": "/withdrawals", "name": "Withdrawals", "prefix": "/dashboard", "icon": "MdOutlinePayment" },
     { "to": "/account", "name": "Account Details", "prefix": "/dashboard", "icon": "MdOutlineAccountCircle" },
-    { "to": "/security", "name": "Account Security", "prefix": "/dashboard", "provider": ["Email"], "icon": "MdOutlineSecurity" }
+    { "to": "/security", "name": "Account Security", "prefix": "/dashboard", "provider": ["Email"], "icon": "MdOutlineSecurity" },
+    { "to": "/settings", "name": "Settings", "prefix": "/dashboard", "icon": "IoSettingsOutline" }
   ],
   "ROLE ORGANIZER": [
     { "to": "", "name": "Dashboard", "prefix": "/dashboard", "icon": "LuLayoutDashboard" },

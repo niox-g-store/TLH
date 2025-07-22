@@ -16,7 +16,7 @@ const Card = ({ event, type = "event", product }) => {
   };
 
   const getDiscountedPrice = (price, discountPercentage) => {
-    return price - (price * (discountPercentage / 100));
+    return discountPercentage
   };
 
   if (type === "gallery") {

@@ -69,6 +69,16 @@ exports.invoiceGenerator = (data) => {
                   <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black;">${date}</p>
                 </div>
               </div>
+              ${data?.ticketLocation?.length > 0 && 
+                `<div style="display: flex; margin-bottom: 5px;">
+                  <div style="width: 40%;">
+                    <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black; font-weight: bold;">Additional information</p>
+                  </div>
+                  <div style="width: 60%;">
+                    <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black;">${data.ticketLocation}</p>
+                  </div>
+                </div>
+              `}
             </div>
           </div>
 

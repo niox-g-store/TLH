@@ -68,9 +68,31 @@ class MailgunService {
       throw error;
     }
   }
-  
-  
-  
+
+  async createMailingList(address) {
+    try {
+      const trimmedAddress = address.trim().replace(/\s/g, '');
+      this.mailingG.lists.create({
+        address: `${trimmedAddress}@thelinkhangout.com`,
+        name: trimmedAddress,
+        description: `Mailing lists for organizer ${trimmedAddress}`,
+        access_level: 'readonly',
+        reply_preference: 'list',
+      })
+    } catch(error) {
+      console.error('cannot fetch mailing list:', error);
+      throw error;
+    }
+  }
+
+  async destroyMailingList(address) {
+    try {
+      const trimmedAddress = address.trim().replace(/\s/g, '');
+      this.mailingG.lists.destroy(`${trimmedAddress}@thelinkhangout.com`);
+    } catch(error) {
+      console.error(`Cannot destroy mailing list`, error);
+    }
+  }
   
   
   async fetchMembers() { // fetch member from mailing list
@@ -129,17 +151,17 @@ class MailgunService {
     }
   }
 
-  async createMember(email, firstName, lastName){ // create a member to a mailing list
+  async createMember(email, name){ // create a member to a mailing list
     try {
       const cBase = Buffer.from(email).toString('base64');
       const result = await this.mailingG.lists.members.createMember(news, {
         address: email,
-        name: `${firstName} ${lastName}`,
+        name,
         subscribed: true,
         upsert: "yes",
         vars: {
           unsubscribe_link: `${domain_unsubscribe}/${cBase}`,
-          name: firstName,
+          name: name,
         },
       })
       return result
@@ -149,12 +171,30 @@ class MailgunService {
     }
   }
 
-  async createMembers(members) {  // create member to a mailing list
+  async createMembers(address, eventMembers) {  // create members to a mailing list
     try {
-      const result = await this.mailingG.lists.members.createMembers(news, {
-        members: members,
-        upsert: "yes",
-      })
+      const trimmedAddress = address.trim().replace(/\s/g, '');
+      const members = [];
+      for (let sendTo of eventMembers) {
+        const cBase = Buffer.from(sendTo.email).toString('base64');
+        members.append({
+          address: sendTo.email,
+          name: sendTo.name,
+          subscribed: true,
+          upsert: "yes",
+          vars: {
+            unsubscribe_link: `${domain_unsubscribe}/${cBase}`,
+            name: sendTo.name
+          }
+        })
+      }
+      const result = await this.mailingG.lists.members.createMembers(
+        `${trimmedAddress}@thelinkhangout.com`,
+        {
+          members: members,
+          upsert: "yes"
+        }
+      )
       return result
     } catch (error) {
       console.error('Failed to add members to mailing list:', error);
@@ -191,7 +231,7 @@ class MailgunService {
     }
   }
 
-  async sendEmail(email, type, data, attachment = null) {  // send email
+  async sendEmail(email, type, data, attachment = null, hostName) {  // send email
     try {
       const message = prepareTemplate(type, host, data);
 
@@ -220,8 +260,14 @@ class MailgunService {
           }))
         };
       } else {
+        let from = null
+        if (type === 'newsletter-reminder') {
+          from = `${hostName} <${email}>`
+        } else {
+          from = `The Link Hangouts <${message.sender}>`
+        }
         config = {
-          from: `The Link Hangouts <${message.sender}>`,
+          from,
           to: email,
           subject: message.subject,
           text: message.text,
@@ -231,7 +277,7 @@ class MailgunService {
 
 
       let result = null;
-      if (type === 'newsletter') {
+      if (type === 'newsletter' || type === 'newsletter-reminder') {
         result = await this.mailingG.messages.create(domain, config);
       } else {
         result = await this.mailgun.messages.create(domain, config);
@@ -253,6 +299,11 @@ const prepareTemplate = (type, host, data) => {
       message = template.newsLetterEmail(data);
       message.sender = news;
       break;
+      
+    case 'newsletter-reminder':
+      message = template.newsLetterEmail(data);
+      break;
+
     case 'reset':
       message = template.resetEmail(host, data)
       message.sender = security;

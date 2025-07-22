@@ -16,6 +16,7 @@ const client = new OAuth2Client(clientID);
 const { secret, tokenLife } = keys.jwt;
 const QRCode = require('qrcode');
 const speakeasy = require('speakeasy');
+const maintenance = require('../../middleware/maintenance');
 
 const normalizeCompanyName = (str) => {
   if (!str) return '';
@@ -46,7 +47,7 @@ const checkIfEmail = (input) => {
   return emailRegex.test(input.trim());
 };
 
-router.post('/confirm-twofa', async (req, res) => {
+router.post('/confirm-twofa', maintenance, async (req, res) => {
   try {
     const { code, id, rememberMe } = req.body;
 
@@ -190,7 +191,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.post('/register', async (req, res) => {
+router.post('/register', maintenance, async (req, res) => {
   try {
     let { email, name, userName, password, isSubscribed } = req.body;
 
@@ -227,16 +228,16 @@ router.post('/register', async (req, res) => {
     }
 
     let subscribed = false;
-    /*if (isSubscribed) {
+    if (isSubscribed) {
       // add user to newsteller as they are subscribed
       const news = new Newsletter({
         email
       })
       await news.save();
       // also add user email to mailgun mailing list
-      mailgun.createMember(email, firstName, lastName)
+      mailgun.createMember(email, name)
       subscribed = true;
-    }*/
+    }
 
     const user = new User({
       email,
@@ -284,7 +285,7 @@ router.post('/register', async (req, res) => {
 });
 
 
-router.post('/register/organizer', async (req, res) => {
+router.post('/register/organizer', maintenance, async (req, res) => {
   try {
     let {
       email, companyName,
@@ -340,16 +341,16 @@ router.post('/register/organizer', async (req, res) => {
     }
 
     let subscribed = false;
-    /*if (isSubscribed) {
+    if (isSubscribed) {
       // add user to newsteller as they are subscribed
       const news = new Newsletter({
         email
       })
       await news.save();
       // also add user email to mailgun mailing list
-      mailgun.createMember(email, firstName, lastName)
+      mailgun.createMember(email, companyName)
       subscribed = true;
-    }*/
+    }
 
     const organizer = new Organizer({
       email,
@@ -508,7 +509,7 @@ router.post('/reset/:token', async (req, res) => {
 });
 
 // change password for logged in user when user goes to profile settings from frontend
-router.post('/reset', auth, async (req, res) => {
+router.post('/reset', maintenance, auth, async (req, res) => {
   try {
     const { password, confirmPassword } = req.body;
     const email = req.user.email;
@@ -563,7 +564,7 @@ router.post('/reset', auth, async (req, res) => {
 
 
 // for google sign up
-router.post('/register/google', async (req, res) => {
+router.post('/register/google', maintenance, async (req, res) => {
   try {
     const { isSubscribed, credential } = req.body;
     const user = await verifyGoogleToken(credential);
@@ -582,16 +583,16 @@ router.post('/register/google', async (req, res) => {
 
 
     let subscribed = false;
-    /*if (isSubscribed) {
+    if (isSubscribed) {
       // add user to newsteller as they are subscribed
       const news = new Newsletter({
         email
       })
       await news.save();
       // also add user email to mailgun mailing list
-      mailgun.createMember(email, firstName, lastName)
+      mailgun.createMember(email, user.given_name + user.family_name)
       subscribed = true
-    }*/
+    }
 
     const newUser = new User({
       email: email,
@@ -635,7 +636,7 @@ router.post('/register/google', async (req, res) => {
 })
 
 
-router.post('/google/signin', async (req, res) => {
+router.post('/google/signin', maintenance, async (req, res) => {
   try {
     const { credential, rememberMe } = req.body;
     const user = await verifyGoogleToken(credential);
@@ -699,7 +700,7 @@ router.post('/google/signin', async (req, res) => {
   }
 });
 
-router.post('/2fa/setup', auth, async (req, res) => {
+router.post('/2fa/setup', maintenance, auth, async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
     if (!user) return res.status(400).json({ error: 'User not found' });
@@ -722,7 +723,7 @@ router.post('/2fa/setup', auth, async (req, res) => {
   }
 });
 
-router.post('/2fa/verify', auth, async (req, res) => {
+router.post('/2fa/verify', maintenance, auth, async (req, res) => {
   try {
     const { token, secret } = req.body;
 

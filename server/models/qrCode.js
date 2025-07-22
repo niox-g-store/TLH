@@ -21,6 +21,7 @@ const qrCodeSchema = new mongoose.Schema({
   couponDiscount: { type: Number, default: 0 },
   couponAmount: { type: Number, default: 0 },
   couponPercentage: { type: Number, default: 0 },
+  ticketLocation: { type: String },
   ownedBy: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,

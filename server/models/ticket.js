@@ -32,6 +32,7 @@ const ticketSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  location: { type: String },
   qrCode: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'QRCode'

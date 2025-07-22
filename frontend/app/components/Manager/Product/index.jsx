@@ -45,17 +45,17 @@ const ManagerProductHelper = (props) => {
 
   const formatPrice = (price, discountPrice) => {
     if (discountPrice > 0) {
-      const discountedPrice = price - (price * (discountPrice / 100));
+      const discountedPrice = (price - discountPrice) / 100;
       return (
         <div>
           <span style={{ textDecoration: 'line-through', color: 'red', marginRight: '8px' }}>
             ₦{price.toLocaleString()}
           </span>
           <span style={{ fontWeight: 'bold', color: 'green' }}>
-            ₦{discountedPrice.toLocaleString()}
+            ₦{discountPrice.toLocaleString()}
           </span>
           <span style={{ fontSize: '12px', color: 'orange', marginLeft: '8px' }}>
-            ({discountPrice}% off)
+            ({discountedPrice}% off)
           </span>
         </div>
       );
