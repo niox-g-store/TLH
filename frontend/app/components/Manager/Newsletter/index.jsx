@@ -8,13 +8,17 @@ import {
   CCardText,
   CPagination,
   CPaginationItem,
-  CBadge
+  CBadge,
+  CImage
 } from '@coreui/react';
 import { ROLES } from '../../../constants';
 import actions from '../../../actions';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Button from '../../Common/HtmlTags/Button';
+import { API_URL } from '../../../constants';
+import resolveImage from '../../store/ResolveImage';
+import { formatDate } from '../../../utils/formatDate';
 
 const Newsletter = (props) => {
   const { isLightMode, newsletters, userRole, events } = props;
@@ -51,8 +55,46 @@ const Newsletter = (props) => {
           </li>
       ))
       :
-       <p>You have not created any event</p>
+       <p style={{ textAlign: 'center' }}>You have not created any campaign</p>
       }
+      {/* Event List */}
+        <CRow className='gy-4'>
+          <p style={{ textAlign: 'center' }} >You can choose from upcoming or ongoing events to send reminders</p>
+          {events.map((event, idx) => (
+            <CCol md={6} key={idx}>
+              <Link to={`/dashboard/events/edit/${event._id}`}>
+                <CCard style={{ height: '95%' }} className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}>
+                  <CImage
+                    src={resolveImage(event.imageUrls && event.imageUrls[0] ? `${API_URL}${event.imageUrls[0]}` : '')}
+                    alt={event.title}
+                    style={{ width: '40%', objectFit: 'cover' }}
+                  />
+                  <CCardBody>
+                    <CCardTitle className='mb-2'>{event.name}</CCardTitle>
+                    <CBadge color={ event.status === 'Ended'
+                                    ? 'danger'
+                                    : event.status === 'Upcoming'
+                                    ? 'primary'
+                                    : event.status === 'Ongoing'
+                                    ? 'success'
+                                    : 'secondary'
+                                  }
+                    >
+                      {event.status}
+                    </CBadge>
+                    <CCardText className='mt-2'>
+                      <strong>Start Date:</strong> {formatDate(event.startDate)}<br />
+                      <strong>End Date:</strong> {formatDate(event.endDate)}<br />
+                      <strong>Venue:</strong> {event.location}<br />
+                      <strong>Tickets Sold:</strong> {event.attendees || 0}<br />
+                      <strong>Attendees:</strong> {event?.registeredAttendees?.length + event?.unregisteredAttendees?.length || 0}<br />
+                      </CCardText>
+                  </CCardBody>
+                </CCard>
+              </Link>
+            </CCol>
+          ))}
+        </CRow>
 
       {/*<CRow className='gy-4'>
         {currentNewsletters.map((subscriber, idx) => (
@@ -117,7 +159,7 @@ class ManagerNewsletter extends React.PureComponent {
 
 const mapStateToProps = state => ({
   newsletters: state.newsletter.newsletters,
-  events: state.event.events,
+  events: state.event.userEvents,
   userRole: state.account.user.role,
 });
 

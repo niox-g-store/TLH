@@ -24,16 +24,27 @@ import ManagerPagination from '../Pagination';
 
 const statsFunc = (events) => {
   const statuses = {
-    topSelling: 'Bash Party',
+    topSelling: 'N/A',
     Upcoming: 0,
     Ended: 0,
     Ongoing: 0
   };
-  for (const items of events) {
-    if (Object.keys(statuses).includes(items.status)) {
-      statuses[items.status] += 1;
+
+  let maxAttendees = -1;
+  let topSellingEventName = 'N/A';
+
+  for (const item of events) {
+    if (Object.keys(statuses).includes(item.status)) {
+      statuses[item.status] += 1;
+    }
+
+    if (item.attendees && item.attendees > maxAttendees) {
+      maxAttendees = item.attendees;
+      topSellingEventName = item.name;
     }
   }
+
+  statuses.topSelling = topSellingEventName;
   return statuses;
 };
 

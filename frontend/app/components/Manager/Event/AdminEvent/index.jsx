@@ -24,16 +24,27 @@ import { GoBack } from '../../../../containers/goBack/inedx';
 
 const statsFunc = (events) => {
   const statuses = {
-    topSelling: 'Bash Party',
+    topSelling: 'N/A',
     Upcoming: 0,
     Ended: 0,
     Ongoing: 0
   };
-  for (const items of events) {
-    if (Object.keys(statuses).includes(items.status)) {
-      statuses[items.status] += 1;
+
+  let maxAttendees = -1;
+  let topSellingEventName = 'N/A';
+
+  for (const item of events) {
+    if (Object.keys(statuses).includes(item.status)) {
+      statuses[item.status] += 1;
+    }
+
+    if (item.attendees && item.attendees > maxAttendees) {
+      maxAttendees = item.attendees;
+      topSellingEventName = item.name;
     }
   }
+
+  statuses.topSelling = topSellingEventName;
   return statuses;
 };
 
@@ -125,6 +136,7 @@ const AdminEventView = (props) => {
                       <strong>End Date:</strong> {formatDate(event.endDate)}<br />
                       <strong>Venue:</strong> {event.location}<br />
                       <strong>Tickets Sold:</strong> {event.attendees || 0}<br />
+                      <strong>Attendees:</strong> {event?.registeredAttendees?.length + event?.unregisteredAttendees?.length || 0}<br />
                       </CCardText>
                   </CCardBody>
                 </CCard>
