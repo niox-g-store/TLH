@@ -49,9 +49,10 @@ const Newsletter = (props) => {
       <hr className={`${isLightMode ? 'p-black' : 'p-white'}`} />
       {userRole === ROLES.Admin && (
         <div className="admin-section">
-          <div className='d-flex gap-3 mb-4'>
+          <div className='d-flex gap-3 mb-4 flex-wrap'>
             <Button text={`${subscribers?.members || 0} newsletter members`} />
             <Button text={`${subscribers?.subscribed || 0} newsletter subscribers`} />
+            <Button text={`${newsletters?.length || 0} newsletter created`} />
           </div>
         </div>
       )}

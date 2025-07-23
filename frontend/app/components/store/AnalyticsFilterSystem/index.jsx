@@ -1,34 +1,36 @@
-import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import Switch from '../../store/Switch'; // Assuming this is your custom Switch component
+import Switch from '../../store/Switch';
 import {
-  CButton, // Using CButton for the Apply button
   CDropdown,
   CDropdownToggle,
   CDropdownMenu,
   CDropdownItem,
-  CFormCheck // For radio buttons if preferred, but CDropdownItem is simpler here
 } from '@coreui/react';
 import Button from '../../Common/HtmlTags/Button';
+import { FiDownload, FiFileText, FiFile } from 'react-icons/fi';
 
-const FilterSystem = ({ onApplyFilter, isLightMode }) => {
-  // Date selection states
-  const [isRangeSelection, setIsRangeSelection] = useState(false);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [singleDate, setSingleDate] = useState(null);
+const FilterSystem = (props) => {
+  const {
+    onApplyFilter, isLightMode,
+    isRangeSelection, startDate,
+    endDate, singleDate,
+    filterTarget,
+    setIsRangeSelection,
+  setStartDate,
+  setEndDate,
+  setSingleDate,
+  setFilterTarget,
+  resetDateSelection,
+  filterSystemOpen
+  } = props;
 
-  // Filter target state
-  const [filterTarget, setFilterTarget] = useState('orders'); // Default to 'orders'
   const filterTargetOptions = ['Orders', 'Tickets', 'Income', 'Events'];
 
   const handleDateChange = (date) => {
     setSingleDate(date);
-    // Clear range dates if switching to single
     if (isRangeSelection) {
-      setStartDate(null);
-      setEndDate(null);
+      resetDateSelection();
     }
   };
 
@@ -36,51 +38,49 @@ const FilterSystem = ({ onApplyFilter, isLightMode }) => {
     const [start, end] = dates;
     setStartDate(start);
     setEndDate(end);
-    // Clear single date if switching to range
     if (!isRangeSelection) {
-      setSingleDate(null);
+      resetDateSelection();
     }
   };
 
   const handleApplyClick = () => {
     const filterCriteria = {
-      target: filterTarget.toLowerCase(), // Ensure consistent lowercase for backend
+      target: filterTarget.toLowerCase(),
       isRange: isRangeSelection,
       startDate: isRangeSelection ? startDate : singleDate,
-      endDate: isRangeSelection ? endDate : singleDate, // For single date, end date is the same as start date
+      endDate: isRangeSelection ? endDate : singleDate,
     };
     onApplyFilter(filterCriteria);
   };
 
-  // Determine if the Apply button should be disabled
+  const handleDownloadPdf = () => {
+    console.log('Download PDF clicked');
+  };
+
+  const handleDownloadCsv = () => {
+    console.log('Download CSV clicked');
+  };
+
   const isApplyDisabled = isRangeSelection
     ? !startDate || !endDate
     : !singleDate || !filterTarget;
 
   return (
     <div
-      className={`${isLightMode ? 'p-black' : 'p-white'}`}
+      className={`${isLightMode ? 'p-black' : 'p-white'} d-flex flex-wrap align-items-center gap-3 dashboard-controls`}
       style={{
-        padding: ' 10px 15px',
+        padding: '10px 10px',
         borderRadius: '10px',
-        width: '100%',
-        margin: '20px auto',
-        display: 'flex',
       }}
     >
-        <h3>Dashboard controls</h3>
-      <h4 style={{ marginBottom: '20px', textAlign: 'center' }}>Apply Filters</h4>
 
-      {/* Filter Target Selection */}
-      <div style={{ marginBottom: '25px' }}>
-        <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold' }}>
-          Apply filter to:
-        </label>
-        <CDropdown className="w-100">
-          <CDropdownToggle color="light" className="w-100 d-flex justify-content-between align-items-center">
+      <div style={{ flexShrink: 0 }}>
+        <label style={{ display: 'none' }}>Apply filter to:</label>
+        <CDropdown>
+          <CDropdownToggle color="light" size="lg" className="d-flex justify-content-between align-items-center">
             {filterTarget}
           </CDropdownToggle>
-          <CDropdownMenu className="w-100">
+          <CDropdownMenu>
             {filterTargetOptions.map((option) => (
               <CDropdownItem
                 key={option}
@@ -94,77 +94,70 @@ const FilterSystem = ({ onApplyFilter, isLightMode }) => {
         </CDropdown>
       </div>
 
-      {/* Date Range Toggle */}
-      <div style={{ marginBottom: '25px' }}>
+      <div style={{ flexShrink: 0 }}>
         <Switch
           id="date-range-toggle"
           checked={isRangeSelection}
           toggleCheckboxChange={() => {
             setIsRangeSelection(!isRangeSelection);
-            // Clear dates when toggling selection type
-            setStartDate(null);
-            setEndDate(null);
-            setSingleDate(null);
+            resetDateSelection();
           }}
-          label="Enable Date Range Selection"
+          label="Date Range"
         />
       </div>
 
-      {/* Date Pickers */}
-      <div style={{ marginBottom: '30px' }}>
+      <div style={{ flexGrow: 0, minWidth: '180px' }}>
         {isRangeSelection ? (
-          <div>
-            <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold' }}>
-              Select Date Range:
-            </label>
-            <DatePicker
-              selected={startDate}
-              onChange={handleRangeChange}
-              startDate={startDate}
-              endDate={endDate}
-              selectsRange
-              showDisabledMonthNavigation
-              placeholderText="Start Date - End Date"
-              className="form-control w-100" // Ensure it takes full width
-              popperPlacement="bottom-start"
-            />
-            {startDate && endDate && (
-              <p style={{ marginTop: '10px', fontSize: '0.9em' }}>
-                Selected Range: {startDate.toLocaleDateString()} - {endDate.toLocaleDateString()}
-              </p>
-            )}
-          </div>
+          <DatePicker
+            selected={startDate}
+            onChange={handleRangeChange}
+            startDate={startDate}
+            endDate={endDate}
+            selectsRange
+            showDisabledMonthNavigation
+            placeholderText="Start - End Date"
+            className="form-control w-100"
+            popperPlacement="bottom-start"
+          />
         ) : (
-          <div>
-            <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold' }}>
-              Select Single Date:
-            </label>
-            <DatePicker
-              selected={singleDate}
-              onChange={handleDateChange}
-              showDisabledMonthNavigation
-              placeholderText="Select a date"
-              className="form-control w-100" // Ensure it takes full width
-              popperPlacement="bottom-start"
-            />
-            {singleDate && (
-              <p style={{ marginTop: '10px', fontSize: '0.9em' }}>
-                Selected Date: {singleDate.toLocaleDateString()}
-              </p>
-            )}
-          </div>
+          <DatePicker
+            selected={singleDate}
+            onChange={handleDateChange}
+            showDisabledMonthNavigation
+            placeholderText="Select Date"
+            className="form-control w-100"
+            popperPlacement="bottom-start"
+          />
         )}
       </div>
 
-      {/* Apply Filter Button */}
-      <div style={{ textAlign: 'center', justifyContent: 'center', display: 'flex' }}>
+
+      <div style={{ flexShrink: 0 }}>
         <Button
           onClick={handleApplyClick}
           disabled={isApplyDisabled}
           className="last-small p-black"
-          text={"Apply Filter"}
+          text="Apply"
+        />
+      </div>
+
+      <div className="d-flex align-items-center gap-2 attendees-data-container" style={{ marginLeft: 'auto', flexShrink: 0 }}>
+        
+        <span className="text-sm font-medium"></span>
+        <button
+          onClick={handleDownloadPdf}
+          className="d-flex items-center justify-center p-2 rounded-md shadow-sm oone"
+          style={{ backgroundColor: 'white', border: '1px solid #e0e0e0', color: 'black', borderRadius: '10px' }}
         >
-        </Button>
+          <FiDownload size={16} /><FiFileText size={16} className="mr-1" /> PDF
+        </button>
+        <button
+          onClick={handleDownloadCsv}
+          className="d-flex items-center justify-center p-2 rounded-md shadow-sm ttwo"
+          style={{ backgroundColor: 'white', border: '1px solid #e0e0e0', color: 'black', borderRadius: '10px' }}
+        >
+          <FiDownload size={16} /><FiFile size={16} className="mr-1" /> CSV
+        </button>
       </div>
     </div>
   );

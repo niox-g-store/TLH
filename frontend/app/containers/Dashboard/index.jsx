@@ -51,7 +51,9 @@ class Dashboard extends React.PureComponent {
       fetchCoupon, getUserCoupons,
       couponsOptions,
 
-      accountEditFormErrors
+      accountEditFormErrors,
+      isRangeSelection, startDate, endDate, singleDate, filterTarget,
+      filterSystemOpen, toggleFilterSystem,
     } = this.props;
     if (isDisabledOrganizerAccount(user)) {
       return (
@@ -125,7 +127,14 @@ const mapStateToProps = state => {
     coupon: state.coupon.coupon,
     couponsOptions: state.coupon.couponsSelect,
 
-    accountEditFormErrors: state.account.editFormErrors
+    accountEditFormErrors: state.account.editFormErrors,
+
+    isRangeSelection: state.dashboard.isRangeSelection,
+    startDate: state.dashboard.startDate,
+    endDate: state.dashboard.endDate,
+    singleDate: state.dashboard.singleDate,
+    filterTarget: state.dashboard.filterTarget,
+    filterSystemOpen: state.dashboard.filterSystemOpen,
   };
 };
 

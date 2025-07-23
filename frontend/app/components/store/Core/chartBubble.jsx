@@ -1,5 +1,4 @@
 // components/ChartBubble.jsx
-import React from 'react'
 import { Bubble } from 'react-chartjs-2'
 import {
   Chart as ChartJS,

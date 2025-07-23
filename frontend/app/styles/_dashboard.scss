@@ -8,6 +8,48 @@
     }
 }
 
+.dashboard {
+    .header {
+        height: 2em;
+        @include media-breakpoint-down(md) {
+            height: 4em;
+        }
+    }
+
+    .attendees-data-container {
+            margin: 0 !important;
+            padding: 0 !important;
+            @include media-breakpoint-down(md) {
+                gap: 0 !important;
+                .oone {
+                    margin-right: 1em;
+                }
+            }
+    }
+}
+
 .card {
     box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+}
+
+.dashboard-controls {
+    @include media-breakpoint-down(md) {
+        padding: 0 !important;
+        justify-content: flex-start;
+    }
+}
+
+.react-datepicker-popper {
+    z-index: 5;
+}
+
+.dashboard-controls-container {
+    justify-content: space-between;
+}
+
+.dashboard-controls-head {
+    display: flex;
+    @include media-breakpoint-down(md) {
+        margin-bottom: 1em;
+    }
 }
