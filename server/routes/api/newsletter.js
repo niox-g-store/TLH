@@ -14,7 +14,7 @@ const Organizer = require('../../models/organizer');
 
 const role = require('../../middleware/role.js');
 const auth = require('../../middleware/auth.js');
-const { ROLES } = require('../../constants');
+const { ROLES } = require('../../utils/constants');
 const { deleteFilesFromPath } = require("../../utils/deleteFiles");
 
 const { news } = keys.mailgun;
@@ -175,7 +175,7 @@ router.post('/subscribe', async (req, res) => {
     const sm = email.split('@')[0];
     let name = sm.charAt(0).toUpperCase() + sm.slice(1)
     name = name.replace(/[^a-zA-z]/g, '')
-    await mailgun.createMember(email, name, '');
+    await mailgun.createMember(email, name);
 
     // Send subscription confirmation email
     await mailgun.sendEmail(email, 'newsletter-subscription', null);

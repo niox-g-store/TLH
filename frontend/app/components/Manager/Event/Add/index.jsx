@@ -157,15 +157,6 @@ const AddEventForm = (props) => {
           <AdvancedUpload
             error={eventFormErrors.image}
             onFilesChange={(files) => eventChange('image', files)} />
-            {/*<Input
-              type='file'
-              error={eventFormErrors.image}
-              name='image'
-              label='Upload Event Image'
-              placeholder='Please upload an image'
-              value={image}
-              onInputChange={(n, v) => eventChange(n, v)}
-            />*/}
           </Col>
 
           {/* Event Status Switch */}

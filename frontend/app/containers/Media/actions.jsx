@@ -54,6 +54,7 @@ export const setMediaLoading = (value) => {
 
 export const fetchHomeMedia = () => {
     return async (dispatch) => {
+    dispatch({ type: SET_MEDIA_LOADING, payload: true })
     try {
       const response = await axios.get(`${API_URL}/media/fetch_all`);
       dispatch({
@@ -62,6 +63,8 @@ export const fetchHomeMedia = () => {
       });
     } catch (error) {
       handleError(error, dispatch, 'Failed to fetch medias.');
+    } finally {
+      dispatch({ type: SET_MEDIA_LOADING, payload: false })
     }
   };
 }

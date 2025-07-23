@@ -14,14 +14,15 @@ import {
 import { ROLES } from '../../../constants';
 import actions from '../../../actions';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import Button from '../../Common/HtmlTags/Button';
 import { API_URL } from '../../../constants';
 import resolveImage from '../../store/ResolveImage';
 import { formatDate } from '../../../utils/formatDate';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Newsletter = (props) => {
   const { isLightMode, newsletters, userRole, events } = props;
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const newslettersPerPage = 10;
 
@@ -31,7 +32,7 @@ const Newsletter = (props) => {
   const currentNewsletters = newsletters.slice(startIndex, endIndex);
 
   return (
-    <div data-aos="fade-up" className='container-lg px-4 d-flex flex-column mb-custom-5em'>
+    <div className={`${isLightMode ? 'p-black' : 'p-white'} container-lg px-4 d-flex flex-column mb-custom-5em`}>
       <div className='d-flex justify-content-between'>
         <h2 className={`${isLightMode ? 'p-black' : 'p-white'}`}>Newsletter</h2>
       </div>
@@ -40,61 +41,80 @@ const Newsletter = (props) => {
 
       {userRole === ROLES.Admin && (
         <div className="admin-section">
-          <p>As an admin, you can send newsletters to subscribers, users, and organizers.</p>
+          <p>As an admin, you can send campaign emails(newsletter) to subscribers, users, and organizers.</p>
           <Button
-            className="primary"
-            text="Create Newsletter"
-            onClick={() => window.location.href = '/dashboard/newsletter/add'}
+            className="primary mb-3"
+            text="Create Campaign"
+            onClick={() => navigate("/dashboard/newsletter/add")}
           />
         </div>
       )}
       {currentNewsletters.length > 0 ?
         currentNewsletters.map(newsletter => (
           <li key={newsletter.id}>
-            <Link to={`/dashboard/newsletter/${newsletter.id}`}>{newsletter.title}</Link>
+            <Link to={`/dashboard/newsletter/${newsletter._id}`}>
+              {newsletter.title}
+            </Link>
           </li>
       ))
       :
        <p style={{ textAlign: 'center' }}>You have not created any campaign</p>
       }
       {/* Event List */}
-        <CRow className='gy-4'>
-          <p style={{ textAlign: 'center' }} >You can choose from upcoming or ongoing events to send reminders</p>
-          {events.map((event, idx) => (
-            <CCol md={6} key={idx}>
-              <Link to={`/dashboard/events/edit/${event._id}`}>
-                <CCard style={{ height: '95%' }} className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}>
-                  <CImage
-                    src={resolveImage(event.imageUrls && event.imageUrls[0] ? `${API_URL}${event.imageUrls[0]}` : '')}
-                    alt={event.title}
-                    style={{ width: '40%', objectFit: 'cover' }}
-                  />
-                  <CCardBody>
-                    <CCardTitle className='mb-2'>{event.name}</CCardTitle>
-                    <CBadge color={ event.status === 'Ended'
-                                    ? 'danger'
-                                    : event.status === 'Upcoming'
-                                    ? 'primary'
-                                    : event.status === 'Ongoing'
-                                    ? 'success'
-                                    : 'secondary'
-                                  }
-                    >
-                      {event.status}
-                    </CBadge>
-                    <CCardText className='mt-2'>
-                      <strong>Start Date:</strong> {formatDate(event.startDate)}<br />
-                      <strong>End Date:</strong> {formatDate(event.endDate)}<br />
-                      <strong>Venue:</strong> {event.location}<br />
-                      <strong>Tickets Sold:</strong> {event.attendees || 0}<br />
-                      <strong>Attendees:</strong> {event?.registeredAttendees?.length + event?.unregisteredAttendees?.length || 0}<br />
-                      </CCardText>
-                  </CCardBody>
-                </CCard>
-              </Link>
-            </CCol>
-          ))}
-        </CRow>
+            <CRow className='gy-4'>
+      <p style={{ textAlign: 'center' }}>You can choose from upcoming or ongoing events to send reminders.</p>
+      {events.map((event) => {
+        // Only render active events (not 'Ended')
+        if (event.status === 'Ended') {
+          return null;
+        }
+
+        const attendeesCount = (event.registeredAttendees?.length || 0) + (event.unregisteredAttendees?.length || 0);
+
+        return (
+          <CCol md={6} key={event._id}> {/* Use a unthique ID for the key */}
+            <Link to={`/dashboard/newsletter/add/${event._id}`} style={{ textDecoration: 'none' }}> {/* Remove default link underline */}
+              <CCard
+                style={{ height: '95%' }}
+                className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}
+              >
+                <CImage
+                  src={event.imageUrls && event.imageUrls[0] ? `${API_URL}${resolveImage(event.imageUrls[0])}` : ''}
+                  alt={event.title || 'Event Image'} // Provide a fallback alt text
+                  style={{ width: '40%', objectFit: 'cover' }}
+                />
+                <CCardBody>
+                  <CCardTitle className='mb-2'>{event.name}</CCardTitle>
+                  <CBadge
+                    color={
+                      event.status === 'Upcoming'
+                        ? 'primary'
+                        : event.status === 'Ongoing'
+                        ? 'success'
+                        : 'secondary' // Fallback for unexpected status
+                    }
+                  >
+                    {event.status}
+                  </CBadge>
+                  <CCardText className='mt-2'>
+                    <strong>Start Date:</strong> {formatDate(event.startDate)}
+                    <br />
+                    <strong>End Date:</strong> {formatDate(event.endDate)}
+                    <br />
+                    <strong>Venue:</strong> {event.location}
+                    <br />
+                    <strong>Tickets Sold:</strong> {event.attendees || 0}
+                    <br />
+                    <strong>Attendees:</strong> {attendeesCount}
+                    <br />
+                  </CCardText>
+                </CCardBody>
+              </CCard>
+            </Link>
+          </CCol>
+        );
+      })}
+    </CRow>
 
       {/*<CRow className='gy-4'>
         {currentNewsletters.map((subscriber, idx) => (

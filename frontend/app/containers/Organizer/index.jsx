@@ -30,6 +30,8 @@ import EditCoupon from '../../components/Manager/Coupon/Edit';
 import AdminOrder from '../../components/Manager/Orders/AdminOrders';
 import ViewOrder from '../../components/Manager/Orders/View';
 
+import AddNewsletter from '../../components/Manager/Newsletter/Add';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@coreui/coreui/dist/css/coreui.min.css';
 
@@ -58,6 +60,7 @@ const Organizer = (props) => {
           <Route path='coupons/edit/:id' element={<EditCoupon {...props}/>} />
           <Route path='orders/my-orders' element={<AdminOrder {...props} />} />
           <Route path='order/:id' element={<ViewOrder {...props} />} />
+          <Route path='newsletter/add' element={<AddNewsletter {...props} />} />
           <Route path='*' element={<Page404 />} />
         </Routes>
       </div>

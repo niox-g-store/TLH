@@ -33,9 +33,10 @@ import ResetPassword from './containers/ResetPassword';
 import Maintenance from './containers/Maintenance';
 
 import ScrollToTop from './components/Common/ScrollToTop';
+import LoadingIndicator from './components/store/LoadingIndicator';
 
 const Appplication = (props) => {
-  const { user, settings, uuser } = props;
+  const { user, settings, uuser, homeMediaIsLoading } = props;
   const location = useLocation();
   const USER = user ?? user.role;
   const { maintenance } = settings;
@@ -94,6 +95,10 @@ const Appplication = (props) => {
   //const showFooter = (USER.role === ROLES.Member || !hideFooter.some(path => location.pathname.startsWith(path)))
   const showFooter = (!hideFooter.some(path => location.pathname.startsWith(path)))
 
+  if (homeMediaIsLoading) {
+    return <LoadingIndicator />
+  }
+
   return (
     <>
       <ScrollToTop />
@@ -150,7 +155,8 @@ const mapStateToProps = (state) => {
     uuser: state.account.user.role === ROLES.Admin,
     authenticated: state.authentication.authenticated,
     user: state.account.user,
-    settings: state.setting.settings
+    settings: state.setting.settings,
+    homeMediaIsLoading: state.media.isLoading,
   };
 };
 
