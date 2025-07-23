@@ -107,7 +107,7 @@ router.get('/mailing_list_details',
       // const opendEmailDetails = await mailgun.getAnalyticsData();
       const mailingListDetails = await mailgun.getMailingListMembersCount();
       // const mailingListSubscribers = await mailgun.getMailingListDetails();
-      const mailingListSubscribers = await Newsletter.countDocuments();
+      const mailingListSubscribers = await Newsletter.find({ subscribed: true }).countDocuments();
       //let opened = 0;
       /*if (opendEmailDetails && opendEmailDetails.totalOpens) {
         opened = opendEmailDetails.totalOpens

@@ -31,6 +31,7 @@ import OrderSuccess from './containers/Order/success';
 import ForgotPassword from './containers/ForgotPassword';
 import ResetPassword from './containers/ResetPassword';
 import Maintenance from './containers/Maintenance';
+import NewsletterUnsubscribe from './containers/Unsubscribe';
 
 import ScrollToTop from './components/Common/ScrollToTop';
 import LoadingIndicator from './components/store/LoadingIndicator';
@@ -96,7 +97,8 @@ const Appplication = (props) => {
     '/organizer-signup',
     '/reset-password',
     '/shop',
-    '/product'
+    '/product',
+    '/newsletter'
   ];
 
   const showHeader = (USER.role === ROLES.Member ||
@@ -137,6 +139,8 @@ const Appplication = (props) => {
 
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+
+        <Route path="/newsletter/unsubscribe/:email" element={<NewsletterUnsubscribe />} />
 
         <Route path='/faq' element={<FAQs />} />
         <Route path='/terms' element={<Terms />} />

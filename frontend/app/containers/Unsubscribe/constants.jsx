@@ -1,0 +1,8 @@
+/**
+ * Newsletter Unsubscribe constants
+ */
+
+export const SET_NEWSLETTER_UNSUBSCRIBE_FORM_ERRORS = 'src/NewsletterUnsubscribe/SET_NEWSLETTER_UNSUBSCRIBE_FORM_ERRORS';
+export const NEWSLETTER_UNSUBSCRIBE_RESET = 'src/NewsletterUnsubscribe/NEWSLETTER_UNSUBSCRIBE_RESET';
+export const SET_NEWSLETTER_UNSUBSCRIBE_EMAIL = 'src/NewsletterUnsubscribe/SET_NEWSLETTER_UNSUBSCRIBE_EMAIL';
+export const SET_NEWSLETTER_UNSUBSCRIBE_LOADING = 'src/NewsletterUnsubscribe/SET_NEWSLETTER_UNSUBSCRIBE_LOADING';

@@ -105,11 +105,11 @@ exports.orgCampaignTemplate = ( title, shouldEmailContainUserName, content, imag
         <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #999999;">
           <p>&copy; ${new Date().getFullYear()} The link hangouts. All rights reserved.</p>
           ${!eventId ? `<p>This email was sent to you because you are subscribed to our newsletter.</p>` : ''}
-          <a href="%recipient.unsubscribe_link%"
+          ${!eventId ? `<a href="%recipient.unsubscribe_link%"
            style="text-decoration:underline;color:black;font-size:12px;" 
            target="_blank">
             Click here to unsubscribe
-        </a>
+        </a>` : ''}
         </div>
       </div>
     </body>
@@ -231,11 +231,11 @@ exports.adminCampaignTemplate = ( title, shouldEmailContainUserName, content, im
         <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #999999;">
           <p>&copy; ${new Date().getFullYear()} The link hangouts. All rights reserved.</p>
           ${!eventId ? `<p>This email was sent to you because you are subscribed to our newsletter.</p>` : ''}
-          <a href="%recipient.unsubscribe_link%"
+          ${!eventId ? `<a href="%recipient.unsubscribe_link%"
            style="text-decoration:underline;color:black;font-size:12px;" 
            target="_blank">
             Click here to unsubscribe
-        </a>
+        </a>` : ''}
         </div>
       </div>
     </body>

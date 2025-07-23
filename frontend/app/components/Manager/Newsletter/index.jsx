@@ -50,8 +50,8 @@ const Newsletter = (props) => {
       {userRole === ROLES.Admin && (
         <div className="admin-section">
           <div className='d-flex gap-3 mb-4'>
-            <Button text={`${subscribers.members} newsletter members`} />
-            <Button text={`${subscribers.subscribed} newsletter subscribers`} />
+            <Button text={`${subscribers?.members || 0} newsletter members`} />
+            <Button text={`${subscribers?.subscribed || 0} newsletter subscribers`} />
           </div>
         </div>
       )}
