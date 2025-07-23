@@ -1,62 +1,131 @@
 import React from 'react';
 import { API_URL } from '../../../../constants';
+import { ROLES } from '../../../../constants';
 
-const campaignTemplate = (props) => {
-  const {
-    title, shouldEmailContainUserName,
-    content, imageUrls
-  } = props
+const campaignTemplate = ( title, shouldEmailContainUserName, content, imageUrls, eventId, user ) => {
+  const resolvedRecipientName = shouldEmailContainUserName ? 'Hi John Doe' : '';
 
-  const resolvedRecipientName = shouldEmailContainUserName ? 'John Doe' : 'there';
-
-  return (
-    <div style={{ fontFamily: 'sans-serif', backgroundColor: '#f4f4f4', padding: '20px', maxWidth: '600px', margin: '20px auto', borderRadius: '8px', boxShadow: '0 0 10px rgba(0,0,0,0.1)' }}>
-      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+  const imagesHtml = imageUrls && imageUrls.length > 0
+    ? imageUrls.map((url, index) => `
         <img
-          src="https://thelinkhangout.com/black_logo.png"
-          alt="Company Logo"
-          style={{ maxWidth: '150px', borderRadius: '8px' }}
+          src="${API_URL}${url}"
+          alt="${title} image ${index + 1}"
+          style="max-width: 100%; height: auto; border-radius: 8px; padding-bottom: 30px; display: block; margin: 0 auto;"
         />
+      `).join('')
+    : '';
+
+  return `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Newsletter Preview</title>
+      <style>
+        /* Basic reset for consistent rendering */
+        body {
+          margin: 0;
+          padding: 0;
+          -webkit-text-size-adjust: 100%;
+          -ms-text-size-adjust: 100%;
+          background-color: #f4f4f4; /* Set the background for the entire body */
+        }
+        div[style*="font-family"] { /* Target the main container */
+          font-family: sans-serif;
+          background-color: #f4f4f4;
+          padding: 20px;
+          max-width: 600px;
+          margin: 20px auto;
+          border-radius: 8px;
+          box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        /* Styles for the inner white content box */
+        div[style*="background-color: #ffffff"] {
+          background-color: #ffffff;
+          padding: 30px;
+          border-radius: 8px;
+        }
+        h1 {
+          font-size: 24px;
+          color: #333333;
+          margin-bottom: 15px;
+          font-weight: bold;
+        }
+        p {
+          font-size: 16px;
+          color: #333333;
+          margin-bottom: 20px;
+        }
+        div[style*="line-height"] {
+          font-size: 16px;
+          line-height: 1.6;
+          color: #555555;
+          margin-bottom: 20px;
+        }
+        img {
+          max-width: 100%;
+          height: auto;
+          border-radius: 8px;
+        }
+        .footer-text {
+          font-size: 14px;
+          color: #777777;
+          margin-top: 30px;
+          text-align: center;
+        }
+        .copyright-text {
+          font-size: 12px;
+          color: #999999;
+          margin-top: 20px;
+          text-align: center;
+        }
+      </style>
+    </head>
+    <body>
+      <div style="font-family: sans-serif; background-color: #f4f4f4; padding: 20px; max-width: 600px; margin: 20px auto; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+        ${!eventId || user.role === ROLES.Admin ? `<div style="text-align: center; margin-bottom: 20px;">
+          <img
+            src="https://thelinkhangout.com/black_logo.png"
+            alt="Company Logo"
+            style="max-width: 150px; border-radius: 8px;"
+          />
+        </div>`: ``
+        }
+
+        <div style="background-color: #ffffff; padding: 30px; border-radius: 8px;">
+          <p style="font-size: 16px; color: #333333; margin-bottom: 20px;">
+            ${resolvedRecipientName},
+          </p>
+
+          <h1 style="font-size: 24px; color: #333333; margin-bottom: 15px; font-weight: bold;">
+            ${title}
+          </h1>
+
+          <div
+            style="font-size: 16px; line-height: 1.6; color: #555555; margin-bottom: 20px;"
+          >${content}</div>
+
+          ${imagesHtml}
+
+          <p style="font-size: 14px; color: #777777; margin-top: 30px; text-align: center;">
+            Thank you for being a part of our community.
+          </p>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #999999;">
+          <p>&copy; ${new Date().getFullYear()} The link hangouts. All rights reserved.</p>
+          ${!eventId ? `<p>This email was sent to you because you are subscribed to our newsletter.</p>` : ''}
+          <a href="%recipient.unsubscribe_link%"
+           style="text-decoration:underline;color:black;font-size:12px;" 
+           target="_blank">
+            Click here to unsubscribe
+        </a>
+        </div>
       </div>
-
-      <div style={{ backgroundColor: '#ffffff', padding: '30px', borderRadius: '8px' }}>
-        <p style={{ fontSize: '16px', color: '#333333', marginBottom: '20px' }}>
-          Hi {resolvedRecipientName},
-        </p>
-
-        <h1 style={{ fontSize: '24px', color: '#333333', marginBottom: '15px', fontWeight: 'bold' }}>
-          {title}
-        </h1>
-
-        <div
-          style={{ fontSize: '16px', lineHeight: '1.6', color: '#555555', marginBottom: '20px' }}
-          dangerouslySetInnerHTML={{ __html: content }}
-        />
-
-        {imageUrls && imageUrls.length > 0 && (
-          <div style={{ marginBottom: '20px', textAlign: 'center' }}>
-            {imageUrls.map((url, index) => (
-              <img
-                key={index}
-                src={`${API_URL}${url}`}
-                alt={`${title} image ${index + 1}`}
-                style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px', marginBottom: '15px', display: 'block', margin: '0 auto' }}
-              />
-            ))}
-          </div>
-        )}
-
-        <p style={{ fontSize: '14px', color: '#777777', marginTop: '30px', textAlign: 'center' }}>
-          Thank you for being a part of our community.
-        </p>
-      </div>
-
-      <div style={{ textAlign: 'center', marginTop: '20px', fontSize: '12px', color: '#999999' }}>
-        <p>&copy; {new Date().getFullYear()} Your Company Name. All rights reserved.</p>
-        <p>This email was sent to you because you are subscribed to our newsletter.</p>
-      </div>
-    </div>
-  );
+    </body>
+    </html>
+  `;
 };
 
 export default campaignTemplate;

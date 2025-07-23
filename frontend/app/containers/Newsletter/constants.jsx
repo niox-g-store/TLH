@@ -8,3 +8,6 @@ export const NEWSLETTER_LOADING = 'src/Newsletter/NEWSLETTER_LOADING';
 export const NEWSLETTER_SUB_EMAIL = 'src/Newsletter/NEWSLETTER_SUB_EMAIL';
 export const RESET_NEWSLETTER_SUB = 'src/Newsletter/RESET_NEWSLETTER_SUB';
 export const NEWSLETTER_SUB_ERROR = 'src/Newsletter/NEWSLETTER_SUB_ERROR';
+export const REMOVE_NEWSLETTER = 'src/Newsletter/REMOVE_NEWSLETTER';
+export const FETCH_NEWSLETTER = 'src/Newsletter/FETCH_NEWSLETTER';
+export const FETCH_MAILING_LIST_DETAILS = 'src/Newsletter/FETCH_MAILING_LIST_DETAILS';

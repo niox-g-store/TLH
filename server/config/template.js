@@ -8,15 +8,40 @@ const { accountSuspendedEmailHtml } = require('./htmlTemplates/Organizer/suspend
 const { accountResumedEmailHtml } = require('./htmlTemplates/Organizer/resumeAccount');
 const { accountBannedEmailHtml } = require('./htmlTemplates/Organizer/banAccount');
 const { productOrderEmailHtml } = require('./htmlTemplates/User/productOrderSuccess');
-/*exports.newsLetterEmail = (campaignData) => {
+const { adminCampaignTemplate } = require('./htmlTemplates/newsletterTemplate');
+const { orgCampaignTemplate } = require('./htmlTemplates/newsletterTemplate');
+
+exports.newsLetterEmail = (campaignData) => {
   const message = {
-    subject: campaignData.heading,
-    text: campaignData.heading,
-    html: campaignTemplate(campaignData),
+    subject: campaignData.title,
+    text: campaignData.content,
+    html: adminCampaignTemplate(
+      campaignData.title,
+      campaignData.shouldEmailContainUserName,
+      campaignData.content,
+      campaignData.imageUrls,
+      campaignData.event
+    ),
     headers: { 'Content-Type': 'text/html' },
   }
   return message
-}*/
+}
+
+exports.orgNewsLetterEmail = (campaignData) => {
+  const message = {
+    subject: campaignData.title,
+    text: campaignData.content,
+    html: orgCampaignTemplate(
+      campaignData.title,
+      campaignData.shouldEmailContainUserName,
+      campaignData.content,
+      campaignData.imageUrls,
+      campaignData.event
+    ),
+    headers: { 'Content-Type': 'text/html' },
+  }
+  return message
+}
 
 exports.resetEmail = (host, resetToken) => {
   const message = {

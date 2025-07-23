@@ -104,7 +104,7 @@ export const setEventLoading = (value) => {
   };
 };
 
-// Fetch all events
+// Fetch events for organizer or admin
 export const fetchEvents = () => {
   return async (dispatch) => {
     try {
@@ -418,6 +418,7 @@ export const deleteEvent = (id, navigate) => {
   };
 };
 
+// get event for admin and user where they're a registered attendee
 export const getUserEvent = () => {
   return async (dispatch) => {
     try {
@@ -433,6 +434,7 @@ export const getUserEvent = () => {
   }
 }
 
+// fetch all events for discover events route
 export const fetchAllEvents = () => {
   return async(dispatch) => {
     try {
@@ -447,6 +449,7 @@ export const fetchAllEvents = () => {
   }
 }
 
+// fetch events for a user
 export const fetchMyEvents = () => {
   return async(dispatch) => {
     try {
@@ -461,6 +464,7 @@ export const fetchMyEvents = () => {
   }
 }
 
+// fetch events where the email of the guest is the email of loggedin user
 export const fetchMyGuestEvents = () => {
   return async(dispatch) => {
     try {

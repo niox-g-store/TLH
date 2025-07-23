@@ -68,9 +68,9 @@ const ProductsShop = ({ products = [], isLoading, filterProducts }) => {
             </div>
             
             <div className="sort-filter">
-              {sortedProducts.length > 0 &&
+              {sortedProducts?.length > 0 &&
                 <p className="product-count">
-                  Showing 1–{Math.min(12, sortedProducts.length)} of {products.length} products
+                  Showing 1–{Math.min(12, sortedProducts?.length)} of {products?.length} products
                 </p>
               }
               <SelectOption
@@ -85,7 +85,7 @@ const ProductsShop = ({ products = [], isLoading, filterProducts }) => {
         </div>
 
         <div className="products-list-wrapper">
-          {sortedProducts.length > 0 ? (
+          {sortedProducts?.length > 0 ? (
             <div className="products-grid">
               <Pagination
                 items={sortedProducts}

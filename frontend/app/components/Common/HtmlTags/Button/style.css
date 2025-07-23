@@ -41,8 +41,24 @@
     border-radius: 10px;
     cursor: pointer;
 }
+.button-container .last-small {
+    background-color: white;
+    padding: .5em 1em;
+    border: 1px solid var(--primary_color);
+    color: var(--primary_color);
+    border-radius: 10px;
+    cursor: pointer;
+}
+.button-container .primary-small {
+    padding: .5em 1em;
+    background-color: var(--primary_color);
+    border: none;
+    color: #fff;
+    border-radius: 10px;
+    cursor: pointer;
+}
 
-.button-container .last:hover {
+.button-container .last:hover, .button-container .last-small:hover {
   background-color: var(--primary_color);
   color: white;
 }
@@ -63,4 +79,8 @@
   background: transparent;
   border-radius: 10px;
   color: var(--primary_color);
+}
+
+.button-container .btn-disabled {
+    background-color: gray;
 }

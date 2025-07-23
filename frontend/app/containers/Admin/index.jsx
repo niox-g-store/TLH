@@ -56,6 +56,7 @@ import EditProduct from '../../components/Manager/Product/Edit';
 import Setting from '../../components/Manager/Setting';
 
 import AddNewsletter from '../../components/Manager/Newsletter/Add';
+import CampaignView from '../../components/Manager/Newsletter/View';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@coreui/coreui/dist/css/coreui.min.css';
@@ -112,7 +113,7 @@ const Admin = (props) => {
           <Route path='products/edit/:id' element={<EditProduct {...props} />} />
 
           <Route path='newsletter/add' element={<AddNewsletter {...props} />} />
-          {/*<Route path='newsletter/:id' element={<ManagerNewsletter {...props} />} />*/}
+          *<Route path='newsletter/:id' element={<CampaignView {...props} />} />
 
           {/*<Route path='withdrawals' element={<ManagerNewsletter {...props} />} />*/}
           

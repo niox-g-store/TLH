@@ -46,15 +46,12 @@ const removeImagesFromCampaign = (campaign, removeImageUrls) => {
 }
 
 const createMemberToMailingList = async (email, organizer=false) => {
-  const sm = email.split('@')[0];
-  let name = sm.charAt(0).toUpperCase() + sm.slice(1)
-  name = name.replace(/[^a-zA-z]/g, '')
-  if (!email && organizerEmail) {
-    // here for organizer to send reminders to attendees
-    // create a mailing list where the sender is organizer email,
-    // and the members are an array or selected user emails
+  if (!email && organizer) {
     await mailgun.createMembers(organizer.hostName, organizer.sendTo );
   } else {
+    const sm = email.split('@')[0];
+    let name = sm.charAt(0).toUpperCase() + sm.slice(1)
+    name = name.replace(/[^a-zA-z]/g, '')
     await mailgun.createMember(email, name, '');
   }
   return;
@@ -109,7 +106,8 @@ router.get('/mailing_list_details',
     try {
       // const opendEmailDetails = await mailgun.getAnalyticsData();
       const mailingListDetails = await mailgun.getMailingListMembersCount();
-      const mailingListSubscribers = await mailgun.getMailingListDetails();
+      // const mailingListSubscribers = await mailgun.getMailingListDetails();
+      const mailingListSubscribers = await Newsletter.countDocuments();
       //let opened = 0;
       /*if (opendEmailDetails && opendEmailDetails.totalOpens) {
         opened = opendEmailDetails.totalOpens
@@ -198,7 +196,9 @@ router.get('/',
   async (req, res) => {
   try {
     const user = req.user;
-    const campaigns = await Campaign.find({user: user._id}).sort('-createdAt');
+    const campaigns = await Campaign.find({user: user._id})
+      .populate('event')
+      .sort('-createdAt');
 
     return res.status(200).json({
       success: true,
@@ -220,7 +220,8 @@ router.get(
   async (req, res) => {
   try {
     const id = req.params.campaignId
-    const campaign = await Campaign.findById(id);
+    const campaign = await Campaign.findById(id)
+      .populate('user');
     return res.status(200).json({
       success: true,
       campaign
@@ -239,7 +240,7 @@ router.delete('/delete/:id',
   role.check(ROLES.Admin, ROLES.Organizer),
   async (req, res) => {
   try {
-    const campaign = await Campaign.find({ _id: req.params.id, user: req.user._id });
+    const campaign = await Campaign.findOne({ _id: req.params.id, user: req.user._id });
     deleteFilesFromPath(campaign.imageUrls)
     await campaign.deleteOne();
 
@@ -268,7 +269,7 @@ router.post('/send',
       newsletterSelected,
       registeredAttendees,
       unregisteredAttendees,
-      eventId = null
+      eventId = null,
     } = req.body;
     const camp = await Campaign.findById(campaignId);
     if (!camp) {
@@ -288,7 +289,8 @@ router.post('/send',
             attendees.push(userId.toString())
           }
         }
-      } else if (unregisteredAttendees) {
+      } 
+      if (unregisteredAttendees) {
         for (let guestId of eventUnregisteredAtt_) {
           if (!attendees.includes(guestId.toString())) {
             attendees.push(guestId.toString());
@@ -300,27 +302,30 @@ router.post('/send',
       const emailAttenddes = [];
       const sendTo = [];
       for (const id of attendees) {
-        const isUserOrGuest = null;
-        const guest = await Guest.findById(id.toObject())
-        const user = await User.findById(id.toObject()).populate('organizer');
+        const guest = await Guest.findById(id)
+        const user = await User.findById(id).populate('organizer');
         if (guest) {
           if (!emailAttenddes.includes(guest.email)) { // sort emails so duplicates don't exist
-            sendTo.append({
+            emailAttenddes.push(guest.email)
+            sendTo.push({
               email: guest.email,
               name: guest.name
             })
           }
         } else if (user) {
           if (!emailAttenddes.includes(user.email)) {
-            sendTo.append({
+            emailAttenddes.push(user.email)
+            sendTo.push({
               email: user.email,
               name: user?.organizer? user?.organizer?.companyName : user.name
             })
           }
         }
       }
-      // before creating mailing list, lets delete a mailing list with said hostName
-      await mailgun.destroyMailingList(hostName);
+      const getML = await mailgun.getMailingList(hostName)
+      if (getML) {
+        await mailgun.destroyMailingList(hostName);
+      }
       // create mailing list
       await mailgun.createMailingList(hostName);
       // create member to mailing list
@@ -329,12 +334,19 @@ router.post('/send',
         sendTo
       });
       // here after creating mailing list, we'll send the campaign email
-      const trimmedAddress = hostName.trim().replace(/\s/g, '');
-      await mailgun.sendEmail(`${trimmedAddress}@thelinkhangout.com`, 'newsletter-reminder', camp, null, hostName);
+      // admin sender will always be newsletter@thelinkhangout.com, an overide
+      // to trimmedAddress@thelinkhangout.com is in mailgun
+      const trimmedAddress = hostName.trim().replace(/\s/g, '').toLowerCase();
+      if (req.user.role === ROLES.Admin) {
+        await mailgun.sendEmail(`${trimmedAddress}@thelinkhangout.com`, 'newsletter', camp, null);
+      } else {
+        await mailgun.sendEmail(`${trimmedAddress}@thelinkhangout.com`, 'org-newsletter', camp, null, hostName);
+      }
       await Campaign.findOneAndUpdate(
         { _id: camp._id },
         { sent: true,
           sentDate: new Date(),
+          timeSent: camp.timeSent + 1,
           sentTo: sendTo.length
         }
       )
@@ -345,8 +357,10 @@ router.post('/send',
     }
 
     if (newsletterSelected) {
-      const newsletterCount = await Newsletter.countDocuments()
-      await mailgun.sendEmail(news, 'newsletter', camp);
+      const newsletterCount = await Newsletter.countDocuments();
+      if (req.user.role === ROLES.Admin) {
+        await mailgun.sendEmail(news, 'newsletter', camp);
+      }
 
       await Campaign.findOneAndUpdate(
           { _id: camp._id },
@@ -359,7 +373,6 @@ router.post('/send',
           success: true,
           message: `sent!!`,
         });
-
     }
   } catch (error) {
     return res.status(400).json({

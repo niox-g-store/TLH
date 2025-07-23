@@ -21,7 +21,7 @@ import { formatDate } from '../../../utils/formatDate';
 import { useNavigate, Link } from 'react-router-dom';
 
 const Newsletter = (props) => {
-  const { isLightMode, newsletters, userRole, events } = props;
+  const { isLightMode, newsletters, userRole, events, subscribers } = props;
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const newslettersPerPage = 10;
@@ -30,23 +30,29 @@ const Newsletter = (props) => {
   const startIndex = (currentPage - 1) * newslettersPerPage;
   const endIndex = startIndex + newslettersPerPage;
   const currentNewsletters = newsletters.slice(startIndex, endIndex);
+  const activeEvents = events.filter(event => event.status !== 'Ended');
 
   return (
     <div className={`${isLightMode ? 'p-black' : 'p-white'} container-lg px-4 d-flex flex-column mb-custom-5em`}>
       <div className='d-flex justify-content-between'>
         <h2 className={`${isLightMode ? 'p-black' : 'p-white'}`}>Newsletter</h2>
-      </div>
-        <h3 className={`${isLightMode ? 'p-black': 'p-white'}`}>Send reminders, newsletters, and campaign emails to users </h3>  
-      <hr className={`${isLightMode ? 'p-black' : 'p-white'}`} />
-
-      {userRole === ROLES.Admin && (
-        <div className="admin-section">
-          <p>As an admin, you can send campaign emails(newsletter) to subscribers, users, and organizers.</p>
-          <Button
-            className="primary mb-3"
-            text="Create Campaign"
+        <Button
+            className="third-btn mb-3"
+            text="Create Campaign +"
             onClick={() => navigate("/dashboard/newsletter/add")}
           />
+      </div>
+        <h3 className={`${isLightMode ? 'p-black': 'p-white'}`}>Send reminders, newsletters, and campaign emails to users </h3>  
+        {userRole === ROLES.Admin && 
+          <p>As an admin, you can send campaign emails(newsletter) to subscribers, users, and organizers.</p>
+        }
+      <hr className={`${isLightMode ? 'p-black' : 'p-white'}`} />
+      {userRole === ROLES.Admin && (
+        <div className="admin-section">
+          <div className='d-flex gap-3 mb-4'>
+            <Button text={`${subscribers.members} newsletter members`} />
+            <Button text={`${subscribers.subscribed} newsletter subscribers`} />
+          </div>
         </div>
       )}
       <CRow className='gy-4'>
@@ -55,7 +61,7 @@ const Newsletter = (props) => {
           <CCol md={6} key={newsletter._id}>
             <Link to={`/dashboard/newsletter/${newsletter._id}`} style={{ textDecoration: 'none' }}>
               <CCard
-                className={`${isLightMode ? 'p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}
+                className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}
                 style={{ height: '95%' }}
               >
                 {newsletter.imageUrls && newsletter.imageUrls.length > 0 && (
@@ -70,8 +76,20 @@ const Newsletter = (props) => {
                   <CCardText>
                     Created: {new Date(newsletter.createdAt).toLocaleDateString()}
                   </CCardText>
+                  {newsletter.event && <CCardText>
+                    Reminder for event: {newsletter.event.name}
+                    </CCardText>
+                  }
+                  {newsletter?.sentDate &&
+                  <CCardText>
+                    Sent Date: {formatDate(newsletter.sentDate)}
+                  </CCardText>
+                  }
                   <CCardText>
                     {newsletter.sent ? `Sent to ${newsletter.sentTo} recipients` : 'Not yet sent'}
+                  </CCardText>
+                  <CCardText>
+                    {newsletter.timeSent > 0 ? `This email has been sent ${newsletter.timeSent} times` : 'This campaign has not been sent'}
                   </CCardText>
                 </CCardBody>
               </CCard>
@@ -80,17 +98,15 @@ const Newsletter = (props) => {
         ))
       ) : (
         <CCol xs={12}>
-          <p className="text-center text-muted">No newsletters found.</p>
+          <p className={`${isLightMode ? 'p-black' : 'p-white'}`}>No newsletters found.</p>
         </CCol>
       )}
     </CRow>
       {/* Event List */}
       <CRow className='gy-4'>
-        <p style={{ textAlign: 'center' }}>You can choose from upcoming or ongoing events to send reminders.</p>
-        {events.map((event) => {
-          if (event.status === 'Ended') {
-            return null;
-          }
+        <p style={{ textAlign: 'center', marginTop: '3em' }}>You can choose from upcoming or ongoing events to send reminders.</p>
+      {activeEvents.length > 0 ? (
+        activeEvents.map((event) => {
           const attendeesCount = (event.registeredAttendees?.length || 0) + (event.unregisteredAttendees?.length || 0);
           return (
             <CCol md={6} key={event._id}>
@@ -131,29 +147,18 @@ const Newsletter = (props) => {
                     </CCardText>
                   </CCardBody>
                 </CCard>
-             </Link>
-           </CCol>
+              </Link>
+            </CCol>
           );
-        })}
+        })
+      ) : (
+        <CCol xs={12}>
+          <p className={`${isLightMode ? 'p-black' : 'p-white'}`}>
+            You have no ongoing or upcoming events to send reminders to attendees.
+          </p>
+        </CCol>
+      )}
       </CRow>
-
-      {/*<CRow className='gy-4'>
-        {currentNewsletters.map((subscriber, idx) => (
-          <CCol md={6} key={idx}>
-            <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'}`}>
-              <CCardBody>
-                <CCardTitle className='mb-2'>{subscriber.email}</CCardTitle>
-                <CBadge color={subscriber.status === 'subscribed' ? 'success' : 'danger'} className='mb-2'>
-                  {subscriber.status}
-                </CBadge>
-                <CCardText>
-                  <strong>Subscribed At:</strong> {subscriber.subscribedAt}
-                </CCardText>
-              </CCardBody>
-            </CCard>
-          </CCol>
-        ))}
-      </CRow>*/}
 
       <div className='mt-4'>
         <div className='w-100 d-flex justify-content-center align-items-center mb-3'>
@@ -190,6 +195,9 @@ class ManagerNewsletter extends React.PureComponent {
   componentDidMount() {
     this.props.fetchNewsletters();
     this.props.getUserEvent();
+    if (this.props.userRole === ROLES.Admin) {
+      this.props.fetchMailingListDetails();
+    }
   }
   render () {
     return (
@@ -202,6 +210,7 @@ const mapStateToProps = state => ({
   newsletters: state.newsletter.newsletters,
   events: state.event.userEvents,
   userRole: state.account.user.role,
+  subscribers: state.newsletter.subscribers,
 });
 
 export default connect(mapStateToProps, actions)(ManagerNewsletter);

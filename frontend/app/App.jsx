@@ -105,7 +105,7 @@ const Appplication = (props) => {
   //const showFooter = (USER.role === ROLES.Member || !hideFooter.some(path => location.pathname.startsWith(path)))
   const showFooter = (!hideFooter.some(path => location.pathname.startsWith(path)))
 
-  if (homeMediaIsLoading || newsletterSubIsLoading) {
+  if (homeMediaIsLoading) {
     return <LoadingIndicator />
   }
 
@@ -113,6 +113,7 @@ const Appplication = (props) => {
     <>
       <ScrollToTop />
       <Notification />
+      {newsletterSubIsLoading && <LoadingIndicator />}
       {showHeader && <Navigation />}
       <Routes>
         <Route path='*' element={<Page404 />} />

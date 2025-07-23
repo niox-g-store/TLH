@@ -138,7 +138,7 @@ router.get(
 
       let events;
 
-      if (user.role === ROLES.Admin) {
+      if (user.role === ROLES.Admin || user.role === ROLES.Organizer) {
         // Admin: get events created by the user
         events = await Event.find({ user: user._id }).sort('-createdAt');
       } else if (user.role === ROLES.Member) {

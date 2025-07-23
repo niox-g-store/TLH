@@ -24,17 +24,24 @@ import { GoBack } from '../../../containers/goBack/inedx';
 import ManagerPagination from '../Pagination';
 import Input from '../../Common/HtmlTags/Input';
 
-const statsFunc = (events) => {
-  const statuses = {
-    topTicket: 'Regular',
-    total: 0,
-  };
-  for (const items of events) {
-    if (Object.keys(statuses).includes(items.status)) {
-      statuses[items.status] += 1;
+const findHighestSoldTicket = (tickets) => {
+  if (!Array.isArray(tickets) || tickets.length === 0) {
+    return null;
+  }
+
+  let highestSoldTicket = null;
+  let maxSoldCount = 0;
+
+  for (const ticket of tickets) {
+    const currentSoldCount = ticket?.soldCount ?? 0;
+
+    if (currentSoldCount > maxSoldCount) {
+      maxSoldCount = currentSoldCount;
+      highestSoldTicket = ticket;
     }
   }
-  return statuses;
+
+  return highestSoldTicket;
 };
 
 export const ManagerTicketHelper = (props) => {
@@ -56,6 +63,7 @@ export const ManagerTicketHelper = (props) => {
   const startIndex = (currentPage - 1) * ticketsPerPage;
   const endIndex = startIndex + ticketsPerPage;
   const currentTickets = filteredTickets.slice(startIndex, endIndex);
+  const mostBth = findHighestSoldTicket(tickets);
   
   const handleSearch = (name, value) => {
     setSearchTerm(value);
@@ -87,7 +95,7 @@ export const ManagerTicketHelper = (props) => {
             <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white`}>
               <CCardBody>
                 <CCardTitle>Most bought ticket type</CCardTitle>
-                <CCardText>Regular</CCardText>
+                <CCardText>{mostBth?.type}</CCardText>
               </CCardBody>
             </CCard>
           </CCol>
@@ -131,7 +139,7 @@ export const ManagerTicketHelper = (props) => {
                     <GetTicketPrice style={{ width: 'fit-content' }} ticket={ticket} />
                       <strong style={{ width: 'fit-content' }}>Quantity: {ticket.quantity}</strong><br />
                       <strong style={{ width: 'fit-content' }}>Coupons included: {ticket.coupons.length || 0}</strong><br />
-                      <strong style={{ width: 'fit-content' }}>Sold:</strong> {ticket.quantitySold || 0}
+                      <strong style={{ width: 'fit-content' }}>Sold:</strong> {ticket.soldCount || 0}
                   </CCardText>
                 </CCardBody>
               </CCard>

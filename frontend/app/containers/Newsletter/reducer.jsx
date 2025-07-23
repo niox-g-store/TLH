@@ -1,5 +1,6 @@
 import {
   FETCH_NEWSLETTERS,
+  FETCH_NEWSLETTER,
   CREATE_NEWSLETTER,
   SET_NEWSLETTER_EVENT_ID,
   NEWSLETTER_FORM_ERRORS,
@@ -8,11 +9,14 @@ import {
   NEWSLETTER_LOADING,
   NEWSLETTER_SUB_EMAIL,
   RESET_NEWSLETTER_SUB,
-  NEWSLETTER_SUB_ERROR
+  NEWSLETTER_SUB_ERROR,
+  REMOVE_NEWSLETTER,
+  FETCH_MAILING_LIST_DETAILS,
 } from './constants';
 
 const initialState = {
   newsletters: [],
+  newsletter: {},
   formData: {
     title: '',
     description: '',
@@ -23,11 +27,25 @@ const initialState = {
   eventId: null,
   isLoading: false,
   subEmail: '',
-  subFormErrors: {}
+  subFormErrors: {},
+  subscribers: ''
 };
 
 const newsletterReducer = (state = initialState, action) => {
   switch (action.type) {
+    case FETCH_MAILING_LIST_DETAILS:
+      return { ...state, subscribers: action.payload }
+    case FETCH_NEWSLETTER:
+      return { ...state, newsletter: action.payload }
+    case REMOVE_NEWSLETTER:
+      const index = state.newsletters.findIndex(b => b._id === action.payload);
+      return {
+        ...state,
+        newsletters: [
+          ...state.newsletters.slice(0, index),
+          ...state.newsletters.slice(index + 1)
+        ]
+      };
     case NEWSLETTER_SUB_ERROR:
       return { ...state, subFormErrors: action.payload }
     case RESET_NEWSLETTER_SUB:

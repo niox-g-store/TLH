@@ -69,10 +69,24 @@ class MailgunService {
     }
   }
 
+  async getMailingList(address) {
+    try {
+      const trimmedAddress = address.trim().replace(/\s/g, '').toLowerCase();
+      const result = await this.mailingG.lists.get(`${trimmedAddress}@thelinkhangout.com`)
+      if (result) {
+        return result
+      } else {
+        return null;
+      }
+    } catch (error) {
+      return null;
+    }
+  }
+
   async createMailingList(address) {
     try {
-      const trimmedAddress = address.trim().replace(/\s/g, '');
-      this.mailingG.lists.create({
+      const trimmedAddress = address.trim().replace(/\s/g, '').toLowerCase();
+      await this.mailingG.lists.create({
         address: `${trimmedAddress}@thelinkhangout.com`,
         name: trimmedAddress,
         description: `Mailing lists for organizer ${trimmedAddress}`,
@@ -80,15 +94,15 @@ class MailgunService {
         reply_preference: 'list',
       })
     } catch(error) {
-      console.error('cannot fetch mailing list:', error);
+      console.error('cannot create mailing list:', error);
       throw error;
     }
   }
 
   async destroyMailingList(address) {
     try {
-      const trimmedAddress = address.trim().replace(/\s/g, '');
-      this.mailingG.lists.destroy(`${trimmedAddress}@thelinkhangout.com`);
+      const trimmedAddress = address.trim().replace(/\s/g, '').toLowerCase();
+      await this.mailingG.lists.destroy(`${trimmedAddress}@thelinkhangout.com`);
     } catch(error) {
       console.error(`Cannot destroy mailing list`, error);
     }
@@ -173,11 +187,11 @@ class MailgunService {
 
   async createMembers(address, eventMembers) {  // create members to a mailing list
     try {
-      const trimmedAddress = address.trim().replace(/\s/g, '');
+      const trimmedAddress = address.trim().replace(/\s/g, '').toLowerCase();
       const members = [];
       for (let sendTo of eventMembers) {
         const cBase = Buffer.from(sendTo.email).toString('base64');
-        members.append({
+        members.push({
           address: sendTo.email,
           name: sendTo.name,
           subscribed: true,
@@ -261,14 +275,14 @@ class MailgunService {
         };
       } else {
         let from = null
-        if (type === 'newsletter-reminder') {
+        if (type === 'org-newsletter') {
           from = `${hostName} <${email}>`
         } else {
           from = `The Link Hangouts <${message.sender}>`
         }
         config = {
           from,
-          to: email,
+          to: email ? email : news,
           subject: message.subject,
           text: message.text,
           html: message.html,
@@ -295,13 +309,13 @@ const prepareTemplate = (type, host, data) => {
   let message;
 
   switch (type) {
+    case 'org-newsletter':
+      message = template.orgNewsLetterEmail(data);
+      break;
+
     case 'newsletter':
       message = template.newsLetterEmail(data);
       message.sender = news;
-      break;
-
-    case 'newsletter-reminder':
-      message = template.newsLetterEmail(data);
       break;
 
     case 'reset':

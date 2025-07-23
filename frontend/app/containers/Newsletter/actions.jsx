@@ -1,5 +1,6 @@
 import {
   FETCH_NEWSLETTERS,
+  FETCH_NEWSLETTER,
   CREATE_NEWSLETTER,
   SET_NEWSLETTER_EVENT_ID,
   NEWSLETTER_FORM_ERRORS,
@@ -8,7 +9,9 @@ import {
   NEWSLETTER_LOADING,
   NEWSLETTER_SUB_EMAIL,
   RESET_NEWSLETTER_SUB,
-  NEWSLETTER_SUB_ERROR
+  NEWSLETTER_SUB_ERROR,
+  REMOVE_NEWSLETTER,
+  FETCH_MAILING_LIST_DETAILS,
 } from './constants';
 import axios from 'axios';
 import { API_URL } from '../../constants';
@@ -25,9 +28,26 @@ export const fetchNewsletters = () => async dispatch => {
   } catch(error) {
     handleError(error, dispatch)
   } finally {
-    dispatch({ type: NEWSLETTER_LOADING, payload: false })
+    dispatch({ type: NEWSLETTER_LOADING, payload: false });
   }
 };
+
+export const fetchCampaign = (id) => {
+    return async(dispatch) => {
+        try {
+            const campaign = await axios.get(`${API_URL}/newsletter/${id}`);
+
+            if (campaign.data.success) {
+               dispatch({
+                    type: FETCH_NEWSLETTER,
+                    payload: campaign.data.campaign
+                })
+            }
+        } catch (error) {
+            handleError(error, dispatch)
+        }
+    }
+}
 
 export const newsletterChange = (name, v) => {
   const formData = {};
@@ -88,6 +108,7 @@ export const subscribeToNewsletter = () => {
       dispatch({ type: RESET_NEWSLETTER_SUB });
       dispatch(showNotification('success', successfulOptions.title));
     } catch (error) {
+      dispatch({ type: RESET_NEWSLETTER_SUB });
       handleError(error, dispatch);
     } finally {
       dispatch({ type: NEWSLETTER_LOADING, payload: false })
@@ -108,6 +129,7 @@ export const createNewsletter = (navigate) => async (dispatch, getState) => {
       title: n.title,
       content: n.description,
       image: n.image,
+      shouldEmailContainUserName: n.shouldEmailContainUserName,
       eventId
     }
 
@@ -143,3 +165,87 @@ export const createNewsletter = (navigate) => async (dispatch, getState) => {
     dispatch({ type: NEWSLETTER_LOADING, payload: false })
   }
 };
+
+export const fetchMailingListDetails = () => {
+  return async (dispatch) => {
+    dispatch({ type: NEWSLETTER_LOADING, payload: true })
+    try {
+      const mailingList = await axios.get(`${API_URL}/newsletter/mailing_list_details`)
+      
+      if (mailingList.status === 200) {
+        return dispatch({
+          type: FETCH_MAILING_LIST_DETAILS,
+          payload: mailingList.data.data
+        })
+      }
+    } catch (error) {
+      handleError(dispatch, error)
+    } finally{
+      dispatch({ type: NEWSLETTER_LOADING, payload: false })
+    }
+  }
+}
+
+export const sendCampaign = (campaignId,
+                             navigate,
+                             newsletterSelected, registeredAttendees,
+                             unregisteredAttendees,
+                             eventId,
+                            ) => {
+  return async (dispatch) => {
+      dispatch({ type: NEWSLETTER_LOADING, payload: true })
+      try {
+          const response = await axios.post(`${API_URL}/newsletter/send`, {
+            campaignId,
+            newsletterSelected,
+            registeredAttendees,
+            unregisteredAttendees,
+            eventId
+          });
+
+          const { data } = response;
+          const successfulOptions = {
+              title: data.message,
+              position: 'tr',
+              autoDismiss: 1
+          };
+
+          if (data.success) {
+              dispatch(showNotification('success', successfulOptions.title));
+          }
+          navigate(-1);
+      } catch (error) {
+          handleError(error, dispatch);
+      } finally {
+        dispatch({ type: NEWSLETTER_LOADING, payload: false })
+      }
+  };
+};
+
+export const deleteCampaign = (id, navigate) => {
+  return async (dispatch) => {
+    dispatch({ type: NEWSLETTER_LOADING, payload: true })
+    try {
+      const response = await axios.delete(`${API_URL}/newsletter/delete/${id}`);
+
+      const successfulOptions = {
+        title: `${response.data.message}`,
+        position: 'tr',
+        autoDismiss: 1
+      };
+
+      if (response.data.success === true) {
+        dispatch(showNotification('success', successfulOptions.title));
+        dispatch({
+          type: REMOVE_NEWSLETTER,
+          payload: id
+        });
+        navigate(-1);
+      }
+    } catch (error) {
+      handleError(error, dispatch);
+    } finally {
+      dispatch({ type: NEWSLETTER_LOADING, payload: false })
+    }
+  };
+}
