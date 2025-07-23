@@ -12,7 +12,7 @@ const EventsView = (props) => {
     <section className="events bg-white">
       <HeroBanner
         heading="Our Events"
-        desc="Discover our events"
+        desc="Discover Exciting Events"
         bannerImage={[]}
       />
       <EventsWrap events={events}/>

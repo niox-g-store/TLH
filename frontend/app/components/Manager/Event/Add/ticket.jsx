@@ -7,6 +7,8 @@ import Switch from '../../../store/Switch';
 import { useNavigate } from 'react-router-dom';
 import SelectOption from '../../../store/SelectOption';
 import { ticketCouponFinder } from '../../../../utils/eventCategories';
+import TicketRevenueBreakdown from '../../../store/TicketRevenueBreakdown';
+import { ROLES } from '../../../../constants';
 
 const AddEventTicket = ({
   ticketFormData,
@@ -21,7 +23,9 @@ const AddEventTicket = ({
   addEventTicket,
   eventEditChange,
   addEvent,
-  couponsOptions
+  couponsOptions,
+  user,
+  commission
 }) => {
   const navigate = useNavigate();
 
@@ -204,6 +208,14 @@ const RenderDiscountInfo = ({ price, discountPrice, discount }) => {
           <br />
         </Col>
       )}
+
+      {user.role === ROLES.Organizer &&
+      <Col>
+        <TicketRevenueBreakdown
+          commissionPercent={commission}
+          price={ticket.discountPrice > 0 ? ticket.discountPrice : ticket.price}/>
+      </Col>
+    }
       </Row>
     </React.Fragment>
     </>

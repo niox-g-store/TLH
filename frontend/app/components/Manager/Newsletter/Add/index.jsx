@@ -8,6 +8,8 @@ import AdvancedUpload from '../../../store/AdanceFileUpload';
 import Input from '../../../Common/HtmlTags/Input';
 import Col from '../../../Common/Col';
 import Button from '../../../Common/HtmlTags/Button';
+import { useNavigate } from 'react-router-dom';
+import { GoBack } from '../../../../containers/goBack/inedx';
 
 const AddNewsletterForm = (props) => {
   const {
@@ -17,18 +19,25 @@ const AddNewsletterForm = (props) => {
     isLightMode,
     newsletterChange
   } = props;
-
-  const handleInputChange = (name, value) => {
-    newsletterChange(name, value);
-  }
+  const navigate = useNavigate();
   
   const handleSubmit = () => {
-    createNewsletter();
+    createNewsletter(navigate);
   };
 
   return (
     <div className={`${isLightMode ? 'p-black' : 'p-white'} container-lg px-4 d-flex flex-column mb-custom-5em`}>
-      <h2>Create Campaign</h2>
+      <div
+        style={{
+          marginBottom: '-1em',
+          justifyContent: 'space-between',
+          padding: '0em 1em'
+        }}
+        className='d-flex'
+      >
+        <h2 className={`${isLightMode ? 'p-black' : 'p-white'} font-size-25`}>Create Campaign</h2>
+        <GoBack navigate={navigate} />
+      </div>
       <Col className={`${isLightMode ? 'p-black' : 'p-white'}`} xs='12'>
         <Input
           type="text"
@@ -37,7 +46,7 @@ const AddNewsletterForm = (props) => {
           placeholder="Title"
           value={formData.title}
           error={formErrors.title}
-          onInputChange={(e) => handleInputChange('title', e)}
+          onInputChange={(e, v) => newsletterChange('title', v)}
         />
       </Col>
 
@@ -48,7 +57,7 @@ const AddNewsletterForm = (props) => {
           formData={formData}
           error={formErrors.content}
           isLightMode={isLightMode}
-          onChange={handleInputChange}
+          onChange={newsletterChange}
         />
       </Col>
 
@@ -56,7 +65,7 @@ const AddNewsletterForm = (props) => {
         <AdvancedUpload
           name={"image"}
           error={formErrors.image}
-          onFilesChange={(files) => handleInputChange('image', files)} />
+          onFilesChange={(files) => newsletterChange('image', files)} />
       </Col>
 
       <Col xs='12' className={isLightMode ? 'text-dark' : 'text-white'}>
@@ -67,7 +76,7 @@ const AddNewsletterForm = (props) => {
           id="shouldEmailContainUserName"
           label="Do you want this email to contain names of your users?"
           checked={formData.shouldEmailContainUserName}
-          toggleCheckboxChange={() => handleInputChange('shouldEmailContainUserName', !formData.shouldEmailContainUserName)}
+          toggleCheckboxChange={() => newsletterChange('shouldEmailContainUserName', !formData.shouldEmailContainUserName)}
         />
       </Col>
 
@@ -96,13 +105,17 @@ const AddNewsletterForm = (props) => {
 
 class AddNewsletter extends React.PureComponent {
   componentDidMount () {
-    const eventId = this.props.match.params.id;
+    const queryString = this.props.location.search;
+    const params = new URLSearchParams(queryString);
+    const eventId = params.get('eventId');
     this.props.setNewsletter(eventId);
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.match.params.id !== prevProps.match.params.id) {
-      const eventId = this.props.match.params.id;
+      const queryString = this.props.location.search;
+      const params = new URLSearchParams(queryString);
+      const eventId = params.get('eventId');
       this.props.setNewsletter(eventId);
     }
   }

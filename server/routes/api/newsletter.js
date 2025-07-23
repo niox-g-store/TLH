@@ -376,10 +376,11 @@ router.post('/create',
   upload.array('images', 6),
   async (req, res) => {
     try {
-      const {
+      let {
         title, content,
         eventId, shouldEmailContainUserName = false,
       } = req.body;
+      eventId = eventId === 'null' ? null : eventId
       if (!title || !content) {
         return res
           .status(400)
@@ -395,9 +396,9 @@ router.post('/create',
         title,
         content,
         imageUrls,
-        user: user._id,
-        event: event._id,
-        organizer: organizer._id,
+        user: user?._id,
+        event: event?._id || null,
+        organizer: organizer?._id,
         shouldEmailContainUserName,
       });
 
@@ -409,7 +410,6 @@ router.post('/create',
         campaign: savedCampaign
       });
     } catch (error) {
-
       return res.status(400).json({
         error: 'Error creating campaign Please try again.'
       });

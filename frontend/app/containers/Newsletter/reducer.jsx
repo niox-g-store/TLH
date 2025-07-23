@@ -5,7 +5,10 @@ import {
   NEWSLETTER_FORM_ERRORS,
   NEWSLETTER_FORM,
   RESET_NEWSLETTER_FORM,
-  NEWSLETTER_LOADING
+  NEWSLETTER_LOADING,
+  NEWSLETTER_SUB_EMAIL,
+  RESET_NEWSLETTER_SUB,
+  NEWSLETTER_SUB_ERROR
 } from './constants';
 
 const initialState = {
@@ -19,10 +22,18 @@ const initialState = {
   formErrors: {},
   eventId: null,
   isLoading: false,
+  subEmail: '',
+  subFormErrors: {}
 };
 
 const newsletterReducer = (state = initialState, action) => {
   switch (action.type) {
+    case NEWSLETTER_SUB_ERROR:
+      return { ...state, subFormErrors: action.payload }
+    case RESET_NEWSLETTER_SUB:
+      return { ...state, subEmail: '', subFormErrors: {} }
+    case NEWSLETTER_SUB_EMAIL:
+      return { ...state, subEmail: action.payload }
     case NEWSLETTER_LOADING:
       return { ...state, isLoading: action.payload }
     case NEWSLETTER_FORM:

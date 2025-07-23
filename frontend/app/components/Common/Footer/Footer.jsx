@@ -2,10 +2,20 @@ import React from "react";
 import "./Footer.css";
 import { MdOutlineWhatsapp, MdOutlineMailOutline } from "react-icons/md";
 import { AiOutlineTikTok, AiOutlineInstagram } from "react-icons/ai";
+import Button from "../HtmlTags/Button";
+import Input from "../HtmlTags/Input";
 
-
-const Footer = () => {
+const Footer = (props) => {
+  const { email, newsLetterSubscribeChange, subscribeToNewsletter, subFormErrors } = props;
   const ftrlogo = "/logo_.png";
+  const handleSubmit = event => {
+      event.preventDefault();
+      subscribeToNewsletter();
+  };
+
+  const SubscribeButton = (
+    <Button type='submit' className='primary' text='Subscribe' />
+  );
   return (
     <>
       <footer>
@@ -13,7 +23,7 @@ const Footer = () => {
           <div className="footer-row-wrapper">
             <div className="col-ftr-logo">
               <a href="#">
-                <img className="width-90 height-130" src={ftrlogo} alt="logo" />
+                <img className="width-100 height-130" src={ftrlogo} alt="logo" />
               </a>
             </div>
             <div className="col-ftr-links footer-links">
@@ -75,8 +85,22 @@ const Footer = () => {
               <p className="p-white p-content p-all-features">
                 Want to stay up to date with us?
               </p>
-              <input type="email" placeholder="Email" />
-              <p className="p-white sub-text">
+              <form onSubmit={handleSubmit}>
+                <div className='subscribe'>
+                  <Input
+                    type={'text'}
+                    error={subFormErrors['email']}
+                    name={'email'}
+                    placeholder={'Please Enter Your Email'}
+                    value={email}
+                    onInputChange={(name, value) => {
+                      newsLetterSubscribeChange(name, value);
+                    }}
+                    inlineElement={SubscribeButton}
+                  />
+                </div>
+              </form>
+                <p className="p-white sub-text">
                 By subscribing to our newsletter you agree to our privacy policy and communication emails from us
               </p>
             </div>

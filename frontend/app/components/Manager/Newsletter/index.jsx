@@ -49,72 +49,93 @@ const Newsletter = (props) => {
           />
         </div>
       )}
-      {currentNewsletters.length > 0 ?
+      <CRow className='gy-4'>
+      {currentNewsletters.length > 0 ? (
         currentNewsletters.map(newsletter => (
-          <li key={newsletter.id}>
-            <Link to={`/dashboard/newsletter/${newsletter._id}`}>
-              {newsletter.title}
-            </Link>
-          </li>
-      ))
-      :
-       <p style={{ textAlign: 'center' }}>You have not created any campaign</p>
-      }
-      {/* Event List */}
-            <CRow className='gy-4'>
-      <p style={{ textAlign: 'center' }}>You can choose from upcoming or ongoing events to send reminders.</p>
-      {events.map((event) => {
-        // Only render active events (not 'Ended')
-        if (event.status === 'Ended') {
-          return null;
-        }
-
-        const attendeesCount = (event.registeredAttendees?.length || 0) + (event.unregisteredAttendees?.length || 0);
-
-        return (
-          <CCol md={6} key={event._id}> {/* Use a unthique ID for the key */}
-            <Link to={`/dashboard/newsletter/add/${event._id}`} style={{ textDecoration: 'none' }}> {/* Remove default link underline */}
+          <CCol md={6} key={newsletter._id}>
+            <Link to={`/dashboard/newsletter/${newsletter._id}`} style={{ textDecoration: 'none' }}>
               <CCard
+                className={`${isLightMode ? 'p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}
                 style={{ height: '95%' }}
-                className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}
               >
-                <CImage
-                  src={event.imageUrls && event.imageUrls[0] ? `${API_URL}${resolveImage(event.imageUrls[0])}` : ''}
-                  alt={event.title || 'Event Image'} // Provide a fallback alt text
-                  style={{ width: '40%', objectFit: 'cover' }}
-                />
-                <CCardBody>
-                  <CCardTitle className='mb-2'>{event.name}</CCardTitle>
-                  <CBadge
-                    color={
-                      event.status === 'Upcoming'
-                        ? 'primary'
-                        : event.status === 'Ongoing'
-                        ? 'success'
-                        : 'secondary' // Fallback for unexpected status
-                    }
-                  >
-                    {event.status}
-                  </CBadge>
-                  <CCardText className='mt-2'>
-                    <strong>Start Date:</strong> {formatDate(event.startDate)}
-                    <br />
-                    <strong>End Date:</strong> {formatDate(event.endDate)}
-                    <br />
-                    <strong>Venue:</strong> {event.location}
-                    <br />
-                    <strong>Tickets Sold:</strong> {event.attendees || 0}
-                    <br />
-                    <strong>Attendees:</strong> {attendeesCount}
-                    <br />
+                {newsletter.imageUrls && newsletter.imageUrls.length > 0 && (
+                  <CImage
+                    src={resolveImage(`${API_URL}${newsletter.imageUrls[0]}`)}
+                    alt={newsletter.title || 'Newsletter Image'}
+                    style={{ width: '40%', objectFit: 'cover' }}
+                  />
+                )}
+                <CCardBody className={`${isLightMode ? 'p-black' : 'p-white'}`}>
+                  <CCardTitle className="mb-2">{newsletter.title}</CCardTitle>
+                  <CCardText>
+                    Created: {new Date(newsletter.createdAt).toLocaleDateString()}
+                  </CCardText>
+                  <CCardText>
+                    {newsletter.sent ? `Sent to ${newsletter.sentTo} recipients` : 'Not yet sent'}
                   </CCardText>
                 </CCardBody>
               </CCard>
             </Link>
           </CCol>
-        );
-      })}
+        ))
+      ) : (
+        <CCol xs={12}>
+          <p className="text-center text-muted">No newsletters found.</p>
+        </CCol>
+      )}
     </CRow>
+      {/* Event List */}
+      <CRow className='gy-4'>
+        <p style={{ textAlign: 'center' }}>You can choose from upcoming or ongoing events to send reminders.</p>
+        {events.map((event) => {
+          if (event.status === 'Ended') {
+            return null;
+          }
+          const attendeesCount = (event.registeredAttendees?.length || 0) + (event.unregisteredAttendees?.length || 0);
+          return (
+            <CCol md={6} key={event._id}>
+              <Link to={`/dashboard/newsletter/add?eventId=${event._id}`} style={{ textDecoration: 'none' }}>
+                <CCard
+                  style={{ height: '95%' }}
+                  className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-row overflow-hidden`}
+                >
+                  <CImage
+                    src={event.imageUrls && event.imageUrls[0] ? `${API_URL}${resolveImage(event.imageUrls[0])}` : ''}
+                    alt={event.title || 'Event Image'}
+                    style={{ width: '40%', objectFit: 'cover' }}
+                  />
+                  <CCardBody>
+                    <CCardTitle className='mb-2'>{event.name}</CCardTitle>
+                    <CBadge
+                      color={
+                        event.status === 'Upcoming'
+                          ? 'primary'
+                          : event.status === 'Ongoing'
+                          ? 'success'
+                          : 'secondary' // Fallback for unexpected status
+                      }
+                    >
+                      {event.status}
+                    </CBadge>
+                    <CCardText className='mt-2'>
+                      <strong>Start Date:</strong> {formatDate(event.startDate)}
+                      <br />
+                      <strong>End Date:</strong> {formatDate(event.endDate)}
+                      <br />
+                      <strong>Venue:</strong> {event.location}
+                      <br />
+                      <strong>Tickets Sold:</strong> {event.attendees || 0}
+                      <br />
+                      <strong>Attendees:</strong> {attendeesCount}
+                      <br />
+                    </CCardText>
+                  </CCardBody>
+                </CCard>
+             </Link>
+           </CCol>
+          );
+        })}
+      </CRow>
 
       {/*<CRow className='gy-4'>
         {currentNewsletters.map((subscriber, idx) => (

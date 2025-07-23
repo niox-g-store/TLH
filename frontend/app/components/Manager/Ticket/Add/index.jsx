@@ -12,6 +12,8 @@ import actions from "../../../../actions";
 import { connect } from "react-redux";
 import { withRouter } from "../../../../withRouter";
 import { ticketCouponFinder } from "../../../../utils/eventCategories";
+import TicketRevenueBreakdown from "../../../store/TicketRevenueBreakdown";
+import { ROLES } from "../../../../constants";
 
 const RenderDiscountInfo = ({ price, discountPrice, discount }) => {
   const priceNum = parseFloat(price);
@@ -37,7 +39,9 @@ const AddTicketForm = (props) => {
           ticketIsLoading,
           addTicket,
           ticketFormErrors,
-          addTicketToEvent
+          addTicketToEvent,
+          commission,
+          user
         } = props;
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -152,7 +156,7 @@ const AddTicketForm = (props) => {
 
         {/* Discount Price + Percentage */}
         {ticketFormData.discount && (
-          <Col className={isLightMode ? 'p-black' : 'p-white'} xs='12' lg='6'>
+          <Col className={`${isLightMode ? 'p-black' : 'p-white'} mt-2`} xs='12' lg='6'>
             <Input
               type='number'
               label='Discount Price'
@@ -181,10 +185,14 @@ const AddTicketForm = (props) => {
             handleSelectChange={(value) => ticketChange('coupons', value)}
           />
         </Col>
-
+          {user.role === ROLES.Organizer && <Col>
+            <TicketRevenueBreakdown
+              commissionPercent={commission}
+              price={ticketFormData.discountPrice > 0 ? ticketFormData.discountPrice : ticketFormData.price}/>
+          </Col>
+          }
       </Row>
-
-      <Row className='mt-4'>
+      <Row className='mt-4 mb-4'>
         <Col xs='12' className='d-flex justify-content-center'>
           <Button
             text="Save Ticket"
@@ -212,7 +220,9 @@ render () {
     ticketChange,
     addTicket,
     addTicketToEvent,
-    ticketFormErrors
+    ticketFormErrors,
+    commission,
+    user
   } = this.props;
 
   return (
@@ -225,6 +235,8 @@ render () {
       ticketChange={ticketChange}
       addTicket={addTicket}
       addTicketToEvent={addTicketToEvent}
+      commission={commission}
+      user={user}
     />
   );
 }
@@ -235,7 +247,9 @@ const mapStateToProps = state => ({
   ticketFormErrors: state.ticket.ticketFormErrors,
   ticketEditFormErrors: state.ticket.editFormErrors,
   ticketIsLoading: state.ticket.isLoading,
-  coupons: state.coupon.couponsSelect
+  coupons: state.coupon.couponsSelect,
+  commission: state.setting.settings.commission,
+  user: state.account.user,
 });
 
 export default connect(mapStateToProps, actions)(withRouter(AddTicket));

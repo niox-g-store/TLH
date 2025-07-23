@@ -95,6 +95,13 @@ footer {
   align-items: center;
 }
 
+.subscribe .input-text-block {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+  margin-bottom: 1em;
+}
+
 /* RESPONSIVE */
 @media (max-width: 1023px) {
   .footer-row-wrapper {

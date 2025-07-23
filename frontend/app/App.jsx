@@ -36,7 +36,17 @@ import ScrollToTop from './components/Common/ScrollToTop';
 import LoadingIndicator from './components/store/LoadingIndicator';
 
 const Appplication = (props) => {
-  const { user, settings, uuser, homeMediaIsLoading } = props;
+  const {
+    user,
+    settings,
+    uuser,
+    homeMediaIsLoading,
+    email,
+    newsLetterSubscribeChange,
+    subscribeToNewsletter,
+    subFormErrors,
+    newsletterSubIsLoading
+  } = props;
   const location = useLocation();
   const USER = user ?? user.role;
   const { maintenance } = settings;
@@ -95,7 +105,7 @@ const Appplication = (props) => {
   //const showFooter = (USER.role === ROLES.Member || !hideFooter.some(path => location.pathname.startsWith(path)))
   const showFooter = (!hideFooter.some(path => location.pathname.startsWith(path)))
 
-  if (homeMediaIsLoading) {
+  if (homeMediaIsLoading || newsletterSubIsLoading) {
     return <LoadingIndicator />
   }
 
@@ -134,7 +144,14 @@ const Appplication = (props) => {
         <Route path='/dashboard/*' element={<Authentication><Dashboard /></Authentication>} />
       </Routes>
 
-      {showFooter && <Footer />}
+      {showFooter &&
+        <Footer
+          email={email}
+          newsLetterSubscribeChange={newsLetterSubscribeChange}
+          subscribeToNewsletter={subscribeToNewsletter}
+          subFormErrors={subFormErrors}
+        />
+      }
     </>
   );
 }
@@ -157,6 +174,9 @@ const mapStateToProps = (state) => {
     user: state.account.user,
     settings: state.setting.settings,
     homeMediaIsLoading: state.media.isLoading,
+    email: state.newsletter.subEmail,
+    subFormErrors: state.newsletter.subFormErrors,
+    newsletterSubIsLoading: state.newsletter.isLoading,
   };
 };
 

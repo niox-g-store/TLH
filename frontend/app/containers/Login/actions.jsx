@@ -83,7 +83,6 @@ export const twoFaLogin = (code) => {
       dispatch({ type: LOGIN_RESET });
     } catch (error) {
       const title = `Please try to login again!`;
-      console.log(error)
       handleError(error, dispatch, title);
       return;
     } finally {

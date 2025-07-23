@@ -7,7 +7,7 @@
      },
      commission: {
        type: Number,
-       default: 0
+       default: 8
      },
      earningControl: {
        type: String,

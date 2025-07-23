@@ -5,12 +5,16 @@ import {
   NEWSLETTER_FORM_ERRORS,
   NEWSLETTER_FORM,
   RESET_NEWSLETTER_FORM,
-  NEWSLETTER_LOADING
+  NEWSLETTER_LOADING,
+  NEWSLETTER_SUB_EMAIL,
+  RESET_NEWSLETTER_SUB,
+  NEWSLETTER_SUB_ERROR
 } from './constants';
 import axios from 'axios';
 import { API_URL } from '../../constants';
 import handleError from '../../utils/error';
 import { showNotification } from '../Notification/actions';
+import { allFieldsValidation } from '../../utils/validation';
 
 export const fetchNewsletters = () => async dispatch => {
   dispatch({ type: NEWSLETTER_LOADING, payload: true })
@@ -34,12 +38,62 @@ export const newsletterChange = (name, v) => {
   }
 }
 
+export const newsLetterSubscribeChange = (n, v) => {
+  if (n === 'email') {
+    return {
+      type: NEWSLETTER_SUB_EMAIL,
+      payload: v
+    }
+  }
+}
+
 export const setNewsletter = (eventId) => {
   return {
     type: SET_NEWSLETTER_EVENT_ID,
     payload: eventId
   }
 }
+
+export const subscribeToNewsletter = () => {
+  return async (dispatch, getState) => {
+    dispatch({ type: NEWSLETTER_LOADING, payload: true })
+    try {
+      const rules = {
+        email: 'required|email'
+      };
+
+      const user = {};
+      user.email = getState().newsletter.subEmail;
+
+      const { isValid, errors } = allFieldsValidation(user, rules, {
+        'required.email': 'Email is required.',
+        'email.email': 'Email format is invalid.'
+      });
+
+      if (!isValid) {
+        return dispatch({ type: NEWSLETTER_SUB_ERROR, payload: errors });
+      }
+
+      const response = await axios.post(
+        `${API_URL}/newsletter/subscribe`,
+        user
+      );
+
+      const successfulOptions = {
+        title: `${response.data.message}`,
+        position: 'tr',
+        autoDismiss: 1
+      };
+
+      dispatch({ type: RESET_NEWSLETTER_SUB });
+      dispatch(showNotification('success', successfulOptions.title));
+    } catch (error) {
+      handleError(error, dispatch);
+    } finally {
+      dispatch({ type: NEWSLETTER_LOADING, payload: false })
+    }
+  };
+};
 
 export const createNewsletter = (navigate) => async (dispatch, getState) => {
   dispatch({ type: NEWSLETTER_LOADING, payload: true })
@@ -78,8 +132,8 @@ export const createNewsletter = (navigate) => async (dispatch, getState) => {
       }
     }
     const response = await axios.post(`${API_URL}/newsletter/create`, formData)
-    const { newsletter } = response.data;
-    dispatch({ type: CREATE_NEWSLETTER, payload: newsletter });
+    const { campaign } = response.data;
+    dispatch({ type: CREATE_NEWSLETTER, payload: campaign });
     dispatch(showNotification('success', 'Newsletter successfully created!!'))
     dispatch({ type: RESET_NEWSLETTER_FORM })
     navigate(-1)

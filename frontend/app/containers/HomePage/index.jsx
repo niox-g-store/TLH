@@ -1,5 +1,4 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
 import { connect } from "react-redux";
 import actions from "../../actions";
 import HeroBanner from "../../components/store/HeroBanner/HeroBanner";
@@ -14,6 +13,7 @@ import SButton from "../../components/Common/HtmlTags/SecondaryButton/SButton";
 import HomeBanner from "./HomeBanner";
 import { API_URL } from "../../constants";
 import PopupComponent from "../../components/store/PopUp";
+import LoadingIndicator from "../../components/store/LoadingIndicator";
 
 const event1 = "./assets/events/event_1.jpeg";
 const event2 = "./assets/events/event_2.jpeg";
@@ -25,7 +25,7 @@ class Home extends React.PureComponent {
     this.props.fetchVisibleEvents();
   }
   render () {
-  const { authenticated, homeMedia, popOverEvents } = this.props;
+  const { homeMediaIsLoading, homeMedia, popOverEvents } = this.props;
   //if (authenticated) return <Navigate to='/dashboard' />;
 
   let video = null;
@@ -47,6 +47,12 @@ class Home extends React.PureComponent {
         return media.mediaUrl;
       })
       .map(media => API_URL + media.mediaUrl);
+  }
+
+  if (homeMediaIsLoading) {
+    return (
+      <LoadingIndicator />
+    )
   }
 
   return (
@@ -81,7 +87,8 @@ const mapStateToProps = (state) => {
   return {
     homeMedia: state.media.homeMedia,
     authenticated: state.authentication.authenticated,
-    popOverEvents: state.media.popOverEvents
+    popOverEvents: state.media.popOverEvents,
+    homeMediaIsLoading: state.media.isLoading,
   };
 };
 

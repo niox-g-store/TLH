@@ -12,6 +12,8 @@ import actions from "../../../../actions";
 import { withRouter } from "../../../../withRouter";
 import { connect } from "react-redux";
 import { ticketCouponFinder } from "../../../../utils/eventCategories";
+import TicketRevenueBreakdown from "../../../store/TicketRevenueBreakdown";
+import { ROLES } from "../../../../constants";
 
 const RenderDiscountInfo = ({ price, discountPrice, discount }) => {
   const priceNum = parseFloat(price);
@@ -38,7 +40,9 @@ const EditTicketForm = (props) => {
   editTicket,
   ticketEditFormErrors,
   editEventTicket,
-  deleteTicket
+  deleteTicket,
+  user,
+  commission
 } = props;
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -172,9 +176,15 @@ const EditTicketForm = (props) => {
           />
         </Col>
       </Row>
-
     </form>
-    <Row style={{ justifyContent: 'space-around' }} className='mt-4 d-flex'>
+    {user.role === ROLES.Organizer &&
+      <Col>
+        <TicketRevenueBreakdown
+          commissionPercent={commission}
+          price={ticket.discountPrice > 0 ? ticket.discountPrice : ticket.price}/>
+      </Col>
+    }
+    <Row style={{ justifyContent: 'space-around' }} className='mt-4 d-flex mb-4'>
           <Button
             text="Update Ticket"
             style={{ padding: '10px 25px' }}
@@ -219,7 +229,9 @@ const mapStateToProps = state => ({
   ticket: state.ticket.ticket,
   ticketEditFormErrors: state.ticket.editFormErrors,
   ticketIsLoading: state.ticket.isLoading,
-  coupons: state.coupon.couponsSelect
+  coupons: state.coupon.couponsSelect,
+  commission: state.setting.settings.commission,
+  user: state.account.user,
 });
 
 export default connect(mapStateToProps, actions)(withRouter(EditTicket));

@@ -33,7 +33,9 @@ const AddEventForm = (props) => {
     image,
     eventCategories,
     eventTickets,
-    couponsOptions
+    couponsOptions,
+    commission,
+    user
   } = props;
 
   const navigate = useNavigate();
@@ -235,7 +237,9 @@ const mapStateToProps = state => ({
   isLightMode: state.dashboard.isLightMode,
   eventCategories: state.event.eventCategories,
   eventIsLoading: state.event.isLoading,
-  couponsOptions: state.coupon.couponsSelect
+  couponsOptions: state.coupon.couponsSelect,
+  user: state.account.user,
+  commission: state.setting.settings.commission,
 });
 
 export default connect(mapStateToProps, actions)(withRouter(AddEvent));

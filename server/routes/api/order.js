@@ -41,7 +41,6 @@ const assignQrCode = async (order, cart) => {
     
     for (const ticketItem of ticketItems) {
       const ticketLocation = await Ticket.findOne({ _id: ticketItem.ticketId })
-      console.log()
       const { coupon,
               ticketType,
               eventName,
@@ -291,7 +290,12 @@ router.put('/edit/order/', async (req, res) => {
       const cartEvents = cartDoc.tickets.map(e => e.eventId);
 
       let quantity = 0;
-      for (const item of cartDoc.tickets) { quantity += item.quantity }
+      for (const item of cartDoc.tickets) {
+        const tick = await Ticket.findById(item.ticketId);
+        tick.soldCount += item.quantity;
+        await tick.save()
+        quantity += item.quantity
+      }
 
       if (cartDoc.user) { // add to registered attendees
         for (const item of cartEvents) {

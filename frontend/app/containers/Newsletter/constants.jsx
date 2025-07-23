@@ -5,3 +5,6 @@ export const NEWSLETTER_FORM_ERRORS = 'src/Newsletter/NEWSLETTER_FORM_ERRORS';
 export const NEWSLETTER_FORM = 'src/Newsletter/NEWSLETTER_FORM';
 export const RESET_NEWSLETTER_FORM = 'src/Newsletter/RESET_NEWSLETTER_FORM';
 export const NEWSLETTER_LOADING = 'src/Newsletter/NEWSLETTER_LOADING';
+export const NEWSLETTER_SUB_EMAIL = 'src/Newsletter/NEWSLETTER_SUB_EMAIL';
+export const RESET_NEWSLETTER_SUB = 'src/Newsletter/RESET_NEWSLETTER_SUB';
+export const NEWSLETTER_SUB_ERROR = 'src/Newsletter/NEWSLETTER_SUB_ERROR';
