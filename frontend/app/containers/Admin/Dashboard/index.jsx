@@ -31,16 +31,20 @@ import { attendeesData } from '../../../components/Data/attendeesData';
 import AttendeesTable from '../../../components/store/AttendeesTable';
 import PeriodDropdown from '../../../components/store/PeriodPicker';
 import { Link } from 'react-router-dom';
-
+// import { FilterSystem } from '../../../components/store/PeriodPicker';
+import FilterSystem from '../../../components/store/AnalyticsFilterSystem';
 const AdminDashboard = (props) => {
-  const { toggleDashboardTheme, isLightMode } = props;
+  const { isLightMode } = props;
 
   return (
     <div className='body-panel'>
       <div className='container-lg px-4 mb-custom-5em'>
-        <h2 style={{ margin: 0 }} className={`${isLightMode ? 'p-black': 'p-white'}`}>Dashboard</h2>
+        <div style={{ alignItems: 'center' }} className='d-flex'>
+          <h2 style={{ margin: 0 }} className={`${isLightMode ? 'p-black': 'p-white'}`}>Dashboard</h2>
+          <FilterSystem isLightMode={isLightMode} />
+        </div>
         <hr className={`${isLightMode ? 'p-black': 'p-white'}`}></hr>
-        <div data-aos='fade-up' className='d-flex gap-3 flex-wrap mb-4' style={{ alignItems: 'stretch' }}>
+        <div data-aos='fade-up' className='d-flex gap-3 flex-wrap mb-4' style={{ alignItems: 'stretch', zIndex: '100', position: 'relative' }}>
           <div className='dashboard-analytics d-flex flex-column gap-3' style={{ maxWidth: '100%', flexShrink: 0 }}>
 
             <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white c-primary border-15`}>
