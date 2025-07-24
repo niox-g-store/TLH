@@ -8,39 +8,45 @@ const { ROLES } = require('../../utils/constants');
 const auth = require('../../middleware/auth');
 const role = require('../../middleware/role');
 const orderQueue = require('../../queues/orderQueue');
+const User = require('../../models/user');
 
 // GET all used QR codes (Admin and Organizer only)
 router.get('/used', auth, role.check(ROLES.Admin, ROLES.Organizer), async (req, res) => {
   try {
-    if (req.user.role === ROLES.Admin) {
+    const user = req.user;
 
-      // Get array of event IDs only
-      const userEvents = await Event.find({ user: req.user._id }).select('_id');
-      const eventIds = userEvents.map(e => e._id);
+    let eventIds = [];
 
-      // Filter QR codes where eventId is in user's event IDs
-      const allUsedQRCodes = await QRCode.find({
-        used: true,
-        eventId: { $in: eventIds }
-      }).populate('eventId ticketId').sort('-createdAt');
+    if (user.role === ROLES.Admin) {
+      // Get all users with Admin role
+      const adminUsers = await User.find({ role: ROLES.Admin }).select('_id');
+      const adminUserIds = adminUsers.map(u => u._id);
 
-      return res.json({ qrCodes: allUsedQRCodes });
+      // Get events created by any admin user
+      const adminEvents = await Event.find({ user: { $in: adminUserIds } }).select('_id');
+      eventIds = adminEvents.map(e => e._id);
+    } else if (user.role === ROLES.Organizer) {
+      const organizerId = user.organizer;
+      const organizer = await Organizer.findById(organizerId);
+      if (!organizer) {
+        return res.status(400).json({ error: 'Organizer not found' });
+      }
+      eventIds = organizer.event || [];
     }
 
-    const organizerId = req.user.organizer;
-    const organizer = await Organizer.findById(organizerId);
-    if (!organizer) return res.status(400).json({ error: 'Organizer not found' });
-
+    // Fetch used QR codes for the resolved event IDs
     const qrCodes = await QRCode.find({
       used: true,
-      eventId: { $in: organizer.event },
+      eventId: { $in: eventIds }
     }).populate('eventId ticketId').sort('-createdAt');
 
     return res.json({ qrCodes });
+
   } catch (err) {
     return res.status(400).json({ error: 'Failed to fetch QR codes' });
   }
 });
+
 
 // POST to verify a QR code
 router.post('/verify', auth, role.check(ROLES.Admin, ROLES.Organizer), async (req, res) => {

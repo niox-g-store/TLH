@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Ticket = require('../../models/ticket');
 const Coupon = require('../../models/coupon');
+const User = require('../../models/user');
 const auth = require('../../middleware/auth');
 const role = require('../../middleware/role');
 const { ROLES } = require('../../utils/constants');
@@ -14,13 +15,16 @@ router.get(
   async (req, res) => {
     try {
       const user = req.user;
-
-      let tickets;
+      let tickets = [];
 
       if (user.role === ROLES.Admin) {
-        // Admin: get events created by the user
-        tickets = await Ticket.find({ user: user._id }).sort('-createdAt');
+        // Fetch tickets created by all admin users
+        const adminUsers = await User.find({ role: ROLES.Admin }).select('_id');
+        const adminUserIds = adminUsers.map(u => u._id);
+
+        tickets = await Ticket.find({ user: { $in: adminUserIds } }).sort('-createdAt');
       }
+
       return res.status(200).json({ tickets });
     } catch (error) {
       return res.status(400).json({

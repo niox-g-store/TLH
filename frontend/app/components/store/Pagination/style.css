@@ -20,6 +20,7 @@
     margin: 1em 0em 2em 0em;
     font-size: 18px;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .pagination li {

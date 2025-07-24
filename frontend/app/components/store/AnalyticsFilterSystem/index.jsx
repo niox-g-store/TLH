@@ -64,11 +64,45 @@ const FilterSystem = (props) => {
   };
 
   const handleDownloadPdf = () => {
-    console.log('Download PDF clicked');
+    let effectiveStartDate = startDate;
+    let effectiveEndDate = endDate;
+
+    if (!isRangeSelection && singleDate) {
+      effectiveStartDate = new Date(singleDate);
+      effectiveStartDate.setHours(0, 0, 0, 0);
+
+      effectiveEndDate = new Date(singleDate);
+      effectiveEndDate.setHours(23, 59, 59, 999);
+    }
+
+    const filterCriteria = {
+      target: filterTarget.toLowerCase(),
+      isRange: isRangeSelection,
+      startDate: effectiveStartDate,
+      endDate: effectiveEndDate,
+    };
+    onApplyFilter(filterCriteria, true, false);
   };
 
   const handleDownloadCsv = () => {
-    console.log('Download CSV clicked');
+    let effectiveStartDate = startDate;
+    let effectiveEndDate = endDate;
+
+    if (!isRangeSelection && singleDate) {
+      effectiveStartDate = new Date(singleDate);
+      effectiveStartDate.setHours(0, 0, 0, 0);
+
+      effectiveEndDate = new Date(singleDate);
+      effectiveEndDate.setHours(23, 59, 59, 999);
+    }
+
+    const filterCriteria = {
+      target: filterTarget.toLowerCase(),
+      isRange: isRangeSelection,
+      startDate: effectiveStartDate,
+      endDate: effectiveEndDate,
+    };
+    onApplyFilter(filterCriteria, false, true);
   };
 
   return (

@@ -174,7 +174,6 @@ router.put('/', auth, upload.single('image'), async (req, res) => {
       user: userDoc
     });
   } catch (error) {
-    console.error("Error updating user:", error); // Log the error for debugging
     return res.status(400).json({
       error: 'Your request could not be processed. Please try again.'
     });

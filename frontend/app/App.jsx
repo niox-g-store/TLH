@@ -170,7 +170,6 @@ class App extends React.PureComponent {
 }
 
 const mapStateToProps = (state) => {
-  console.log(state)
   return {
     uuser: state.account.user.role === ROLES.Admin,
     authenticated: state.authentication.authenticated,

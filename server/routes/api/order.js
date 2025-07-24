@@ -659,29 +659,44 @@ router.get(
   auth,
   role.check(ROLES.Admin, ROLES.Organizer, ROLES.Member),
   async (req, res) => {
-  try {
-    const user = req.user;
-    let orders = await Order.find({'user._id': user._id})
-      .populate('events')
-      .populate('products')
-      .populate({
-        path: 'cart',
-        populate: {
-          path: 'tickets.eventId',
-        }
-      })
-      .populate('guest')
-      .sort('-createdAt')
+    try {
+      const user = req.user;
+      let query = {};
+
+      if (user.role === ROLES.Admin) {
+        // Fetch orders from all admin users
+        const adminUsers = await User.find({ role: ROLES.Admin }).select('_id');
+        const adminUserIds = adminUsers.map(u => u._id);
+        query = { 'user._id': { $in: adminUserIds } };
+      } else {
+        // Fetch only the user's own orders
+        query = { 'user._id': user._id };
+      }
+
+      const orders = await Order.find(query)
+        .populate('events')
+        .populate('products')
+        .populate({
+          path: 'cart',
+          populate: {
+            path: 'tickets.eventId',
+          }
+        })
+        .populate('guest')
+        .sort('-createdAt');
+
       return res.status(200).json({
         status: 200,
         orders
       });
-  } catch (error) {
-    return res.status(400).json({
-      error: 'Your request could not be processed. Please try again.'
-    });
+    } catch (error) {
+      return res.status(400).json({
+        error: 'Your request could not be processed. Please try again.'
+      });
+    }
   }
-});
+);
+
 
 // DELETE /order/id/:id
 router.delete('/id/:id', auth, role.check(ROLES.Admin), async (req, res) => {

@@ -49,7 +49,9 @@ const AdminDashboardTemplate = (props) => {
     attendees,
     attendeesPage,
     attendeesTotalPages,
-    fetchAttendees
+    fetchAttendees,
+    onApplyFilter,
+    attendeesDownload
   } = props;
 
   const ticketsSold = dashboardAnalytics?.tickets?.totalSold || 0
@@ -90,7 +92,12 @@ const AdminDashboardTemplate = (props) => {
               <CCardBody>
                 <div className='d-flex justify-content-between align-items-start mb-2'>
                   <CCardTitle>{ticketsSold} Ticket Sold</CCardTitle>
-                  <PeriodDropdown />
+                  <PeriodDropdown
+                    dashboardAnalytics={dashboardAnalytics}
+                    onApplyFilter={onApplyFilter}
+                    className='period-d-md'
+                    target={"tickets"}
+                  />                  
                 </div>
                 <CCardText>{ticketPeriod}</CCardText>
                 <ChartLine ticket={dashboardAnalytics?.tickets || ''}/>
@@ -107,18 +114,28 @@ const AdminDashboardTemplate = (props) => {
 
                   <CCardText className='d-flex justify-content-between align-items-center font-size-20'>{dashboardAnalytics?.events?.total} <MdOutlineEventRepeat size={30} /></CCardText>
                   <CCardText>{dashboardAnalytics?.events?.start} - {dashboardAnalytics?.events?.end}</CCardText>
-                  <PeriodDropdown className='period-d-md' />
+                  <PeriodDropdown
+                    dashboardAnalytics={dashboardAnalytics}
+                    onApplyFilter={onApplyFilter}
+                    className='period-d-md'
+                    target={'events'}
+                  />
                 </CCardBody>
               </CCard>
 
               <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white c-primary border-15 `} style={{ flex: 1 }}>
                 <CCardBody>
                   <div className='d-flex justify-content-between align-items-start mb-2'>
-                    <CCardTitle>Orders</CCardTitle>
+                    <CCardTitle>Orders Received</CCardTitle>
                   </div>
                   <CCardText className='d-flex justify-content-between align-items-center font-size-20'>{dashboardAnalytics?.orders?.total} <IoReceiptOutline size={30} /></CCardText>
                   <CCardText>{dashboardAnalytics?.orders?.start} - {dashboardAnalytics?.orders?.end}</CCardText>
-                  <PeriodDropdown className='period-d-md' />
+                  <PeriodDropdown
+                    dashboardAnalytics={dashboardAnalytics}
+                    onApplyFilter={onApplyFilter}
+                    className='period-d-md'
+                    target={'orders'}
+                  />
                 </CCardBody>
               </CCard>
             </div>
@@ -130,7 +147,12 @@ const AdminDashboardTemplate = (props) => {
               <CCardBody className='d-flex flex-column justify-content-between'>
                 <div className='d-flex justify-content-between align-items-start mb-2'>
                   <CCardTitle>NGN {(dashboardAnalytics?.income?.total)?.toLocaleString() || ''} Income</CCardTitle>
-                  <PeriodDropdown />
+                  <PeriodDropdown
+                    dashboardAnalytics={dashboardAnalytics}
+                    onApplyFilter={onApplyFilter}
+                    className='period-d-md'
+                    target={"income"}
+                  />
                 </div>
                 <CCardText>{incomePeriod}</CCardText>
                 <div style={{ height: '14em' }}>
@@ -230,6 +252,7 @@ const AdminDashboardTemplate = (props) => {
         currentPage={attendeesPage}
         totalPages={attendeesTotalPages}
         onPageChange={fetchAttendees}
+        attendeesDownload={attendeesDownload}
       />
       </div>
     </div>

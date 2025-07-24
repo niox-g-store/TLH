@@ -189,27 +189,40 @@ router.post('/subscribe', async (req, res) => {
   }
 });
 
-// return all created campaign message
+// return all created campaign messages
 router.get('/',
   auth,
   role.check(ROLES.Admin, ROLES.Organizer),
   async (req, res) => {
-  try {
-    const user = req.user;
-    const campaigns = await Campaign.find({user: user._id})
-      .populate('event')
-      .sort('-createdAt');
+    try {
+      const user = req.user;
+      let campaigns = [];
 
-    return res.status(200).json({
-      success: true,
-      campaigns
-    });
-  } catch (error) {
-    return res.status(400).json({
-      error: 'Error fetching campaigns Please try again.'
-    });
+      if (user.role === ROLES.Admin) {
+        const adminUsers = await User.find({ role: ROLES.Admin }).select('_id');
+        const adminUserIds = adminUsers.map(u => u._id);
+
+        campaigns = await Campaign.find({ user: { $in: adminUserIds } })
+          .populate('event')
+          .sort('-createdAt');
+      } else if (user.role === ROLES.Organizer) {
+        campaigns = await Campaign.find({ user: user._id })
+          .populate('event')
+          .sort('-createdAt');
+      }
+
+      return res.status(200).json({
+        success: true,
+        campaigns
+      });
+    } catch (error) {
+      return res.status(400).json({
+        error: 'Error fetching campaigns. Please try again.'
+      });
+    }
   }
-});
+);
+
 
 
 // return a campaign message

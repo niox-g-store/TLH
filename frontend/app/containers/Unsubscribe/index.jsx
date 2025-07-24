@@ -61,7 +61,6 @@ class NewsletterUnsubscribe extends React.PureComponent {
     try {
       eMail = atob(eMail);
     } catch (error) {
-      console.error("Error decoding base64 email:", error);
       eMail = '';
     }
         

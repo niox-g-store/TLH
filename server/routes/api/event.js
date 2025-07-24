@@ -9,6 +9,7 @@ const { ROLES } = require('../../utils/constants');
 const Event = require('../../models/event');
 const Ticket = require('../../models/ticket');
 const Organizer = require('../../models/organizer');
+const User = require('../../models/user');
 const Guest = require('../../models/guest');
 const { updateEventStatus } = require("../../utils/event");
 const { deleteFilesFromPath } = require("../../utils/deleteFiles");
@@ -135,22 +136,29 @@ router.get(
   async (req, res) => {
     try {
       const user = req.user;
+      let events = [];
 
-      let events;
-
-      if (user.role === ROLES.Admin || user.role === ROLES.Organizer) {
-        // Admin: get events created by the user
+      if (user.role === ROLES.Admin) {
+        // Admin: fetch events created by any admin user
+        const adminUsers = await User.find({ role: ROLES.Admin }).select('_id');
+        const adminUserIds = adminUsers.map(u => u._id);
+        events = await Event.find({ user: { $in: adminUserIds } }).sort('-createdAt');
+      } else if (user.role === ROLES.Organizer) {
+        // Organizer: fetch their own events
         events = await Event.find({ user: user._id }).sort('-createdAt');
       } else if (user.role === ROLES.Member) {
-        // Normal user: get events where they're an attendee
+        // Member: fetch events they're attending
         events = await Event.find({
           registeredAttendees: user._id
         }).sort('-createdAt');
       }
+
+      // Update event status for each event
       for (let event of events) {
         updateEventStatus(event);
         await event.save();
       }
+
       return res.status(200).json({ events });
     } catch (error) {
       return res.status(400).json({
@@ -159,6 +167,7 @@ router.get(
     }
   }
 );
+
 
 router.post(
   '/add',

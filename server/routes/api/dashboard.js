@@ -18,7 +18,9 @@ const Ticket = require('../../models/ticket.js');
 const role = require('../../middleware/role.js');
 const auth = require('../../middleware/auth.js');
 const { ROLES } = require('../../utils/constants');
-const { getCartPriceSummary } = require('../../template/cartSummary.js')
+const { getCartPriceSummary } = require('../../template/cartSummary.js');
+const html_to_pdf = require('html-pdf-node');
+const { Parser } = require('json2csv');
 const dayjs = require('dayjs');
 const isSameOrAfter = require('dayjs/plugin/isSameOrAfter');
 const isSameOrBefore = require('dayjs/plugin/isSameOrBefore');
@@ -33,7 +35,11 @@ router.post(
   role.check(ROLES.Admin, ROLES.Organizer),
   async (req, res) => {
     try {
-      const { target, isRange, startDate, endDate, date = null } = req.body;
+      let { target, isRange, startDate, endDate, date = null } = req.body;
+      if (startDate === 'all_time' && endDate === 'all_time') {
+        startDate = new Date(0);
+        endDate = new Date();
+      }
       const include = {
         tickets: target === 'tickets' ? 'tickets' : null,
         orders: target === 'orders' ? 'orders' : null,
@@ -47,6 +53,149 @@ router.post(
     }
 });
 
+router.post(
+  '/first-three/download',
+  auth,
+  role.check(ROLES.Admin, ROLES.Organizer),
+  async (req, res) => {
+    try {
+      let { target, isRange, startDate, endDate, date = null } = req.body;
+      const isCSV = req.query.csv === 'true';
+      const isPDF = req.query.pdf === 'true';
+
+      if (!target) return res.status(400).json({ error: 'Target is required' });
+      if (!isCSV && !isPDF) return res.status(400).json({ error: 'Specify either ?csv=true or ?pdf=true' });
+
+      // Handle "all_time" range
+      if (startDate === 'all_time' && endDate === 'all_time') {
+        startDate = new Date(0);
+        endDate = new Date();
+      }
+
+      const include = {
+        tickets: target === 'tickets' ? 'tickets' : null,
+        orders: target === 'orders' ? 'orders' : null,
+        events: target === 'events' ? 'events' : null,
+        income: target === 'income' ? 'income' : null,
+      };
+
+      const analytics = await getAnalytics({ startDate, endDate, date, include }, req);
+      const result = analytics[target];
+
+      if (!result) {
+        return res.status(400).json({ error: 'No data found for export' });
+      }
+
+      let rows = [];
+
+      if (target === 'tickets' || target === 'income') {
+        if (!Array.isArray(result.labels) || !Array.isArray(result.data) || result.labels.length === 0) {
+          return res.status(400).json({ error: 'No data found for export' });
+        }
+
+        rows = result.labels.map((label, i) => ({
+          Date: label,
+          ...(target === 'tickets' && { 'Tickets Sold': result.data[i] }),
+          ...(target === 'income' && { 'Income Earned': result.data[i] }),
+        }));
+      }
+
+      if (target === 'orders') {
+        rows.push({
+          'Start Date': result.start,
+          'End Date': result.end,
+          'Total Orders': result.total,
+        });
+      }
+
+      if (target === 'events') {
+        rows.push({
+          'Start Date': result.start,
+          'End Date': result.end,
+          'Total Events': result.total,
+        });
+      }
+
+      if (rows.length === 0) {
+        return res.status(400).json({ error: 'Nothing to export' });
+      }
+
+      if (isCSV) {
+        const fields = Object.keys(rows[0]);
+        const parser = new Parser({ fields });
+        const csv = parser.parse(rows);
+
+        res.setHeader('Content-Disposition', `attachment; filename=${target}-analytics.csv`);
+        res.setHeader('Content-Type', 'text/csv');
+        return res.status(200).send(csv);
+      }
+
+      if (isPDF) {
+        const htmlRows = rows.map(row =>
+          `<tr>${Object.values(row).map(val => `<td>${val ?? ''}</td>`).join('')}</tr>`
+      ).join('');
+
+      const headers = Object.keys(rows[0]).map(h => `<th>${h}</th>`).join('');
+
+      const html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+        <meta charset="utf-8">
+        <title>Analytics</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            font-size: 12px;
+          }
+          h2 {
+            margin-bottom: 20px;
+            color: black;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+          }
+          th, td {
+            padding: 8px;
+            border: 1px solid #ccc;
+            text-align: left;
+          }
+          th {
+            background-color: #f0f0f0;
+          }
+        </style>
+      </head>
+      <body>
+        <h2>${target.charAt(0).toUpperCase() + target.slice(1)} Analytics</h2>
+        <table>
+          <thead><tr>${headers}</tr></thead>
+          <tbody>${htmlRows}</tbody>
+        </table>
+      </body>
+    </html>
+  `;
+
+
+const pdf = await html_to_pdf.generatePdf(
+  { content: html },
+  { format: 'A4', printBackground: true }
+);
+
+  res.setHeader('Content-Disposition', `attachment; filename=${target}-analytics.pdf`);
+  res.setHeader('Content-Type', 'application/pdf');
+  return res.status(200).send(pdf);
+}
+
+    } catch (err) {
+      return res.status(400).json({ error: 'Download failed' });
+    }
+  }
+);
+
+
 
 router.get(
     '/all-data',
@@ -55,15 +204,14 @@ router.get(
     async (req, res) => {
   try {
     let { startDate, endDate } = req.query;
+    if (startDate === 'all_time' && endDate === 'all_time') {
+        startDate = new Date(0);
+        endDate = new Date();
+    }
 
     if (!startDate || !endDate) {
       startDate = dayjs().startOf('month').toISOString();
       endDate = dayjs().endOf('day').toISOString();
-    }
-
-    if (startDate === 'all time' && endDate === 'all time') {
-      startDate = new Date(0);
-      endDate = new Date();
     }
 
     const analytics = await getAnalytics({
@@ -77,7 +225,6 @@ router.get(
         income: true
       }
     }, req);
-    console.log(analytics)
 
     return res.json(analytics);
   } catch (err) {
@@ -145,18 +292,119 @@ router.get(
   }
 });
 
-async function getAttendees (req, res) {
+router.get(
+  '/attendees/download',
+  auth,
+  role.check(ROLES.Admin, ROLES.Organizer),
+  async (req, res) => {
+  try {
+    const isCSV = req.query.csv === 'true';
+    const isPDF = req.query.pdf === 'true';
+
+    const attendees = await getAttendees(req);
+
+    if (!attendees.length) {
+      return res.status(400).json({ error: 'No attendees found.' });
+    }
+
+    // --- CSV download ---
+    if (isCSV) {
+      const fields = ['name', 'ticketType', 'quantity', 'isGuest', 'checkedInCount', 'purchasedDate', 'email'];
+      const parser = new Parser({ fields });
+      const csv = parser.parse(attendees);
+
+      res.setHeader('Content-Disposition', 'attachment; filename=attendees.csv');
+      res.setHeader('Content-Type', 'text/csv');
+      return res.status(200).send(csv);
+    }
+
+    // --- PDF download ---
+    if (isPDF) {
+      const tableRows = attendees.map(a => `
+        <tr>
+          <td>${a.name}</td>
+          <td>${a.ticketType}</td>
+          <td>${a.quantity}</td>
+          <td>${a.isGuest ? 'Yes' : 'No'}</td>
+          <td>${a.checkedInCount}</td>
+          <td>${a.purchasedDate}</td>
+          <td>${a.email}</td>
+        </tr>
+      `).join('');
+
+      const htmlContent = `
+        <html>
+          <head>
+            <style>
+              body { font-family: Arial, sans-serif; padding: 20px; }
+              table { width: 100%; border-collapse: collapse; }
+              th, td { padding: 8px 12px; border: 1px solid #ccc; font-size: 12px; }
+              th { background-color: #f9f9f9; }
+            </style>
+          </head>
+          <body>
+            <h2>Attendees List</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Ticket Type</th>
+                  <th>Quantity</th>
+                  <th>Guest?</th>
+                  <th>Checked In</th>
+                  <th>Purchase Date</th>
+                  <th>Email</th>
+                </tr>
+              </thead>
+              <tbody>${tableRows}</tbody>
+            </table>
+          </body>
+        </html>
+      `;
+
+      const file = { content: htmlContent };
+      const pdfBuffer = await html_to_pdf.generatePdf(file, { format: 'A4' });
+
+      res.setHeader('Content-Disposition', 'attachment; filename=attendees.pdf');
+      res.setHeader('Content-Type', 'application/pdf');
+      return res.status(200).send(pdfBuffer);
+    }
+
+    // If no format is specified
+    return res.status(400).json({ error: 'Please specify either ?csv=true or ?pdf=true in the query.' });
+  } catch (err) {
+    res.status(400).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+// functions
+
+async function getAttendees(req, res) {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const skip = (page - 1) * limit;
 
     const userId = req.user._id;
+    const isAdmin = req.user.role === ROLES.Admin;
 
-    // 1. Get all events created by the current user
-    const userEvents = await Event.find({ user: userId }).select('_id');
+    let eventIds = [];
 
-    const eventIds = userEvents.map(e => e._id);
+    if (isAdmin) {
+      // Get users who are admins
+      const adminUsers = await User.find({ role: ROLES.Admin }).select('_id');
+
+      const adminUserIds = adminUsers.map(user => user._id);
+
+      // Get events created by admin users
+      const adminEvents = await Event.find({ user: { $in: adminUserIds } }).select('_id');
+      eventIds = adminEvents.map(e => e._id);
+    } else {
+      // Get events created by the current (non-admin) user
+      const userEvents = await Event.find({ user: userId }).select('_id');
+      eventIds = userEvents.map(e => e._id);
+    }
 
     // 2. Get all orders that reference those events
     const orders = await Order.find({ events: { $in: eventIds }, status: true })
@@ -176,14 +424,12 @@ async function getAttendees (req, res) {
       });
 
       for (const ticket of cartTickets) {
-        const qrUsed = await QRCode.find({
+        const qrUsed = await QRCode.countDocuments({
           order: order._id,
           ticketId: ticket.ticketId,
           eventId: ticket.eventId,
           used: true
-        }).countDocuments();
-
-        const checkedInCount = qrUsed ? qrUsed : 0;
+        });
 
         const isGuest = !!order.guest;
         const name = isGuest
@@ -199,7 +445,7 @@ async function getAttendees (req, res) {
           ticketType: ticket.ticketType,
           quantity: ticket.quantity,
           isGuest,
-          checkedInCount,
+          checkedInCount: qrUsed || 0,
           purchasedDate: formattedDate,
           email
         });
@@ -210,23 +456,40 @@ async function getAttendees (req, res) {
     const total = attendees.length;
     const paginated = attendees.slice(skip, skip + limit);
 
-    return res.json({
-      attendees: paginated,
-      totalPages: Math.ceil(total / limit),
-      currentPage: page,
-      totalAttendees: total
-    });
+    if (res) {
+      return res.json({
+        attendees: paginated,
+        totalPages: Math.ceil(total / limit),
+        currentPage: page,
+        totalAttendees: total
+      });
+    } else {
+      return attendees
+    }
   } catch (error) {
     res.status(400).json({ error: 'Internal Server Error' });
   }
 }
 
-async function getAnalytics ({ startDate, endDate, date, include }, req) {
+
+async function getAnalytics({ startDate, endDate, date, include }, req) {
   const result = {};
   const userId = req.user._id;
+  const isAdmin = req.user.role === ROLES.Admin;
 
-  // Helper to split the time range into max 14 buckets
-  function generateBuckets (start, end, maxPoints = 30) {
+  // 1. Get target user IDs (admins or current user)
+  let eventUserIds = [userId];
+
+  if (isAdmin) {
+    const adminUsers = await User.find({ role: ROLES.Admin }).select('_id');
+    eventUserIds = adminUsers.map(user => user._id.toString());
+  }
+
+  // 2. Fetch events for these users
+  const allEvents = await Event.find({ user: { $in: eventUserIds } }, '_id');
+  const eventIds = new Set(allEvents.map(event => event._id.toString()));
+
+  function generateBuckets(start, end, maxPoints = 30) {
     const diff = dayjs(end).diff(start, 'day');
     const step = Math.max(1, Math.ceil(diff / maxPoints));
     const buckets = [];
@@ -240,168 +503,146 @@ async function getAnalytics ({ startDate, endDate, date, include }, req) {
     return buckets;
   }
 
-  // TICKETS ANALYTICS
+  // TICKETS
   if (include.tickets) {
-  const buckets = generateBuckets(startDate, endDate);
-  const labels = [];
-  const data = [];
+    const buckets = generateBuckets(startDate, endDate);
+    const labels = [];
+    const data = [];
 
-  // Get eventIds for this organizer
-  const userEvents = await Event.find({ user: userId }, '_id');
-  const userEventIds = new Set(userEvents.map(event => event._id.toString()));
+    const allOrders = await Order.find({}).populate('cart');
 
-  // Fetch all orders that contain tickets for this user's events
-  const allOrders = await Order.find({}).populate('cart');
+    const userOrders = allOrders.filter(ord =>
+      ord?.cart?.tickets?.some(ticket => eventIds.has(ticket.eventId?.toString()))
+    );
 
-  // Pre-filter orders that have at least one ticket from this user's events
-  const userOrders = allOrders.filter(ord =>
-    ord?.cart?.tickets?.some(ticket => userEventIds.has(ticket.eventId?.toString()))
-  );
+    for (let i = 0; i < buckets.length; i++) {
+      const from = dayjs(buckets[i]).startOf('day');
+      const to = buckets[i + 1]
+        ? dayjs(buckets[i + 1]).startOf('day')
+        : dayjs(endDate).endOf('day');
 
-  for (let i = 0; i < buckets.length; i++) {
-    const from = dayjs(buckets[i]).startOf('day');
-    const to = buckets[i + 1]
-      ? dayjs(buckets[i + 1]).startOf('day')
-      : dayjs(endDate).endOf('day');
+      let totalSold = 0;
 
-    let totalSold = 0;
+      for (const ord of userOrders) {
+        const createdAt = dayjs(ord.createdAt);
+        if (createdAt.isBefore(from) || createdAt.isAfter(to)) continue;
 
-    for (const ord of userOrders) {
-      const createdAt = dayjs(ord.createdAt);
-      if (createdAt.isBefore(from) || createdAt.isAfter(to)) continue;
-
-      for (const item of ord.cart.tickets || []) {
-        const eventId = item.eventId?.toString();
-        if (userEventIds.has(eventId)) {
-          totalSold += item.quantity || 0;
+        for (const item of ord.cart.tickets || []) {
+          if (eventIds.has(item.eventId?.toString())) {
+            totalSold += item.quantity || 0;
+          }
         }
       }
+
+      labels.push(from.format('MMM D'));
+      data.push(totalSold);
     }
 
-    labels.push(from.format('MMM D'));
-    data.push(totalSold);
+    result.tickets = {
+      labels,
+      data,
+      totalSold: data.reduce((a, b) => a + b, 0)
+    };
   }
 
-  result.tickets = {
-    labels,
-    data,
-    totalSold: data.reduce((a, b) => a + b, 0)
-  };
-}
+  // EVENTS
+  if (include.events) {
+    const format = date === 'today' ? 'HH:mm' : 'MMM D';
 
+    const start = dayjs(startDate).toDate();
+    const end = dayjs(endDate).endOf('day').toDate();
 
+    const events = await Event.find({
+      createdAt: { $gte: start, $lte: end },
+      user: { $in: eventUserIds }
+    });
 
+    result.events = {
+      start: dayjs(startDate).format(format),
+      end: dayjs(endDate).format(format),
+      total: events.length
+    };
+  }
 
-// EVENTS ANALYTICS
-if (include.events) {
-  const format = date === 'today' ? 'HH:mm' : 'MMM D';
+  // ORDERS
+  if (include.orders) {
+    const format = date === 'today' ? 'HH:mm' : 'MMM D';
 
-  const start = dayjs(startDate).toDate();
-  const end = dayjs(endDate).endOf('day').toDate();
+    const endOfDay = dayjs(endDate).endOf('day').toDate();
+    const start = dayjs(startDate).toDate();
 
-  const events = await Event.find({
-    createdAt: { $gte: start, $lte: end },
-    user: userId,
-  });
+    const orders = await Order.find({
+      createdAt: { $gte: start, $lte: endOfDay },
+    }).populate('cart');
 
-  result.events = {
-    start: dayjs(startDate).format(format),
-    end: dayjs(endDate).format(format),
-    total: events.length,
-  };
-}
+    const userOrderCount = orders.filter(ord =>
+      ord?.cart?.tickets?.some(ticket => eventIds.has(ticket.eventId?.toString()))
+    ).length;
 
+    result.orders = {
+      start: dayjs(startDate).format(format),
+      end: dayjs(endDate).format(format),
+      total: userOrderCount
+    };
+  }
 
-// ORDERS ANALYTICS
-if (include.orders) {
-  const format = date === 'today' ? 'HH:mm' : 'MMM D';
+  // INCOME
+  if (include.income) {
+    const isOrganizer = req.user.role === ROLES.Organizer;
+    const start = dayjs(startDate);
+    const end = dayjs(endDate).endOf('day');
 
-  const endOfDay = dayjs(endDate).endOf('day').toDate();
-  const start = dayjs(startDate).toDate();
+    const buckets = generateBuckets(start, end, 30);
+    const labels = [];
+    const data = [];
 
-  // Get eventIds for this organizer
-  const userEvents = await Event.find({ user: userId }, '_id');
-  const userEventIds = new Set(userEvents.map(event => event._id.toString()));
+    const orders = await Order.find({
+      createdAt: { $gte: start.toDate(), $lte: end.toDate() }
+    }).populate('cart');
 
-  const orders = await Order.find({
-    createdAt: { $gte: start, $lte: endOfDay },
-  }).populate('cart');
+    let totalIncome = 0;
 
-  // Count unique orders that contain at least one ticket from this user's events
-  const userOrderCount = orders.filter(ord =>
-    ord?.cart?.tickets?.some(ticket => userEventIds.has(ticket.eventId?.toString()))
-  ).length;
+    for (let i = 0; i < buckets.length; i++) {
+      const from = dayjs(buckets[i]).startOf('day');
+      const to = buckets[i + 1]
+        ? dayjs(buckets[i + 1]).startOf('day')
+        : end;
 
-  result.orders = {
-    start: dayjs(startDate).format(format),
-    end: dayjs(endDate).format(format),
-    total: userOrderCount,
-  };
-}
+      let incomeForBucket = 0;
 
+      for (const ord of orders) {
+        const createdAt = dayjs(ord.createdAt);
+        if (createdAt.isBefore(from) || createdAt.isAfter(to)) continue;
 
-// INCOME ANALYTICS
-if (include.income) {
-  const isAdmin = req.user.role === ROLES.Admin;
-  const isOrganizer = req.user.role === ROLES.Organizer;
+        for (const item of ord?.cart?.tickets || []) {
+          if (!eventIds.has(item.eventId?.toString())) continue;
 
-  const start = dayjs(startDate);
-  const end = dayjs(endDate).endOf('day');
+          if (isAdmin) {
+            const summary = getCartPriceSummary(item);
+            const paid = Number(summary.total.replace(/,/g, '')) * (item.quantity || 1);
+            incomeForBucket += paid;
+          }
 
-  const buckets = generateBuckets(start, end, 30); // limit to 30 points
-  const labels = [];
-  const data = [];
-
-  const userEvents = await Event.find({ user: userId }, '_id');
-  const userEventIds = new Set(userEvents.map(e => e._id.toString()));
-
-  const orders = await Order.find({
-    createdAt: { $gte: start.toDate(), $lte: end.toDate() }
-  }).populate('cart');
-
-  let totalIncome = 0;
-
-  for (let i = 0; i < buckets.length; i++) {
-    const from = dayjs(buckets[i]).startOf('day');
-    const to = buckets[i + 1]
-      ? dayjs(buckets[i + 1]).startOf('day')
-      : end;
-
-    let incomeForBucket = 0;
-
-    for (const ord of orders) {
-      const createdAt = dayjs(ord.createdAt);
-      if (createdAt.isBefore(from) || createdAt.isAfter(to)) continue;
-
-      for (const item of ord?.cart?.tickets || []) {
-        const eventId = item.eventId?.toString();
-        if (!userEventIds.has(eventId)) continue;
-
-        if (isAdmin) {
-          const summary = getCartPriceSummary(item);
-          const paid = Number(summary.total.replace(/,/g, '')) * (item.quantity || 1);
-          incomeForBucket += paid;
-        }
-
-        if (isOrganizer) {
-          incomeForBucket += item.expectedPayout || 0;
+          if (isOrganizer) {
+            incomeForBucket += item.expectedPayout || 0;
+          }
         }
       }
+
+      labels.push(from.format('MMM D'));
+      data.push(incomeForBucket);
+      totalIncome += incomeForBucket;
     }
 
-    labels.push(from.format('MMM D'));
-    data.push(incomeForBucket);
-    totalIncome += incomeForBucket;
+    result.income = {
+      labels,
+      data,
+      total: totalIncome
+    };
   }
-
-  result.income = {
-    labels,
-    data,
-    total: totalIncome,
-  };
-}
 
   return result;
 }
+
 
 module.exports = router;

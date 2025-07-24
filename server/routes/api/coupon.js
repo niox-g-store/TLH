@@ -5,6 +5,7 @@ const role = require('../../middleware/role');
 const { ROLES } = require('../../utils/constants');
 const Coupon = require('../../models/coupon');
 const Event = require('../../models/event');
+const User = require('../../models/user');
 const Ticket = require('../../models/ticket');
 
 // validate a coupon
@@ -88,16 +89,26 @@ router.get(
   async (req, res) => {
     try {
       const user = req.user;
-
       let coupons;
 
-      if (user.role === ROLES.Admin || user.role === ROLES.Organizer) {
-        // Admin/Organizer: get coupons created by the user
+      if (user.role === ROLES.Admin) {
+        // Admin: fetch coupons created by all admin users
+        const adminUsers = await User.find({ role: ROLES.Admin }).select('_id');
+        const adminUserIds = adminUsers.map(u => u._id);
+
+        coupons = await Coupon.find({ user: { $in: adminUserIds } })
+          .populate('event', 'name')
+          .populate('ticket', 'type')
+          .sort('-createdAt');
+
+      } else if (user.role === ROLES.Organizer) {
+        // Organizer: fetch their own coupons
         coupons = await Coupon.find({ user: user._id })
           .populate('event', 'name')
           .populate('ticket', 'type')
           .sort('-createdAt');
       }
+
       return res.status(200).json({ coupons });
     } catch (error) {
       return res.status(400).json({
@@ -106,6 +117,7 @@ router.get(
     }
   }
 );
+
 
 // GET /coupon - Get all coupons
 router.get(
