@@ -173,7 +173,6 @@ export const googleSignin = (credential) => {
       dispatch(showNotification('success', 'Welcome!'));
 
       dispatch({ type: LOGIN_RESET });
-      dispatch({ type: LOGIN_RESET });
     } catch (error) {
       const title = `Please try to login again!`;
       handleError(error, dispatch, title);

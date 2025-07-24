@@ -27,18 +27,54 @@ import BarChart from '../../../components/store/Core/barChart';
 import { IoBasketOutline, IoReceiptOutline } from 'react-icons/io5';
 import { MdOutlineEventRepeat } from 'react-icons/md';
 import DropdownConfirm from '../../../components/store/DropdownConfirm';
-import { attendeesData } from '../../../components/Data/attendeesData';
 import AttendeesTable from '../../../components/store/AttendeesTable';
 import PeriodDropdown from '../../../components/store/PeriodPicker';
 import { Link } from 'react-router-dom';
+// import { FilterSystem } from '../../../components/store/PeriodPicker';
+import FilterSystem from '../../../components/store/AnalyticsFilterSystem';
+import Button from '../../../components/Common/HtmlTags/Button';
+import LoadingIndicator from '../../../components/store/LoadingIndicator';
+import actions from '../../../actions';
+import { connect } from 'react-redux';
 
-const OrganizerDashboard = (props) => {
-  const { toggleDashboardTheme, isLightMode } = props;
+const OrganizerDashboardTemplate = (props) => {
+  const {
+    toggleDashboardTheme,
+    isLightMode,
+    toggleFilterSystem,
+    filterSystemOpen,
+    isDashboardLoading,
+    dashboardAnalytics,
+    stats,
+
+    attendees,
+    attendeesPage,
+    attendeesTotalPages,
+    fetchAttendees
+  } = props;
+
+  const ticketsSold = dashboardAnalytics?.tickets?.totalSold || 0
+  const ticketPeriod = dashboardAnalytics?.tickets?.labels?.length > 1 ?
+    dashboardAnalytics?.tickets?.labels[0] +
+    '-'
+    +
+    dashboardAnalytics?.tickets?.labels[dashboardAnalytics?.tickets?.labels?.length - 1]
+    :
+    dashboardAnalytics?.tickets?.labels[0]
 
   return (
     <div className='body-panel'>
+      {isDashboardLoading && <LoadingIndicator />}
       <div className='container-lg px-4 mb-custom-5em'>
-        <h2 style={{ margin: 0 }} className={`${isLightMode ? 'p-black': 'p-white'}`}>Dashboard</h2>
+        <div style={{ alignItems: 'center', flexWrap: 'wrap' }} className='d-flex dashboard-controls-container'>
+          <div className='d-flex dashboard-controls-head'>
+            <h2 style={{ margin: 0 }} className={`${isLightMode ? 'p-black': 'p-white'}`}>Dashboard</h2>
+            <Button className="third-btn" text={`${filterSystemOpen ? 'Close filter controls' : 'Open Filter controls'}`} onClick={toggleFilterSystem} />
+          </div>
+          {filterSystemOpen &&
+            <FilterSystem {...props} />
+          }
+        </div>
         <hr className={`${isLightMode ? 'p-black': 'p-white'}`}></hr>
         <div data-aos='fade-up' className='d-flex gap-3 flex-wrap mb-4' style={{ alignItems: 'stretch' }}>
           <div className='dashboard-analytics d-flex flex-column gap-3' style={{ maxWidth: '100%', flexShrink: 0 }}>
@@ -46,11 +82,11 @@ const OrganizerDashboard = (props) => {
             <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white c-primary border-15`}>
               <CCardBody>
                 <div className='d-flex justify-content-between align-items-start mb-2'>
-                  <CCardTitle>2,000 Ticket Sold</CCardTitle>
+                  <CCardTitle>{ticketsSold} Ticket Sold</CCardTitle>
                   <PeriodDropdown />
                 </div>
-                <CCardText>June 1st - June 30th</CCardText>
-                <ChartLine />
+                <CCardText>{ticketPeriod}</CCardText>
+                <ChartLine ticket={dashboardAnalytics?.tickets || ''}/>
               </CCardBody>
             </CCard>
 
@@ -62,8 +98,8 @@ const OrganizerDashboard = (props) => {
                     <CCardTitle>Events Created</CCardTitle>
                   </div>
 
-                  <CCardText className='d-flex justify-content-between align-items-center font-size-20'>10 <MdOutlineEventRepeat size={30} /></CCardText>
-                  <CCardText>June 1st - June 30th</CCardText>
+                  <CCardText className='d-flex justify-content-between align-items-center font-size-20'>{dashboardAnalytics?.events?.total} <MdOutlineEventRepeat size={30} /></CCardText>
+                  <CCardText>{dashboardAnalytics?.events?.start} - {dashboardAnalytics?.events?.end}</CCardText>
                   <PeriodDropdown className='period-d-md' />
                 </CCardBody>
               </CCard>
@@ -73,8 +109,8 @@ const OrganizerDashboard = (props) => {
                   <div className='d-flex justify-content-between align-items-start mb-2'>
                     <CCardTitle>Orders</CCardTitle>
                   </div>
-                  <CCardText className='d-flex justify-content-between align-items-center font-size-20'>50 <IoReceiptOutline size={30} /></CCardText>
-                  <CCardText>June 1st - June 30th</CCardText>
+                  <CCardText className='d-flex justify-content-between align-items-center font-size-20'>{dashboardAnalytics?.orders?.total} <IoReceiptOutline size={30} /></CCardText>
+                  <CCardText>{dashboardAnalytics?.orders?.start} - {dashboardAnalytics?.orders?.end}</CCardText>
                   <PeriodDropdown className='period-d-md' />
                 </CCardBody>
               </CCard>
@@ -100,11 +136,12 @@ const OrganizerDashboard = (props) => {
 
         {/* Social Cards */}
         <CRow className='mb-4 g-2'>
+          <h2 className={`${isLightMode ? 'p-black': 'p-white'}`}>All time stats</h2>
           <CCol sm={3}>
             <CCard className='purple-bg p-white border-15 linear-grad-2'>
               <CCardBody>
                 <CCardTitle>Top Selling Event</CCardTitle>
-                <CCardText><Link to='/dashboard/event/white-house-party'>White House Party</Link></CCardText>
+                <CCardText><Link to='/dashboard/event/white-house-party'>{stats?.topSellingEvent || ''}</Link></CCardText>
               </CCardBody>
             </CCard>
           </CCol>
@@ -113,7 +150,7 @@ const OrganizerDashboard = (props) => {
             <CCard className='purple-bg p-white border-15 linear-grad-2'>
               <CCardBody>
                 <CCardTitle>Ongoing Events</CCardTitle>
-                <CCardText>12</CCardText>
+                <CCardText>{stats?.ongoingEvents || ''}</CCardText>
               </CCardBody>
             </CCard>
           </CCol>
@@ -122,7 +159,7 @@ const OrganizerDashboard = (props) => {
             <CCard className='purple-bg p-white border-15 linear-grad-2'>
               <CCardBody>
                 <CCardTitle>Upcoming Events</CCardTitle>
-                <CCardText>2</CCardText>
+                <CCardText>{stats?.upcomingEvents || ''}</CCardText>
               </CCardBody>
             </CCard>
           </CCol>
@@ -130,17 +167,60 @@ const OrganizerDashboard = (props) => {
             <CCard className='purple-bg p-white border-15 linear-grad-2'>
               <CCardBody>
                 <CCardTitle>Expired Events</CCardTitle>
-                <CCardText>8</CCardText>
+                <CCardText>{stats?.pastEvents || ''}</CCardText>
               </CCardBody>
             </CCard>
           </CCol>
         </CRow>
 
-        <AttendeesTable {...props} data={attendeesData} />
-
+        <AttendeesTable
+          {...props}
+          attendees={attendees}
+          currentPage={attendeesPage}
+          totalPages={attendeesTotalPages}
+          onPageChange={fetchAttendees}
+        />
       </div>
     </div>
   );
 };
 
-export default OrganizerDashboard;
+class OrganizerDashboard extends React.PureComponent {
+  componentDidMount() {
+    this.props.fetchAnalData();
+    this.props.fetchStatsOverview();
+    this.props.fetchAttendees();
+  }
+  render () {
+    return (
+      <OrganizerDashboardTemplate
+        {...this.props}
+      />
+    )
+  }
+}
+
+const mapStateToProps = state => {
+  return {
+    user: state.account.user,
+    isLoading: state.account.isLoading,
+    isMenuOpen: state.dashboard.isMenuOpen,
+    isLightMode: state.dashboard.isLightMode,
+
+    isRangeSelection: state.dashboard.isRangeSelection,
+    startDate: state.dashboard.startDate,
+    endDate: state.dashboard.endDate,
+    singleDate: state.dashboard.singleDate,
+    filterTarget: state.dashboard.filterTarget,
+    filterSystemOpen: state.dashboard.filterSystemOpen,
+    isDashboardLoading: state.dashboard.isDashboardLoading,
+    dashboardAnalytics: state.dashboard.dashboardAnalytics,
+    stats: state.dashboard.stats,
+
+    attendees: state.dashboard.attendees,
+    attendeesPage: state.dashboard.attendeesPage,
+    attendeesTotalPages: state.dashboard.attendeesTotalPages,
+  };
+};
+
+export default connect(mapStateToProps, actions )(OrganizerDashboard);

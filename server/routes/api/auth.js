@@ -8,6 +8,7 @@ const mailgun = require('../../services/mailgun');
 const auth = require('../../middleware/auth');
 const User = require('../../models/user');
 const Organizer = require('../../models/organizer');
+const Newsletter = require('../../models/newsletter');
 const keys = require('../../config/keys');
 const { EMAIL_PROVIDER, JWT_COOKIE, ROLES } = require('../../utils/constants');
 const { OAuth2Client } = require('google-auth-library');
@@ -235,7 +236,7 @@ router.post('/register', maintenance, async (req, res) => {
       })
       await news.save();
       // also add user email to mailgun mailing list
-      mailgun.createMember(email, name)
+      await mailgun.createMember(email, name)
       subscribed = true;
     }
 
@@ -348,7 +349,7 @@ router.post('/register/organizer', maintenance, async (req, res) => {
       })
       await news.save();
       // also add user email to mailgun mailing list
-      mailgun.createMember(email, companyName)
+      await mailgun.createMember(email, companyName)
       subscribed = true;
     }
 
@@ -374,8 +375,6 @@ router.post('/register/organizer', maintenance, async (req, res) => {
 
     user.password = hash;
     const registeredUser = await user.save();
-
-
 
     const payload = {
       id: registeredUser.id

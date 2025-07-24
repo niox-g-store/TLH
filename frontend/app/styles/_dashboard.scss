@@ -33,6 +33,7 @@
 }
 
 .dashboard-controls {
+    padding: 10px 0px !important;
     @include media-breakpoint-down(md) {
         padding: 0 !important;
         justify-content: flex-start;
@@ -45,10 +46,14 @@
 
 .dashboard-controls-container {
     justify-content: space-between;
+    position: relative;
+    z-index: 12;
 }
 
 .dashboard-controls-head {
     display: flex;
+    justify-content: space-between;
+    width: 100%;
     @include media-breakpoint-down(md) {
         margin-bottom: 1em;
     }

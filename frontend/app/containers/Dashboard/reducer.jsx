@@ -13,6 +13,10 @@ import {
   SET_FILTER_TARGET,
   RESET_DATE_SELECTION,
   TOGGLE_FILTER_SYSTEM,
+  SET_DASHBOARD_LOADING,
+  SET_DASHBOARD_ANALYTICS,
+  SET_DASHBD_STATS_OVERVIEW,
+  SET_ATTENDEES_DATA,
 } from './constants';
 
 const initialState = {
@@ -23,15 +27,44 @@ const initialState = {
   endDate: null,
   singleDate: null,
   filterTarget: 'Orders',
-  filterSystemOpen: false
+  filterSystemOpen: false,
+  isDashboardLoading: false,
+  dashboardAnalytics: {},
+  stats: {},
+
+  attendees: [],
+  attendeesPage: 1,
+  attendeesTotalPages: 1,
 };
 
 const dashboardReducer = (state = initialState, action) => {
   switch (action.type) {
+    case SET_ATTENDEES_DATA:
+      return {
+        ...state,
+        attendees: action.payload.attendees,
+        attendeesPage: action.payload.currentPage,
+        attendeesTotalPages: action.payload.totalPages,
+      }
+    case SET_DASHBD_STATS_OVERVIEW:
+      return {
+        ...state,
+        stats: action.payload
+      }
+    case SET_DASHBOARD_ANALYTICS:
+      return {
+        ...state,
+        dashboardAnalytics: { ...state.dashboardAnalytics, ...action.payload }
+      }
+    case SET_DASHBOARD_LOADING:
+      return {
+        ...state,
+        isDashboardLoading: action.payload
+      }
     case TOGGLE_FILTER_SYSTEM:
       return {
         ...state,
-        filterSystemOpen: !filterSystemOpen
+        filterSystemOpen: !state.filterSystemOpen
       }
     case SET_IS_RANGE_SELECTION:
       return {

@@ -11,15 +11,28 @@ import {
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Filler)
 
-const ChartLine = () => {
+function trimZerosFromStart(labels, data) {
+  const firstNonZeroIndex = data?.findIndex(v => v > 0);
+
+  const start = Math.max(0, firstNonZeroIndex - 2);
+  const end = Math.min(data?.length, start + 11);
+
+  return {
+    labels: labels?.slice(start, end),
+    data: data?.slice(start, end),
+  };
+}
+
+const ChartLine = ({ ticket }) => {
+  const trimmed = trimZerosFromStart(ticket?.labels, ticket?.data);
   const data = {
-    labels: ['Jun 1', 'Jun 5', 'Jun 10', 'Jun 15', 'Jun 20', 'Jun 25', 'Jun 30'],
+    labels: trimmed?.labels,
     datasets: [
       {
         label: 'Tickets Sold',
-        data: [10, 40, 30, 50, 80, 60, 50],
+        data: trimmed?.data,
         fill: false,
-        tension: 0.4,
+        tension: 0.1,
         borderColor: 'rgba(255,255,255,0.8)',
         backgroundColor: 'rgba(255,255,255,0.8)',
         pointBackgroundColor: '#fff',

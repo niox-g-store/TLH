@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Setting = require('./setting');
 
 // Ticket Item Schema
 const TicketItemSchema = new Schema({
@@ -59,7 +60,8 @@ const TicketItemSchema = new Schema({
   type: {
     type: String,
     default: 'ticket'
-  }
+  },
+  expectedPayout: { type: Number, default: 0 }
 });
 
 // Product Item Schema
@@ -157,12 +159,47 @@ const CartSchema = new Schema({
   }
 });
 
+async function calculateExpectedRevenue(price) {
+  const parsedPrice = parseFloat(price) || 0;
+
+  const settings = await Setting.findOne();
+  const commissionPercent = settings ? settings.commission : 0;
+
+  const commission = (commissionPercent / 100) * parsedPrice;
+
+  let paystackFee = (1.5 / 100) * parsedPrice + 100;
+  if (paystackFee > 2000) paystackFee = 2000;
+
+  const revenue = parsedPrice - commission - paystackFee;
+
+  return revenue;
+}
+
 // Calculate total before saving
-CartSchema.pre('save', function (next) {
+CartSchema.pre('save', async function (next) {
   this.updatedAt = new Date();
 
-  // Calculate tickets total
+  // Calculate tickets total and expectedPayout for each ticket
   let total = 0;
+  if (this.tickets && this.tickets.length > 0) {
+    for (const item of this.tickets) {
+      let itemPrice;
+      itemPrice = item.discount && item.discountPrice ? item.discountPrice : item.price;
+      if (item?.coupon) { // here we have a coupon ticket applied
+        if (item.couponPercentage > 0) { // percentage coupon
+          itemPrice -= item.couponDiscount
+        } else if (item.couponAmount > 0) {  // fixed coupon
+          itemPrice -= item.couponAmount // here coupon amount is negative
+        }
+      }
+
+      // Pass the effective price for the calculation
+      item.expectedPayout = await calculateExpectedRevenue(itemPrice);
+    }
+  }
+
+  // Calculate tickets total
+  //let total = 0;
   if (this.tickets && this.tickets.length > 0) {
     total = this.tickets.reduce((sum, item) => {
       let itemPrice;

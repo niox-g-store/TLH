@@ -33,7 +33,6 @@ import ResetPassword from './containers/ResetPassword';
 import Maintenance from './containers/Maintenance';
 import NewsletterUnsubscribe from './containers/Unsubscribe';
 
-import ScrollToTop from './components/Common/ScrollToTop';
 import LoadingIndicator from './components/store/LoadingIndicator';
 
 const Appplication = (props) => {
@@ -113,7 +112,6 @@ const Appplication = (props) => {
 
   return (
     <>
-      <ScrollToTop />
       <Notification />
       {newsletterSubIsLoading && <LoadingIndicator />}
       {showHeader && <Navigation />}

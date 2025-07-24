@@ -18,6 +18,7 @@ const OrganizerSchema = new mongoose.Schema({
   event: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Event',
+    default: []
   }],
   created: {
     type: Date,

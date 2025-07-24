@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Row from '../../../Common/Row';
 import Col from '../../../Common/Col';
 import Input from '../../../Common/HtmlTags/Input';
@@ -28,6 +28,7 @@ const AddEventTicket = ({
   commission
 }) => {
   const navigate = useNavigate();
+  const [showLocationInput, setShowLocationInput] = useState(false);
 
   const submitEventAndTicket = (e) => {
     e.preventDefault();
@@ -41,6 +42,7 @@ const AddEventTicket = ({
         price: '',
         description: '',
         quantity: '',
+        location: '',
         discount: false,
         discountPrice: '',
         coupons: '',
@@ -138,6 +140,30 @@ const RenderDiscountInfo = ({ price, discountPrice, discount }) => {
             />
       </Col>
 
+        {/* Ticket Location */}
+        <Col className={isLightMode ? 'p-black' : 'p-white'} xs='12' lg='6'>
+          <p className="p-purple">For Undisclosed locations the ticket will contain the location you set here</p>
+          <SelectOption
+            label='Add Ticket Location? (Optional)'
+            options={[
+              { label: 'No', value: false },
+              { label: 'Yes', value: true }
+            ]}
+            value={showLocationInput}
+            handleSelectChange={(value) => setShowLocationInput(value.value)}
+          />
+          {showLocationInput && (
+            <Input
+              type='text'
+              label='Ticket Location'
+              name='location'
+              placeholder='Enter ticket location'
+              value={ticket.location || ''}
+              onInputChange={(name, value) => handleEditTicket(ticket.id, { [name]: value})}
+            />
+          )}
+        </Col>
+
       {/* Quantity */}
         <Col className={isLightMode ? 'p-black' : 'p-white'} xs='12' lg='6'>
           <Input
@@ -164,14 +190,6 @@ const RenderDiscountInfo = ({ price, discountPrice, discount }) => {
             handleSelectChange={(value) => handleEditTicket(ticket.id, {'coupons': value})}
           />
         </Col>
-
-      {/* Delete Button */}
-      <Col xs='1' className='d-flex align-items-center'>
-        <Button style={{ padding: '5px 10px', fontSize: '13px' }} text="Delete"
-          onClick={() => handleDeleteTicket(ticket.id)}
-        >
-        </Button>
-      </Col>
 
       {/* Discount Switch */}
       <Col className={isLightMode ? 'p-black' : 'p-white'} xs='12'>
@@ -208,6 +226,14 @@ const RenderDiscountInfo = ({ price, discountPrice, discount }) => {
           <br />
         </Col>
       )}
+
+      {/* Delete Button */}
+      <Col xs='1' className='d-flex align-items-center'>
+        <Button style={{ padding: '5px 10px', fontSize: '13px' }} text="Delete"
+          onClick={() => handleDeleteTicket(ticket.id)}
+        >
+        </Button>
+      </Col>
 
       {user.role === ROLES.Organizer &&
       <Col>

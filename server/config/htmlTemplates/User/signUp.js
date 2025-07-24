@@ -64,16 +64,16 @@ return `
                             <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 10px 0; font-weight: bold;">Here’s what you can do with your account:</p>
                             <ul style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; padding-left: 20px; margin: 0 0 30px 0; list-style: none;">
                                 <li style="margin-bottom: 10px; position: relative; padding-left: 10px;">
-                                    <span style="position: absolute; left: 0;">✅</span> Buy Tickets to your favorite events
+                                    <span style="position: absolute; left: 0;"></span> Buy Tickets to your favorite events
                                 </li>
                                 <li style="margin-bottom: 10px; position: relative; padding-left: 10px;">
-                                    <span style="position: absolute; left: 0;">✅</span> Discover Upcoming Events happening near you
+                                    <span style="position: absolute; left: 0;"></span> Discover Upcoming Events happening near you
                                 </li>
                                 <li style="margin-bottom: 10px; position: relative; padding-left: 10px;">
-                                    <span style="position: absolute; left: 0;">✅</span> Manage Your Tickets all in one place
+                                    <span style="position: absolute; left: 0;"></span> Manage Your Tickets all in one place
                                 </li>
                                 <li style="margin-bottom: 10px; position: relative; padding-left: 10px;">
-                                    <span style="position: absolute; left: 0;">✅</span> Create & Promote Your Own Events (if you’re an organizer!)
+                                    <span style="position: absolute; left: 0;"></span> Create & Promote Your Own Events (if you’re an organizer!)
                                 </li>
                             </ul>
 

@@ -16,7 +16,8 @@ const organizer = require('./organizer');
 const scan = require('./qrCode');
 const product = require('./product');
 const setting = require('./setting');
-const newsletter = require('./newsletter')
+const newsletter = require('./newsletter');
+const dashboard = require('./dashboard');
 
 // for static file uploads
 router.use('/uploads', express.static(process.cwd() + "/file_manager/uploads", {
@@ -41,5 +42,6 @@ router.use('/scan', scan);
 router.use('/product', product);
 router.use('/setting', setting);
 router.use('/newsletter', newsletter);
+router.use('/dashboard', dashboard);
 
 module.exports = router;

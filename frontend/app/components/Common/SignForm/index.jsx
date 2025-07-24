@@ -142,6 +142,12 @@ const SignForm = (props) => {
               <Link to="/login">Log In</Link>
             </span>
           </p>
+          <p className="p-black">
+            Want to host events?
+            <span className="h6">
+              <Link to="/organizer-signup">Create an organizer account</Link>
+            </span>
+          </p>
         </div>
       </div>
     </div>

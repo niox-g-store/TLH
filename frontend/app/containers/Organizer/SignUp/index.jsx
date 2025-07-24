@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { BackIcon } from '../../../components/Common/Icons/Back';
 import Input from '../../../components/Common/HtmlTags/Input';
 import { Navigate } from 'react-router-dom';
+import LoadingIndicator from '../../../components/store/LoadingIndicator';
 
 const OrganizerSignUp = (props) => {
   const {
@@ -26,6 +27,7 @@ const OrganizerSignUp = (props) => {
     <>
       <div className='login sing'>
         <div className='signup'>
+          {isLoading && <LoadingIndicator />}
           <Link className='back-to-home' to='/'>
             <BackIcon />
             <p style={{ fontSize: '16px' }} className='p-purple'> Back to Home</p>

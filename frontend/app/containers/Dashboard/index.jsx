@@ -53,7 +53,8 @@ class Dashboard extends React.PureComponent {
 
       accountEditFormErrors,
       isRangeSelection, startDate, endDate, singleDate, filterTarget,
-      filterSystemOpen, toggleFilterSystem,
+      filterSystemOpen, toggleFilterSystem, isDashboardLoading,
+      dashboardAnalytics,
     } = this.props;
     if (isDisabledOrganizerAccount(user)) {
       return (
@@ -77,7 +78,7 @@ class Dashboard extends React.PureComponent {
             links={dashboardLinks[ROLES.Admin]}
             toggleMenu={toggleDashboardMenu}
           />
-        ) : user.role === ROLES.Organizer && user.organizer ? (
+        ) : user.role === ROLES.Organizer ? (
           <Organizer
             {...this.props}
             links={dashboardLinks[ROLES.Organizer]}
@@ -135,6 +136,8 @@ const mapStateToProps = state => {
     singleDate: state.dashboard.singleDate,
     filterTarget: state.dashboard.filterTarget,
     filterSystemOpen: state.dashboard.filterSystemOpen,
+    isDashboardLoading: state.dashboard.isDashboardLoading,
+    dashboardAnalytics: state.dashboard.dashboardAnalytics
   };
 };
 

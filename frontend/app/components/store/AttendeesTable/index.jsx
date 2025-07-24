@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react';
 import {
   CCard,
   CCardBody,
@@ -11,28 +11,18 @@ import {
   CTableRow,
   CPagination,
   CPaginationItem,
-} from '@coreui/react'
+} from '@coreui/react';
 
-const AttendeesTable = (props) => {
-  const { data, isLightMode } = props;
-
-  const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 10
-  const totalPages = Math.ceil(data.length / itemsPerPage)
-
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const endIndex = startIndex + itemsPerPage
-  const currentData = data.slice(startIndex, endIndex)
-
+const AttendeesTable = ({ attendees = [], currentPage = 1, totalPages = 1, onPageChange, isLightMode }) => {
   const handlePageChange = (pageNumber) => {
     if (pageNumber >= 1 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber)
+      onPageChange(pageNumber);
     }
-  }
+  };
 
   return (
     <CCard className={`${isLightMode ? '' : 'bg-dark-mode'} mb-4`}>
-      <CCardHeader className={`${isLightMode ? 'p-black' : 'p-white'}`} style={{ fontSize: '30px' }}>Attendees</CCardHeader>
+      <CCardHeader className={`${isLightMode ? 'p-black' : 'p-white'}`} style={{ fontSize: '2em' }}>Attendees</CCardHeader>
       <CCardBody>
         <CTable align="middle" hover responsive className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} p-white`}>
           <CTableHead>
@@ -47,15 +37,13 @@ const AttendeesTable = (props) => {
             </CTableRow>
           </CTableHead>
           <CTableBody>
-            {currentData.map((attendee, index) => (
+            {attendees.map((attendee, index) => (
               <CTableRow key={index}>
                 <CTableDataCell>{attendee.name}</CTableDataCell>
                 <CTableDataCell>{attendee.ticketType}</CTableDataCell>
                 <CTableDataCell>{attendee.quantity}</CTableDataCell>
                 <CTableDataCell>{attendee.isGuest ? 'Yes' : 'No'}</CTableDataCell>
-                <CTableDataCell>
-                  {attendee.checkedInCount}/{attendee.quantity}
-                </CTableDataCell>
+                <CTableDataCell>{attendee.checkedInCount}/{attendee.quantity}</CTableDataCell>
                 <CTableDataCell>{attendee.purchasedDate}</CTableDataCell>
                 <CTableDataCell>{attendee.email}</CTableDataCell>
               </CTableRow>
@@ -91,7 +79,7 @@ const AttendeesTable = (props) => {
         </div>
       </CCardBody>
     </CCard>
-  )
-}
+  );
+};
 
-export default AttendeesTable
+export default AttendeesTable;

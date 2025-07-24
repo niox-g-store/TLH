@@ -22,7 +22,6 @@ const FilterSystem = (props) => {
   setSingleDate,
   setFilterTarget,
   resetDateSelection,
-  filterSystemOpen
   } = props;
 
   const filterTargetOptions = ['Orders', 'Tickets', 'Income', 'Events'];
@@ -44,11 +43,22 @@ const FilterSystem = (props) => {
   };
 
   const handleApplyClick = () => {
+    let effectiveStartDate = startDate;
+    let effectiveEndDate = endDate;
+
+    if (!isRangeSelection && singleDate) {
+      effectiveStartDate = new Date(singleDate);
+      effectiveStartDate.setHours(0, 0, 0, 0);
+
+      effectiveEndDate = new Date(singleDate);
+      effectiveEndDate.setHours(23, 59, 59, 999);
+    }
+
     const filterCriteria = {
       target: filterTarget.toLowerCase(),
       isRange: isRangeSelection,
-      startDate: isRangeSelection ? startDate : singleDate,
-      endDate: isRangeSelection ? endDate : singleDate,
+      startDate: effectiveStartDate,
+      endDate: effectiveEndDate,
     };
     onApplyFilter(filterCriteria);
   };
@@ -61,12 +71,9 @@ const FilterSystem = (props) => {
     console.log('Download CSV clicked');
   };
 
-  const isApplyDisabled = isRangeSelection
-    ? !startDate || !endDate
-    : !singleDate || !filterTarget;
-
   return (
     <div
+      data-aos="fade-right"
       className={`${isLightMode ? 'p-black' : 'p-white'} d-flex flex-wrap align-items-center gap-3 dashboard-controls`}
       style={{
         padding: '10px 10px',
@@ -75,7 +82,6 @@ const FilterSystem = (props) => {
     >
 
       <div style={{ flexShrink: 0 }}>
-        <label style={{ display: 'none' }}>Apply filter to:</label>
         <CDropdown>
           <CDropdownToggle color="light" size="lg" className="d-flex justify-content-between align-items-center">
             {filterTarget}
@@ -135,7 +141,6 @@ const FilterSystem = (props) => {
       <div style={{ flexShrink: 0 }}>
         <Button
           onClick={handleApplyClick}
-          disabled={isApplyDisabled}
           className="last-small p-black"
           text="Apply"
         />

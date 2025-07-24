@@ -20,6 +20,7 @@ const PeriodDropdown = (props) => {
         <CDropdownItem>Today</CDropdownItem>
         <CDropdownItem>This Week</CDropdownItem>
         <CDropdownItem disabled>This Month</CDropdownItem>
+        <CDropdownItem disabled>All time</CDropdownItem>
       </CDropdownMenu>
     </CDropdown>
     </>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   CRow,
   CCol,
@@ -27,24 +27,60 @@ import BarChart from '../../../components/store/Core/barChart';
 import { IoBasketOutline, IoReceiptOutline } from 'react-icons/io5';
 import { MdOutlineEventRepeat } from 'react-icons/md';
 import DropdownConfirm from '../../../components/store/DropdownConfirm';
-import { attendeesData } from '../../../components/Data/attendeesData';
 import AttendeesTable from '../../../components/store/AttendeesTable';
 import PeriodDropdown from '../../../components/store/PeriodPicker';
 import { Link } from 'react-router-dom';
 // import { FilterSystem } from '../../../components/store/PeriodPicker';
 import FilterSystem from '../../../components/store/AnalyticsFilterSystem';
-const AdminDashboard = (props) => {
-  const { isLightMode, toggleFilterSystem } = props;
+import Button from '../../../components/Common/HtmlTags/Button';
+import LoadingIndicator from '../../../components/store/LoadingIndicator';
+import actions from '../../../actions';
+import { connect } from 'react-redux';
+
+const AdminDashboardTemplate = (props) => {
+  const {
+    isLightMode,
+    toggleFilterSystem,
+    filterSystemOpen,
+    isDashboardLoading,
+    dashboardAnalytics,
+    stats,
+
+    attendees,
+    attendeesPage,
+    attendeesTotalPages,
+    fetchAttendees
+  } = props;
+
+  const ticketsSold = dashboardAnalytics?.tickets?.totalSold || 0
+  const ticketPeriod = dashboardAnalytics?.tickets?.labels?.length > 1 ?
+    dashboardAnalytics?.tickets?.labels[0] +
+    '-'
+    +
+    dashboardAnalytics?.tickets?.labels[dashboardAnalytics?.tickets?.labels?.length - 1]
+    :
+    dashboardAnalytics?.tickets?.labels[0]
+
+  const incomePeriod = dashboardAnalytics?.income?.labels?.length > 1 ?
+    dashboardAnalytics?.income?.labels[0] +
+    '-'
+    +
+    dashboardAnalytics?.income?.labels[dashboardAnalytics?.income?.labels?.length - 1]
+    :
+    dashboardAnalytics?.income?.labels[0]
 
   return (
     <div className='body-panel'>
+      {isDashboardLoading && <LoadingIndicator />}
       <div className='container-lg px-4 mb-custom-5em'>
         <div style={{ alignItems: 'center', flexWrap: 'wrap' }} className='d-flex dashboard-controls-container'>
           <div className='d-flex dashboard-controls-head'>
             <h2 style={{ margin: 0 }} className={`${isLightMode ? 'p-black': 'p-white'}`}>Dashboard</h2>
-            <Button text={"filter controls"} onClick={toggleFilterSystem} />
+            <Button className="third-btn" text={`${filterSystemOpen ? 'Close filter controls' : 'Open Filter controls'}`} onClick={toggleFilterSystem} />
           </div>
+          {filterSystemOpen &&
             <FilterSystem {...props} />
+          }
         </div>
         <hr className={`${isLightMode ? 'p-black': 'p-white'}`}></hr>
         <div data-aos='fade-up' className='d-flex gap-3 flex-wrap mb-4' style={{ alignItems: 'stretch', zIndex: '1', position: 'relative' }}>
@@ -53,10 +89,11 @@ const AdminDashboard = (props) => {
             <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white c-primary border-15`}>
               <CCardBody>
                 <div className='d-flex justify-content-between align-items-start mb-2'>
-                  <CCardTitle>2,000 Ticket Sold</CCardTitle>
+                  <CCardTitle>{ticketsSold} Ticket Sold</CCardTitle>
                   <PeriodDropdown />
                 </div>
-                <CCardText>June 1st - June 30th</CCardText>
+                <CCardText>{ticketPeriod}</CCardText>
+                <ChartLine ticket={dashboardAnalytics?.tickets || ''}/>
               </CCardBody>
             </CCard>
 
@@ -68,8 +105,8 @@ const AdminDashboard = (props) => {
                     <CCardTitle>Events Created</CCardTitle>
                   </div>
 
-                  <CCardText className='d-flex justify-content-between align-items-center font-size-20'>10 <MdOutlineEventRepeat size={30} /></CCardText>
-                  <CCardText>June 1st - June 30th</CCardText>
+                  <CCardText className='d-flex justify-content-between align-items-center font-size-20'>{dashboardAnalytics?.events?.total} <MdOutlineEventRepeat size={30} /></CCardText>
+                  <CCardText>{dashboardAnalytics?.events?.start} - {dashboardAnalytics?.events?.end}</CCardText>
                   <PeriodDropdown className='period-d-md' />
                 </CCardBody>
               </CCard>
@@ -79,8 +116,8 @@ const AdminDashboard = (props) => {
                   <div className='d-flex justify-content-between align-items-start mb-2'>
                     <CCardTitle>Orders</CCardTitle>
                   </div>
-                  <CCardText className='d-flex justify-content-between align-items-center font-size-20'>50 <IoReceiptOutline size={30} /></CCardText>
-                  <CCardText>June 1st - June 30th</CCardText>
+                  <CCardText className='d-flex justify-content-between align-items-center font-size-20'>{dashboardAnalytics?.orders?.total} <IoReceiptOutline size={30} /></CCardText>
+                  <CCardText>{dashboardAnalytics?.orders?.start} - {dashboardAnalytics?.orders?.end}</CCardText>
                   <PeriodDropdown className='period-d-md' />
                 </CCardBody>
               </CCard>
@@ -92,11 +129,15 @@ const AdminDashboard = (props) => {
             <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white c-primary h-100 border-15 `}>
               <CCardBody className='d-flex flex-column justify-content-between'>
                 <div className='d-flex justify-content-between align-items-start mb-2'>
-                  <CCardTitle>NGN 620,000 Income</CCardTitle>
+                  <CCardTitle>NGN {(dashboardAnalytics?.income?.total)?.toLocaleString() || ''} Income</CCardTitle>
                   <PeriodDropdown />
                 </div>
-                <CCardText>June 1st - June 30th</CCardText>
+                <CCardText>{incomePeriod}</CCardText>
                 <div style={{ height: '14em' }}>
+                  <BarChart
+                    incomeData={dashboardAnalytics?.income?.data || ''}
+                    labels={dashboardAnalytics?.income?.labels || ''}
+                  />
                 </div>
               </CCardBody>
             </CCard>
@@ -107,12 +148,14 @@ const AdminDashboard = (props) => {
 
         {/* Social Cards */}
 <CRow className='mb-4 g-3'>
+  <h2 className={`${isLightMode ? 'p-black': 'p-white'}`}>All time stats</h2>
+    <hr className={`${isLightMode ? 'p-black': 'p-white'}`}></hr>
   <CCol xs={6} md={3}>
     <CCard className='purple-bg p-white border-15 linear-grad-2'>
       <CCardBody>
         <CCardTitle>Top Selling Event</CCardTitle>
         <CCardText>
-          <Link to='/dashboard/event/white-house-party'>White House Party</Link>
+          <Link to='/dashboard/event/white-house-party'>{stats?.topSellingEvent || ''}</Link>
         </CCardText>
       </CCardBody>
     </CCard>
@@ -122,7 +165,7 @@ const AdminDashboard = (props) => {
     <CCard className='purple-bg p-white border-15 linear-grad-2'>
       <CCardBody>
         <CCardTitle>Upcoming Events</CCardTitle>
-        <CCardText>2</CCardText>
+        <CCardText>{stats?.upcomingEvents || ''}</CCardText>
       </CCardBody>
     </CCard>
   </CCol>
@@ -131,7 +174,7 @@ const AdminDashboard = (props) => {
     <CCard className='purple-bg p-white border-15 linear-grad-2'>
       <CCardBody>
         <CCardTitle>Past Event</CCardTitle>
-        <CCardText>8</CCardText>
+        <CCardText>{stats?.pastEvents || ''}</CCardText>
       </CCardBody>
     </CCard>
   </CCol>
@@ -139,8 +182,8 @@ const AdminDashboard = (props) => {
   <CCol xs={6} md={3}>
     <CCard className='purple-bg p-white border-15 linear-grad-2'>
       <CCardBody>
-        <CCardTitle>Events</CCardTitle>
-        <CCardText>Null</CCardText>
+        <CCardTitle>Total Events</CCardTitle>
+        <CCardText>{stats?.totalEvents || ''}</CCardText>
       </CCardBody>
     </CCard>
   </CCol>
@@ -149,7 +192,7 @@ const AdminDashboard = (props) => {
     <CCard className='purple-bg p-white border-15 linear-grad-2'>
       <CCardBody>
         <CCardTitle>Guest Users</CCardTitle>
-        <CCardText>12</CCardText>
+        <CCardText>{stats?.guestUsers || ''}</CCardText>
       </CCardBody>
     </CCard>
   </CCol>
@@ -158,7 +201,7 @@ const AdminDashboard = (props) => {
     <CCard className='purple-bg p-white border-15 linear-grad-2'>
       <CCardBody>
         <CCardTitle>Total Users</CCardTitle>
-        <CCardText>200</CCardText>
+        <CCardText>{stats?.totalUsers || ''}</CCardText>
       </CCardBody>
     </CCard>
   </CCol>
@@ -167,7 +210,7 @@ const AdminDashboard = (props) => {
     <CCard className='purple-bg p-white border-15 linear-grad-2'>
       <CCardBody>
         <CCardTitle>Organizers</CCardTitle>
-        <CCardText>3</CCardText>
+        <CCardText>{stats?.organizers || ''}</CCardText>
       </CCardBody>
     </CCard>
   </CCol>
@@ -176,18 +219,60 @@ const AdminDashboard = (props) => {
     <CCard className='purple-bg p-white border-15 linear-grad-2'>
       <CCardBody>
         <CCardTitle>Admins</CCardTitle>
-        <CCardText>1</CCardText>
+        <CCardText>{stats?.admins || ''}</CCardText>
       </CCardBody>
     </CCard>
   </CCol>
 </CRow>
-
-
-        <AttendeesTable {...props} data={attendeesData} />
-
+      <AttendeesTable
+        {...props}
+        attendees={attendees}
+        currentPage={attendeesPage}
+        totalPages={attendeesTotalPages}
+        onPageChange={fetchAttendees}
+      />
       </div>
     </div>
   );
 };
 
-export default AdminDashboard;
+class AdminDashboard extends React.PureComponent {
+  componentDidMount() {
+    this.props.fetchAnalData();
+    this.props.fetchStatsOverview();
+    this.props.fetchAttendees();
+  }
+
+  render() {
+    return (
+      <AdminDashboardTemplate
+        {...this.props}
+      />
+    );
+  }
+}
+
+const mapStateToProps = state => {
+  return {
+    user: state.account.user,
+    isLoading: state.account.isLoading,
+    isMenuOpen: state.dashboard.isMenuOpen,
+    isLightMode: state.dashboard.isLightMode,
+
+    isRangeSelection: state.dashboard.isRangeSelection,
+    startDate: state.dashboard.startDate,
+    endDate: state.dashboard.endDate,
+    singleDate: state.dashboard.singleDate,
+    filterTarget: state.dashboard.filterTarget,
+    filterSystemOpen: state.dashboard.filterSystemOpen,
+    isDashboardLoading: state.dashboard.isDashboardLoading,
+    dashboardAnalytics: state.dashboard.dashboardAnalytics,
+    stats: state.dashboard.stats,
+    
+    attendees: state.dashboard.attendees,
+    attendeesPage: state.dashboard.attendeesPage,
+    attendeesTotalPages: state.dashboard.attendeesTotalPages,
+  };
+};
+
+export default connect(mapStateToProps, actions)(AdminDashboard);
