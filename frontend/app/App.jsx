@@ -106,14 +106,11 @@ const Appplication = (props) => {
   //const showFooter = (USER.role === ROLES.Member || !hideFooter.some(path => location.pathname.startsWith(path)))
   const showFooter = (!hideFooter.some(path => location.pathname.startsWith(path)))
 
-  if (homeMediaIsLoading) {
-    return <LoadingIndicator />
-  }
-
   return (
     <>
       <Notification />
       {newsletterSubIsLoading && <LoadingIndicator />}
+      {homeMediaIsLoading && <LoadingIndicator />}
       {showHeader && <Navigation />}
       <Routes>
         <Route path='*' element={<Page404 />} />
@@ -175,7 +172,7 @@ const mapStateToProps = (state) => {
     authenticated: state.authentication.authenticated,
     user: state.account.user,
     settings: state.setting.settings,
-    homeMediaIsLoading: state.media.isLoading,
+    homeMediaIsLoading: state.media.mediaisLoading,
     email: state.newsletter.subEmail,
     subFormErrors: state.newsletter.subFormErrors,
     newsletterSubIsLoading: state.newsletter.isLoading,

@@ -25,7 +25,7 @@ const ManagerMediaHelper = (props) => {
     deleteMedia,
     updateMedia,
     defaultWarning,
-    isLoading
+    mediaisLoading
   } = props;
   const navigate = useNavigate();
   const mediasPerPage = 10;
@@ -83,8 +83,8 @@ const ManagerMediaHelper = (props) => {
       </div>
       <hr className={`${isLightMode ? 'p-black' : 'p-white'}`} />
       <div>
-        {isLoading && <p className={`${isLightMode ? 'p-black' : 'p-white'}`}>Loading medias...</p>}
-        {!isLoading && currentMedias.length === 0 && (
+        {mediaisLoading && <p className={`${isLightMode ? 'p-black' : 'p-white'}`}>Loading medias...</p>}
+        {!mediaisLoading && currentMedias.length === 0 && (
           <p className={`${isLightMode ? 'p-black' : 'p-white'}`}>No medias available.</p>
         )}
         <CRow className='gy-4'>
@@ -199,7 +199,7 @@ class ManagerMedia extends React.PureComponent {
 
 const mapStateToProps = state => ({
   medias: state.media.medias,
-  isLoading: state.media.isLoading,
+  mediaisLoading: state.media.mediaisLoading,
   isLightMode: state.dashboard.isLightMode,
 });
 

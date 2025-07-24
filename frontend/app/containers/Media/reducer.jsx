@@ -24,7 +24,7 @@ const initialState = {
     default: false,
     active: true
   },
-  isLoading: false,
+  mediaisLoading: false,
   formErrors: {},
   editFormErrors: {},
   homeMedia: [],
@@ -44,7 +44,7 @@ const mediaReducer = (state = initialState, action) => {
         homeMedia: action.payload
       };
     case SET_MEDIA_LOADING:
-      return { ...state, isLoading: action.payload };
+      return { ...state, mediaisLoading: action.payload };
 
     case FETCH_MEDIAS:
       return { ...state, medias: action.payload };

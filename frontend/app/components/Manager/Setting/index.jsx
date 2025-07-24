@@ -45,12 +45,9 @@ const SettingForm = (props) => {
     { value: 96, label: '96 Hours' }
   ];
 
-  if (isLoading) {
-    return <LoadingIndicator isLightMode={isLightMode}/>
-  }
-
   return (
     <div className={`container-lg px-4 d-flex flex-column mb-custom-5em`}>
+      {isLoading && <LoadingIndicator isLightMode={isLightMode} />}
       <div className='d-flex justify-content-between'>
         <h2 className={`${isLightMode ? 'p-black' : 'p-white'}`}>Settings</h2>
       </div>

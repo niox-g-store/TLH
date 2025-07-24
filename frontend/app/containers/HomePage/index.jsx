@@ -49,15 +49,11 @@ class Home extends React.PureComponent {
       .map(media => API_URL + media.mediaUrl);
   }
 
-  if (homeMediaIsLoading) {
-    return (
-      <LoadingIndicator />
-    )
-  }
 
   return (
     <>
     {popOverEvents?.length > 0 && <PopupComponent data={popOverEvents} type={"image"}/>}
+    {homeMediaIsLoading && <LoadingIndicator />}
     <HomeBanner media={video}/>
       <div className="home">
       <HeroBanner

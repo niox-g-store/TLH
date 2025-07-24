@@ -19,12 +19,10 @@ const CustomerDashboardForm = (props) => {
   const gridGuestEvents = guestEvents.slice(0, 6);
 
   isLightMode = false;
-  if (isLoading) {
-    return <LoadingIndicator />;
-  }
 
   return (
     <div className='container-lg px-4 d-flex flex-column mb-custom-5em'>
+      {isLoading && <LoadingIndicator isLightMode={isLightMode}/>}
       <h2 style={{ margin: 0 }} className={`${isLightMode ? 'p-black' : 'p-white'}`}>
         Welcome to Your Dashboard
       </h2>
