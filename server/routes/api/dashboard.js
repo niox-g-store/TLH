@@ -509,7 +509,7 @@ async function getAnalytics({ startDate, endDate, date, include }, req) {
     const labels = [];
     const data = [];
 
-    const allOrders = await Order.find({}).populate('cart');
+    const allOrders = await Order.find({ status: true }).populate('cart');
 
     const userOrders = allOrders.filter(ord =>
       ord?.cart?.tickets?.some(ticket => eventIds.has(ticket.eventId?.toString()))
@@ -597,7 +597,8 @@ async function getAnalytics({ startDate, endDate, date, include }, req) {
     const data = [];
 
     const orders = await Order.find({
-      createdAt: { $gte: start.toDate(), $lte: end.toDate() }
+      createdAt: { $gte: start.toDate(), $lte: end.toDate() },
+      status: true
     }).populate('cart');
 
     let totalIncome = 0;

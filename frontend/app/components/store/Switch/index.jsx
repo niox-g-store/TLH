@@ -37,7 +37,7 @@ class Switch extends React.Component {
   }
 
   render() {
-    const { className = '', style, id, label, tooltip, tooltipContent } = this.props;
+    const { className = '', style, id, label, tooltip, tooltipContent, disabled } = this.props;
     const { checked } = this.state;
 
     const tooltipId = `tooltip-${id}`;
@@ -53,6 +53,7 @@ class Switch extends React.Component {
           className='switch-checkbox-input'
           checked={checked}
           onChange={e => this._onChange(e)}
+          disabled={disabled}
         />
         <label htmlFor={id} className='switch-label'>
           {label && <span className='switch-label-text'>{label} </span>}

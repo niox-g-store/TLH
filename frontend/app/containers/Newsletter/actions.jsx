@@ -121,7 +121,6 @@ export const createNewsletter = (navigate) => async (dispatch, getState) => {
   try {
     const rules = {
       title: 'required',
-      content: 'required',
     };
     const n = getState().newsletter.formData;
     const eventId = getState().newsletter.eventId || null;
@@ -135,7 +134,6 @@ export const createNewsletter = (navigate) => async (dispatch, getState) => {
 
     const { isValid, errors } = allFieldsValidation(data, rules, {
       'required.title': 'Title is required.',
-      'required.content': 'Content is required.',
     });
 
     if (!isValid) {

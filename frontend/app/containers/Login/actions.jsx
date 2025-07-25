@@ -192,7 +192,6 @@ export const signOut = () => {
 
     localStorage.removeItem('token');
 
-    dispatch(showNotification('success', 'You have signed out!'));
-    //dispatch(clearCart());
+    // dispatch(showNotification('success', 'You have signed out!'));
   };
 };

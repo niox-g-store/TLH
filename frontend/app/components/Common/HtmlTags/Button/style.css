@@ -43,14 +43,14 @@
 }
 .button-container .last-small {
     background-color: white;
-    padding: .5em 1em;
+    padding: 1em 1.5em;
     border: 1px solid var(--primary_color);
     color: var(--primary_color);
     border-radius: 10px;
     cursor: pointer;
 }
 .button-container .primary-small {
-    padding: .5em 1em;
+    padding: 1em 1.5em;
     background-color: var(--primary_color);
     border: none;
     color: #fff;

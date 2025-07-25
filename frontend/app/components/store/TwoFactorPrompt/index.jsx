@@ -39,7 +39,7 @@ const TwoFactorPrompt = ({ twoFaLogin, twoFaPromptToggle, twoFaPrmpt }) => {
             placeholder="Enter 6-digit code"
             className="text-center text-black mb-3"
           />
-          <CButton color="dark" type="submit" className="w-100">
+          <CButton type="submit" className="w-100 p-white purple-bg">
             Submit
           </CButton>
         </CForm>

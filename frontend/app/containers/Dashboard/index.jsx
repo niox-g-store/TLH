@@ -68,32 +68,46 @@ class Dashboard extends React.PureComponent {
       return signOut();
     }
 
-    return (
-      <div className='dashboard'>
-        {isLoading ?  (
-          <LoadingIndicator isLightMode={isLightMode}/>
-        ) : user.role === ROLES.Admin ? (
-          <Admin
-            {...this.props}
-            links={dashboardLinks[ROLES.Admin]}
-            toggleMenu={toggleDashboardMenu}
-          />
-        ) : user.role === ROLES.Organizer ? (
+    if (user.role === ROLES.Admin) {
+      return (
+        <div className='dashboard'>
+          {isLoading && <LoadingIndicator isLightMode={isLightMode}/> }
+            <Admin
+              {...this.props}
+              links={dashboardLinks[ROLES.Admin]}
+              toggleMenu={toggleDashboardMenu}
+            />
+        </div>
+      );
+    }
+
+    if (user.role === ROLES.Organizer) {
+      return (
+        <div className='dashboard'>
+          {isLoading && <LoadingIndicator isLightMode={isLightMode}/> }
           <Organizer
             {...this.props}
             links={dashboardLinks[ROLES.Organizer]}
             toggleMenu={toggleDashboardMenu}
           />
-        ) : (
-          <Customer
-            {...this.props}
-            isMenuOpen={isMenuOpen}
-            links={dashboardLinks[ROLES.Member]}
-            toggleMenu={toggleDashboardMenu}
-          />
-        )}
-      </div>
-    );
+        </div>
+      )
+    }
+
+    if (user.role === ROLES.Member) {
+      return (
+        <div className='dashboard'>
+          {isLoading && <LoadingIndicator isLightMode={isLightMode}/> }
+            <Customer
+              {...this.props}
+              isMenuOpen={isMenuOpen}
+              links={dashboardLinks[ROLES.Member]}
+              toggleMenu={toggleDashboardMenu}
+            />
+        </div>
+      );
+    }
+
   }
 }
 

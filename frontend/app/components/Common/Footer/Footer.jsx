@@ -81,9 +81,9 @@ const Footer = (props) => {
               </div>
             </div>
             <div className="col-ftr-newsletter">
-              <h4 className="p-white">Subscribe to our newsletter</h4>
+              <h4 className="p-white">Want to stay up to date with us?</h4>
               <p className="p-white p-content p-all-features">
-                Want to stay up to date with us?
+                Subscribe to our newsletter
               </p>
               <form onSubmit={handleSubmit}>
                 <div className='subscribe'>

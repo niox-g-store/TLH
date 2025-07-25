@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 import actions from '../../actions';
-import LoginForm from "../../components/Common/LoginPage";
+import LoginForm from "../../components/Common/LoginForm";
 
 const Login = (props) => {
   const {

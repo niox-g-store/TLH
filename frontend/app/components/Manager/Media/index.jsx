@@ -135,7 +135,7 @@ const ManagerMediaHelper = (props) => {
                   ) : (
                     <div className='text-muted'>No Media</div>
                   )}
-                 <div style={{ position: 'absolute', right: '0', top: '0' }} className='d-flex justify-content-end'>
+                 <div style={{ position: 'absolute', right: '0', top: '0', zIndex: '10' }} className='d-flex justify-content-end'>
                     <Button
                       style={{ padding: '.5em 1em' }}
                       onClick={() => handleDeleteMedia(media._id)}
@@ -161,6 +161,7 @@ const ManagerMediaHelper = (props) => {
                         id={`default-media-${media._id}`}
                         name='default'
                         label='Default'
+                        disabled={defaultMedia?._id ? media?._id !== defaultMedia?._id : false}
                         checked={media.default}
                         toggleCheckboxChange={() => handleDefaultToggle(media._id, media.default)}
                       />

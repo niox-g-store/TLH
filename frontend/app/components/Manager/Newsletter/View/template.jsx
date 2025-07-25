@@ -23,15 +23,14 @@ const campaignTemplate = ( title, shouldEmailContainUserName, content, imageUrls
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Newsletter Preview</title>
       <style>
-        /* Basic reset for consistent rendering */
         body {
           margin: 0;
           padding: 0;
           -webkit-text-size-adjust: 100%;
           -ms-text-size-adjust: 100%;
-          background-color: #f4f4f4; /* Set the background for the entire body */
+          background-color: #f4f4f4;
         }
-        div[style*="font-family"] { /* Target the main container */
+        div[style*="font-family"] {
           font-family: sans-serif;
           background-color: #f4f4f4;
           padding: 20px;
@@ -40,7 +39,7 @@ const campaignTemplate = ( title, shouldEmailContainUserName, content, imageUrls
           border-radius: 8px;
           box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        /* Styles for the inner white content box */
+
         div[style*="background-color: #ffffff"] {
           background-color: #ffffff;
           padding: 30px;
@@ -87,13 +86,13 @@ const campaignTemplate = ( title, shouldEmailContainUserName, content, imageUrls
         ${!eventId || user.role === ROLES.Admin ? `<div style="text-align: center; margin-bottom: 20px;">
           <img
             src="https://thelinkhangout.com/black_logo.png"
-            alt="Company Logo"
-            style="max-width: 150px; border-radius: 8px;"
+            alt="Logo"
+            style="width: 100px; border-radius: 10px;"
           />
         </div>`: ``
         }
 
-        <div style="background-color: #ffffff; padding: 30px; border-radius: 8px;">
+        <div style="background-color: #ffffff; padding: 30px 0px; border-radius: 8px;">
           <p style="font-size: 16px; color: #333333; margin-bottom: 20px;">
             ${resolvedRecipientName},
           </p>
