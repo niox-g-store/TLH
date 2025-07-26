@@ -8,47 +8,146 @@ const auth = require('../../middleware/auth');
 const role = require('../../middleware/role');
 const { ROLES } = require('../../utils/constants');
 const orderQueue = require('../../queues/orderQueue');
-const initiateTransfer = require('../../utils/paystack');
-const mailgun = require('./services/mailgun');
+const { initiateTransfer } = require('../../utils/paystack');
+const mailgun = require('../../services/mailgun');
 const organizerBanned = require('../../middleware/organizerBanned');
 
-router.get('/', auth, role.check(ROLES.Admin, ROLES.Organizer), async (req, res) => {
+router.get('/', auth, role.check(ROLES.Admin), async (req, res) => {
   try {
-    let withdrawals;
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const skip = (page - 1) * limit;
 
-    if (req.user.role === ROLES.Admin) {
-      withdrawals = await Withdrawal.find()
-        .populate('event ticket user order')
-        .sort({ requestedAt: -1 });
-    } else {
-      withdrawals = await Withdrawal.find({ user: req.user._id })
-        .populate('event ticket order')
-        .sort({ requestedAt: -1 });
-    }
+    const allWithdrawals = await Withdrawal.find()
+      .populate('event ticket user order')
+      .sort({ requestedAt: -1 });
+
+    const adminWithdrawals = allWithdrawals.filter(w => w.user?.role === ROLES.Admin);
+
+    const paginated = adminWithdrawals.slice(skip, skip + limit);
 
     let earnings = 0;
     let withdrawnAmount = 0;
 
-    withdrawals.forEach(w => {
-      if (req.user.role === ROLES.Admin) {
-        earnings += w.order?.total || 0;
-      } else {
-        earnings += w.amount;
+    adminWithdrawals.forEach(w => {
+      earnings += w.commission || 0;
+      if (w.status === 'completed') {
+        withdrawnAmount += w.commission || 0;
       }
+    });
 
+    return res.status(200).json({
+      withdrawals: paginated,
+      earnings,
+      withdrawnAmount,
+      total: adminWithdrawals.length,
+      page,
+      pageCount: Math.ceil(adminWithdrawals.length / limit)
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({ error: 'Failed to load admin withdrawals' });
+  }
+});
+
+router.get('/organizers', auth, role.check(ROLES.Admin), async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const skip = (page - 1) * limit;
+
+    const withdrawals = await Withdrawal.find()
+      .populate('event ticket user order')
+      .sort({ requestedAt: -1 });
+
+    const groupedMap = new Map();
+
+    withdrawals.forEach(w => {
+      if (w.user?.role === ROLES.Organizer) {
+        const organizerId = w.user._id.toString();
+
+        if (!groupedMap.has(organizerId)) {
+          groupedMap.set(organizerId, {
+            organizer: w.user,
+            withdrawals: [],
+            earnings: 0,
+            withdrawnAmount: 0
+          });
+        }
+
+        const group = groupedMap.get(organizerId);
+        group.withdrawals.push(w);
+        group.earnings += w.amount || 0;
+        if (w.status === 'completed') {
+          group.withdrawnAmount += w.amount || 0;
+        }
+      }
+    });
+
+    const groupedArray = Array.from(groupedMap.values());
+
+    const paginated = groupedArray.slice(skip, skip + limit);
+
+    return res.status(200).json({
+      organizerWithdrawals: paginated,
+      total: groupedArray.length,
+      page,
+      pageCount: Math.ceil(groupedArray.length / limit)
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({ error: 'Failed to load organizer withdrawals' });
+  }
+});
+
+router.get('/organizer/:id', auth, role.check(ROLES.Admin, ROLES.Organizer), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const skip = (page - 1) * limit;
+
+    const allWithdrawals = await Withdrawal.find({ user: id })
+      .populate('event ticket order user')
+      .sort({ requestedAt: -1 });
+
+    const paginated = allWithdrawals.slice(skip, skip + limit);
+
+    let earnings = 0;
+    let withdrawnAmount = 0;
+
+    allWithdrawals.forEach(w => {
+      earnings += w.amount;
       if (w.status === 'completed') {
         withdrawnAmount += w.amount;
       }
     });
 
     return res.status(200).json({
-      withdrawals,
+      withdrawals: paginated,
       earnings,
-      withdrawnAmount
+      withdrawnAmount,
+      total: allWithdrawals.length,
+      page,
+      pageCount: Math.ceil(allWithdrawals.length / limit)
     });
   } catch (err) {
-    console.error(err);
-    return res.status(400).json({ error: 'Server error loading withdrawals' });
+    console.log(err);
+    return res.status(400).json({ error: 'Failed to load organizer withdrawals' });
+  }
+});
+
+router.get('/withdrawal/:id', auth, role.check(ROLES.Admin), async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const withdrawal = await Withdrawal.findById(id)
+      .populate('ticket event order user');
+    if (!withdrawal) return res.status(400).json({ error: 'Withdrawal not found' });
+
+    return res.status(200).json(withdrawal);
+  } catch (err) {
+    return res.status(400).json({ error: 'Server error fetching withdrawal' });
   }
 });
 

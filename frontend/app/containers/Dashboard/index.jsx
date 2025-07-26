@@ -54,7 +54,7 @@ class Dashboard extends React.PureComponent {
       accountEditFormErrors,
       isRangeSelection, startDate, endDate, singleDate, filterTarget,
       filterSystemOpen, toggleFilterSystem, isDashboardLoading,
-      dashboardAnalytics,
+      dashboardAnalytics, addUserBank, banks, bankFormError
     } = this.props;
     if (isDisabledOrganizerAccount(user)) {
       return (
@@ -151,7 +151,9 @@ const mapStateToProps = state => {
     filterTarget: state.dashboard.filterTarget,
     filterSystemOpen: state.dashboard.filterSystemOpen,
     isDashboardLoading: state.dashboard.isDashboardLoading,
-    dashboardAnalytics: state.dashboard.dashboardAnalytics
+    dashboardAnalytics: state.dashboard.dashboardAnalytics,
+
+    banks: state.account.banks,
   };
 };
 

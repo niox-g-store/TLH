@@ -13,6 +13,7 @@ const User = require('../../models/user');
 const Guest = require('../../models/guest');
 const { updateEventStatus } = require("../../utils/event");
 const { deleteFilesFromPath } = require("../../utils/deleteFiles");
+const organizerBanned = require('../../middleware/organizerBanned');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -173,6 +174,7 @@ router.post(
   '/add',
   auth,
   role.check(ROLES.Admin, ROLES.Organizer),
+  organizerBanned,
   upload.array('images', 6),
   async (req, res) => {
     try {
@@ -321,6 +323,7 @@ router.put(
   '/:id',
   auth,
   role.check(ROLES.Admin, ROLES.Organizer),
+  organizerBanned,
   upload.array('images', 6),
   async (req, res) => {
     try {

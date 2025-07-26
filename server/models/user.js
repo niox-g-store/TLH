@@ -73,9 +73,11 @@ const UserSchema = new mongoose.Schema({
 
   hasUpdateProfile: { type: Boolean, default: false },
 
-  bankAccountNumber: { type: Number },
-  bankName: { type: String },
-  bankAccountName: { type: String },
+  bankAccountNumber: { type: String },
+  bankName: { type: String, default: '' },
+  bankAccountName: { type: String, default: '' },
+
+  recipientId: {type: String },
 
   resetPasswordToken: { type: String },
   resetPasswordExpires: { type: Date },

@@ -15,7 +15,7 @@ const Product = require('../../models/product');
 const auth = require('../../middleware/auth');
 const role = require('../../middleware/role');
 const { ROLES } = require('../../utils/constants');
-const PaymentHandler = require('../../utils/paystack');
+const { PaymentHandler } = require('../../utils/paystack');
 const { customAlphabet } = require('nanoid');
 const QRCode = require('qrcode');
 const keys = require('../../config/keys');
@@ -835,6 +835,8 @@ const createWithdrawal = async (cartDoc, updateOrder) => {
       let adminCommission = 0
       if (owner.role === ROLES.Organizer) {
         adminCommission = reverseExpectedPayout(itemPrice, expected, ticket.quantity, true)
+      } else {
+        adminCommission = amount
       }
 
       const withdrawal = new Withdrawal({

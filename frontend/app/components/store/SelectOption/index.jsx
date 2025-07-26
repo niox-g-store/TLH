@@ -12,7 +12,8 @@ const SelectOption = props => {
     defaultValue,
     value,
     handleSelectChange,
-    prevValue
+    prevValue,
+    onMenuOpen
   } = props;
 
   const [hasChanged, setHasChanged] = useState(false);
@@ -20,6 +21,12 @@ const SelectOption = props => {
   const _handleSelectChange = selected => {
     setHasChanged(true);
     handleSelectChange(selected);
+  };
+
+  const handleMenuOpen = () => {
+    if (onMenuOpen) {
+      onMenuOpen();
+    }
   };
 
   const animatedComponents = makeAnimated();
@@ -38,6 +45,7 @@ const SelectOption = props => {
         defaultValue={defaultValue}
         value={hasChanged ? value : prevValue}
         onChange={_handleSelectChange}
+        onMenuOpen={handleMenuOpen}
         styles={dropdownStyles}
       />
       <span className='invalid-message'>{error && error[0]}</span>

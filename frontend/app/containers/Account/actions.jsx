@@ -28,7 +28,8 @@ import {
   SET_TWO_FACTOR_CODE,
   TWO_FACTOR_ERROR,
   SHOW_TWO_FA_SETUP,
-  CLEAR_TWO_FACTOR
+  CLEAR_TWO_FACTOR,
+  FETCHED_BANKS
 } from './constants';
 
 import handleError from '../../utils/error';
@@ -194,54 +195,54 @@ export const updateProfile = (navigate, google) => {
   };
 };
 
-// fetches admin bank
-export const fetchBanks = () => {
-  return async(dispatch, getState) => {
-    try {
-      const response = await axios.get(`${API_URL}/admin_account_bank`)
-      if (response.data.success) {
-        dispatch({
-          type: FETCH_BANK,
-          payload: response.data.banks
-        })
-      }
-    } catch (error) {
-      handleError(error, dispatch)
+// fetches bank
+export const fetchBanks = () => async (dispatch) => {
+  dispatch(setProfileLoading(true))
+  try {
+    const { data, status } = await axios.get(`${API_URL}/user/banks`);
+    if (status === 200) {
+      dispatch({
+        type: FETCHED_BANKS,
+        payload: data.banks
+      })
     }
-
+  } catch (error) {
+    handleError(error, dispatch);
+  } finally {
+    dispatch(setProfileLoading(false))
   }
-}
+};
 
 
 // creates admin bank
-export const createBank = (selectedBank, accountNumber, accountName) => {
+export const addUserBank = (navigate) => {
   return async(dispatch, getState) => {
+    dispatch(setProfileLoading(true))
     try {
       const rules = {
         bankName: 'required',
-        accountNumber: 'required|max:20',
-        nameOnAccount: 'required',
+        bankAccountNumber: 'required|max:20',
       };
 
-      const newBank = {
-        bankName: selectedBank,
-        accountNumber: accountNumber,
-        nameOnAccount: accountName,
+      const { bankAccountNumber, bankName } = getState().account.user;
+
+      let newBank = {
+        bankName: bankName.label,
+        bankAccountNumber: bankAccountNumber,
+        bankCode: bankName.value
       };
 
       const { isValid, errors } = allFieldsValidation(newBank, rules, {
-        'required.bankName': 'Bank name is required.',
-        'required.accountNumber': 'Account number is required.',
-        'max.accountNumber':
+        'required.bankName': 'Select a bank',
+        'required.bankAccountNumber': 'Account number is required.',
+        'max.bankAccountNumber':
           'Account Number may not be greater than 20 characters.',
-        'required.nameOnAccount': 'Account name is required.',
       });
 
       if (!isValid) {
         return dispatch({ type: SET_BANK_FORM_ERROR, payload: errors });
       }
-
-      const response = await axios.post(`${API_URL}/admin_account_bank/create`, newBank, {
+      const response = await axios.put(`${API_URL}/user`, newBank, {
         headers: { 'Content-Type': 'application/json' }
       });
 
@@ -252,22 +253,24 @@ export const createBank = (selectedBank, accountNumber, accountName) => {
       };
 
       if (response.data.success === true) {
-        dispatch(success(successfulOptions));
+        dispatch(showNotification('success', successfulOptions.title));
         dispatch({
-          type: CREATE_BANK,
-          payload: response.data.bank
+          type: FETCH_PROFILE,
+          payload: response.data.user
         });
-        dispatch(resetBanks());
+        navigate(0)
       }
     } catch (error) {
       handleError(error, dispatch)
+    } finally {
+      dispatch(setProfileLoading(false))
     }
   }
 }
 
 
 // delete a bank
-export const deleteBank = (id) => {
+/*export const deleteBank = (id) => {
   return async(dispatch, getState) => {
     try {
       if (id) {
@@ -290,7 +293,7 @@ export const deleteBank = (id) => {
       handleError(error, dispatch);
     }
   }
-}
+}*/
 
 export const twoFaVerificationCodeChange = (name, value) => {
   let formData= {};

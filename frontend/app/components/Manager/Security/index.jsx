@@ -18,6 +18,9 @@ import LoadingIndicator from '../../store/LoadingIndicator';
 import Button from '../../Common/HtmlTags/Button';
 import { withRouter } from '../../../withRouter';
 import { ROLES } from '../../../constants';
+import SelectOption from '../../store/SelectOption';
+import { bankSelectFinder } from '../../../utils/bankSelectFinder';
+import { useNavigate } from 'react-router-dom';
 
 const AccountSecurityForm = (props) => {
   let {
@@ -26,10 +29,14 @@ const AccountSecurityForm = (props) => {
     accountResetPasswordChange, formErrors,
     code, twoFaVerificationCodeChange, qrCodeUrl,
     isLoading, user, setupTwoFactor, secretKey,
-    twoFactorFormError, setShow2FASetup, show2FASetup
+    twoFactorFormError, setShow2FASetup, show2FASetup,
+    fetchBanks, addUserBank, banks, bankFormError,
+    accountChange
   } = props;
+  const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
   if (user.role === ROLES.Member) { isLightMode = false }
+  const isUserAllowed = user => user.role === ROLES.Member
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -54,8 +61,12 @@ const AccountSecurityForm = (props) => {
     }, 1500);
   };
 
+  const handleAddUserBank = () => {
+    addUserBank(navigate);
+  }
+
   return (
-    <div data-aos="fade-up" className="container-lg px-4 mb-5">
+    <div data-aos="fade-up" className="container-lg px-4 mb-5 account-security">
       {isLoading && <LoadingIndicator />}
       <CCard className={`${isLightMode ? '' : 'border-0'}`}>
         <CCardBody className={`${isLightMode ? 'bg-white' : 'bg-black'}`}>
@@ -64,7 +75,7 @@ const AccountSecurityForm = (props) => {
           </CCardTitle>
 
           {/* Password Change Section */}
-          <CForm className={`${isLightMode ? 'p-black' : 'p-white'} d-flex flex-column`} onSubmit={handleSubmit}>
+          <CForm className={`${isLightMode ? 'p-black' : 'p-white'} d-flex flex-column align-items-center`} onSubmit={handleSubmit}>
             <Input
               type="password"
               name="password"
@@ -87,14 +98,54 @@ const AccountSecurityForm = (props) => {
               error={formErrors['confirmPassword']}
               onInputChange={(name, value) => {
                 accountResetPasswordChange(name, value);
-              }}              
+              }}            
             />
-            <CButton type="submit" className="linear-grad p-white mb-4">
+            <CButton type="submit" className="account-security-btns linear-grad p-white mb-4">
               Change Password
             </CButton>
           </CForm>
 
-          <hr />
+          <hr className={`${isLightMode ? 'p-black' : 'p-white'}`}/>
+          {!isUserAllowed(user) &&
+            <div className={`${isLightMode ? 'p-black' : 'p-white'} mb-3 align-items-center d-flex flex-column`}>
+              <h3>Bank Details</h3>
+
+              <Input
+                type="number"
+                name="bankAccountNumber"
+                label="Bank Account Number"
+                placeholder="Enter bank account number"
+                className="mb-3"
+                value={user.bankAccountNumber}
+                error={bankFormError['bankAccountNumber']}
+                onInputChange={(n, v) => accountChange(n, v)}
+              />
+
+              <SelectOption
+                label="Select Bank"
+                prevValue={bankSelectFinder(banks, user.bankName) || ''}
+                value={user.bankName}
+                options={banks}
+                multi={false}
+                error={bankFormError['bankName']}
+                handleSelectChange={(v) => accountChange('bankName', v)}
+              />
+
+              <Input
+                type="text"
+                name="bankAccountName"
+                label="Account Name"
+                className="mb-3"
+                disabled={true}
+                value={user.bankAccountName}
+              />
+
+              <CButton onClick={handleAddUserBank} className="account-security-btns linear-grad p-white mb-4">
+                Update Bank Details
+            </CButton>
+              <hr className={`${isLightMode ? 'p-black' : 'p-white'}`}/>
+            </div>
+          }
 
           {/* 2FA Toggle */}
           <div className='mb-3'>
@@ -185,6 +236,11 @@ const AccountSecurityForm = (props) => {
 };
 
 class AccountSecurity extends React.PureComponent {
+  componentDidMount() {
+    if (this.props.user.role !== ROLES.Member) {
+      this.props.fetchBanks();
+    }
+  }
   componentDidUpdate(prevProps) {
     if (this.props.match.params.id !== prevProps.match.params.id) {
       this.props.fetchProfile();
@@ -207,7 +263,10 @@ const mapStateToProps = state => ({
   show2FASetup: state.account.show2FASetup,
   isLoading: state.account.isLoading,
   isLightMode: state.dashboard.isLightMode,
-  user: state.account.user
+  user: state.account.user,
+
+  banks: state.account.banks,
+  bankFormError: state.account.bankFormError
 });
 
 export default connect(mapStateToProps, actions)(withRouter(AccountSecurity));

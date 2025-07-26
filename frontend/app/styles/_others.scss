@@ -151,3 +151,11 @@
     z-index: 4;
  } 
 }
+.account-security {
+  .input-box, .select-box {
+    width: 100%;
+  }
+  .account-security-btns {
+    width: fit-content;
+  }
+}

@@ -16,6 +16,7 @@ const {
   createTransferRecipient
 } = require('../../utils/paystack');
 const orderQueue = require('../../queues/orderQueue');
+const organizerBanned = require('../../middleware/organizerBanned');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -131,21 +132,29 @@ router.get('/me', auth, async (req, res) => {
 
 router.get('/banks', auth, async (req, res) => {
   try {
-    const banks = await listBanks();
-    console.log(banks)
-    // return res.status(200).json({ banks: [banks] })
+    const { data } = await listBanks();
+    const banks = []
+    for (let bank of data) {
+      if (bank.active) {  // include only active banks
+        banks.push({
+          label: bank.name,
+          value: bank.code
+        })
+      }
+    }
+    return res.status(200).json({ banks})
   } catch (error) {
     return res.status(400).json({
       error: "Cannot fetch banks from paystack"
     })
   }
-})
+});
 
-router.put('/', auth, upload.single('image'), async (req, res) => {
+router.put('/', auth, organizerBanned, upload.single('image'), async (req, res) => {
   try {
     const userId = req.user._id;
     let update = req.body;
-    const { bankAccountNumber, bankName, bankCode } = req.body;
+    let { bankAccountNumber, bankName, bankCode } = req.body;
 
     if (bankAccountNumber && (!bankName || !bankCode)) {
       return res.status(400).json({ error: "incomplete bank details, select a bank name" })
@@ -177,11 +186,16 @@ router.put('/', auth, upload.single('image'), async (req, res) => {
     }
 
     if (bankAccountNumber && bankName && bankCode) {
-      const { account_number, account_name  } = await verifyCustomerBank(bankAccountNumber, bankCode);
+      const { data  } = await verifyCustomerBank(bankAccountNumber, bankCode);
+      const { account_number, account_name } = data;
       if (account_number && account_name) {
         update.bankAccountNumber = account_number
         update.bankName = bankName
         update.bankAccountName = account_name
+        const { id } = await createTransferRecipient(
+          update.bankAccountName, update.bankAccountNumber, bankCode
+        )
+        update.recipientId = id
       }
     }
     userDoc = await User.findByIdAndUpdate(userId, update, { new: true })
@@ -220,9 +234,19 @@ router.put('/', auth, upload.single('image'), async (req, res) => {
       user: userDoc
     });
   } catch (error) {
-    return res.status(400).json({
-      error: 'Your request could not be processed. Please try again.'
-    });
+    if (error.code === 'NETWORK_ERROR') {
+      return res.status(400).json({
+          error: 'Error verifying bank details, check the bank details and try again'
+      });
+    } else if (error.code === 'NETWORK_ERROR_RECIPIENT') {
+      return res.status(400).json({
+          error: 'Error creating transfer recipient'
+      });
+    } else {
+      return res.status(400).json({
+        error: 'Your request could not be processed. Please try again.'
+      });
+    }
   }
 });
 

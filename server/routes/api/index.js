@@ -18,6 +18,7 @@ const product = require('./product');
 const setting = require('./setting');
 const newsletter = require('./newsletter');
 const dashboard = require('./dashboard');
+const withdrawal = require('./withdrawal');
 
 // for static file uploads
 router.use('/uploads', express.static(process.cwd() + "/file_manager/uploads", {
@@ -43,5 +44,6 @@ router.use('/product', product);
 router.use('/setting', setting);
 router.use('/newsletter', newsletter);
 router.use('/dashboard', dashboard);
+router.use('/withdraw', withdrawal);
 
 module.exports = router;

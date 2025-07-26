@@ -26,7 +26,8 @@ import {
   RESET_PASSWORD_RESET,
   TWO_FACTOR_ERROR,
   SHOW_TWO_FA_SETUP,
-  CLEAR_TWO_FACTOR
+  CLEAR_TWO_FACTOR,
+  FETCHED_BANKS
 } from './constants';
 
 const initialState = {
@@ -44,6 +45,9 @@ const initialState = {
     contactEmail: '',
     bio: '',
     phoneNumber: '',
+    bankAccountNumber: '',
+    bankName: '',
+    bankAccountName: '',
   },
   twoFactor: {
     qrCodeUrl: '',
@@ -67,11 +71,14 @@ const initialState = {
     accountNumber: '',
     nameOnAccount: '',
   },
-  editFormErrors: {}
+  editFormErrors: {},
+  banks: []
 };
 
 const accountReducer = (state = initialState, action) => {
   switch (action.type) {
+    case FETCHED_BANKS:
+      return { ...state, banks: action.payload };
     case CLEAR_TWO_FACTOR:
       return {
         ...state,

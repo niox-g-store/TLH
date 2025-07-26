@@ -3,7 +3,6 @@ const keys = require('../config/keys');
 
 const payStackKey = keys.paystack.apiSecretKey;
 
-
 // sends post request to paystack api
 const PaymentHandler = async(id) => {
     try {
@@ -76,7 +75,7 @@ const verifyCustomerBank = async(accountNumber, bankCode) => {
         */
         return req.data;
       } catch (error) {
-        const NetworkError = new Error('Error fetching banks from paystack', error.response ? error.response.data : error.message);
+        const NetworkError = new Error('Error verifying bank details', error.response ? error.response.data : error.message);
         NetworkError.code = 'NETWORK_ERROR'
         throw NetworkError
       }
@@ -86,19 +85,19 @@ const createTransferRecipient = async(name, accountNumber, bankCode, currency = 
   try {
     const req = await axios.post(
       `https://api.paystack.co/transferrecipient`,
-        {
-          headers: {
-            Authorization: `Bearer ${payStackKey}`,
-            'Content-Type': 'application/json'
-          }
-        },
-        {
-          type,
-          name,
-          account_number: accountNumber,
-          bank_code: bankCode,
-          currency
+      {
+        type,
+        name,
+        account_number: accountNumber,
+        bank_code: bankCode,
+        currency
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${payStackKey}`,
+          'Content-Type': 'application/json'
         }
+      }
     );
     /*
     Response data type: {
@@ -129,8 +128,8 @@ const createTransferRecipient = async(name, accountNumber, bankCode, currency = 
     return req.status && req.data;
 
   } catch (error) {
-    const NetworkError = new Error('Error fetching banks from paystack', error.response ? error.response.data : error.message);
-    NetworkError.code = 'NETWORK_ERROR'
+    const NetworkError = new Error('Error creating transfer recipient', error.response ? error.response.data : error.message);
+    NetworkError.code = 'NETWORK_ERROR_RECIPIENT'
     throw NetworkError
   }
 }
@@ -140,17 +139,17 @@ const initiateTransfer = async(amount, reference, recipientId) => {
         const req = await axios.post(
           `https://api.paystack.co/transfer`,
           {
-            headers: {
-              Authorization: `Bearer ${payStackKey}`,
-              'Content-Type': 'application/json'
-            }
-          },
-          {
             source: "balance", 
             amount: amount,
             reference,
             recipient: recipientId,
             reason: "The link hangout payout"
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${payStackKey}`,
+              'Content-Type': 'application/json'
+            }
           }
         );
         /*
@@ -176,10 +175,16 @@ const initiateTransfer = async(amount, reference, recipientId) => {
         */
         return req.status && req.data;
       } catch (error) {
-        const NetworkError = new Error('Error fetching banks from paystack', error.response ? error.response.data : error.message);
+        const NetworkError = new Error('Error initiating transfer', error.response ? error.response.data : error.message);
         NetworkError.code = 'NETWORK_ERROR'
         throw NetworkError
       }
 }
 
-module.exports = PaymentHandler, listBanks, verifyCustomerBank, createTransferRecipient, initiateTransfer;
+module.exports = {
+  PaymentHandler,
+  listBanks,
+  verifyCustomerBank,
+  createTransferRecipient,
+  initiateTransfer
+};

@@ -1,4 +1,8 @@
-import { USER_LOADING, USER_ERROR, SET_USERS } from "./constants";
+import {
+  USER_LOADING,
+  USER_ERROR,
+  SET_USERS,
+} from "./constants";
 
 const initialState = {
   users: [],
