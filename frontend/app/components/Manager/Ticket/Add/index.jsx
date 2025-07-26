@@ -109,21 +109,18 @@ const AddTicketForm = (props) => {
         {/* Ticket Location */}
         <Col className={isLightMode ? 'p-black' : 'p-white'} xs='12' lg='6'>
           <p className="p-purple">For Undisclosed locations the ticket will contain the location you set here</p>
-          <SelectOption
+          <Switch
+            id="add-ticket-location-undisclosed"
             label='Add Ticket Location? (Optional)'
-            options={[
-              { label: 'No', value: false },
-              { label: 'Yes', value: true }
-            ]}
-            value={showLocationInput}
-            handleSelectChange={(value) => setShowLocationInput(value.value)}
+            checked={showLocationInput}
+            toggleCheckboxChange={() => setShowLocationInput(showLocationInput ? false : true)}
           />
           {showLocationInput && (
             <Input
               type='text'
-              label='Ticket Location'
               name='location'
               placeholder='Enter ticket location'
+              className='mt-2'
               value={ticketFormData.location || ''}
               onInputChange={(name, value) => ticketChange(name, value)}
             />

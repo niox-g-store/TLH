@@ -3,6 +3,10 @@ import { API_URL } from '../../../../constants';
 import { ROLES } from '../../../../constants';
 
 const campaignTemplate = ( title, shouldEmailContainUserName, content, imageUrls, eventId, user ) => {
+  /* <h1 style="font-size: 24px; color: #333333; margin-bottom: 15px; font-weight: bold;">
+        ${title}
+      </h1>
+  */
   const resolvedRecipientName = shouldEmailContainUserName ? 'Hi John Doe' : '';
 
   const imagesHtml = imageUrls && imageUrls.length > 0
@@ -82,7 +86,7 @@ const campaignTemplate = ( title, shouldEmailContainUserName, content, imageUrls
       </style>
     </head>
     <body>
-      <div style="font-family: sans-serif; background-color: #f4f4f4; padding: 20px; max-width: 600px; margin: 20px auto; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+      <div style="font-family: sans-serif; background-color: #f4f4f4; padding: 20px 15px; max-width: 600px; margin: 20px auto; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
         ${!eventId || user.role === ROLES.Admin ? `<div style="text-align: center; margin-bottom: 20px;">
           <img
             src="https://thelinkhangout.com/black_logo.png"
@@ -92,14 +96,10 @@ const campaignTemplate = ( title, shouldEmailContainUserName, content, imageUrls
         </div>`: ``
         }
 
-        <div style="background-color: #ffffff; padding: 30px 0px; border-radius: 8px;">
+        <div style="padding: 30px 0px; border-radius: 8px;">
           <p style="font-size: 16px; color: #333333; margin-bottom: 20px;">
-            ${resolvedRecipientName},
+            ${resolvedRecipientName}
           </p>
-
-          <h1 style="font-size: 24px; color: #333333; margin-bottom: 15px; font-weight: bold;">
-            ${title}
-          </h1>
 
           <div
             style="font-size: 16px; line-height: 1.6; color: #555555; margin-bottom: 20px;"

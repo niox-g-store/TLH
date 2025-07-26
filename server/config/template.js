@@ -10,6 +10,7 @@ const { accountBannedEmailHtml } = require('./htmlTemplates/Organizer/banAccount
 const { productOrderEmailHtml } = require('./htmlTemplates/User/productOrderSuccess');
 const { adminCampaignTemplate } = require('./htmlTemplates/newsletterTemplate');
 const { orgCampaignTemplate } = require('./htmlTemplates/newsletterTemplate');
+const { DASHBOARD_URL } = require('../utils/constants');
 
 exports.newsLetterEmail = (campaignData) => {
   const message = {
@@ -193,20 +194,58 @@ exports.ticketCheckin = (userName, eventName, ticketCode, scannedAt) => {
   return message;
 };
 
-exports.notifyAdminWithdrawalEmail = () => {
+exports.adminNewTransferUser = (data) => {
   const message = {
-    subject: 'Contact Us',
-    text: `We received your message! Our team will contact you soon. \n\n`
+    subject: 'New Transfer Recipient Created on The Link Hangouts',
+    html: `Hi Admin a new transfer recipient has been created\n\n
+            company: ${data.companyName}\n
+            name: ${data.bankAccountName}\n
+            account Number: ${data.bankAccountNumber}\n
+            bank: ${data.bankName}\n\n\n
+            You can review the organizer details: <a href="${DASHBOARD_URL.organizer}/${data._id}">here</a>
+          `
   };
 
   return message;
+}
+
+exports.notifyAdminWithdrawalEmail = (data) => {
+  const message = {
+    subject: `A new withdrawal from ${data.organizer.companyName}`,
+    html: `Hi Admin a new withdrawal from ${data.organizer.companyName} has been initiated. \n\n
+            Amount: ${(data.order.totalExpectedPayout).toLocaleString()}\n
+            You can review it <a href="${DASHBOARD_URL.withdrawal}/${data.withdraw._id}">here </a>\n
+          `
+  };
+  return message;
 };
 
-exports.notifyOrganizerWithdrawalSuccessEmail = () => {
+exports.notifyOrganizerWithdrawalSuccessEmail = (data) => {
   const message = {
-    subject: 'Contact Us',
-    text: `We received your message! Our team will contact you soon. \n\n`
-  };
+    subject: 'Withdrawal Successful from The Link Hangouts',
+    html: `
+        <p>Dear ${data.organizer.companyName},</p>
+        <p>We are pleased to inform you that your withdrawal of <strong>$${(data.order.totalExpectedPayout).toLocaleString()}</strong> has been successfully processed.</p>
+        <p>Thank you for your continued trust in us.</p>
+        <p>You can review the full withdrawal details by clicking <a href="${DASHBOARD_URL.withdrawal}/${data.withdrawal._id}">here</a>.</p>
+        <p>Sincerely,</p>
+        <p>The Link Hangouts Team</p>
+    `
+};
+  return message;
+};
 
+exports.notifyOrganizerWithdrawalFailedEmail = () => {
+  const message = {
+    subject: 'Withdrawal Failed from The Link Hangouts',
+    html: `
+        <p>Dear ${data.organizer.companyName},</p>
+        <p>We regret to inform you that your recent withdrawal request for <strong>$${(data.order.totalExpectedPayout).toLocaleString()}</strong> was unsuccessful.</p>
+        <p>Please review the withdrawal details and any associated error messages by clicking <a href="${DASHBOARD_URL.withdrawal}/${data.withdrawal._id}">here</a>. This will help you understand the reason for the failure and take appropriate action.</p>
+        <p>If you require further assistance, please don't hesitate to contact our support team.</p>
+        <p>Sincerely,</p>
+        <p>The Link Hangouts Team</p>
+    `
+};
   return message;
 };

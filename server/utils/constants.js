@@ -9,6 +9,11 @@ exports.EMAIL_PROVIDER = {
   Google: 'Google'
 };
 
+exports.DASHBOARD_URL = {
+  withdrawal: 'https://thelinkhangout.com/dashboard/withdrawal',
+  organizer: 'https://thelinkhangout.com/dashboard/organizer',
+}
+
 exports.EVENT_CATEGORIES = {
   CONCERT: "Concert",
   CONFERENCE: "Conference",

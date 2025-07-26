@@ -230,7 +230,6 @@ const EditEventForm = (props) => {
             size="sm"
             onClick={() => navigate(`/dashboard/tickets/edit/${ticket._id}`)}
           >
-            <CIcon icon={cilPencil} className="sm-2" />
             Edit
           </CButton>
 

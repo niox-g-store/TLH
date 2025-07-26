@@ -28,12 +28,12 @@ const AddEventTicket = ({
   commission
 }) => {
   const navigate = useNavigate();
-  const [showLocationInput, setShowLocationInput] = useState(false);
 
   const submitEventAndTicket = (e) => {
     e.preventDefault();
     addEventTicket(navigate);
   }
+
   const handleAddTicket = (e) => {
     e.preventDefault();
     const baseTicket =
@@ -46,6 +46,7 @@ const AddEventTicket = ({
         discount: false,
         discountPrice: '',
         coupons: '',
+        showLocationInput: false
       };
 
     createEventTicket({ ...baseTicket });
@@ -142,24 +143,27 @@ const RenderDiscountInfo = ({ price, discountPrice, discount }) => {
 
         {/* Ticket Location */}
         <Col className={isLightMode ? 'p-black' : 'p-white'} xs='12' lg='6'>
-          <p className="p-purple">For Undisclosed locations the ticket will contain the location you set here</p>
-          <SelectOption
-            label='Add Ticket Location? (Optional)'
-            options={[
-              { label: 'No', value: false },
-              { label: 'Yes', value: true }
-            ]}
-            value={showLocationInput}
-            handleSelectChange={(value) => setShowLocationInput(value.value)}
+          <p className="p-purple">For Undisclosed locations the ticket will contain the location you set here
+          </p>
+          <Switch
+            id={`add-event-ticket-location-undisclosed-${ticket.id}`}
+            label="Add Ticket Location? (Optional)"
+            checked={ticket.showLocationInput || false}
+            toggleCheckboxChange={() =>
+              handleEditTicket(ticket.id, { showLocationInput: !ticket.showLocationInput })
+            }
           />
-          {showLocationInput && (
+
+          {ticket.showLocationInput && (
             <Input
-              type='text'
-              label='Ticket Location'
-              name='location'
-              placeholder='Enter ticket location'
+              type="text"
+              name="location"
+              placeholder="Enter ticket location"
+              className="mt-2"
               value={ticket.location || ''}
-              onInputChange={(name, value) => handleEditTicket(ticket.id, { [name]: value})}
+              onInputChange={(name, value) =>
+                handleEditTicket(ticket.id, { [name]: value })
+              }
             />
           )}
         </Col>

@@ -116,6 +116,8 @@ const Admin = (props) => {
           *<Route path='newsletter/:id' element={<CampaignView {...props} />} />
 
           {/*<Route path='withdrawals' element={<ManagerNewsletter {...props} />} />*/}
+          {/*<Route path='withdrawals/organizer/:id' element={<ManagerNewsletter {...props} />} />*/}
+          {/*<Route path='withdrawal/:id' element={<ManagerNewsletter {...props} />} />*/}
           
           <Route path='*' element={<Page404 />} />
         </Routes>

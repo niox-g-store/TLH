@@ -40,6 +40,23 @@ const productSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  SizeQuantity: [{
+    size: {
+      type: String
+    },
+    quantity: {
+      type: Number,
+      default: 0
+    }
+  }],
+  colorAndImage: [{
+    color: {
+      type: String,
+    },
+    imageUrl: [{
+      type: String,
+    }]
+  }],
   createdAt: { 
     type: Date, 
     default: Date.now 

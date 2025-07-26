@@ -159,7 +159,7 @@ const CartSchema = new Schema({
   }
 });
 
-async function calculateExpectedRevenue(price) {
+async function calculateExpectedRevenue(price, quantity) {
   const parsedPrice = parseFloat(price) || 0;
 
   const settings = await Setting.findOne();
@@ -167,11 +167,16 @@ async function calculateExpectedRevenue(price) {
 
   const commission = (commissionPercent / 100) * parsedPrice;
 
-  let paystackFee = (1.5 / 100) * parsedPrice + 100;
+  let paystackFee = 0;
+
+  if (parsedPrice > 2500) {
+    paystackFee = (1.5 / 100) * parsedPrice + 100;
+  } else {
+    paystackFee = (1.5 / 100) * parsedPrice
+  }
   if (paystackFee > 2000) paystackFee = 2000;
 
-  const revenue = parsedPrice - commission - paystackFee;
-
+  const revenue = (parsedPrice - commission - paystackFee) * quantity;
   return revenue;
 }
 
@@ -194,7 +199,7 @@ CartSchema.pre('save', async function (next) {
       }
 
       // Pass the effective price for the calculation
-      item.expectedPayout = await calculateExpectedRevenue(itemPrice);
+      item.expectedPayout = await calculateExpectedRevenue(itemPrice, item.quantity);
     }
   }
 

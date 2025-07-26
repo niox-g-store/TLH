@@ -82,6 +82,8 @@ your-project-root/
 │   ├── profile/
 │   ├── gallery/
 │   └── events/
+|   └── newsletter/
+|   └── products/
 └── ...
 
 4. Database Setup
@@ -179,3 +181,39 @@ To remove processes from PM2's list (they will stop if running):
 pm2 delete tlh-server tlh-worker
 
 This README provides a comprehensive guide to getting your Link Hangouts web application up and running. If you encounter any issues, please refer to the PM2 documentation or check your server logs for errors.
+
+
+
+
+
+
+
+
+
+
+
+NEW FEATURES TO BE ADDED IN FUTURE UPDATE
+
+Preminum members available to users only excluding organizers
+- user should contain a new field
+    - hasPremium: Boolean
+    - premiummStatus: Fan, Mega Fan, Ultimate, blah blah blah or just one
+
+- Home page header should contain a premium members field
+    - Onclick should go to normal user sign up, but show subscription type, or just one subscription
+    - user selects subscription, fill in sign up details, fill in card information (handled by paystack)
+    - Card will be saved on user profile (User can manage cards now)
+    - on payment successful, create user account, set them to premium, show them 'You're a premium member on the dashboard'
+
+- Creating events, admin will have the option to set events to only premium members, and what type of premimum members or just all premiumm members
+
+- Creating tickets admin will have the option to create tickets for premium, or selected premium memberships
+
+- Creating coupon admin will have the option to create for selected premium memberships or all premium
+
+- Premium members will be added to a different newsletter, mailing list, where admin can communicate to them
+    - Also different mailing list can be created to communicate to certain premium memberships
+
+- Also they'll be invited to join a whatsapp group, i'll look at how it can be automated, maybe a whatsapp bot that notifies admin whatsapp and show them a button that allows them send a message to the member, to join a whatsapp, group, 
+    - This will be enabled for premium members that add their phone Number
+

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 const { EVENT_STATUS, EVENT_CATEGORIES } = require('../utils/constants');
+const { DateTime } = require('luxon');
 
 const eventSchema = new mongoose.Schema({
   name: {
@@ -89,6 +90,8 @@ eventSchema.pre('save', function(next) {
       strict: true, // remove special characters
     });
   }
+  this.startDate = DateTime.fromISO(this.startDate, { zone: 'Africa/Lagos' }).toUTC().toJSDate();
+  this.endDate = DateTime.fromISO(this.endDate, { zone: 'Africa/Lagos' }).toUTC().toJSDate();
   next();
 });
 

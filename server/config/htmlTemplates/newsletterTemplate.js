@@ -1,6 +1,10 @@
 const API_URL = "thelinkhangout.com/api"
 exports.orgCampaignTemplate = ( title, shouldEmailContainUserName, content, imageUrls, eventId ) => {
   const resolvedRecipientName = shouldEmailContainUserName ? true : '';
+  /* <h1 style="font-size: 24px; color: #333333; margin-bottom: 15px; font-weight: bold;">
+        ${title}
+      </h1>
+  */
 
   const imagesHtml = imageUrls && imageUrls.length > 0
     ? imageUrls.map((url, index) => `
@@ -20,15 +24,14 @@ exports.orgCampaignTemplate = ( title, shouldEmailContainUserName, content, imag
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Newsletter Preview</title>
       <style>
-        /* Basic reset for consistent rendering */
         body {
           margin: 0;
           padding: 0;
           -webkit-text-size-adjust: 100%;
           -ms-text-size-adjust: 100%;
-          background-color: #f4f4f4; /* Set the background for the entire body */
+          background-color: #f4f4f4;
         }
-        div[style*="font-family"] { /* Target the main container */
+        div[style*="font-family"] {
           font-family: sans-serif;
           background-color: #f4f4f4;
           padding: 20px;
@@ -37,7 +40,6 @@ exports.orgCampaignTemplate = ( title, shouldEmailContainUserName, content, imag
           border-radius: 8px;
           box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        /* Styles for the inner white content box */
         div[style*="background-color: #ffffff"] {
           background-color: #ffffff;
           padding: 30px;
@@ -80,16 +82,12 @@ exports.orgCampaignTemplate = ( title, shouldEmailContainUserName, content, imag
       </style>
     </head>
     <body>
-      <div style="font-family: sans-serif; background-color: #f4f4f4; padding: 20px; max-width: 600px; margin: 20px auto; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+      <div style="font-family: sans-serif; background-color: #f4f4f4; padding: 20px 15px; max-width: 600px; margin: 20px auto; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
 
-        <div style="background-color: #ffffff; padding: 30px; border-radius: 8px;">
+        <div style="padding: 30px 0px; border-radius: 8px;">
           <p style="font-size: 16px; color: #333333; margin-bottom: 20px;">
             ${resolvedRecipientName ? 'Hi %recipient.name%' : ''}
           </p>
-
-          <h1 style="font-size: 24px; color: #333333; margin-bottom: 15px; font-weight: bold;">
-            ${title}
-          </h1>
 
           <div
             style="font-size: 16px; line-height: 1.6; color: #555555; margin-bottom: 20px;"
@@ -139,15 +137,14 @@ exports.adminCampaignTemplate = ( title, shouldEmailContainUserName, content, im
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Newsletter Preview</title>
       <style>
-        /* Basic reset for consistent rendering */
         body {
           margin: 0;
           padding: 0;
           -webkit-text-size-adjust: 100%;
           -ms-text-size-adjust: 100%;
-          background-color: #f4f4f4; /* Set the background for the entire body */
+          background-color: #f4f4f4;
         }
-        div[style*="font-family"] { /* Target the main container */
+        div[style*="font-family"]
           font-family: sans-serif;
           background-color: #f4f4f4;
           padding: 20px;
@@ -156,7 +153,6 @@ exports.adminCampaignTemplate = ( title, shouldEmailContainUserName, content, im
           border-radius: 8px;
           box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        /* Styles for the inner white content box */
         div[style*="background-color: #ffffff"] {
           background-color: #ffffff;
           padding: 30px;
@@ -199,23 +195,19 @@ exports.adminCampaignTemplate = ( title, shouldEmailContainUserName, content, im
       </style>
     </head>
     <body>
-      <div style="font-family: sans-serif; background-color: #f4f4f4; padding: 20px; max-width: 600px; margin: 20px auto; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+      <div style="font-family: sans-serif; background-color: #f4f4f4; padding: 20px 15px; max-width: 600px; margin: 20px auto; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
         <div style="text-align: center; margin-bottom: 20px;">
           <img
             src="https://thelinkhangout.com/black_logo.png"
             alt="Logo"
-            style="max-width: 150px; border-radius: 8px;"
+            style="width: 100px; border-radius: 10px;"
           />
         </div>
 
-        <div style="background-color: #ffffff; padding: 30px; border-radius: 8px;">
+        <div style="padding: 30px 0px; border-radius: 8px;">
           <p style="font-size: 16px; color: #333333; margin-bottom: 20px;">
             ${resolvedRecipientName ? 'Hi %recipient.name%' : ''}
           </p>
-
-          <h1 style="font-size: 24px; color: #333333; margin-bottom: 15px; font-weight: bold;">
-            ${title}
-          </h1>
 
           <div
             style="font-size: 16px; line-height: 1.6; color: #555555; margin-bottom: 20px;"

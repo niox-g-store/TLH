@@ -9,6 +9,7 @@ const auth = require('../../middleware/auth');
 const User = require('../../models/user');
 const Organizer = require('../../models/organizer');
 const Newsletter = require('../../models/newsletter');
+const Setting = require('../../models/setting');
 const keys = require('../../config/keys');
 const { EMAIL_PROVIDER, JWT_COOKIE, ROLES } = require('../../utils/constants');
 const { OAuth2Client } = require('google-auth-library');
@@ -167,11 +168,15 @@ router.post('/login', async (req, res) => {
       throw new Error();
     }
 
-    await mailgun.sendEmail(
-      user.email,
-      'signin',
-      user
-    );
+    const setting = await Setting.findOne();
+
+    if (!setting.maintenance) {
+      await mailgun.sendEmail(
+        user.email,
+        'signin',
+        user
+      );
+    }
 
     return res.status(200).json({
       success: true,

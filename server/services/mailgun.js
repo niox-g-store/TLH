@@ -387,7 +387,27 @@ const prepareTemplate = (type, host, data) => {
       message = template.ticketCheckin(data.userName, data.eventName, data.ticketCode, data.scannedAt);
       message.sender = sender
       break;
-      
+
+    case 'admin-new-transfer-user-added':
+      message = template.adminNewTransferUser(data);
+      message.sender = security
+      break;
+
+    case 'admin-organizer-withdraw-notification':
+      message = template.notifyAdminWithdrawalEmail(data);
+      message.sender = security
+      break;
+
+    case 'organizer-withdraw-successful':
+      message = template.notifyOrganizerWithdrawalSuccessEmail(data);
+      message.sender = management
+      break;
+
+    case 'organizer-withdraw-failed':
+      message = template.notifyOrganizerWithdrawalFailedEmail(data);
+      message.sender = management;
+      break;
+
     default:
       message = '';
   }

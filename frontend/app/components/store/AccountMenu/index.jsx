@@ -81,7 +81,7 @@ const AccountMenu = (props) => {
         <IoCloseOutline style={{ zIndex: '900000' }} className={"p-white cursor-pointer d-lg-none"} size={30} onClick={toggleMenu}/>
       </CSidebarHeader>
 
-      <CSidebarNav style={{ scrollbarWidth: 'thin' }} data-aos="fade-up">
+      <CSidebarNav style={{ scrollbarWidth: 'thin', paddingLeft: '1em' }} data-aos="fade-up">
             {links.map((link, index) => {
               const PREFIX = link.prefix ? link.prefix : '';
                 const IconComponent = iconMap[link.icon];

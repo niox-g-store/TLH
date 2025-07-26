@@ -10,6 +10,12 @@ const { ROLES } = require('../../utils/constants');
 const multer = require('multer');
 const crypto = require('crypto');
 const path = require("path");
+const {
+  verifyCustomerBank,
+  listBanks,
+  createTransferRecipient
+} = require('../../utils/paystack');
+const orderQueue = require('../../queues/orderQueue');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -123,10 +129,28 @@ router.get('/me', auth, async (req, res) => {
   }
 });
 
+router.get('/banks', auth, async (req, res) => {
+  try {
+    const banks = await listBanks();
+    console.log(banks)
+    // return res.status(200).json({ banks: [banks] })
+  } catch (error) {
+    return res.status(400).json({
+      error: "Cannot fetch banks from paystack"
+    })
+  }
+})
+
 router.put('/', auth, upload.single('image'), async (req, res) => {
   try {
     const userId = req.user._id;
-    const update = req.body;
+    let update = req.body;
+    const { bankAccountNumber, bankName, bankCode } = req.body;
+
+    if (bankAccountNumber && (!bankName || !bankCode)) {
+      return res.status(400).json({ error: "incomplete bank details, select a bank name" })
+    }
+
     let userDoc;
 
     if (update.userName) {
@@ -145,7 +169,6 @@ router.put('/', auth, upload.single('image'), async (req, res) => {
       }
     }
 
-
     if (req.file) {
       update.imageUrl = `/uploads/profile/${req.file.filename}`;
     }
@@ -153,7 +176,15 @@ router.put('/', auth, upload.single('image'), async (req, res) => {
      update.organizer = null;
     }
 
-    userDoc = await User.findByIdAndUpdate(userId, update, { new: true });
+    if (bankAccountNumber && bankName && bankCode) {
+      const { account_number, account_name  } = await verifyCustomerBank(bankAccountNumber, bankCode);
+      if (account_number && account_name) {
+        update.bankAccountNumber = account_number
+        update.bankName = bankName
+        update.bankAccountName = account_name
+      }
+    }
+    userDoc = await User.findByIdAndUpdate(userId, update, { new: true })
 
     if (userDoc.organizer) {
       const organizerUpdate = {};
@@ -163,8 +194,23 @@ router.put('/', auth, upload.single('image'), async (req, res) => {
       if (update.phoneNumber) {
         organizerUpdate.phoneNumber = update.phoneNumber;
       }
+      if (update.bankAccountNumber, update.bankName, update.bankAccountName) {
+        organizerUpdate.bankAccountNumber = update.bankAccountNumber,
+        organizerUpdate.bankName = update.bankName,
+        organizerUpdate.bankAccountName = update.bankAccountName
+        // create a new transfer recipient, collect id from req.data
+        const { id } = await createTransferRecipient(
+          update.bankAccountName, update.bankAccountNumber, bankCode
+        )
+        organizerUpdate.recipientId = id
+      }
       if (Object.keys(organizerUpdate).length > 0) {
-        await Organizer.findByIdAndUpdate(userDoc.organizer, organizerUpdate, { new: true });
+        const organizer = await Organizer.findByIdAndUpdate(userDoc.organizer, organizerUpdate, { new: true });
+        // send email to admin that a new organizer has been added to their transfer recipient
+        if (update.bankAccountNumber, update.bankName, update.bankAccountName) {
+          const adminEmails = await User.find({ role: ROLES.Admin })
+          await orderQueue.add('send-admin-email', { adminEmails, organizer, newTransferUserAdded: true } )
+        }
       }
     }
 

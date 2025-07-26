@@ -15,6 +15,11 @@ const OrganizerSchema = new mongoose.Schema({
   phoneNumber: {
     type: String
   },
+  bankAccountNumber: { type: Number },
+  bankName: { type: String },
+  bankAccountName: { type: String },
+  recipientId: { type: String },
+
   event: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Event',

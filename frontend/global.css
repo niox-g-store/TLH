@@ -151,6 +151,11 @@ select {
   border-radius: 8px;
   color: black;
 }
+input[type='datetime-local'] {
+  padding: 13px 10px;
+  border-radius: 10px;
+  color: black !important;
+}
 
 input[type="date"] {
   font-family: inherit;

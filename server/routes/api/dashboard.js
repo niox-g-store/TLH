@@ -618,6 +618,12 @@ async function getAnalytics({ startDate, endDate, date, include }, req) {
         for (const item of ord?.cart?.tickets || []) {
           if (!eventIds.has(item.eventId?.toString())) continue;
 
+          /**
+           * if admin sells a ticket of 50,000 lets show them 50,000 here but if they go to
+           * withdrawal section, the withdrawal amount would be calculated differently
+           * by removing paystack expected fee from the actual amount
+           * for organizer the expectedPayout has been handled by the cart
+           */
           if (isAdmin) {
             const summary = getCartPriceSummary(item);
             const paid = Number(summary.total.replace(/,/g, '')) * (item.quantity || 1);

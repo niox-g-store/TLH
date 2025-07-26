@@ -9,6 +9,16 @@ orderQueue.process('check-in', async (job, done) => {
     done();
 });
 
+orderQueue.process('send-admin-email', async (job, done) => {
+  const { adminEmails, organizer, newTransferUserAdded, order, withdraw } = job.data
+  if (newTransferUserAdded) {
+    await newTransferUser(adminEmails, organizer);
+  } else {
+    await adminOrgWithdrawal(adminEmails, organizer, order, withdraw)
+  }
+  done();
+})
+
 orderQueue.process('new-order', async (job, done) => {
     const { qrAssigner, newOrder, adminEmails, organizerEmailsAndData, isProductOrder } = job.data;
     
@@ -80,6 +90,18 @@ const queueSendEmailToOrganizer = async(organizerEmailsAndData) => {
     for (const i of organizerEmailsAndData) {
         await mailgun.sendEmail(i.email, 'organizer-order-confirmation', i.newOrder);
     }
+}
+
+const newTransferUser = async (adminEmails, organizer) => {
+  for (const i of adminEmails) {
+    await mailgun.sendEmail(i.email, 'admin-new-transfer-user-added', organizer)
+  }
+}
+
+const adminOrgWithdrawal = async (adminEmails, organizer, order) => {
+  for (const i of adminEmails) {
+    await mailgun.sendEmail(i.email, 'admin-organizer-withdraw-notification', { organizer, order, withdraw })
+  }
 }
 
 console.log(chalk.green.bold('[✔] Order Worker is active and listening for jobs...'));

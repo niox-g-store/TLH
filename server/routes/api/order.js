@@ -8,6 +8,7 @@ const Event = require('../../models/event');
 const Ticket = require('../../models/ticket');
 const User = require('../../models/user');
 const Organizer = require('../../models/organizer');
+const Withdrawal = require('../../models/withdrawal');
 const Guest = require('../../models/guest');
 const QRCODE = require('../../models/qrCode');
 const Product = require('../../models/product');
@@ -203,6 +204,7 @@ router.post('/add', async (req, res) => {
       cart,
       user,
       guest,
+      //events: [...new Set(events.map(id => mongoose.Types.ObjectId(id)))],
       events,
       phoneNumber: phoneNumber || null,
       address: address || null,
@@ -282,7 +284,10 @@ router.put('/edit/order/', async (req, res) => {
     }
   
     const cartDoc = await Cart.findById(updateOrder.cart)
-      .populate('tickets.eventId')
+      .populate({
+        path: 'tickets.eventId',
+        populate: { path: 'user' }
+      })
       .populate('tickets.ticketId')
       .populate('products')
     if (status) {
@@ -395,6 +400,12 @@ router.put('/edit/order/', async (req, res) => {
 
       // Decrease ticket quantities
       if (hasTickets) {
+        // create withdraw object here
+        // free orders are not eligible for withdrawals
+        if (!id) {
+          // create a withdrawal
+          await createWithdrawal(cartDoc, updateOrder);
+        }
         await decreaseQuantity(cartDoc.tickets.filter(item => item.type !== 'product'));
       }
 
@@ -418,11 +429,11 @@ router.put('/edit/order/', async (req, res) => {
         });
       }
     } catch (error) {
+      console.log(error)
       return res.status(400).json({
         error: 'Your request could not be processed. Please try again.'
       });
     }
-  
 })
 
 // fetch order api
@@ -683,7 +694,8 @@ router.get(
           }
         })
         .populate('guest')
-        .sort('-createdAt');
+        .sort('-createdAt');const createdWithdrawals = [];
+
 
       return res.status(200).json({
         status: 200,
@@ -781,5 +793,101 @@ const increaseProductQuantity = async (products) => {
   }));
   return Product.bulkWrite(bulkOptions);
 };
+
+const createWithdrawal = async (cartDoc, updateOrder) => {
+  // const createdWithdrawals = [];
+
+  const ticketsInCart = cartDoc.tickets || [];
+  const eventTicketMap = new Map();
+
+  // Group tickets by eventId
+  for (const ticket of ticketsInCart) {
+    const eventIdStr = ticket.eventId._id.toString();
+    if (!eventTicketMap.has(eventIdStr)) {
+      eventTicketMap.set(eventIdStr, []);
+    }
+    eventTicketMap.get(eventIdStr).push(ticket);
+  }
+
+  for (const [eventIdStr, tickets] of eventTicketMap.entries()) {
+    const event = await Event.findById(eventIdStr).populate('user');
+    const owner = event.user;
+    if (!owner) continue;
+
+    for (const ticket of tickets) {
+      const quantity = ticket.quantity || 1;
+      const expected = ticket.expectedPayout || 0;
+
+      let itemPrice;
+      itemPrice = ticket.discount && ticket.discountPrice ? ticket.discountPrice : ticket.price;
+      if (ticket?.coupon) { // here we have a coupon ticket applied
+        if (ticket.couponPercentage > 0) { // percentage coupon
+          itemPrice -= ticket.couponDiscount
+        } else if (ticket.couponAmount > 0) {  // fixed coupon
+          itemPrice -= ticket.couponAmount // here coupon amount is negative
+        }
+      }
+      const amount = owner.role === ROLES.Organizer ?
+        expected
+        :
+        reverseExpectedPayout(itemPrice, expected, ticket.quantity);
+
+      let adminCommission = 0
+      if (owner.role === ROLES.Organizer) {
+        adminCommission = reverseExpectedPayout(itemPrice, expected, ticket.quantity, true)
+      }
+
+      const withdrawal = new Withdrawal({
+        user: owner._id,
+        event: event._id,
+        ticket: ticket.ticketId,
+        ticketQuantity: quantity,
+        order: updateOrder._id,
+        amount,
+        commission: adminCommission,
+        bankAccountNumber: owner.bankAccountNumber,
+        bankAccountName: owner.bankAccountName,
+        bankName: owner.bankName,
+      });
+
+      await withdrawal.save();
+      // createdWithdrawals.push(withdrawal);
+    }
+  }
+}
+
+const reverseExpectedPayout = (
+  price, expectedPayout,
+  quantity, isCalculatingCommission = false,
+) => {
+  let parsedPrice = parseFloat(price) || 0;
+  const parsedExpected = parseFloat(expectedPayout) || 0;
+  if (!isCalculatingCommission) {
+    parsedPrice = parsedPrice * quantity
+  }
+
+  // Calculate Paystack fee
+  let paystackFee = 0
+  if (parsedPrice > 2500) {
+    paystackFee = (1.5 / 100) * parsedPrice + 100;
+  } else {
+    paystackFee = (1.5 / 100) * parsedPrice;
+  }
+  if (paystackFee > 2000) paystackFee = 2000;
+  if (isCalculatingCommission) {
+    paystackFee *= quantity
+  }
+
+  let adminEarning = 0;
+  if (isCalculatingCommission) {
+  // get commission price from expectedPayout
+    adminEarning = (parsedPrice * quantity) - parsedExpected - paystackFee
+  } else {
+    adminEarning = parsedPrice - paystackFee
+  }
+
+  return adminEarning;
+}
+
 
 module.exports = router;
