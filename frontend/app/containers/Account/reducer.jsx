@@ -64,7 +64,6 @@ const initialState = {
   },
   formErrors: {},
 
-  banks: [],
   bankFormError: {},
   bankFormData: {
     bankName: '',
