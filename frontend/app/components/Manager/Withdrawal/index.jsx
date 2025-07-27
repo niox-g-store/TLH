@@ -67,7 +67,7 @@ const ManagerWithdrawForm = (props) => {
           <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white`}>
             <CCardBody>
               <CCardTitle>Total earnings</CCardTitle>
-              <ChartDoughnutAndPie isLightMode={isLightMode} earnings={earnings} />
+              {earnings > 0 && <ChartDoughnutAndPie isLightMode={isLightMode} earnings={earnings} />}
               <p>₦{(earnings).toLocaleString()}</p>
             </CCardBody>
           </CCard>
@@ -77,7 +77,7 @@ const ManagerWithdrawForm = (props) => {
           <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white`}>
             <CCardBody>
               <CCardTitle>Can withdraw</CCardTitle>
-              <ChartDoughnutAndPie isLightMode={isLightMode} commission={earnings - withdrawnAmount} />
+              {(earnings - withdrawnAmount > 0) && <ChartDoughnutAndPie isLightMode={isLightMode} commission={earnings - withdrawnAmount} />}
               <p>₦{(earnings - withdrawnAmount).toLocaleString()}</p>
             </CCardBody>
           </CCard>
@@ -87,7 +87,7 @@ const ManagerWithdrawForm = (props) => {
           <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white`}>
             <CCardBody>
               <CCardTitle>Total withdrawn</CCardTitle>
-              <ChartDoughnutAndPie isLightMode={isLightMode} withdrawals={withdrawnAmount} />
+              {withdrawnAmount > 0 && <ChartDoughnutAndPie isLightMode={isLightMode} withdrawals={withdrawnAmount} />}
               <p>₦{(withdrawnAmount).toLocaleString()}</p>
             </CCardBody>
           </CCard>
