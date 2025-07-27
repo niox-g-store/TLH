@@ -11,7 +11,7 @@ const ChartDoughnutAndPie = (props) => {
   const { earnings = 0, withdrawals, commission = 0, isLightMode } = props;
   let val = earnings ? earnings : withdrawals ? withdrawals : commission
 
-  const cappedVal = Math.min(val, 1000)
+  const cappedVal = Math.min(val, 100000)
   const degrees = 180 + (cappedVal / 1000) * 180
 
   const circumference = (degrees * Math.PI) / 180

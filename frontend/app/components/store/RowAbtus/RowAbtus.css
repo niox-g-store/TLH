@@ -46,6 +46,9 @@
 }
 
 @media (max-width: 768px) {
+  .row-wrapper-about-us-text {
+    width: 100%;
+  }
   .row-wrapper-about-us {
     padding: 1.74rem 0;
     flex-direction: column;

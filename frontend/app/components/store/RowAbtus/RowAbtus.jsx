@@ -14,7 +14,7 @@ const RowAbtus = () => {
                 <strong className="p-black">About Us</strong>
               </p>
               <h2 data-aos="fade-up p-white" data-aos-delay="300">
-                We provide services like:
+                We provide services like
               </h2>
             </div>
             <div

@@ -19,7 +19,7 @@ const Benefits = () => {
                 Stress Free Events, Happy Attendees, Real Results
               </h2>
               <p className="p-content p-all-features p-white" data-aos="fade-up">
-                We don’t just give you tools, we help you save time, sell more, and keep your audience coming back. Here’s what makes The Link Hangouts the smarter choice for creators like you:
+                We don’t just give you tools, we help you save time, sell more, and keep your audience coming back. Here’s what makes The Link Hangouts the smarter choice for creators like you
               </p>
               <ul>
                 <li data-aos="fade-right">Privacy & ticket security</li>
