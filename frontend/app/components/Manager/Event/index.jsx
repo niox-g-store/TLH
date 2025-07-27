@@ -52,9 +52,9 @@ const ManagerEventHelper = (props) => {
   const {
     isLightMode,
     user,
-    events = [],
-    fetchEvents
+    events = []
   } = props;
+
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');

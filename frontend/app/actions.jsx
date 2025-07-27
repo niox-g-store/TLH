@@ -24,6 +24,8 @@ import * as product from '../app/containers/Product/actions';
 import * as setting from '../app/containers/Setting/actions';
 import * as newsletter from '../app/containers/Newsletter/actions';
 import * as newsletterUnsubscribe from '../app/containers/Unsubscribe/action';
+import * as withdraw from '../app/containers/Withdrawal/actions';
+
 export default function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
@@ -51,6 +53,7 @@ export default function mapDispatchToProps (dispatch) {
       ...setting,
       ...newsletter,
       ...newsletterUnsubscribe,
+      ...withdraw,
     },
     dispatch
   );

@@ -22,6 +22,7 @@ import product from './containers/Product/reducer';
 import setting from './containers/Setting/reducer';
 import newsletter from './containers/Newsletter/reducer';
 import newsletterUnsubscribe from './containers/Unsubscribe/reducer';
+import withdraw from './containers/Withdrawal/reducer';
 
 const rootReducer = combineReducers({
   account,
@@ -47,5 +48,6 @@ const rootReducer = combineReducers({
   setting,
   newsletter,
   newsletterUnsubscribe,
+  withdraw,
 });
 export default rootReducer;

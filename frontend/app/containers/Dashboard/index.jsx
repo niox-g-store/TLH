@@ -54,7 +54,9 @@ class Dashboard extends React.PureComponent {
       accountEditFormErrors,
       isRangeSelection, startDate, endDate, singleDate, filterTarget,
       filterSystemOpen, toggleFilterSystem, isDashboardLoading,
-      dashboardAnalytics, addUserBank, banks, bankFormError
+      dashboardAnalytics, addUserBank, banks, bankFormError,
+
+      initialiseWithdrawal, fetchWithdrawals,
     } = this.props;
     if (isDisabledOrganizerAccount(user)) {
       return (

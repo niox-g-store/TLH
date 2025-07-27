@@ -3,9 +3,6 @@
  * Admin
  *
  */
-
-import React from 'react';
-
 import { Routes, Route } from 'react-router-dom';
 import AdminDashboard from './Dashboard';
 import HeaderPanel from '../../components/Manager/Header';
@@ -57,6 +54,8 @@ import Setting from '../../components/Manager/Setting';
 
 import AddNewsletter from '../../components/Manager/Newsletter/Add';
 import CampaignView from '../../components/Manager/Newsletter/View';
+
+import ManagerWithdraw from '../../components/Manager/Withdrawal';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@coreui/coreui/dist/css/coreui.min.css';
@@ -113,9 +112,9 @@ const Admin = (props) => {
           <Route path='products/edit/:id' element={<EditProduct {...props} />} />
 
           <Route path='newsletter/add' element={<AddNewsletter {...props} />} />
-          *<Route path='newsletter/:id' element={<CampaignView {...props} />} />
+          <Route path='newsletter/:id' element={<CampaignView {...props} />} />
 
-          {/*<Route path='withdrawals' element={<ManagerNewsletter {...props} />} />*/}
+          <Route path='withdrawals' element={<ManagerWithdraw {...props} />} />
           {/*<Route path='withdrawals/organizer/:id' element={<ManagerNewsletter {...props} />} />*/}
           {/*<Route path='withdrawal/:id' element={<ManagerNewsletter {...props} />} />*/}
           

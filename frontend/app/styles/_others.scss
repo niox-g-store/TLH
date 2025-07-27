@@ -159,3 +159,14 @@
     width: fit-content;
   }
 }
+
+.withdrawal {
+
+  .col {
+    @include media-breakpoint-down(md) {
+        width: 50%;
+      }
+    .chart-wrapper {
+    }
+  }
+}

@@ -3,11 +3,18 @@ import {
   WITHDRAWALS,
   SET_EARNINGS,
   SET_WITHDRAWN_AMOUNT,
-  SET_WITHDRAWAL_LOADING
+  SET_WITHDRAWAL_LOADING,
+  SET_WITHDRAWAL_COMMISSION,
+  RESET_WITHDRAWAL,
+  SET_WITHDRAWAL_PAGINITION
 } from './constants';
 import { API_URL } from '../../constants';
 import { showNotification } from '../Notification/actions';
 import handleError from '../../utils/error';
+
+export const resetWithdrawal = () => ({
+  type: RESET_WITHDRAWAL
+})
 
 export const initialiseWithdrawal = (withdrawalId, orderId, navigate, organizerId = null) => async (dispatch) => {
   dispatch({ type: SET_WITHDRAWAL_LOADING, payload: true });
@@ -47,6 +54,14 @@ export const fetchWithdrawals = (organizer = false, page = 1) => async (dispatch
         type: WITHDRAWALS,
         payload: withdrawals
       });
+      dispatch({
+        type: SET_WITHDRAWAL_PAGINITION,
+        payload: {
+          pageCount: data.pageCount,
+          page: data.page,
+          withdrawals: data.withdrawals
+        }
+      })
 
       if (organizer) {
         let earnings = 0;

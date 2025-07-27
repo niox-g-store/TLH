@@ -196,26 +196,39 @@ exports.ticketCheckin = (userName, eventName, ticketCode, scannedAt) => {
 
 exports.adminNewTransferUser = (data) => {
   const message = {
-    subject: 'New Transfer Recipient Created on The Link Hangouts',
-    html: `Hi Admin a new transfer recipient has been created\n\n
-            company: ${data.companyName}\n
-            name: ${data.bankAccountName}\n
-            account Number: ${data.bankAccountNumber}\n
-            bank: ${data.bankName}\n\n\n
-            You can review the organizer details: <a href="${DASHBOARD_URL.organizer}/${data._id}">here</a>
-          `
+    subject: `New Transfer Recipient Created: ${data.companyName}`,
+    html: `
+      <p>Dear Administrator,</p>
+      <p>A new transfer recipient has been successfully created on The Link Hangouts platform.</p>
+      <p><strong>Recipient Details:</strong></p>
+      <ul>
+        <li><strong>Company:</strong> ${data.companyName}</li>
+        <li><strong>Account Name:</strong> ${data.bankAccountName}</li>
+        <li><strong>Account Number:</strong> ${data.bankAccountNumber}</li>
+        <li><strong>Bank:</strong> ${data.bankName}</li>
+      </ul>
+      <p>You can review the associated organizer's details and manage this recipient by clicking the link below:</p>
+      <p><a href="${DASHBOARD_URL.organizer}/${data._id}" style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #ffffff; background-color: #9172EC; border-radius: 5px; text-decoration: none;">View Organizer Profile</a></p>
+      <p>Thank you</p>
+    `
   };
-
   return message;
 }
 
 exports.notifyAdminWithdrawalEmail = (data) => {
   const message = {
-    subject: `A new withdrawal from ${data.organizer.companyName}`,
-    html: `Hi Admin a new withdrawal from ${data.organizer.companyName} has been initiated. \n\n
-            Amount: ${(data.order.totalExpectedPayout).toLocaleString()}\n
-            You can review it <a href="${DASHBOARD_URL.withdrawal}/${data.withdraw._id}">here </a>\n
-          `
+    subject: `New Withdrawal Request from ${data.organizer.companyName}`,
+    html: `
+      <p>Dear Administrator,</p>
+      <p>A new withdrawal request has been initiated by <strong>${data.organizer.companyName}</strong>.</p>
+      <p><strong>Withdrawal Details:</strong></p>
+      <ul>
+        <li><strong>Amount:</strong> ${data.order.totalExpectedPayout.toLocaleString()}</li>
+      </ul>
+      <p>You can review and process this request by clicking the link below:</p>
+      <p><a href="${DASHBOARD_URL.withdrawal}/${data.withdraw._id}" style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #ffffff; background-color: #9172EC; border-radius: 5px; text-decoration: none;">Review Withdrawal Request</a></p>
+      <p>Thank you</p>
+    `
   };
   return message;
 };
