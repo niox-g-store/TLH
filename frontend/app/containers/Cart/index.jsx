@@ -115,6 +115,12 @@ const CartViewer = (props) => {
                     <div className="item-details">
                       <h4>{item.eventName || item.productName}</h4>
                       <p className="ticket-type">{item.ticketType || 'Product'}</p>
+                      {item.selectedSize && (
+                        <p className="product-size">Size: {item.selectedSize}</p>
+                      )}
+                      {item.selectedColor && (
+                        <p className="product-color">Color: {item.selectedColor}</p>
+                      )}
                       <p className="ticket-price">
                         {item.type === 'product' ? (
                           item.discount ? (

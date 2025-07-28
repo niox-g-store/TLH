@@ -30,7 +30,8 @@ import {
 
   PRODUCT_IMAGE_REMOVE,
   SET_DELIVERY_INFO,
-  SET_NEEDS_DELIVERY
+  SET_NEEDS_DELIVERY,
+  PRODUCT_COLOR_IMAGE_REMOVE
 } from './constants';
 import { vewingEventToggler } from '../Events/actions';
 
@@ -99,6 +100,13 @@ export const productImageToRemove = (v) => {
   }
 }
 
+export const productColorAndImageToRemove = (v) => {
+  return {
+    type: PRODUCT_COLOR_IMAGE_REMOVE,
+    payload: v
+  }
+}
+
 export const filterProducts = (filterType, value) => {
   return async (dispatch, getState) => {
     try {
@@ -150,7 +158,7 @@ export const fetchStoreProduct = (slug) => {
 
       // get user from state so a logged in user stays auto filled
       const name = user?.organizer ? user?.organizer?.companyName : user?.name
-      const phoneNumber = user?.phoneNumber.length > 0 ? user.phoneNumber : ''
+      const phoneNumber = user?.phoneNumber?.length > 0 ? user?.phoneNumber : ''
       dispatch({
         type: SET_DELIVERY_INFO,
         payload: {
@@ -255,6 +263,7 @@ export const addProduct = (navigate) => {
       };
 
       const product = getState().product.productFormData;
+      console.log(product)
       
       const newProduct = {
         name: product.name,
@@ -264,7 +273,9 @@ export const addProduct = (navigate) => {
         quantity: product.quantity,
         sku: product.sku,
         image: product.image,
-        isActive: product.isActive
+        isActive: product.isActive,
+        sizeQuantity: JSON.stringify(product.sizeQuantity || []),
+        colorAndImage: JSON.stringify(product.colorAndImage || [])
       };
 
       const { isValid, errors } = allFieldsValidation(newProduct, rules, {
@@ -295,6 +306,17 @@ export const addProduct = (navigate) => {
         }
       }
 
+      // Append images (ensure the order matches colorAndImage array)
+      if (Array.isArray(product.colorAndImage)) {
+        product.colorAndImage.forEach(entry => {
+          if (Array.isArray(entry.imageUrl)) {
+            entry.imageUrl.forEach(file => {
+              formData.append('images', file);
+            });
+          }
+        });
+      }
+
       const response = await axios.post(`${API_URL}/product/add`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
@@ -319,8 +341,13 @@ export const addProduct = (navigate) => {
 // Admin: Update product
 export const updateProduct = (navigate) => {
   return async (dispatch, getState) => {
-    dispatch(setProductLoading(true));
+    dispatch({ type: SET_PRODUCTS_LOADING, payload: true });
+
     try {
+      const product = getState().product.product;
+      const removeImage = getState().product.imageToRemove || [];
+      const colorAndImageToRemove = getState().product.colorAndImageToRemove || [];
+
       const rules = {
         name: 'required',
         description: 'required|max:5000',
@@ -328,21 +355,20 @@ export const updateProduct = (navigate) => {
         price: 'required|numeric'
       };
 
-      const product = getState().product.product;
-      const removeImage = getState().product.imageToRemove || [];
-      
-      const updatedProduct = {
+      const payload = {
         name: product.name,
         description: product.description,
         price: product.price,
         discountPrice: product.discountPrice || 0,
         quantity: product.quantity,
         sku: product.sku,
-        image: product.image || [],
         isActive: product.isActive,
+        image: product.image || [],
+        sizeQuantity: JSON.stringify(product.SizeQuantity || []),
+        colorAndImage: JSON.stringify(product.colorAndImage || [])
       };
 
-      const { isValid, errors } = allFieldsValidation(updatedProduct, rules, {
+      const { isValid, errors } = allFieldsValidation(payload, rules, {
         'required.name': 'Name is required.',
         'required.description': 'Description is required.',
         'max.description': 'Description may not be greater than 5000 characters.',
@@ -353,38 +379,58 @@ export const updateProduct = (navigate) => {
       });
 
       if (!isValid) {
-        return dispatch({ type: SET_PRODUCT_FORM_EDIT_ERRORS, payload: errors });
+        return dispatch({
+          type: SET_PRODUCT_FORM_EDIT_ERRORS,
+          payload: errors
+        });
       }
 
+      // Construct FormData
       const formData = new FormData();
-      for (const key in updatedProduct) {
-        if (updatedProduct.hasOwnProperty(key)) {
+      for (const key in payload) {
+        if (payload.hasOwnProperty(key)) {
           if (key === 'image') {
-            for (const file of updatedProduct.image) {
+            for (const file of payload.image) {
               formData.append('images', file);
             }
           } else {
-            formData.set(key, updatedProduct[key]);
+            formData.set(key, payload[key]);
           }
         }
       }
       removeImage.forEach((str) => {
         formData.append('removeImage', str);
       });
+      formData.append('colorAndImageToRemove', JSON.stringify(colorAndImageToRemove));
 
-      const response = await axios.put(`${API_URL}/product/${product._id}`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      // Append images (ensure the order matches colorAndImage array)
+      if (Array.isArray(product.colorAndImage)) {
+        product.colorAndImage.forEach(entry => {
+          if (Array.isArray(entry.imageUrl)) {
+            entry.imageUrl.forEach(file => {
+              formData.append('images', file);
+            });
+          }
+        });
+      }
+
+      const response = await axios.put(
+        `${API_URL}/product/${product._id}`,
+        formData,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        }
+      );
 
       if (response.data.success === true) {
         dispatch(showNotification('success', response.data.message));
-        dispatch(resetProduct());
+        dispatch({ type: RESET_PRODUCT });
         navigate(-1);
       }
     } catch (error) {
       handleError(error, dispatch, 'Error updating product, try again!');
     } finally {
-      dispatch(setProductLoading(false));
+      dispatch({ type: SET_PRODUCTS_LOADING, payload: false });
     }
   };
 };

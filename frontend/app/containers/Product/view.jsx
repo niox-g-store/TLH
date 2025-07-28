@@ -11,7 +11,82 @@ import Switch from '../../components/store/Switch';
 import Input from '../../components/Common/HtmlTags/Input';
 import FadeSlider from '../../components/store/FadeSliderTwo';
 import Cart from '../Cart';
+import SocialShare from '../../components/store/SocialShare';
 
+const SizeSelector = ({ sizes, selectedSize, onSizeChange }) => {
+  if (!sizes || sizes.length === 0) return null;
+
+  return (
+    <div className="size-selector" style={{ marginBottom: '1em' }}>
+      <label style={{ display: 'block', marginBottom: '0.5em', fontWeight: 'bold' }}>
+        Size:
+      </label>
+      <div style={{ display: 'flex', gap: '0.5em', flexWrap: 'wrap' }}>
+        {sizes.map((sizeItem, index) => (
+          <button
+            key={index}
+            onClick={() => onSizeChange(sizeItem.size)}
+            disabled={sizeItem.quantity <= 0}
+            style={{
+              padding: '0.5em 1em',
+              border: selectedSize === sizeItem.size ? '2px solid #9172EC' : '1px solid #ddd',
+              backgroundColor: selectedSize === sizeItem.size ? '#9172EC' : 'white',
+              color: selectedSize === sizeItem.size ? 'white' : 'black',
+              borderRadius: '4px',
+              cursor: sizeItem.quantity > 0 ? 'pointer' : 'not-allowed',
+              opacity: sizeItem.quantity > 0 ? 1 : 0.5
+            }}
+          >
+            {sizeItem.size} ({sizeItem.quantity})
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const ColorSelector = ({ colors, selectedColor, onColorChange }) => {
+  if (!colors || colors.length === 0) return null;
+
+  return (
+    <div className="color-selector" style={{ marginBottom: '1em' }}>
+      <label style={{ display: 'block', marginBottom: '0.5em', fontWeight: 'bold' }}>
+        Color:
+      </label>
+      <div style={{ display: 'flex', gap: '0.5em', flexWrap: 'wrap' }}>
+        <button
+          onClick={() => onColorChange(null)}
+          style={{
+            padding: '0.5em 1em',
+            border: selectedColor === null ? '2px solid #9172EC' : '1px solid #ddd',
+            backgroundColor: selectedColor === null ? '#9172EC' : 'white',
+            color: selectedColor === null ? 'white' : 'black',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
+        >
+          Default
+        </button>
+        {colors.map((colorItem, index) => (
+          <button
+            key={index}
+            onClick={() => onColorChange(colorItem.color)}
+            style={{
+              padding: '0.5em 1em',
+              border: selectedColor === colorItem.color ? '2px solid #9172EC' : '1px solid #ddd',
+              backgroundColor: selectedColor === colorItem.color ? '#9172EC' : 'white',
+              color: selectedColor === colorItem.color ? 'white' : 'black',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            {colorItem.color}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
 const ProductViewer = (props) => {
   const {
     product = {},
@@ -24,10 +99,34 @@ const ProductViewer = (props) => {
     deliveryInfo,
     setDeliveryInfo,
     needsDelivery,
-    setNeedsDelivery
+    setNeedsDelivery,
   } = props;
   
   const [quantity, setQuantity] = useState(1);
+  const [selectedSize, setSelectedSize] = useState('Medium');
+  const [selectedColor, setSelectedColor] = useState(null);
+
+  // Get available sizes and colors
+  const availableSizes = product.SizeQuantity || [];
+  const availableColors = product.colorAndImage || [];
+
+  // Get current size availability
+  const currentSizeItem = availableSizes.find(s => s.size === selectedSize) ||
+                          availableSizes.find(s => s.size === 'Medium') ||
+                          availableSizes[0];
+  
+  const maxQuantityForSize = currentSizeItem ? currentSizeItem.quantity : product.quantity;
+
+  // Get images to display based on selected color
+  const getDisplayImages = () => {
+    if (selectedColor) {
+      const colorItem = availableColors.find(c => c.color === selectedColor);
+      if (colorItem && colorItem.imageUrl && colorItem.imageUrl.length > 0) {
+        return colorItem.imageUrl;
+      }
+    }
+    return product.imageUrls || [];
+  };
   /*const [deliveryInfo, setDeliveryInfo] = useState({
     name: authenticated ? name : '',
     email: authenticated ? user.email : '',
@@ -73,6 +172,18 @@ const ProductViewer = (props) => {
     }
   };
 
+  const handleSizeChange = (size) => {
+    setSelectedSize(size);
+    // Reset quantity if it exceeds the new size's availability
+    const sizeItem = availableSizes.find(s => s.size === size);
+    if (sizeItem && quantity > sizeItem.quantity) {
+      setQuantity(Math.min(quantity, sizeItem.quantity));
+    }
+  };
+
+  const handleColorChange = (color) => {
+    setSelectedColor(color);
+  };
 const handleDeliveryInfoChange = (name, value) => {
   const updatedInfo = JSON.parse(JSON.stringify(deliveryInfo));
 
@@ -110,7 +221,9 @@ const handleDeliveryInfoChange = (name, value) => {
       productQuantity: product.quantity,
       needsDelivery,
       deliveryInfo: needsDelivery ? deliveryInfo : null,
-      type: 'product'
+      type: 'product',
+      selectedSize: availableSizes.length > 0 ? selectedSize : null,
+      selectedColor: selectedColor
     };
 
     addProductToCart(cartItem);
@@ -144,9 +257,9 @@ const handleDeliveryInfoChange = (name, value) => {
             autoplay={true}
             autoplaySpeed={2000}
             arrows={false}
-            fade={product?.imageUrls?.length > 1 ? false : true}
+            fade={getDisplayImages()?.length > 1 ? false : true}
           >
-            {product?.imageUrls?.map((item, index) => {
+            {getDisplayImages()?.map((item, index) => {
               return (
                 <img 
                   key={index}
@@ -198,8 +311,29 @@ const handleDeliveryInfoChange = (name, value) => {
 
             <div className="product-details-info">
               <p><strong>SKU:</strong> {product.sku}</p>
-              <p><strong>Availability:</strong> {product.quantity > 0 ? `${product.quantity} in stock` : 'Out of stock'}</p>
+              <p><strong></strong> {maxQuantityForSize > 0 ? `${maxQuantityForSize} in stock` : 'Out of stock'}</p>
+              {availableSizes.length > 0 && (
+                <p><strong>Size Chart Available:</strong> Yes ({availableSizes.length} sizes)</p>
+              )}
+              {availableColors.length > 0 && (
+                <p><strong>Colors Available:</strong> {availableColors.length} colors</p>
+              )}
             </div>
+
+            {/* Size Selector */}
+            <SizeSelector
+              sizes={availableSizes}
+              selectedSize={selectedSize}
+              onSizeChange={handleSizeChange}
+            />
+
+            {/* Color Selector */}
+            <ColorSelector
+              colors={availableColors}
+              selectedColor={selectedColor}
+              onColorChange={handleColorChange}
+            />
+            <SocialShare item={product} />
 
             <div className="quantity-selector">
               <label>Quantity:</label>
@@ -213,7 +347,7 @@ const handleDeliveryInfoChange = (name, value) => {
                 <span>{quantity}</span>
                 <button 
                   onClick={() => handleQuantityChange(1)}
-                  disabled={quantity >= product.quantity || selectedProducts.includes(product._id)}
+                  disabled={quantity >= maxQuantityForSize || selectedProducts.includes(product._id)}
                 >
                   +
                 </button>
@@ -332,8 +466,8 @@ const handleDeliveryInfoChange = (name, value) => {
             <div className="product-actions">
               {!selectedProducts.includes(product._id) ?
                 <Button 
-                  text={product.quantity > 0 ? "Add to Cart" : "Out of Stock"}
-                  disabled={product.quantity <= 0 || !isFormValid()}
+                  text={maxQuantityForSize > 0 ? "Add to Cart" : "Out of Stock"}
+                  disabled={maxQuantityForSize <= 0 || !isFormValid()}
                   onClick={handleAddToCart}
                   style={{ padding: '15px 30px', fontSize: '16px' }}
                 />

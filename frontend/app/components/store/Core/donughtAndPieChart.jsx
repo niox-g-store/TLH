@@ -1,15 +1,11 @@
 import React, { useEffect, useRef } from 'react'
 import { getStyle } from '@coreui/utils'
 import { CChart } from '@coreui/react-chartjs'
-import ChartDataLabels from 'chartjs-plugin-datalabels'
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
-
-ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels)
 
 const ChartDoughnutAndPie = (props) => {
   const chartRef = useRef(null)
-  const { earnings = 0, withdrawals, commission = 0, isLightMode } = props;
-  let val = earnings ? earnings : withdrawals ? withdrawals : commission
+  const { earnings = 0, withdrawals, canWithdraw = 0, isLightMode } = props;
+  let val = earnings ? earnings : withdrawals ? withdrawals : canWithdraw
 
   const cappedVal = Math.min(val, 100000)
   const degrees = 180 + (cappedVal / 1000) * 180
@@ -32,15 +28,12 @@ const ChartDoughnutAndPie = (props) => {
   }, [])
 
   const data = {
+    labels: ['Earnings', 'Can Withdraw', 'Withdrawals',],
     datasets: [
       {
-        backgroundColor: [
-          isLightMode ? '#000000' : '#ffffff',
-          withdrawals !== undefined ? '#9172EC' : (isLightMode ? '#000000' : '#ffffff'),
-          isLightMode ? '#000000' : '#ffffff',
-        ],
-        borderColor: isLightMode ? '#000' : '#fff',
-        data: [earnings, withdrawals ?? 0, commission],
+        backgroundColor: ['#ffffff', isLightMode ? '#000000' : '#ffffff', '#E06A4A'],
+        borderColor: isLightMode ? '#9172EC' : '#000000',
+        data: [earnings, withdrawals ?? 0, canWithdraw],
       },
     ],
   }
@@ -59,11 +52,10 @@ const ChartDoughnutAndPie = (props) => {
         },
       },
       datalabels: {
-        color: isLightMode ? '#fff' : '#000',
+        color: isLightMode ? '#000000' : '#ffffff',
         font: {
           weight: 'bold',
         },
-        formatter: (value) => '',
       },
     },
   }
@@ -72,3 +64,4 @@ const ChartDoughnutAndPie = (props) => {
 }
 
 export default ChartDoughnutAndPie
+

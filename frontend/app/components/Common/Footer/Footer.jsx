@@ -7,7 +7,7 @@ import Input from "../HtmlTags/Input";
 
 const Footer = (props) => {
   const { email, newsLetterSubscribeChange, subscribeToNewsletter, subFormErrors } = props;
-  const ftrlogo = "/logo_.png";
+  const ftrlogo = "/black_logo.png";
   const handleSubmit = event => {
       event.preventDefault();
       subscribeToNewsletter();

@@ -124,6 +124,8 @@
 
   .product-info-section {
     flex: 1;
+    display: flex;
+    flex-direction: column;
     padding: 2rem 1rem;
     margin-bottom: 2rem;
     border-radius: 16px;
@@ -329,6 +331,7 @@
     .product-actions {
       width: 100%;
       justify-items: center !important;
+      display: grid;
       button {
         width: 100%;
         max-width: 300px;

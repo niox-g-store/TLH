@@ -14,6 +14,8 @@ import actions from '../../../../actions';
 import AdvancedUpload from '../../../store/AdanceFileUpload';
 import { API_URL } from '../../../../constants';
 import AdvancedUploadHelper from '../../../store/AdanceFileUpload/updateFileUpload';
+import SizeChartManager from '../../../store/SizeChartManager';
+import ColorImageManager from '../../../store/ColourImageManager';
 
 const EditProductForm = (props) => {
   const {
@@ -24,8 +26,10 @@ const EditProductForm = (props) => {
     isLoading,
     isLightMode,
     deleteProduct,
-    productImageToRemove
+    productImageToRemove,
+    productColorAndImageToRemove
   } = props;
+  console.log(product)
 
   const navigate = useNavigate();
 
@@ -171,6 +175,38 @@ const EditProductForm = (props) => {
           />
         </div>
       </Row>
+      
+        {/* Size Chart Management */}
+        <Col className={`${isLightMode ? 'p-black' : 'p-white'}`} xs='12'>
+          <SizeChartManager
+            sizeQuantity={product.SizeQuantity || []}
+            onChange={(sizeQuantity) => productEditChange('SizeQuantity', sizeQuantity)}
+            isLightMode={isLightMode}
+          />
+        </Col>
+
+        <Row style={{ justifyContent: 'center' }}>
+        <div style={{ gap: '2em' }} className='edit-product-actions mt-3 d-flex'>
+          <Button onClick={handleSubmit} style={{ padding: '10px 20px' }} text='Update Product' />
+        </div>
+      </Row>
+
+        {/* Color and Image Management */}
+        <Col className={`${isLightMode ? 'p-black' : 'p-white'}`} xs='12'>
+          <ColorImageManager
+            colorAndImage={product.colorAndImage || []}
+            onChange={(colorAndImage) => productEditChange('colorAndImage', colorAndImage)}
+            isLightMode={isLightMode}
+            productColorAndImageToRemove={productColorAndImageToRemove}
+          />
+        </Col>
+
+        <Row style={{ justifyContent: 'center' }}>
+        <div style={{ gap: '2em' }} className='edit-product-actions mt-3 d-flex'>
+          <Button onClick={handleSubmit} style={{ padding: '10px 20px' }} text='Update Product' />
+        </div>
+      </Row>
+
     </div>
   );
 };

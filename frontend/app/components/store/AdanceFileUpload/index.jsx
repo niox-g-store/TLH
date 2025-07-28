@@ -10,11 +10,18 @@ const AdvancedUpload = (props) => {
           onFilesChange,
           imageLimit = MAX_IMAGE_SIZE,
           videoLimit = MAX_VIDEO_SIZE,
-          vLimit = 1, limit = 5
+          vLimit = 1, limit = 5,
+          clearFiles
   } = props;
   const [files, setFiles] = useState([]);
   const [errors, setErrors] = useState([]);
   const inputRef = useRef();
+  useEffect(() => {
+    if (clearFiles) {
+      setFiles([]);
+      if (onFilesChange) onFilesChange([]);
+    }
+  }, [clearFiles]);
 
   useEffect(() => {
   return () => {

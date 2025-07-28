@@ -54,6 +54,8 @@ const initialState = {
   coupon: {
     code: ''
   },
+  selectedSize: {},
+  selectedColor: {},
   amountBeforeDiscount: 0,
   discountAmount: 0,
   appliedCoupon: null,

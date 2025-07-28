@@ -9,6 +9,8 @@ import LoadingIndicator from '../../../store/LoadingIndicator';
 import DescriptionBox from '../../../store/DescriptionBox';
 import { GoBack } from '../../../../containers/goBack/inedx';
 import AdvancedUpload from '../../../store/AdanceFileUpload';
+import SizeChartManager from '../../../store/SizeChartManager';
+import ColorImageManager from '../../../store/ColourImageManager';
 import { connect } from 'react-redux';
 import { withRouter } from '../../../../withRouter';
 import actions from "../../../../actions";
@@ -125,12 +127,31 @@ const AddProductForm = (props) => {
 
           {/* Image Upload */}
           <Col className={`${isLightMode ? 'p-black' : 'p-white'}`} xs='12'>
+            <p>Upload product images</p>
             <AdvancedUpload
               error={formErrors.image}
               onFilesChange={(files) => productChange('image', files)}
               limit={5}
               vLimit={0}
               imageLimit={10 * 1024 * 1024}
+            />
+          </Col>
+
+          {/* Size Chart Management */}
+          <Col className={`${isLightMode ? 'p-black' : 'p-white'}`} xs='12'>
+            <SizeChartManager
+              sizeQuantity={productFormData.sizeQuantity || []}
+              onChange={(sizeQuantity) => productChange('sizeQuantity', sizeQuantity)}
+              isLightMode={isLightMode}
+            />
+          </Col>
+
+          {/* Color and Image Management */}
+          <Col className={`${isLightMode ? 'p-black' : 'p-white'}`} xs='12'>
+            <ColorImageManager
+              colorAndImage={productFormData.colorAndImage || []}
+              onChange={(colorAndImage) => productChange('colorAndImage', colorAndImage)}
+              isLightMode={isLightMode}
             />
           </Col>
 

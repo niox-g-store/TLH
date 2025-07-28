@@ -150,7 +150,7 @@ const OrderViewer = (props) => {
           <CCol>
             <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'}`}>
               <CCardBody>
-                <h2>Cart Details</h2>
+                <h2>Ticket Details</h2>
                 {order?.cart?.tickets?.length > 0
                   ? order.cart.tickets.map((ticket, index) => {
                     const quantity = ticket?.quantity || 0;
@@ -183,8 +183,15 @@ const OrderViewer = (props) => {
                   (
                     order.cart.products.map((product, index) => (
                       <div key={index} className='mb-3 border-bottom pb-2'>
+                        <h2>Product Details</h2>
                         <p><strong>Product name: </strong>{product.productName || 'N/A'}</p>
                         <p><strong>Quantity: </strong> x {product.quantity || 'N/A'}</p>
+                        {product.selectedSize && (
+                          <p><strong>Size: </strong>{product.selectedSize}</p>
+                        )}
+                        {product.selectedColor && (
+                          <p><strong>Color: </strong>{product.selectedColor}</p>
+                        )}
                         <p><strong>Price: </strong>₦{(product.price).toLocaleString() || 'N/A'}</p>
                         {product.discount &&
                           <p><strong>Discount: </strong>₦{(product.discountPrice).toLocaleString() || 'N/A'}</p>

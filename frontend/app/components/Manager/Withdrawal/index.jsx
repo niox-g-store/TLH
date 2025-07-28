@@ -63,32 +63,16 @@ const ManagerWithdrawForm = (props) => {
       <hr className={`${isLightMode ? 'p-black' : 'p-white'}`} />
 
       <CRow className='mb-4 g-2'>
-        <CCol sm={2} className='col'>
+        <CCol className='col'>
           <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white`}>
-            <CCardBody>
-              <CCardTitle>Total earnings</CCardTitle>
-              {earnings > 0 && <ChartDoughnutAndPie isLightMode={isLightMode} earnings={earnings} />}
-              <p>₦{(earnings).toLocaleString()}</p>
-            </CCardBody>
-          </CCard>
-        </CCol>
-
-        <CCol sm={2} className='col'>
-          <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white`}>
-            <CCardBody>
-              <CCardTitle>Can withdraw</CCardTitle>
-              {(earnings - withdrawnAmount > 0) && <ChartDoughnutAndPie isLightMode={isLightMode} commission={earnings - withdrawnAmount} />}
-              <p>₦{(earnings - withdrawnAmount).toLocaleString()}</p>
-            </CCardBody>
-          </CCard>
-        </CCol>
-
-        <CCol sm={2} className='col'>
-          <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white`}>
-            <CCardBody>
-              <CCardTitle>Total withdrawn</CCardTitle>
-              {withdrawnAmount > 0 && <ChartDoughnutAndPie isLightMode={isLightMode} withdrawals={withdrawnAmount} />}
-              <p>₦{(withdrawnAmount).toLocaleString()}</p>
+            <CCardBody className='asset-dis'>
+              <CCardTitle>Asset distribution</CCardTitle>
+              <ChartDoughnutAndPie
+                isLightMode={isLightMode}
+                earnings={earnings}
+                withdrawals={withdrawnAmount}
+                canWithdraw={earnings - withdrawnAmount}
+              />
             </CCardBody>
           </CCard>
         </CCol>

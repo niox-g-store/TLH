@@ -24,7 +24,8 @@ import {
 
   PRODUCT_IMAGE_REMOVE,
   SET_DELIVERY_INFO,
-  SET_NEEDS_DELIVERY
+  SET_NEEDS_DELIVERY,
+  PRODUCT_COLOR_IMAGE_REMOVE
 } from './constants';
 
 const initialState = {
@@ -43,11 +44,15 @@ const initialState = {
     price: 1,
     discountPrice: 0,
     image: [],
-    isActive: true
+    isActive: true,
+    sizeQuantity: [],
+    colorAndImage: []
   },
   isLoading: false,
   productShopData: {
-    quantity: 1
+    quantity: 1,
+    selectedSize: 'Medium',
+    selectedColor: null
   },
   formErrors: {},
   editFormErrors: {},
@@ -60,6 +65,7 @@ const initialState = {
     limit: 12
   },
   imageToRemove: [],
+  colorAndImageToRemove: [],
 
   deliveryInfo: null,
   needsDelivery: false
@@ -67,6 +73,11 @@ const initialState = {
 
 const productReducer = (state = initialState, action) => {
   switch (action.type) {
+    case PRODUCT_COLOR_IMAGE_REMOVE:
+      return {
+        ...state,
+        colorAndImageToRemove: [...state.colorAndImageToRemove, action.payload]
+      };
     case SET_NEEDS_DELIVERY:
       return {
         ...state,
@@ -109,7 +120,9 @@ const productReducer = (state = initialState, action) => {
         storeProduct: action.payload,
         productSlugChange: false,
         productShopData: {
-          quantity: 1
+          quantity: 1,
+          selectedSize: 'Medium',
+          selectedColor: null
         }
       };
     case SET_PRODUCTS_LOADING:
@@ -172,14 +185,17 @@ const productReducer = (state = initialState, action) => {
           price: 1,
           discountPrice: 0,
           image: [],
-          isActive: true
+          isActive: true,
+          sizeQuantity: [],
+          colorAndImage: []
         },
         product: {
           _id: ''
         },
         formErrors: {},
         editFormErrors: {},
-        imageToRemove: []
+        imageToRemove: [],
+        colorAndImageToRemove: []
       };
     case SET_ADVANCED_FILTERS:
       return {
