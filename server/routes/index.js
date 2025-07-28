@@ -10,7 +10,8 @@ const Product = require('../models/product');
 const api = `/${apiURL}`;
 
 const isBot = (userAgent = '') => {
-  const botPattern = /bot|crawl|slurp|spider|facebook|twitter|discord|preview|whatsapp/i;
+  // const botPattern = /bot|crawl|slurp|spider|facebook|twitter|discord|preview|whatsapp/i;
+  const botPattern = /Twitterbot|facebookexternalhit|Facebot|LinkedInBot|Slackbot|Pinterest|vkShare|W3C_Validator/i;
   return botPattern.test(userAgent);
 };
 
@@ -23,23 +24,26 @@ const truncateDescription = (text = '', maxWords = 20) => {
 const renderMetaPage = ({ title, description, image, url }) => `
   <!DOCTYPE html>
   <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta property="og:title" content="${title}" />
-    <meta property="og:description" content="${description || ''}" />
-    <meta property="og:image" content="${image}" />
-    <meta property="og:url" content="${url}" />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="${title}" />
-    <meta name="twitter:description" content="${description || ''}" />
-    <meta name="twitter:image" content="${image}" />
-  </head>
-  <body>
-    <script>window.location.href = "${url}"</script>
-  </body>
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>${title}</title>
+      <meta property="og:title" content="${title}" />
+      <meta property="og:description" content="${description || ''}" />
+      <meta property="og:image" content="${image}" />
+      <meta property="og:url" content="${url}" />
+      <meta property="og:type" content="website" />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content="${title}" />
+      <meta name="twitter:description" content="${description || ''}" />
+      <meta name="twitter:image" content="${image}" />
+    </head>
+    <body>
+      <p>Preview for ${title}</p>
+    </body>
   </html>
 `;
+
 
 router.get('/event/:slug', async (req, res) => {
   const event = await Event.findOne({ slug: req.params.slug });
@@ -58,7 +62,7 @@ router.get('/event/:slug', async (req, res) => {
     }));
   }
 
-  return res.redirect(url);
+  return res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
 router.get('/gallery/:slug', async (req, res) => {
@@ -78,7 +82,7 @@ router.get('/gallery/:slug', async (req, res) => {
     }));
   }
 
-  return res.redirect(url);
+  return res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
 router.get('/product/:slug', async (req, res) => {
@@ -98,7 +102,7 @@ router.get('/product/:slug', async (req, res) => {
     }));
   }
 
-  return res.redirect(url);
+  return res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
 router.use(api, apiRoutes);
