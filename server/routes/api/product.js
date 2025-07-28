@@ -135,7 +135,6 @@ router.post(
         return res.status(400).json({ error: 'A product with this name already exists.' });
       }
 
-      const imageUrls = files.map((file) => `/uploads/products/${file.filename}`);
       const parsedColorAndImage = colorAndImage ? JSON.parse(colorAndImage) : [];
       const updatedColorAndImage = [];
       for (const entry of parsedColorAndImage) {
@@ -162,6 +161,11 @@ router.post(
           }
         }
       };
+      const usedImageUrls = updatedColorAndImage.flatMap(item => item.imageUrl);
+
+      const allUploadedImageUrls = files.map(file => `/uploads/products/${file.filename}`);
+
+      const imageUrls = allUploadedImageUrls.filter(url => !usedImageUrls.includes(url));
 
       const product = new Product({
         name,
@@ -184,7 +188,6 @@ router.post(
         product
       });
     } catch (error) {
-      console.log(error)
       return res.status(400).json({
         error: 'Your request could not be processed. Please try again.'
       });
@@ -294,6 +297,14 @@ router.put(
         });
 
         deleteFilesFromPath(normalizedPaths);
+      }
+
+      // Handle new image uploads
+      if (files && files.length > 0) {
+        const usedImageUrls = updatedColorAndImage.flatMap(item => item.imageUrl);
+        const allUploadedImageUrls = files.map(file => `/uploads/products/${file.filename}`);
+        const newImagePaths = allUploadedImageUrls.filter(url => !usedImageUrls.includes(url));
+        product.imageUrls = [...product.imageUrls, ...newImagePaths];
       }
 
       await product.save();

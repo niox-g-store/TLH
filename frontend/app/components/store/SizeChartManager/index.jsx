@@ -30,7 +30,7 @@ const SizeChartManager = ({ sizeQuantity = [], onChange, isLightMode }) => {
       if (i === index) {
         return {
           ...item,
-          [field]: field === 'quantity' ? parseInt(value) || 0 : value
+          [field]: field === 'quantity' ? parseInt(value) || '' : value
         };
       }
       return item;
