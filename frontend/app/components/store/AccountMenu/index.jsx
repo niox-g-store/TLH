@@ -106,7 +106,7 @@ const AccountMenu = (props) => {
     <CSidebar className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white'} border-end d-lg-none`} position='fixed' visible={isMenuOpen}>
         <CSidebarHeader className='sidebarheader'>
         <CSidebarBrand as={'div'}>
-            <div style={{ padding: '2em 0em' }} className="logo bg-black">
+            <div style={{ padding: '2em 0em 2em 1em' }} className="logo bg-black">
             <Link to={"/"}>
                 <div className="logo-image" alt="LogoImage" />
             </Link>

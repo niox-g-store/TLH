@@ -101,7 +101,7 @@ const ProductViewer = (props) => {
     needsDelivery,
     setNeedsDelivery,
   } = props;
-  
+
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState('Medium');
   const [selectedColor, setSelectedColor] = useState(null);
@@ -285,7 +285,7 @@ const handleDeliveryInfoChange = (name, value) => {
                     {formatPrice(getDiscountedPrice(product.price, product.discountPrice))}
                   </span>
                   <span className="discount-badge">
-                    {(product.price - product.discountPrice) / 100}% OFF
+                    {((product.price - product.discountPrice) / product.price)* 100}% OFF
                   </span>
                 </div>
               ) : (
