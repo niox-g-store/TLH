@@ -45,7 +45,7 @@ const ManagerProductHelper = (props) => {
 
   const formatPrice = (price, discountPrice) => {
     if (discountPrice > 0) {
-      const discountedPrice = (price - discountPrice) / 100;
+      const discountedPrice = (((price - discountPrice) / price) * 100).toFixed(2)
       return (
         <div>
           <span style={{ textDecoration: 'line-through', color: 'red', marginRight: '8px' }}>

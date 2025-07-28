@@ -285,7 +285,7 @@ const handleDeliveryInfoChange = (name, value) => {
                     {formatPrice(getDiscountedPrice(product.price, product.discountPrice))}
                   </span>
                   <span className="discount-badge">
-                    {((product.price - product.discountPrice) / product.price)* 100}% OFF
+                    {(((product.price - product.discountPrice) / product.price) * 100).toFixed(2)}% OFF
                   </span>
                 </div>
               ) : (
