@@ -84,6 +84,7 @@ your-project-root/
 │   └── events/
 |   └── newsletter/
 |   └── products/
+|   └── compact-pics/
 └── ...
 
 4. Database Setup
