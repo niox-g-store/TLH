@@ -37,7 +37,7 @@ const SizeSelector = ({ sizes, selectedSize, onSizeChange }) => {
               opacity: sizeItem.quantity > 0 ? 1 : 0.5
             }}
           >
-            {sizeItem.size} ({sizeItem.quantity})
+            {sizeItem.size}
           </button>
         ))}
       </div>
@@ -333,7 +333,6 @@ const handleDeliveryInfoChange = (name, value) => {
               selectedColor={selectedColor}
               onColorChange={handleColorChange}
             />
-            <SocialShare item={product} />
 
             <div className="quantity-selector">
               <label>Quantity:</label>
@@ -353,6 +352,8 @@ const handleDeliveryInfoChange = (name, value) => {
                 </button>
               </div>
             </div>
+
+            <SocialShare item={product} />
 
             <div className="delivery-options">
               <Switch

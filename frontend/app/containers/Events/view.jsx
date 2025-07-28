@@ -202,11 +202,6 @@ const EventViewer = (props) => {
             </div>
           </CModalBody>
         </CModal>
-        <SocialShare
-          heading='Share this event'
-          item={event}
-          text={`🎉 Don't miss out on ${event.name}! Hosted on TheLinkHangout — explore details and book your tickets today!`}
-        />
               <h3 style={{ fontSize: '23px' }}>About this event</h3>
               <p className='font-size-15 text-wrap text-break w-100 overflow-hidden event-description' dangerouslySetInnerHTML={{ __html: event.description }} />
               <h3 style={{ fontSize: '23px' }}>Tickets</h3>
@@ -301,6 +296,11 @@ const EventViewer = (props) => {
                       )}
                   </div>
                 : <p className='text-center font-size-20 p-gray'>Sold out</p>}
+                <SocialShare
+                  heading='Share this event'
+                  item={event}
+                  text={`🎉 Don't miss out on ${event.name}! Hosted on TheLinkHangout — explore details and book your tickets today!`}
+                />
                 <MapEmbed location={event.location}/>
             </div>
           </div>
@@ -420,11 +420,6 @@ const EventViewer = (props) => {
           </CModalBody>
         </CModal>
               <hr />
-              <SocialShare
-                heading='Share this event'
-                item={event}
-                text={`🎉 Don't miss out on ${event.name}! Hosted on TheLinkHangout — explore details and book your tickets today!`}
-              />
               <h3 style={{ fontSize: '23px' }}>About this event</h3>
               <p className='font-size-15 text-wrap text-break w-100 overflow-hidden event-description' dangerouslySetInnerHTML={{ __html: event.description }} />
               <h3 style={{ fontSize: '23px' }}>Tickets</h3>
@@ -519,6 +514,11 @@ const EventViewer = (props) => {
                       )}
                   </div>
                 : <p className='text-center font-size-20 p-gray'>Sold out</p>}
+                <SocialShare
+                  heading='Share this event'
+                  item={event}
+                  text={`🎉 Don't miss out on ${event.name}! Hosted on TheLinkHangout — explore details and book your tickets today!`}
+                />
                 <MapEmbed location={event.location}/>
             </div>
           </div>
