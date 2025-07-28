@@ -98,15 +98,16 @@ exports.productOrderEmailHtml = (order) => {
                                 <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 5px 0;">
                                     <strong>Quantity:</strong> ${product.quantity}
                                 </p>
+                                ${product.selectedSize ? `<p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black; font-size: 16px;">Size: ${product.selectedSize}</p>` : ''}
+                                ${product.selectedColor ? `<p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black; font-size: 16px;">Color: ${product.selectedColor}</p>` : ''}
                                 <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 5px 0;">
                                     <strong>Price:</strong> ${formatCurrency(product.finalPrice)}
                                 </p>
                                 <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 20px 0;">
                                     <strong>Delivery:</strong> ${product.needsDelivery ? 'Will be delivered to your address' : 'Pickup at next Link Hangouts event'}
                                 </p>
+                                <hr style="border: none; border-top: 1px dashed #cccccc; margin: 20px 0;" />
                             `).join('')}
-
-                            <hr style="border: none; border-top: 1px dashed #cccccc; margin: 20px 0;" />
 
                             <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 10px 0; font-weight: bold;">Delivery Information</p>
                             <ul style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; padding-left: 20px; margin: 0 0 15px 0; list-style: disc;">
@@ -135,13 +136,13 @@ exports.productOrderEmailHtml = (order) => {
                             </ul>
 
                             <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 15px 0;">
-                                If you have any questions or need assistance, feel free to reply to this email or reach out to our team at <a href="mailto:support@linknhangouts.com" style="color: #007BFF; text-decoration: none;">support@linknhangouts.com</a>.
+                                If you have any questions or need assistance, feel free to reply to this email or reach out to our team at <a href="mailto:support@thelinkhangout.com" style="color: #007BFF; text-decoration: none;">support@thelinkhangout.com</a>.
                             </p>
 
                             <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0;">
-                                Thanks again for being part of the LinknHangouts community! We can’t wait for you to enjoy your items.
+                                Thanks again for being part of The Link Hangouts community! We can’t wait for you to enjoy your items.
                             </p>
-                            <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #007BFF; margin: 10px 0 0 0;"><a href="https://thelinkhangout.com" target="_blank" style="color: #007BFF; text-decoration: none;">🌐 thelinkhangout.com</a></p>
+                            <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #007BFF; margin: 10px 0 0 0;"><a href="https://thelinkhangout.com" target="_blank" style="color: #007BFF; text-decoration: none;">thelinkhangout</a></p>
                         </td>
                     </tr>
 

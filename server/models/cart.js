@@ -104,6 +104,14 @@ const ProductItemSchema = new Schema({
     type: Number,
     default: 0
   },
+  selectedSize: {
+    type: String,
+    default: null
+  },
+  selectedColor: {
+    type: String,
+    default: null
+  },
   needsDelivery: {
     type: Boolean,
     default: false

@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+const generateCompactImage = require('../utils/generateCompactImage');
+const path = require('path');
 
 const gallerySchema = new mongoose.Schema({
   name: {
@@ -45,20 +47,34 @@ const gallerySchema = new mongoose.Schema({
   bannerUrl: {
     type: String
   },
+
+  compactImage: {
+    type: String,
+  },
+
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });
 
 // Automatically update `updatedAt` on save
-gallerySchema.pre('save', function(next) {
+gallerySchema.pre('save', async function (next) {
   this.updatedAt = new Date();
   if (this.isModified('name') || !this.slug) {
     this.slug = slugify(this.name, {
       lower: true,
-      strict: true, // remove special characters
+      strict: true,
     });
   }
+
+  if (this.bannerUrl && (!this.compactImage || this.isModified('bannerUrl'))) {
+    const sourcePath = path.join(process.cwd(), 'file_manager', this.bannerUrl);
+    const compactFilename = `${this._id}-gallery.jpg`;
+    const compactUrl = await generateCompactImage(sourcePath, compactFilename);
+    if (compactUrl) this.compactImage = compactUrl;
+  }
+
   next();
 });
+
 
 module.exports = mongoose.model('Gallery', gallerySchema);

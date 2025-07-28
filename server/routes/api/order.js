@@ -429,7 +429,6 @@ router.put('/edit/order/', async (req, res) => {
         });
       }
     } catch (error) {
-      console.log(error)
       return res.status(400).json({
         error: 'Your request could not be processed. Please try again.'
       });
@@ -778,21 +777,41 @@ const decreaseProductQuantity = async (products) => {
   const bulkOptions = products.map(item => ({
     updateOne: {
       filter: { _id: item.productId },
-      update: { $inc: { quantity: -item.quantity } }
+      update: {
+        $inc: {
+          quantity: -item.quantity,
+          'SizeQuantity.$[elem].quantity': -item.quantity
+        }
+      },
+      arrayFilters: [
+        { 'elem.size': item.selectedSize }
+      ]
     }
   }));
+
   return Product.bulkWrite(bulkOptions);
 };
+
 
 const increaseProductQuantity = async (products) => {
   const bulkOptions = products.map(item => ({
     updateOne: {
       filter: { _id: item.productId },
-      update: { $inc: { quantity: item.quantity } }
+      update: {
+        $inc: {
+          quantity: item.quantity,
+          'SizeQuantity.$[elem].quantity': item.quantity
+        }
+      },
+      arrayFilters: [
+        { 'elem.size': item.selectedSize }
+      ]
     }
   }));
+
   return Product.bulkWrite(bulkOptions);
 };
+
 
 const createWithdrawal = async (cartDoc, updateOrder) => {
   // const createdWithdrawals = [];

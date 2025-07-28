@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const slugify = require('slugify');
 const { EVENT_STATUS, EVENT_CATEGORIES } = require('../utils/constants');
 const { DateTime } = require('luxon');
+const generateCompactImage = require('../utils/generateCompactImage');
+const path = require('path');
 
 const eventSchema = new mongoose.Schema({
   name: {
@@ -77,12 +79,15 @@ const eventSchema = new mongoose.Schema({
   imageUrls: [{
     type: String
   }],
+  compactImage: {
+    type: String,
+  },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });
 
 // Automatically create a slug from the title before saving
-eventSchema.pre('save', function(next) {
+eventSchema.pre('save', async function (next) {
   this.updatedAt = new Date();  // Automatically update `updatedAt` on save
   if (this.isModified('name') || !this.slug) {
     this.slug = slugify(this.name, {
@@ -92,6 +97,14 @@ eventSchema.pre('save', function(next) {
   }
   this.startDate = DateTime.fromISO(this.startDate, { zone: 'Africa/Lagos' }).toUTC().toJSDate();
   this.endDate = DateTime.fromISO(this.endDate, { zone: 'Africa/Lagos' }).toUTC().toJSDate();
+
+  if (this.imageUrls?.length && (!this.compactImage || this.isModified('imageUrls'))) {
+    const sourcePath = path.join(process.cwd(), 'file_manager', this.imageUrls[0]);
+    const compactFilename = `${this._id}-event.jpg`;
+    const compactUrl = await generateCompactImage(sourcePath, compactFilename);
+    if (compactUrl) this.compactImage = compactUrl;
+  }
+
   next();
 });
 

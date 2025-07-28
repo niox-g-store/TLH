@@ -61,7 +61,7 @@ exports.accountBannedEmailHtml = (organizerName, contactEmail) => {
                             </p>
 
                             <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0;">Sincerely,<br>The Link Hangouts Team</p>
-                            <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #007BFF; margin: 10px 0 0 0;"><a href="https://thelinkhangout.com" target="_blank" style="color: #007BFF; text-decoration: none;">🌐 thelinkhangout.com</a></p>
+                            <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #007BFF; margin: 10px 0 0 0;"><a href="https://thelinkhangout.com" target="_blank" style="color: #007BFF; text-decoration: none;">thelinkhangout.com</a></p>
                         </td>
                     </tr>
 

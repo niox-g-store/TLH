@@ -86,6 +86,7 @@ exports.adminNewOrderHtml = (order) => {
                                 <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 20px 0;">
                                     <strong>Venue:</strong> ${ticket.eventId.location}
                                 </p>
+                                <hr style="border: none; border-top: 1px dashed #cccccc; margin: 20px 0;" />
                             `).join('')}
 
                             ${order.cart.products.map(product => `
@@ -95,6 +96,8 @@ exports.adminNewOrderHtml = (order) => {
                                 <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 5px 0;">
                                     <strong>Quantity:</strong> ${product.quantity}
                                 </p>
+                                ${product.selectedSize ? `<p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black; font-size: 16px;">Size: ${product.selectedSize}</p>` : ''}
+                                ${product.selectedColor ? `<p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black; font-size: 16px;">Color: ${product.selectedColor}</p>` : ''}
                                 <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 5px 0;">
                                     <strong>Price:</strong> ${formatCurrency(product.finalPrice)}
                                 </p>
@@ -106,9 +109,8 @@ exports.adminNewOrderHtml = (order) => {
                                         <strong>${product.deliveryInfo.address.island ? 'Island' : 'Mainland'} Delivery</strong>
                                     </p>
                                 ` : ''}
+                                <hr style="border: none; border-top: 1px dashed #cccccc; margin: 20px 0;" />
                             `).join('')}
-
-                            <hr style="border: none; border-top: 1px dashed #cccccc; margin: 20px 0;" />
 
                             <h3 style="font-family: Arial, Helvetica, sans-serif; font-size: 18px; color: #333333; margin: 0 0 15px 0;">Financial Summary:</h3>
                             <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 5px 0;">

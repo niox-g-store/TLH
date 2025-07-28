@@ -96,9 +96,8 @@ exports.invoiceEmailHtml = (order) => {
                                 <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 20px 0;">
                                     <strong>Venue:</strong> ${ticket.eventId.location}
                                 </p>
+                                <hr style="border: none; border-top: 1px dashed #cccccc; margin: 20px 0;" />
                             `).join('')}
-
-                            <hr style="border: none; border-top: 1px dashed #cccccc; margin: 20px 0;" />
 
                             <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 10px 0; font-weight: bold;">Please bring:</p>
                             <ul style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; padding-left: 20px; margin: 0 0 30px 0; list-style: none;">
@@ -113,7 +112,7 @@ exports.invoiceEmailHtml = (order) => {
                             <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0 0 15px 0;">Need help? Contact us anytime at <a href="mailto:support@thelinkhangout.com" style="color: #007BFF; text-decoration: none;">support@thelinkhangout.com</a></p>
 
                             <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #333333; margin: 0;">See you soon!<br>– The Link Hangouts Team</p>
-                            <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #007BFF; margin: 10px 0 0 0;"><a href="https://thelinkhangout.com" target="_blank" style="color: #007BFF; text-decoration: none;">🌐 thelinkhangout.com</a></p>
+                            <p style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6; color: #007BFF; margin: 10px 0 0 0;"><a href="https://thelinkhangout.com" target="_blank" style="color: #007BFF; text-decoration: none;">thelinkhangout.com</a></p>
                         </td>
                     </tr>
 

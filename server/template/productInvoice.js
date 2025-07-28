@@ -86,6 +86,8 @@ exports.productInvoiceGenerator = (order, product) => {
           <div style="display: flex; align-items: center; padding-bottom: 10px;">
             <div style="width: 46%; padding: 4px 8px;">
               <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black; font-weight: bold;">${product.productName}</p>
+              ${product.selectedSize ? `<p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black; font-size: 12px;">Size: ${product.selectedSize}</p>` : ''}
+              ${product.selectedColor ? `<p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black; font-size: 12px;">Color: ${product.selectedColor}</p>` : ''}
             </div>
             <div style="width: 12%; padding: 4px 8px;">
               <p style="padding: 4px 12px 4px 0; margin-bottom: 1px; color: black; text-align: right;">${product.quantity}</p>
