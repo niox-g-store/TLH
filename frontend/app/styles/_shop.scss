@@ -223,7 +223,7 @@
     }
     .product-details-info {
       margin-bottom: 2rem;
-      padding: 1.5rem;
+      padding: 1.5rem 0em;
       background-color: #f8f9fa;
       border-radius: 8px;
 
@@ -290,12 +290,14 @@
         margin-top: 1rem;
         
         .pickup-notice {
-          background-color: #e8f5e8;
-          border: 1px solid #4caf50;
+          //background-color: #e8f5e8;
+          //border: 1px solid #4caf50;
+          border: 2px solid var(--primary_color);
           border-radius: 8px;
           padding: 1rem;
           margin: 0;
-          color: #2e7d32;
+          //color: #2e7d32;
+          color: var(--primary_color);
           font-size: 0.9rem;
         }
       }
@@ -372,5 +374,17 @@
 .shop .card-body {
   img {
     height: 26em !important;
+  }
+}
+.product-price-color-selector {
+  background-color: #f8f9fa;
+  border: 2px solid #9172EC;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 3em;
+  font-size: 13px;
+  h4 {
+    margin: 0;
+    padding: 0;
   }
 }

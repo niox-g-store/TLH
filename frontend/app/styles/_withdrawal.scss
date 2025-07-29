@@ -1,0 +1,28 @@
+.withdrawal {
+  .col {
+
+    @include media-breakpoint-down(md) {
+      width: 50% !important;
+    }
+    .asset-dis {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      .withdrawal-title-and-desc {
+        li {
+            padding: 8px 0;
+            .asset-dis-badge {
+                padding: 1px 15px;
+                margin-right: 1em;
+            }
+        }
+      }
+    }
+    width: 100% !important;
+    .chart-wrapper {
+      height: 10em;
+    }
+  }
+}

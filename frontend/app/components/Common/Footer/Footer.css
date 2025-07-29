@@ -101,6 +101,9 @@ footer {
   gap: 1em;
   margin-bottom: 1em;
 }
+.footer-logo {
+    height: 130px
+}
 
 /* RESPONSIVE */
 @media (max-width: 1023px) {
@@ -163,6 +166,9 @@ footer {
     flex: 0 0 100%;
     max-width: 50%;
     margin-bottom: 30px;
+  }
+  .footer-logo {
+    height: 100px
   }
 }
 

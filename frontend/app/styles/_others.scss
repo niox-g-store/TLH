@@ -160,23 +160,6 @@
   }
 }
 
-.withdrawal {
-  .col {
-
-    @include media-breakpoint-down(md) {
-      width: 50% !important;
-    }
-    .asset-dis {
-      display: flex;
-      flex-direction: column;
-    }
-    width: 100% !important;
-    .chart-wrapper {
-      height: 10em;
-    }
-  }
-}
-
 .social-share-container {
   h2 {
     font-size: 24px;

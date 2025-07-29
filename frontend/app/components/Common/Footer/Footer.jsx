@@ -23,7 +23,7 @@ const Footer = (props) => {
           <div className="footer-row-wrapper">
             <div className="col-ftr-logo">
               <a href="#">
-                <img className="width-100 height-130" src={ftrlogo} alt="logo" />
+                <img className="width-100 footer-logo" src={ftrlogo} alt="logo" />
               </a>
             </div>
             <div className="col-ftr-links footer-links">

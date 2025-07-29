@@ -28,10 +28,9 @@ const ChartDoughnutAndPie = (props) => {
   }, [])
 
   const data = {
-    labels: ['Earnings', 'Can Withdraw', 'Withdrawals',],
     datasets: [
       {
-        backgroundColor: ['#ffffff', isLightMode ? '#000000' : '#ffffff', '#E06A4A'],
+        backgroundColor: ['#ffffff', '#E06A4A', isLightMode ? '#000000' : '#9172EC',],
         borderColor: isLightMode ? '#9172EC' : '#000000',
         data: [earnings, withdrawals ?? 0, canWithdraw],
       },

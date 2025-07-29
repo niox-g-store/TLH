@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { FaShoppingCart, FaTrash, FaMinus, FaPlus } from 'react-icons/fa';
+import { FaShoppingCart, FaTrash, FaMinus, FaPlus, FaShippingFast } from 'react-icons/fa';
 import { IoMdClose } from 'react-icons/io';
 import { Navigate, useNavigate } from 'react-router-dom';
 import actions from '../../actions';
@@ -143,7 +143,7 @@ const CartViewer = (props) => {
                       {item.type === 'product' ? (
                         item.needsDelivery ? (
                           <>
-                            <h5 className="mt-3 delivery-info">🚚 Delivery Information</h5>
+                            <h5 className="mt-3 delivery-info"><FaShippingFast color='#9172EC' size={20}/>&nbsp; Delivery Information</h5>
                             <p className="mb-0 mt-3">{item.deliveryInfo.name}</p>
                             <p className="mb-0 mt-0">{item.deliveryInfo.email}</p>
                             <p className="mb-0 mt-0">{item.deliveryInfo.phoneNumber}</p>

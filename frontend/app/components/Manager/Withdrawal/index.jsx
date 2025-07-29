@@ -18,6 +18,8 @@ import actions from '../../../actions';
 import ManagerPagination from '../Pagination';
 import ChartDoughnutAndPie from '../../store/Core/donughtAndPieChart';
 import LoadingIndicator from '../../store/LoadingIndicator';
+import AssetDistribution from '../../store/AssetDistribution';
+import WithdrawalInformation from '../../store/WithdrawalInformation';
 
 const ManagerWithdrawForm = (props) => {
   const {
@@ -65,15 +67,7 @@ const ManagerWithdrawForm = (props) => {
       <CRow className='mb-4 g-2'>
         <CCol className='col'>
           <CCard className={`${isLightMode ? 'linear-grad' : 'bg-dark-mode'} text-white`}>
-            <CCardBody className='asset-dis'>
-              <CCardTitle>Asset distribution</CCardTitle>
-              <ChartDoughnutAndPie
-                isLightMode={isLightMode}
-                earnings={earnings}
-                withdrawals={withdrawnAmount}
-                canWithdraw={earnings - withdrawnAmount}
-              />
-            </CCardBody>
+            <AssetDistribution {...props}/>
           </CCard>
         </CCol>
       </CRow>
@@ -92,36 +86,9 @@ const ManagerWithdrawForm = (props) => {
         <CRow className="gy-4">
           {currentWithdrawals.map((withdrawal, idx) => (
             <CCol md={6} key={idx}>
-              <Link to={`/dashboard/withdrawal/${withdrawal._id}`}>
                 <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} flex-column`}>
-                  <CCardBody>
-                    <div className="d-flex justify-content-between align-items-center mb-2">
-                      <h5 className="fw-bold">₦{withdrawal.amount?.toLocaleString()}</h5>
-                      <CBadge color={
-                        withdrawal.status === 'completed' ? 'success' :
-                        withdrawal.status === 'pending' ? 'warning' :
-                        withdrawal.status === 'failed' ? 'danger' : 'secondary'
-                      }>
-                        {withdrawal.status}
-                      </CBadge>
-                    </div>
-
-                    <CCardText>
-                      <strong>Order ID:</strong> {withdrawal.order._id} <br />
-                      <strong>Requested:</strong> {formatDate(withdrawal.requestedAt)} <br />
-                      <strong>Bank:</strong> {withdrawal.bankName || 'N/A'} <br />
-                      <strong>Account Name:</strong> {withdrawal.bankAccountName || 'N/A'} <br />
-                      <strong>Account Number:</strong> {withdrawal.bankAccountNumber || 'N/A'} <br />
-                      <strong>Commission:</strong> ₦{withdrawal.commission?.toLocaleString()} <br />
-                      <strong>Ticket Qty:</strong> {withdrawal.ticketQuantity} <br />
-                      <strong>Can Withdraw On:</strong> {formatDate(withdrawal.canWithdrawDate)} <br />
-                      <strong>Processed At:</strong> {withdrawal.processedAt ? formatDate(withdrawal.processedAt) : 'Not processed'} <br />
-                      <strong>User:</strong> {withdrawal.user?.name || withdrawal.user?.email} <br />
-                      <strong>Event:</strong> {withdrawal.event?.name || 'N/A'}
-                    </CCardText>
-                  </CCardBody>
+                    <WithdrawalInformation isLightMode={isLightMode} withdrawal={withdrawal}/>
                 </CCard>
-              </Link>
             </CCol>
           ))}
         </CRow>

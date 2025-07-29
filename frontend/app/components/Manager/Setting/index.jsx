@@ -15,6 +15,12 @@ const SettingForm = (props) => {
   const handleCommissionChange = (e) => {
     updateSettings({ ...settings, commission: e.target.value });
   };
+  const handleIslandDeliveryFeeChange = (e) => {
+    updateSettings({ ...settings, islandDeliveryFee: e.target.value });
+  };
+  const handleMainlandDeliveryFeeChange = (e) => {
+    updateSettings({ ...settings, mainlandDeliveryFee: e.target.value });
+  };
 
   const handleEarningControlChange = (option) => {
     updateSettings({ ...settings, earningControl: option.value });
@@ -120,6 +126,25 @@ const SettingForm = (props) => {
           />
         </div>
       )}
+      <div className={`mb-3 ${isLightMode ? 'p-black' : 'p-white'}`}>
+        <label className='me-2 mb-2'>Mainland Delivery Fee</label>
+        <input
+          type="number" value={settings.mainlandDeliveryFee || ''}
+          placeholder='Enter Mainland Delivery Fee'
+          onChange={handleMainlandDeliveryFeeChange}
+          className={`${isLightMode ? 'input-light' : 'input-dark'}`}
+        />
+      </div>
+
+      <div className={`mb-3 ${isLightMode ? 'p-black' : 'p-white'}`}>
+        <label className='me-2 mb-2'>Island Delivery Fee</label>
+        <input
+          type="number" value={settings.islandDeliveryFee || ''}
+          placeholder='Enter Island Delivery Fee'
+          onChange={handleIslandDeliveryFeeChange}
+          className={`${isLightMode ? 'input-light' : 'input-dark'}`}
+        />
+      </div>
     </div>
   );
 };

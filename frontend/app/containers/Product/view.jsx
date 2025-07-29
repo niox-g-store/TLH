@@ -12,6 +12,9 @@ import Input from '../../components/Common/HtmlTags/Input';
 import FadeSlider from '../../components/store/FadeSliderTwo';
 import Cart from '../Cart';
 import SocialShare from '../../components/store/SocialShare';
+import { FaShippingFast } from "react-icons/fa";
+import { GrLocationPin } from "react-icons/gr";
+import { LiaBoxOpenSolid } from "react-icons/lia";
 
 const SizeSelector = ({ sizes, selectedSize, onSizeChange }) => {
   if (!sizes || sizes.length === 0) return null;
@@ -19,7 +22,7 @@ const SizeSelector = ({ sizes, selectedSize, onSizeChange }) => {
   return (
     <div className="size-selector" style={{ marginBottom: '1em' }}>
       <label style={{ display: 'block', marginBottom: '0.5em', fontWeight: 'bold' }}>
-        Size:
+        Size Chart
       </label>
       <div style={{ display: 'flex', gap: '0.5em', flexWrap: 'wrap' }}>
         {sizes.map((sizeItem, index) => (
@@ -51,7 +54,7 @@ const ColorSelector = ({ colors, selectedColor, onColorChange }) => {
   return (
     <div className="color-selector" style={{ marginBottom: '1em' }}>
       <label style={{ display: 'block', marginBottom: '0.5em', fontWeight: 'bold' }}>
-        Color:
+        Colors Available
       </label>
       <div style={{ display: 'flex', gap: '0.5em', flexWrap: 'wrap' }}>
         <button
@@ -100,6 +103,9 @@ const ProductViewer = (props) => {
     setDeliveryInfo,
     needsDelivery,
     setNeedsDelivery,
+
+    islandDeliveryFee,
+    mainlandDeliveryFee
   } = props;
 
   const [quantity, setQuantity] = useState(1);
@@ -193,7 +199,8 @@ const handleDeliveryInfoChange = (name, value) => {
     updatedInfo[parent][child] = value;
 
     if (child === 'island' || child === 'mainland') {
-      updatedInfo[parent]['deliveryFee'] = child === 'island' ? 8500 : 5000;
+      updatedInfo[parent]['deliveryFee'] = child === 'island' ?
+        islandDeliveryFee : mainlandDeliveryFee;
     }
   } else {
     updatedInfo[name] = value;
@@ -294,45 +301,29 @@ const handleDeliveryInfoChange = (name, value) => {
                 </span>
               )}
             </div>
-
-            <div className="product-description">
-              <h3>Description</h3>
-              <div 
-                dangerouslySetInnerHTML={{ __html: product.description }} 
-              />
+            <div className='product-price-color-selector'>
+              <h4 className='info-text'><FaShippingFast color='#9172EC' size={20}/>&nbsp; Shipping information</h4>
+              <p className='mb-1'><GrLocationPin color='#9172EC' size={20}/>&nbsp; Lagos Delivery only!!</p>
+              <p className='mb-1'><LiaBoxOpenSolid color='#9172EC' size={20}/>&nbsp; For orders with 3 items or fewer, expect delivery within 2–5 working days.</p>
+              <p className='mb-1'><LiaBoxOpenSolid color='#9172EC' size={20}/>&nbsp; For orders with more than 3 items, delivery will take 5–7 working days.</p>
             </div>
-
-            <div className="product-seller-info">
-              <div className="seller-badge">
-                <h4>Sold by The Link Hangouts</h4>
-                <p>This product is sold directly by The Link Hangouts. No organizers are affiliated with product sales.</p>
-              </div>
-            </div>
-
-            <div className="product-details-info">
-              <p><strong>SKU:</strong> {product.sku}</p>
-              <p><strong></strong> {maxQuantityForSize > 0 ? `${maxQuantityForSize} in stock` : 'Out of stock'}</p>
-              {availableSizes.length > 0 && (
-                <p><strong>Size Chart Available:</strong> Yes ({availableSizes.length} sizes)</p>
-              )}
-              {availableColors.length > 0 && (
-                <p><strong>Colors Available:</strong> {availableColors.length} colors</p>
-              )}
-            </div>
-
-            {/* Size Selector */}
-            <SizeSelector
-              sizes={availableSizes}
-              selectedSize={selectedSize}
-              onSizeChange={handleSizeChange}
-            />
-
+            <>
             {/* Color Selector */}
             <ColorSelector
               colors={availableColors}
               selectedColor={selectedColor}
               onColorChange={handleColorChange}
             />
+            </>
+
+            <>
+            {/* Size Selector */}
+            <SizeSelector
+              sizes={availableSizes}
+              selectedSize={selectedSize}
+              onSizeChange={handleSizeChange}
+            />
+            </>
 
             <div className="quantity-selector">
               <label>Quantity:</label>
@@ -352,8 +343,27 @@ const handleDeliveryInfoChange = (name, value) => {
                 </button>
               </div>
             </div>
+            <div className="product-details-info">
+              <p><strong>SKU:</strong> {product.sku}</p>
+              <p><strong></strong> {maxQuantityForSize > 0 ? `${maxQuantityForSize} in stock` : 'Out of stock'}</p>
+            </div>
 
+            <div className="product-description">
+              <h3>Description</h3>
+              <div 
+                dangerouslySetInnerHTML={{ __html: product.description }} 
+              />
+            </div>
             <SocialShare item={product} />
+
+            <div className="product-seller-info">
+              <div className="seller-badge">
+                <h4>Sold by The Link Hangouts</h4>
+                <p>This product is sold directly by The Link Hangouts. No organizers are affiliated with product sales.</p>
+                <p>Products marked for delivery will be shipped to your provided address</p>
+                <p>Products for pickup will be available at our next event</p>
+              </div>
+            </div>
 
             <div className="delivery-options">
               <Switch
@@ -446,7 +456,7 @@ const handleDeliveryInfoChange = (name, value) => {
                   <p className='p-purple'>Delivery prices are fixed </p>
                   <Input
                     type="checkbox"
-                    label="Mainland (₦5,000)"
+                    label={`Mainland (₦ ${mainlandDeliveryFee.toLocaleString()})`}
                     name="address.mainland"
                     disabled={deliveryInfo.address.island}
                     checked={deliveryInfo.address.mainland}
@@ -455,7 +465,7 @@ const handleDeliveryInfoChange = (name, value) => {
                   <br />
                   <Input
                     type="checkbox"
-                    label="Island (₦8,500)"
+                    label={`Island (₦ ${islandDeliveryFee.toLocaleString()})`}
                     name="address.island"
                     disabled={deliveryInfo.address.mainland}
                     checked={deliveryInfo.address.island}
@@ -523,7 +533,9 @@ const mapStateToProps = state => ({
   selectedProducts: state.cart.selectedProducts,
 
   deliveryInfo: state.product.deliveryInfo,
-  needsDelivery: state.product.needsDelivery
+  needsDelivery: state.product.needsDelivery,
+  mainlandDeliveryFee: state.setting.settings.mainlandDeliveryFee,
+  islandDeliveryFee: state.setting.settings.islandDeliveryFee
 });
 
 export default connect(mapStateToProps, actions)(withRouter(ProductView));
