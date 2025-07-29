@@ -5,6 +5,7 @@ import {
   SET_EARNINGS,
   SET_WITHDRAWN_AMOUNT,
   SET_WITHDRAWAL_COMMISSION,
+  SET_CAN_WITHDRAWAL_AMOUNT,
   RESET_WITHDRAWAL,
   SET_WITHDRAWAL_PAGINITION,
 } from './constants';
@@ -16,6 +17,7 @@ const initialState = {
   earnings: 0,
   withdrawnAmount: 0,
   commission: 0,
+  canWithdrawAmount: 0,
 
   withdrawalPaginated: [],
   withdrawalPage: 1,
@@ -24,6 +26,11 @@ const initialState = {
 
 const withdrawalReducer = (state = initialState, action) => {
   switch (action.type) {
+    case SET_CAN_WITHDRAWAL_AMOUNT:
+      return {
+        ...state,
+        canWithdrawAmount: action.payload
+      };
     case SET_WITHDRAWAL_PAGINITION:
       return {
         ...state,
@@ -36,6 +43,8 @@ const withdrawalReducer = (state = initialState, action) => {
         ...state,
         withdrawalPage: 1,
         withdrawalTotalPages: 1,
+        withdrawals: [],
+        withdrawalPaginated: [],
       }
     case SET_WITHDRAWAL_COMMISSION:
       return {

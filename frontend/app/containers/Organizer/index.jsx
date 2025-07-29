@@ -33,6 +33,9 @@ import ViewOrder from '../../components/Manager/Orders/View';
 import AddNewsletter from '../../components/Manager/Newsletter/Add';
 import CampaignView from '../../components/Manager/Newsletter/View';
 
+import WithdrawView from '../../components/Manager/Withdrawal/View';
+import OrganizerManagerWithdraw from '../../components/Manager/Withdrawal/Organizer';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@coreui/coreui/dist/css/coreui.min.css';
 
@@ -63,9 +66,8 @@ const Organizer = (props) => {
           <Route path='order/:id' element={<ViewOrder {...props} />} />
           <Route path='newsletter/add' element={<AddNewsletter {...props} />} />
           <Route path='newsletter/:id' element={<CampaignView {...props} />} />
-          {/*<Route path='withdrawals/organizer/:id' element={<ManagerNewsletter {...props} />} />*/}
-          {/*<Route path='earnings' element={<ManagerNewsletter {...props} />} />*/}
-          {/*<Route path='withdrawal/:id' element={<ManagerNewsletter {...props} />} />*/}
+          <Route path='earnings' element={<OrganizerManagerWithdraw {...props} />} />
+          <Route path='withdrawal/:id' element={<WithdrawView {...props} />} />
           <Route path='*' element={<Page404 />} />
         </Routes>
       </div>

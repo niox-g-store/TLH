@@ -1,7 +1,7 @@
 // OrganizerView.jsx
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import actions from '../../../../actions';
 import { withRouter } from '../../../../withRouter';
 import { CCard, CCardBody, CCardTitle, CCardText, CBadge, CButton, CImage } from '@coreui/react';
@@ -67,11 +67,14 @@ const OrganizerViewer = (props) => {
         {organizer.user.facebook && (
           <CCardText><strong>Facebook:</strong> {organizer.user.facebook}</CCardText>
         )}
+        <Link to={`/dashboard/withdrawals/organizer/${organizer?.user?._id}`}>
+          <Button style={{ padding: '10px' }} text="View Organizer withdrawals"/>
+        </Link>
       </>
     )}
 
           
-          <CBadge color={organizer.isActive ? 'success' : 'danger'}>
+          <CBadge className={"mt-3"} color={organizer.isActive ? 'success' : 'danger'}>
             {organizer.isActive ? 'Active' : 'Suspended'}
           </CBadge>
           <br />

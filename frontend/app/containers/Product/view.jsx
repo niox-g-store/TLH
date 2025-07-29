@@ -15,6 +15,7 @@ import SocialShare from '../../components/store/SocialShare';
 import { FaShippingFast } from "react-icons/fa";
 import { GrLocationPin } from "react-icons/gr";
 import { LiaBoxOpenSolid } from "react-icons/lia";
+import scrollTo
 
 const SizeSelector = ({ sizes, selectedSize, onSizeChange }) => {
   if (!sizes || sizes.length === 0) return null;
@@ -104,8 +105,8 @@ const ProductViewer = (props) => {
     needsDelivery,
     setNeedsDelivery,
 
-    islandDeliveryFee,
-    mainlandDeliveryFee
+    islandDeliveryFee = 0,
+    mainlandDeliveryFee = 0
   } = props;
 
   const [quantity, setQuantity] = useState(1);
@@ -359,9 +360,9 @@ const handleDeliveryInfoChange = (name, value) => {
             <div className="product-seller-info">
               <div className="seller-badge">
                 <h4>Sold by The Link Hangouts</h4>
-                <p>This product is sold directly by The Link Hangouts. No organizers are affiliated with product sales.</p>
-                <p>Products marked for delivery will be shipped to your provided address</p>
-                <p>Products for pickup will be available at our next event</p>
+                <p className='mb-1'>* This product is sold directly by The Link Hangouts. No organizers are affiliated with product sales.</p>
+                <p className='mb-1'>* Products marked for delivery will be shipped to your provided address</p>
+                <p className='mb-1'>* Products for pickup will be available at our next event</p>
               </div>
             </div>
 

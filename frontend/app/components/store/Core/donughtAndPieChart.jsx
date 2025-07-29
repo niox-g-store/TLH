@@ -3,14 +3,22 @@ import { getStyle } from '@coreui/utils'
 import { CChart } from '@coreui/react-chartjs'
 
 const ChartDoughnutAndPie = (props) => {
-  const chartRef = useRef(null)
-  const { earnings = 0, withdrawals, canWithdraw = 0, isLightMode } = props;
-  let val = earnings ? earnings : withdrawals ? withdrawals : canWithdraw
+  const chartRef = useRef(null);
+  const { first = null, second = null, third = null, isLightMode } = props;
+  let val = first ? first : second ? second : third
 
   const cappedVal = Math.min(val, 100000)
   const degrees = 180 + (cappedVal / 1000) * 180
 
   const circumference = (degrees * Math.PI) / 180
+  let backgroundColor;
+  if (first) {
+    backgroundColor = '#ffffff'
+  } else if (second) {
+    backgroundColor = isLightMode ? '#000000' : '#9172EC'
+  } else {
+    backgroundColor = '#E06A4A'
+  }
 
   useEffect(() => {
     const handleColorSchemeChange = () => {
@@ -30,9 +38,9 @@ const ChartDoughnutAndPie = (props) => {
   const data = {
     datasets: [
       {
-        backgroundColor: ['#ffffff', '#E06A4A', isLightMode ? '#000000' : '#9172EC',],
+        backgroundColor: [backgroundColor],
         borderColor: isLightMode ? '#9172EC' : '#000000',
-        data: [earnings, withdrawals ?? 0, canWithdraw],
+        data: [first ? first : second],
       },
     ],
   }

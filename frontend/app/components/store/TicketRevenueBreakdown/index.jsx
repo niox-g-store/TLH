@@ -1,7 +1,7 @@
 import React from 'react';
 import Row from '../../Common/Row';
 
-const TicketRevenueBreakdown = ({ price = 0, commissionPercent = 0 }) => {
+const TicketRevenueBreakdown = ({ price = 0, commissionPercent = 0, showRevenue = true, isLightMode = true }) => {
   const parsedPrice = parseFloat(price) || 0;
 
   const commission = (commissionPercent / 100) * parsedPrice;
@@ -22,8 +22,8 @@ const TicketRevenueBreakdown = ({ price = 0, commissionPercent = 0 }) => {
 
   return (
     <Row>
-    <div style={{ background: '#f9f9f9', padding: '1rem', borderRadius: '10px', width: 'fit-content' }}>
-      <h4>Revenue Breakdown</h4>
+    <div style={{ background: `${isLightMode ? '#f9f9f9' : '#000000'}`, padding: '1rem', borderRadius: '10px', width: 'fit-content' }}>
+      {showRevenue && <h4>Revenue Breakdown</h4>}
       <p>Your ticket price: <strong>₦{formatCurrency(parsedPrice)}</strong></p>
       <p>Our commission ({commissionPercent}%): <strong>₦{formatCurrency(commission)}</strong></p>
       <p>₦100 fee waived for transactions under ₦2,500<br/>

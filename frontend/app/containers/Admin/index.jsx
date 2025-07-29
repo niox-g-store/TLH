@@ -56,6 +56,9 @@ import AddNewsletter from '../../components/Manager/Newsletter/Add';
 import CampaignView from '../../components/Manager/Newsletter/View';
 
 import ManagerWithdraw from '../../components/Manager/Withdrawal';
+import WithdrawView from '../../components/Manager/Withdrawal/View';
+import OrganizersManagerWithdraw from '../../components/Manager/Withdrawal/Organizer/organizers';
+import OrganizerManagerWithdraw from '../../components/Manager/Withdrawal/Organizer';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@coreui/coreui/dist/css/coreui.min.css';
@@ -115,8 +118,9 @@ const Admin = (props) => {
           <Route path='newsletter/:id' element={<CampaignView {...props} />} />
 
           <Route path='withdrawals' element={<ManagerWithdraw {...props} />} />
-          {/*<Route path='withdrawals/organizer/:id' element={<ManagerNewsletter {...props} />} />*/}
-          {/*<Route path='withdrawal/:id' element={<ManagerNewsletter {...props} />} />*/}
+          <Route path='withdrawal/:id' element={<WithdrawView {...props} />} />
+          <Route path='/withdrawals/organizers' element={<OrganizersManagerWithdraw {...props} />} />
+          <Route path='withdrawals/organizer/:id' element={<OrganizerManagerWithdraw {...props} />} />
           
           <Route path='*' element={<Page404 />} />
         </Routes>

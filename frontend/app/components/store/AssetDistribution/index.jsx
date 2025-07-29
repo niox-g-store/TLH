@@ -13,24 +13,23 @@ import ManagerPagination from '../Pagination';*/
 import ChartDoughnutAndPie from '../Core/donughtAndPieChart';
 
 const AssetDistribution = (props) => {
-    const { isLightMode, earnings, withdrawnAmount } = props;
+    const {
+        isLightMode, earnings,
+        withdrawnAmount, canWithdrawAmount,
+        org = false
+    } = props;
 
     const distribution = [
         {
-            "text": "Earnings",
+            "text": org ? "Total Organizers earnings" : "Earnings",
             "color": "#ffffff",
-            value: earnings
+            value: earnings || 0
         },
         {
-            "text": "Can Withdraw",
+            "text": org ? "amount organizers can withdraw" : "Can Withdraw",
             "color": `${isLightMode ? '#000000' : '#9172EC'}`,
-            value: earnings - withdrawnAmount
+            value: canWithdrawAmount || 0
         },
-        {
-            "text": "Withdrawals",
-            "color": "#E06A4A",
-            value: withdrawnAmount
-        }
     ]
 
     return (
@@ -41,19 +40,29 @@ const AssetDistribution = (props) => {
                 <ul>
                     {distribution.map((item, index) => (
                         <li key={index}>
-                            <span className='asset-dis-badge' style={{ backgroundColor: item.color }}></span>
-                            <span>{item.text}</span>
-                            <span style={{ paddingLeft: '1em' }}>₦ {item.value.toLocaleString()}</span>
+                            <span className='asset-dis-badge' style={{ backgroundColor: item?.color }}></span>
+                            <span>{item?.text}</span>
+                            <span style={{ paddingLeft: '1em' }}>₦ {item?.value.toLocaleString()}</span>
                         </li>
                     ))}
                 </ul>
             </div>
-            <ChartDoughnutAndPie
-                isLightMode={isLightMode}
-                earnings={earnings}
-                withdrawals={withdrawnAmount}
-                canWithdraw={earnings - withdrawnAmount}
-            />
+
+            <div className='asset-dis-chart'>
+            {earnings &&
+                <ChartDoughnutAndPie
+                    isLightMode={isLightMode}
+                    first={earnings}
+                />
+            }
+
+            {canWithdrawAmount &&
+                <ChartDoughnutAndPie
+                    isLightMode={isLightMode}
+                    second={canWithdrawAmount}
+                />
+            }
+            </div>
         </CCardBody>
         </>
     )

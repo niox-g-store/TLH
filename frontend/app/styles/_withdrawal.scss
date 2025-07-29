@@ -1,15 +1,18 @@
 .withdrawal {
+  .row {
+    @include media-breakpoint-up(md) {
+        justify-content: center;
+    }
+  }
   .col {
-
     @include media-breakpoint-down(md) {
       width: 50% !important;
+      max-width: 100%;
     }
+    width: 100% !important;
+    flex: 1;
+    max-width: 50%;
     .asset-dis {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
       .withdrawal-title-and-desc {
         li {
             padding: 8px 0;
@@ -19,10 +22,33 @@
             }
         }
       }
+      .asset-dis-chart {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+      }
     }
     width: 100% !important;
     .chart-wrapper {
-      height: 10em;
+      height: 8em;
     }
   }
+}
+
+
+.organizer-withdrawals {
+    .asset-dis {
+        .asset-dis-chart {
+            flex-direction: row !important;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            .chart-wrapper {
+                height: 8em;
+            }
+        }
+    }
 }
