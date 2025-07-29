@@ -23,6 +23,8 @@
        enum: [24, 48, 72, 96],
        default: 24
      },
+     mainlandDeliveryFee: { type: Number, default: 0 },
+     islandDeliveryFee: { type: Number, default: 0 },
      createdAt: { type: Date, default: Date.now },
      updatedAt: { type: Date, default: Date.now }
    });
