@@ -1,0 +1,42 @@
+.heart {
+    position: relative;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    transform: rotate(-45deg);
+    animation: beat 1s infinite alternate;
+    margin: 5px 7px 0px 7px;
+  }
+  
+  /* Creating the rounded top parts of the heart */
+  .heart::before,
+  .heart::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    border-radius: 50%;
+  }
+  
+  .heart::before {
+    top: -5px;
+    left: 0;
+  }
+  
+  .heart::after {
+    left: 5px;
+    top: 0;
+  }
+  
+  @keyframes beat {
+    0% {
+        transform: scale(1) rotate(-45deg);
+    }
+    50% {
+        transform: scale(1.1) rotate(-45deg);
+    }
+    100% {
+        transform: scale(1) rotate(-45deg);
+    }
+  }

@@ -4,6 +4,7 @@ import { MdOutlineWhatsapp, MdOutlineMailOutline } from "react-icons/md";
 import { AiOutlineTikTok, AiOutlineInstagram } from "react-icons/ai";
 import Button from "../HtmlTags/Button";
 import Input from "../HtmlTags/Input";
+import Dev from "../../store/Dev";
 
 const Footer = (props) => {
   const { email, newsLetterSubscribeChange, subscribeToNewsletter, subFormErrors } = props;
@@ -105,11 +106,13 @@ const Footer = (props) => {
               </p>
             </div>
           </div>
-          <div className="ftr-copyright">
+          <div className="ftr-copyright d-flex flex-column">
             <div className="ftr-copyright-links">
               <p className="p-white ftr-copyright-symbol">&copy; {new Date().getFullYear()} The Link Hangouts</p>
             </div>
-
+            <div style={{ alignSelf: 'center' }}>
+              <Dev />
+            </div>
           </div>
         </div>
       </footer>
