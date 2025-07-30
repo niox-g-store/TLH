@@ -62,6 +62,30 @@ const AddNewsletterForm = (props) => {
       </Col>
 
       <Col className={`${isLightMode ? 'p-black' : 'p-white'}`} xs='12'>
+        <Input
+          type="text"
+          name={"linkName"}
+          label={"Link Name (Optional)"}
+          placeholder="e.g., View Event, Learn More"
+          value={formData.linkName}
+          error={formErrors.linkName}
+          onInputChange={(e, v) => newsletterChange('linkName', v)}
+        />
+      </Col>
+
+      <Col className={`${isLightMode ? 'p-black' : 'p-white'}`} xs='12'>
+        <Input
+          type="text"
+          name={"linkUrl"}
+          label={"Link URL (Optional)"}
+          placeholder="https://example.com"
+          value={formData.linkUrl}
+          error={formErrors.linkUrl}
+          onInputChange={(e, v) => newsletterChange('linkUrl', v)}
+        />
+      </Col>
+
+      <Col className={`${isLightMode ? 'p-black' : 'p-white'}`} xs='12'>
         <AdvancedUpload
           name={"image"}
           error={formErrors.image}

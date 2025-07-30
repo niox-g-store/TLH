@@ -9,11 +9,13 @@ import { BackIcon } from '../../../components/Common/Icons/Back';
 import Input from '../../../components/Common/HtmlTags/Input';
 import { Navigate } from 'react-router-dom';
 import LoadingIndicator from '../../../components/store/LoadingIndicator';
+import { CModal, CModalBody, CModalHeader, CButton } from '@coreui/react';
 
 const OrganizerSignUp = (props) => {
   const {
     organizerSignupFormData, authenticated, organizerSignupSubmit, comparePasswords,
-    formErrors, isLoading, isSubscribed, organizerSignupChange, subscribeChange
+    formErrors, isLoading, isSubscribed, organizerSignupChange, subscribeChange,
+    showOtpModal, setOtpModal, otpCode, otpChange, verifyOtp, otpErrors
   } = props;
 
   if (authenticated) return <Navigate to='/dashboard' replace/>;
@@ -21,7 +23,12 @@ const OrganizerSignUp = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     organizerSignupSubmit();
-  }
+  };
+
+  const handleOtpSubmit = (e) => {
+    e.preventDefault();
+    verifyOtp(true);
+  };
 
   return (
     <>
@@ -180,6 +187,56 @@ const OrganizerSignUp = (props) => {
             </form>
           </div>
         </div>
+
+        {/* OTP Modal */}
+        <CModal visible={showOtpModal} onClose={() => setOtpModal(false)} alignment="center">
+          <CModalHeader>
+            <h5>Verify Your Email</h5>
+          </CModalHeader>
+          <CModalBody>
+            <div className="text-center">
+              <p className="mb-3">
+                We've sent a 6-digit verification code to your email address. Please enter it below to complete your organizer registration.
+              </p>
+              
+              <form onSubmit={handleOtpSubmit}>
+                <Input
+                  type="text"
+                  name="otp"
+                  placeholder="Enter 6-digit code"
+                  value={otpCode}
+                  error={otpErrors.otp}
+                  onInputChange={(name, value) => otpChange(value)}
+                  className="mb-3"
+                  style={{ textAlign: 'center', fontSize: '18px', letterSpacing: '2px' }}
+                />
+                
+                <div className="d-flex gap-2 justify-content-center">
+                  <button
+                    type="submit"
+                    disabled={!otpCode || otpCode.length !== 6 || isLoading}
+                    style={{
+                      backgroundColor: 'var(--primary_color)',
+                      color: 'white',
+                      border: 'none',
+                      padding: '10px 20px',
+                      borderRadius: '5px',
+                      cursor: otpCode && otpCode.length === 6 ? 'pointer' : 'not-allowed'
+                    }}
+                  >
+                    {isLoading ? 'Verifying...' : 'Verify Code'}
+                  </button>
+                  <CButton 
+                    color="secondary" 
+                    onClick={() => setOtpModal(false)}
+                  >
+                    Cancel
+                  </CButton>
+                </div>
+              </form>
+            </div>
+          </CModalBody>
+        </CModal>
       </div>
     </>
   );
@@ -191,7 +248,10 @@ const mapStateToProps = (state) => {
     formErrors: state.signup.formErrors,
     isLoading: state.signup.isLoading,
     isSubmitting: state.signup.isSubmitting,
-    isSubscribed: state.signup.isSubscribed
+    isSubscribed: state.signup.isSubscribed,
+    showOtpModal: state.signup.showOtpModal,
+    otpCode: state.signup.otpCode,
+    otpErrors: state.signup.otpErrors
   };
 };
 

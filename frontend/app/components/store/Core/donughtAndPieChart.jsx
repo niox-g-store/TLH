@@ -40,7 +40,7 @@ const ChartDoughnutAndPie = (props) => {
       {
         backgroundColor: [backgroundColor],
         borderColor: isLightMode ? '#9172EC' : '#000000',
-        data: [first ? first : second],
+        data: [first ? first : second ? second: third],
       },
     ],
   }

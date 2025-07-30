@@ -45,6 +45,7 @@ const withdrawalReducer = (state = initialState, action) => {
         withdrawalTotalPages: 1,
         withdrawals: [],
         withdrawalPaginated: [],
+        withdrawnAmount: 0
       }
     case SET_WITHDRAWAL_COMMISSION:
       return {

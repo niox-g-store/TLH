@@ -194,10 +194,10 @@ router.put('/',
         update.bankAccountNumber = account_number
         update.bankName = bankName
         update.bankAccountName = account_name
-        const { id } = await createTransferRecipient(
+        const { data } = await createTransferRecipient(
           update.bankAccountName, update.bankAccountNumber, bankCode
         )
-        update.recipientId = id
+        update.recipientId = data.recipient_code
       }
     }
     userDoc = await User.findByIdAndUpdate(userId, update, { new: true })
@@ -215,10 +215,10 @@ router.put('/',
         organizerUpdate.bankName = update.bankName,
         organizerUpdate.bankAccountName = update.bankAccountName
         // create a new transfer recipient, collect id from req.data
-        const { id } = await createTransferRecipient(
+        const { data } = await createTransferRecipient(
           update.bankAccountName, update.bankAccountNumber, bankCode
         )
-        organizerUpdate.recipientId = id
+        organizerUpdate.recipientId = data.recipient_code
       }
       if (Object.keys(organizerUpdate).length > 0) {
         const organizer = await Organizer.findByIdAndUpdate(userDoc.organizer, organizerUpdate, { new: true });

@@ -81,11 +81,14 @@ const UserSchema = new mongoose.Schema({
 
   resetPasswordToken: { type: String },
   resetPasswordExpires: { type: Date },
+  otpCode: { type: String },
+  otpExpires: { type: Date },
+  hasCompleteRegistration: { type: Boolean, default: true },
+
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });
 
-// Automatically create a slug from the title before saving
 UserSchema.pre('save', async function (next) {
   if (this.userName) {
     this.userName = this.userName.replace(/\s+/g, ''); // remove all spaces

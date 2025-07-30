@@ -405,6 +405,7 @@ router.post('/create',
       let {
         title, content,
         eventId, shouldEmailContainUserName = false,
+        linkName, linkUrl
       } = req.body;
       eventId = eventId === 'null' ? null : eventId
       if (!title || !content) {
@@ -426,6 +427,8 @@ router.post('/create',
         event: event?._id || null,
         organizer: organizer?._id,
         shouldEmailContainUserName,
+        linkName: linkName || null,
+        linkUrl: linkUrl || null
       });
 
       const savedCampaign = await newCampaign.save();

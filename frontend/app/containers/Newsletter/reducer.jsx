@@ -21,7 +21,9 @@ const initialState = {
     title: '',
     description: '',
     image: '',
-    shouldEmailContainUserName: false
+    shouldEmailContainUserName: false,
+    linkName: '',
+    linkUrl: ''
   },
   formErrors: {},
   eventId: null,
@@ -65,7 +67,9 @@ const newsletterReducer = (state = initialState, action) => {
           title: '',
           description: '',
           image: '',
-          shouldEmailContainUserName: false
+          shouldEmailContainUserName: false,
+          linkName: '',
+          linkUrl: ''
         },
         formErrors: {},
         eventId: null

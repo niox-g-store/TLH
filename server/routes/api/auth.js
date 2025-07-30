@@ -20,6 +20,10 @@ const QRCode = require('qrcode');
 const speakeasy = require('speakeasy');
 const maintenance = require('../../middleware/maintenance');
 
+const generateOTP = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
 const normalizeCompanyName = (str) => {
   if (!str) return '';
   return str.replace(/\s+/g, '').toLowerCase();
@@ -48,6 +52,102 @@ const checkIfEmail = (input) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(input.trim());
 };
+
+router.post('/verify-otp', maintenance, async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return res.status(400).json({ error: 'Email and OTP are required.' });
+    }
+
+    const user = await User.findOne({ 
+      email: email.toLowerCase().trim(),
+      otpCode: otp,
+      otpExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ error: 'Invalid or expired OTP code.' });
+    }
+
+    // Clear OTP fields
+    user.otpCode = undefined;
+    user.otpExpires = undefined;
+    user.hasCompleteRegistration = true;
+    await user.save();
+
+    const payload = { id: user.id };
+    const token = jwt.sign(payload, secret, { expiresIn: tokenLife });
+
+    await mailgun.sendEmail(user.email, 'signup', user);
+
+    return res.status(200).json({
+      success: true,
+      token: `Bearer ${token}`,
+      user: {
+        id: user.id,
+        name: user.name,
+        userName: user.userName,
+        email: user.email,
+        role: user.role,
+        banned: user.banned
+      }
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: 'Your request could not be processed. Please try again.'
+    });
+  }
+});
+
+router.post('/verify-otp/organizer', maintenance, async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return res.status(400).json({ error: 'Email and OTP are required.' });
+    }
+
+    const user = await User.findOne({ 
+      email: email.toLowerCase().trim(),
+      otpCode: otp,
+      otpExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ error: 'Invalid or expired OTP code.' });
+    }
+
+    // Clear OTP fields
+    user.otpCode = undefined;
+    user.otpExpires = undefined;
+    user.hasCompleteRegistration = true;
+    await user.save();
+
+    const payload = { id: user.id };
+    const token = jwt.sign(payload, secret, { expiresIn: tokenLife });
+
+    await mailgun.sendEmail(user.email, 'organizer-signup', user);
+
+    return res.status(200).json({
+      success: true,
+      token: `Bearer ${token}`,
+      user: {
+        id: user.id,
+        companyName: user.companyName,
+        userName: user.userName,
+        email: user.email,
+        role: user.role,
+        banned: user.banned
+      }
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: 'Your request could not be processed. Please try again.'
+    });
+  }
+});
 
 router.post('/confirm-twofa', maintenance, async (req, res) => {
   try {
@@ -222,14 +322,17 @@ router.post('/register', maintenance, async (req, res) => {
     if (existingUser?.banned) {
       return res.status(400).json({ error: 'You cannot sign up at this time' })
     }
-    if (existingUser) {
+    if (existingUser && existingUser.hasCompleteRegistration) {
       return res
         .status(400)
         .json({ error: 'That email address is already in use.' });
+    } else if (existingUser && !existingUser.hasCompleteRegistration) {
+      // delete existing user if they exist but have not complete verfication
+      await User.findByIdAndDelete(existingUser._id)
     }
 
     const existingUserName = await User.findOne({ userName });
-    if (existingUserName) {
+    if (existingUserName && existingUserName.hasCompleteRegistration) {
       return res.status(400).json({ error: 'That username is already in use.' })
     }
 
@@ -249,7 +352,10 @@ router.post('/register', maintenance, async (req, res) => {
       email,
       name,
       userName,
-      password
+      password,
+      otpCode: generateOTP(),
+      hasCompleteRegistration: false,
+      otpExpires: Date.now() + 10 * 60 * 1000 // 10 minutes
     });
 
     const salt = await bcrypt.genSalt(10);
@@ -257,8 +363,17 @@ router.post('/register', maintenance, async (req, res) => {
 
     user.password = hash;
     const registeredUser = await user.save();
+    await mailgun.sendEmail(user.email, 'otp-verification', { 
+      name: user.name, 
+      otpCode: user.otpCode 
+    });
 
-    const payload = {
+    return res.status(200).json({
+      success: true,
+      message: 'OTP sent to your email. Please verify to complete registration.'
+    });
+
+    /*const payload = {
       id: registeredUser.id
     };
 
@@ -282,7 +397,7 @@ router.post('/register', maintenance, async (req, res) => {
         role: registeredUser.role,
         banned: registeredUser.banned
       }
-    });
+    });*/
   } catch (error) {
     return res.status(400).json({
       error: 'Your request could not be processed. Please try again.'
@@ -323,15 +438,23 @@ router.post('/register/organizer', maintenance, async (req, res) => {
     if (existingUser?.banned) {
       return res.status(400).json({ error: 'You cannot sign up at this time' })
     }
-    if (existingUser) {
+    if (existingUser && existingUser.hasCompleteRegistration) {
       return res
         .status(400)
         .json({ error: 'That email address is already in use.' });
+    } else if (existingUser && !existingUser.hasCompleteRegistration) {
+      // check if organizer exists to avoid duplicate
+      const organizerExists = await Organizer.findOne({ email: existingUser.email })
+      if (organizerExists) {
+        await Organizer.findByIdAndDelete(organizerExists._id)
+      }
+      // user exists, not complete verification, delete prev record
+      await User.findByIdAndDelete(existingUser._id)
     }
 
     
     const existingUserName = await User.findOne({ userName });
-    if (existingUserName) {
+    if (existingUserName && existingUser.hasCompleteRegistration) {
       return res.status(400).json({ error: 'That username is already in use.' })
     }
     const normalizedIncoming = normalizeCompanyName(companyName);
@@ -358,6 +481,7 @@ router.post('/register/organizer', maintenance, async (req, res) => {
       subscribed = true;
     }
 
+
     const organizer = new Organizer({
       email,
       companyName,
@@ -372,7 +496,10 @@ router.post('/register/organizer', maintenance, async (req, res) => {
       userName,
       password,
       role: ROLES.Organizer,
-      organizer
+      organizer,
+      hasCompleteRegistration: false,
+      otpCode: generateOTP(),
+      otpExpires: Date.now() + 10 * 60 * 1000 // 10 minutes
     });
 
     const salt = await bcrypt.genSalt(10);
@@ -381,7 +508,18 @@ router.post('/register/organizer', maintenance, async (req, res) => {
     user.password = hash;
     const registeredUser = await user.save();
 
-    const payload = {
+    // Send OTP email
+    await mailgun.sendEmail(user.email, 'otp-verification', { 
+      name: user.companyName, 
+      otpCode: user.otpCode 
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'OTP sent to your email. Please verify to complete registration.'
+    });
+
+    /*const payload = {
       id: registeredUser.id
     };
 
@@ -405,7 +543,7 @@ router.post('/register/organizer', maintenance, async (req, res) => {
         role: registeredUser.role,
         banned: registeredUser.banned
       }
-    });
+    });*/
   } catch (error) {
     return res.status(400).json({
       error: 'Your request could not be processed. Please try again.'

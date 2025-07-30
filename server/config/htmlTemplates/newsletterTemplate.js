@@ -1,5 +1,5 @@
 const API_URL = "thelinkhangout.com/api"
-exports.orgCampaignTemplate = ( title, shouldEmailContainUserName, content, imageUrls, eventId ) => {
+exports.orgCampaignTemplate = ( title, shouldEmailContainUserName, content, imageUrls, eventId, linkName, linkUrl ) => {
   const resolvedRecipientName = shouldEmailContainUserName ? true : '';
   /* <h1 style="font-size: 24px; color: #333333; margin-bottom: 15px; font-weight: bold;">
         ${title}
@@ -95,6 +95,21 @@ exports.orgCampaignTemplate = ( title, shouldEmailContainUserName, content, imag
 
           ${imagesHtml}
 
+          ${linkName && linkUrl ? `
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${linkUrl}" 
+                 style="background-color: #9172EC; 
+                        color: white; 
+                        padding: 12px 24px; 
+                        text-decoration: none; 
+                        border-radius: 10px; 
+                        display: inline-block;
+                        font-weight: bold;">
+                ${linkName}
+              </a>
+            </div>
+          ` : ''}
+
           <p style="font-size: 14px; color: #777777; margin-top: 30px; text-align: center;">
             Thank you for being a part of our community.
           </p>
@@ -116,7 +131,7 @@ exports.orgCampaignTemplate = ( title, shouldEmailContainUserName, content, imag
 };
 
 
-exports.adminCampaignTemplate = ( title, shouldEmailContainUserName, content, imageUrls, eventId ) => {
+exports.adminCampaignTemplate = ( title, shouldEmailContainUserName, content, imageUrls, eventId, linkName, linkUrl ) => {
   const resolvedRecipientName = shouldEmailContainUserName ? true : '';
 
   const imagesHtml = imageUrls && imageUrls.length > 0
@@ -214,6 +229,21 @@ exports.adminCampaignTemplate = ( title, shouldEmailContainUserName, content, im
           >${content}</div>
 
           ${imagesHtml}
+
+          ${linkName && linkUrl ? `
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${linkUrl}" 
+                 style="background-color: #9172EC; 
+                        color: white; 
+                        padding: 12px 24px; 
+                        text-decoration: none; 
+                        border-radius: 10px; 
+                        display: inline-block;
+                        font-weight: bold;">
+                ${linkName}
+              </a>
+            </div>
+          ` : ''}
 
           <p style="font-size: 14px; color: #777777; margin-top: 30px; text-align: center;">
             Thank you for being a part of our community.

@@ -9,7 +9,7 @@ import TicketRevenueBreakdown from "../../../store/TicketRevenueBreakdown";
 import { GoBack } from "../../../../containers/goBack/inedx";
 import { useNavigate } from "react-router-dom";
 
-const WithdrawViewer = ({ isLoading, isLightMode, withdrawal, initialiseWithdrawal }) => {
+const WithdrawViewer = ({ isLoading, isLightMode, withdrawal = {}, initialiseWithdrawal }) => {
   const statusColor = {
     pending: 'warning',
     processing: 'info',
@@ -29,10 +29,13 @@ const WithdrawViewer = ({ isLoading, isLightMode, withdrawal, initialiseWithdraw
         </div>
 
       <div className="mb-3">
-        <strong>Status:</strong> <CBadge color={statusColor[withdrawal.status] || 'secondary'}>{withdrawal.status}</CBadge>
+        <strong>Status:</strong> <CBadge color={statusColor[withdrawal?.status] || 'secondary'}>{withdrawal?.status}</CBadge>
       </div>
       <div className="mb-3">
-        <strong>Amount:</strong> ₦{withdrawal.amount?.toLocaleString()}
+        <strong>Amount:</strong> ₦{withdrawal?.amount !== withdrawal?.commission ? `${(withdrawal?.amount).toLocaleString()} (This is an organizer expected payout you cannot withdraw this))` : `${(withdrawal?.amount || 0).toLocaleString()} (you can withdraw this)` }
+      </div>
+      <div className="mb-3">
+        <strong>Commission:</strong> ₦{withdrawal?.amount !== withdrawal?.commission ? `${(withdrawal?.commission).toLocaleString()} (you can withdraw commission only)` : 0}
       </div>
       <div className="mb-3">
         <strong>Processed At:</strong> { withdrawal?.processedAt ? new Date(withdrawal?.processedAt).toLocaleString() : 'Not processed'}
@@ -68,7 +71,7 @@ const WithdrawViewer = ({ isLoading, isLightMode, withdrawal, initialiseWithdraw
                 <th>Quantity</th>
                 <th>Price</th>
                 <th>Discount</th>
-                <th>Expected Payout (w commission)</th>
+                {/*<th>Expected Payout (w commission)</th>*/}
                 <th>Revenue Breakdown</th>
               </tr>
             </thead>
@@ -86,11 +89,11 @@ const WithdrawViewer = ({ isLoading, isLightMode, withdrawal, initialiseWithdraw
                   <td>{ticket?.quantity}</td>
                   <td>₦{ticket?.price?.toLocaleString()}</td>
                   <td>{ticket?.discount ? `₦${ticket.discountPrice?.toLocaleString()}` : 'None'}</td>
-                  <td>₦{ticket?.expectedPayout?.toLocaleString()}</td>
+                  {/*<td>₦{ticket?.expectedPayout?.toLocaleString()}</td>*/}
                   <td>{<TicketRevenueBreakdown
                         price={p} showRevenue={false}
                         isLightMode={isLightMode}
-                        commissionPercent={ getCommission}
+                        commissionPercent={withdrawal?.amount !== withdrawal?.commission ? getCommission : 0}
                       />}
                   </td>
                 </tr>
@@ -154,7 +157,7 @@ class WithdrawView extends React.PureComponent {
 
 const mapStateToProps = state => ({
   withdrawal: state.withdraw.withdrawal,
-  isLoading: state.withdraw.isLoading,
+  isLoading: state.withdraw.withdrawalIsLoading,
   isLightMode: state.dashboard.isLightMode,
   user: state.account.user,
 });

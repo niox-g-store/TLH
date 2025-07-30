@@ -147,6 +147,7 @@ export const fetchWithdrawalsHistory = (page = 1) => async (dispatch) => {
                    withdrawals: data.withdrawals
                  }
       });
+      dispatch({ type: SET_WITHDRAWN_AMOUNT, payload: data.withdrawnAmount });
     }
   } catch (error) {
     handleError(error, dispatch);

@@ -103,6 +103,23 @@ const OrderViewer = (props) => {
                     <strong>Date:</strong> {order?.createdAt ? formatDate(order.createdAt) : 'N/A'}
                   </CCol>
                 </CRow>
+
+                {hasProducts && order?.productStatus && (
+                  <CRow className='mb-2'>
+                    <CCol><strong>Product Status:</strong></CCol>
+                    <CCol className='text-end'>
+                      <span style={{ 
+                        color: order.productStatus === 'delivered' ? '#28a745' : 
+                              order.productStatus === 'shipped' ? '#ffc107' : '#6c757d',
+                        fontWeight: 'bold',
+                        textTransform: 'capitalize'
+                      }}>
+                        {order.productStatus}
+                      </span>
+                    </CCol>
+                  </CRow>
+                )}
+                
                   <div className='mt-2'>
                     <CRow>
                       <CCol><strong>SubTotal:</strong></CCol>

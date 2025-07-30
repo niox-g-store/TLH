@@ -11,6 +11,7 @@ const orderQueue = require('../../queues/orderQueue');
 const { initiateTransfer } = require('../../utils/paystack');
 const mailgun = require('../../services/mailgun');
 const organizerBanned = require('../../middleware/organizerBanned');
+const { v4: uuidv4 } = require('uuid');
 
 router.get('/', auth, role.check(ROLES.Admin), async (req, res) => {
   try {
@@ -23,7 +24,8 @@ router.get('/', auth, role.check(ROLES.Admin), async (req, res) => {
       .sort({ requestedAt: -1 });
     allWithdrawals = await Promise.all(allWithdrawals.map(updateCanWithdrawDate));
 
-    const adminWithdrawals = allWithdrawals.filter(w => w.user?.role === ROLES.Admin);
+    // const adminWithdrawals = allWithdrawals.filter(w => w.user?.role === ROLES.Admin);
+    const adminWithdrawals = allWithdrawals;
     let earnings = 0;
     let canWithdrawAmount = 0;
 
@@ -179,11 +181,20 @@ router.get('/history', auth, role.check(ROLES.Admin, ROLES.Organizer), async (re
       .sort({ requestedAt: -1 });
 
     const paginated = allCompletedWithdrawals.slice(skip, skip + limit);
+    let withdrawnAmount = 0;
+    for (const items of allCompletedWithdrawals) {
+      if (isAdmin) {
+        withdrawnAmount += items.commission
+      } else {
+        withdrawnAmount += items.amount
+      }
+    }
 
     return res.status(200).json({
       withdrawals: paginated,
       total: allCompletedWithdrawals.length,
       page,
+      withdrawnAmount,
       pageCount: Math.ceil(allCompletedWithdrawals.length / limit)
     });
   } catch (err) {
@@ -197,104 +208,96 @@ router.post(
   role.check(ROLES.Admin, ROLES.Organizer),
   organizerBanned,
   async (req, res) => {
-  try {
-    let { withdrawalId, orderId, organizerId } = req.body;
-    const isAdmin = req.user.role === ROLES.Admin
-    const withdrawal = await Withdrawal.findById(withdrawalId).populate('user');
+    try {
+      let { withdrawalId, orderId, organizerId } = req.body;
+      const isAdmin = req.user.role === ROLES.Admin;
 
-    if (!withdrawal) return res.status(400).json({ error: 'Withdrawal not found' });
+      const withdrawalIds = Array.isArray(withdrawalId) ? withdrawalId : [withdrawalId];
+      const now = new Date();
+      const initiatedWithdrawals = [];
 
-    if (!isAdmin && !withdrawal.user._id.equals(req.user._id)) {
-      return res.status(400).json({ error: 'You are not authorized to access this withdrawal' });
-    }
+      let organizer = null;
+      let orderDoc = {};
+      if (organizerId) {
+        organizer = await Organizer.findById(organizerId);
+      }
+      if (!organizer) {
+        organizer = await User.findById(req.user._id);
+      }
 
-    const now = new Date();
-    if (withdrawal.canWithdrawDate > now || withdrawal.canWithdraw === false) {
-      return res.status(400).json({ error: 'Not eligible to withdraw yet' });
-    }
-    console.log(withdrawal.user)
+      for (const id of withdrawalIds) {
+        const withdrawal = await Withdrawal.findById(id).populate('user');
+        if (!withdrawal) continue;
 
-    const { bankAccountNumber, bankName, bankAccountName } = withdrawal.user;
-    if (!bankAccountNumber || !bankName || !bankAccountName) {
-      return res.status(400).json({ error: 'Bank details not set on user profile' });
-    }
-
-    // find order
-    const orderDoc = await Order.findById(orderId)
-      .populate('events')
-      .populate('tickets')
-      .populate({
-        path: 'cart',
-        populate: {
-          path: 'tickets.eventId',
+        // Access control
+        if (!isAdmin && !withdrawal.user._id.equals(req.user._id)) {
+          return res.status(403).json({ error: 'Unauthorized withdrawal access' });
         }
-      })
-    // === Organizer Logic === to filter events and tickets from order that belong to organizer
-    // admin can initiate withdrawal using organizerId
-    organizerId = organizerId ? organizerId.toString() : req.user._id.toString();
-    const organizer = await Organizer.findById(organizerId ? organizerId : req.user._id);
 
-    /*const filteredEvents = orderDoc.events.filter(
-        (event) => event.user.toString() === organizerId
-    );*/
+        // Eligibility check
+        if (withdrawal.canWithdrawDate > now || withdrawal.canWithdraw === false) {
+          return res.status(400).json({ error: 'Not eligible to withdraw yet' });
+        }
 
-    const filteredTickets = orderDoc.cart?.tickets?.filter(
-        (ticket) =>
-            ticket.eventId &&
-            ticket.eventId.user &&
-            ticket.eventId.user.toString() === organizerId
-    );
-    // get all expected payout from order.cart.tickets
-    const expectedPayout = filteredTickets.reduce((sum, item) => {
-        const itemPrice = item.expectedPayout
-        return sum + itemPrice;
-    }, 0);
-    orderDoc.expectedPayout = expectedPayout
+        const { bankAccountNumber, bankName, bankAccountName } = withdrawal.user;
+        if (!bankAccountNumber || !bankName || !bankAccountName) {
+          return res.status(400).json({ error: 'Bank details not set on user profile' });
+        }
 
-    withdrawal.requestedAt = now;
-    withdrawal.reference = UUID.uuidv4()
+        // Finalize withdrawal
+        withdrawal.requestedAt = now;
+        withdrawal.reference = uuidv4();
+        withdrawal.status = 'processing';
+        await withdrawal.save();
+        
+        const amount = organizerId ? withdrawal.amount : withdrawal.commission;
 
-    withdrawal.status = 'processing';
-    await withdrawal.save();
-    // call paystack here to handle sending money to the recipient
-    await initiateTransfer( expectedPayout, withdrawal.reference, organizer.recipientId )
+        await initiateTransfer(amount, withdrawal.reference, organizer.recipientId);
 
-    // send email to admin that organizer has requested a withdrawal
-    const adminEmails = await User.find({ role: ROLES.Admin })
-    await orderQueue.add( 'send-admin-email', { adminEmails, organizer, orderDoc } )
+        initiatedWithdrawals.push(withdrawal);
+        // Notify admin if initiated by non-admin user
+        if (!isAdmin && initiatedWithdrawals.length > 0) {
+          const adminEmails = await User.find({ role: ROLES.Admin });
+          await orderQueue.add('send-admin-email', {
+            adminEmails,
+            organizer,
+            withdraw: withdrawal,
+            order: { expectedPayout: withdrawal.amount }
+          });
+        }
+      }
 
 
-    return res.status(200).json(
-        { message: `Your withdrawal has been successfully initiated.
-                    You will receive email notifications regarding the
-                    status and updates of your withdrawal`,
-          withdrawal
-        });
-  } catch (err) {
-    console.log(err)
-    return res.status(400).json({ error: 'Server error initializing withdrawal' });
+      return res.status(200).json({
+        message: `Your withdrawal${initiatedWithdrawals.length > 1 ? 's have' : ' has'} been successfully initiated.
+                  You will receive email notifications regarding the status and updates.`,
+        withdrawals: initiatedWithdrawals
+      });
+
+    } catch (err) {
+      return res.status(400).json({ error: 'Server error initializing withdrawal' });
+    }
   }
-});
+);
 
 // set a withdrawal webhook url to accept withdrawal reference and status
 // to update withdrawal status, if withdrawal failed, retry again with same
 // reference to avoid duplicate withdrawals
 router.post('/verify-endpoint', async(req, res) => {
     try {
-      console.log("ENDPOINT STARTED")
-      console.log(req.body)
         const { data } = req.body;
-        const { reference, status, amount } = data;
+        const { reference, status, amount } = data.transfers[0];
         const now = new Date();
 
         const withdrawal = await Withdrawal.findOne({ reference })
-          .populate('user.organizer')
+          .populate('user');
+        const organizer = await Organizer.findById(withdrawal.user.organizer)
         const oppData = {
           withdrawal,
-          organizer: withdrawal.user.organizer,
+          organizer: organizer ? organizer : null,
           order: { totalExpectedPayout: amount },
         }
-        if (status === 'success') {
+        if (status === 'success' || status === 'received') {
             // successfuly transfer update withdrwal.status
             if (withdrawal) {
                 withdrawal.status = 'completed';
@@ -302,18 +305,22 @@ router.post('/verify-endpoint', async(req, res) => {
                 await withdrawal.save();
             }
             // send success email to organizer
-            await mailgun.sendEmail(withdrawal.user.email, 'organizer-withdraw-successful', oppData)
-            return;
+            if (organizer) {
+              await mailgun.sendEmail(withdrawal.user.email, 'organizer-withdraw-successful', oppData)
+            }
+          return res.status(200)
         } else if (status === 'failed' || status === 'reversed') {
             if (withdrawal) {
                 withdrawal.status = 'failed';
                 await withdrawal.save();
             }
             // send failed email to organizer
-            await mailgun.sendEmail(withdrawal.user.email, 'organizer-withdraw-failed', oppData)
-            return;
+            if (organizer) {
+              await mailgun.sendEmail(withdrawal.user.email, 'organizer-withdraw-failed', oppData)
+            }
+          return res.status(400)
         }
-        
+        return res.status(200)
     } catch (error) {
         return res.status(400).json({ error: 'error verifying transfer status' })
     }

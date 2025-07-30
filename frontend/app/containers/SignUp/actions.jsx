@@ -15,8 +15,64 @@ import {
   SUBSCRIBE_CHANGE,
   SET_SIGNUP_FORM_ERRORS,
   COMPARE_PASSWORD,
-  ORGANIZER_SIGNUP_CHANGE
+  ORGANIZER_SIGNUP_CHANGE,
+  SET_OTP_MODAL,
+  OTP_CHANGE,
+  VERIFY_OTP,
+  SET_OTP_ERRORS
 } from './constants';
+
+export const setOtpModal = (value) => {
+  return {
+    type: SET_OTP_MODAL,
+    payload: value
+  };
+};
+
+export const otpChange = (value) => {
+  return {
+    type: OTP_CHANGE,
+    payload: value
+  };
+};
+
+export const verifyOtp = (isOrganizer = false) => {
+  return async (dispatch, getState) => {
+    try {
+      dispatch({ type: SET_SIGNUP_SUBMITTING, payload: true });
+      dispatch({ type: SET_SIGNUP_LOADING, payload: true });
+
+      const { otpCode, tempUserData } = getState().signup;
+      
+      if (!otpCode || otpCode.length !== 6) {
+        return dispatch({ type: SET_OTP_ERRORS, payload: { otp: 'Please enter a valid 6-digit code' } });
+      }
+
+      const endpoint = isOrganizer ? '/auth/verify-otp/organizer' : '/auth/verify-otp';
+      const response = await axios.post(`${API_URL}${endpoint}`, {
+        email: tempUserData.email,
+        otp: otpCode
+      });
+
+      const successfulOptions = {
+        title: `You have signed up successfully!`,
+      };
+
+      localStorage.setItem('token', response.data.token);
+      setToken(response.data.token);
+      dispatch(setAuth());
+      dispatch(showNotification('success', successfulOptions.title));
+      dispatch({ type: SIGNUP_RESET });
+      dispatch(setOtpModal(false));
+    } catch (error) {
+      const title = `Invalid OTP code. Please try again.`;
+      handleError(error, dispatch, title);
+    } finally {
+      dispatch({ type: SET_SIGNUP_SUBMITTING, payload: false });
+      dispatch({ type: SET_SIGNUP_LOADING, payload: false });
+    }
+  };
+};
 
 export const signupChange = (name, value) => {
   let formData = {};
@@ -96,32 +152,25 @@ export const organizerSignupSubmit = () => {
         return dispatch({ type: SET_SIGNUP_FORM_ERRORS, payload: errors });
       }
 
-      dispatch({ type: SET_SIGNUP_SUBMITTING, payload: true });
       dispatch({ type: SET_SIGNUP_LOADING, payload: true });
 
       const user = {
         isSubscribed,
         ...newUser
       };
+      
       const response = await axios.post(`${API_URL}/auth/register/organizer`, user);
-
-      const successfulOptions = {
-        title: `You have signed up successfully!`,
-      };
-
-      localStorage.setItem('token', response.data.token);
-
-      setToken(response.data.token);
-
-      dispatch(setAuth());
-      dispatch(showNotification('success', successfulOptions.title));
-      dispatch({ type: SIGNUP_RESET });
+      
+      if (response.data.success) {
+        dispatch({ type: VERIFY_OTP, payload: user });
+        dispatch(setOtpModal(true));
+        dispatch(showNotification('success', 'OTP sent to your email. Please check and enter the code.'));
+      }
     } catch (error) {
       const title = `Please try to signup again!`;
       handleError(error, dispatch, title);
       return;
     } finally {
-      dispatch({ type: SET_SIGNUP_SUBMITTING, payload: false });
       dispatch({ type: SET_SIGNUP_LOADING, payload: false });
       return;
     }
@@ -194,7 +243,6 @@ export const signUpSubmit = () => {
         return dispatch({ type: SET_SIGNUP_FORM_ERRORS, payload: errors });
       }
 
-      dispatch({ type: SET_SIGNUP_SUBMITTING, payload: true });
       dispatch({ type: SET_SIGNUP_LOADING, payload: true });
 
       const user = {
@@ -202,28 +250,19 @@ export const signUpSubmit = () => {
         ...newUser
       };
       const response = await axios.post(`${API_URL}/auth/register`, user);
-      const userid = response.data.user.id
-
-      const successfulOptions = {
-        title: `You have signed up successfully!`,
-      };
-
-      localStorage.setItem('token', response.data.token);
-
-      setToken(response.data.token);
-
-      dispatch(setAuth());
-      dispatch(showNotification('success', successfulOptions.title));
-      dispatch({ type: SIGNUP_RESET });
+      
+      if (response.data.success) {
+        dispatch({ type: VERIFY_OTP, payload: user });
+        dispatch(setOtpModal(true));
+        dispatch(showNotification('success', 'OTP sent to your email. Please check and enter the code.'));
+      }
     } catch (error) {
       const title = `Please try to signup again!`;
       handleError(error, dispatch, title);
       return;
     } finally {
-      dispatch({ type: SET_SIGNUP_SUBMITTING, payload: false });
       dispatch({ type: SET_SIGNUP_LOADING, payload: false });
       return;
     }
   };
 };
-

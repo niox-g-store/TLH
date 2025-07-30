@@ -4,7 +4,9 @@ import {
   FETCH_ORDERS,
   FETCH_USER_ORDERS,
   SET_DELETE_ORDER,
-  SET_SECOND_DISCOUNT
+  SET_SECOND_DISCOUNT,
+
+  UPDATE_ORDER_PRODUCT_STATUS
 } from './constants';
 import axios from 'axios';
 import { API_URL } from '../../constants';
@@ -31,6 +33,27 @@ export const setOrderLoading = (v) => {
     payload: v
   }
 }
+
+export const updateOrderProductStatus = (orderId, status) => {
+  return async (dispatch) => {
+    dispatch(setOrderLoading(true));
+    try {
+      const response = await axios.put(`${API_URL}/order/${orderId}/product-status`, { status });
+      
+      if (response.data.success) {
+        dispatch({
+          type: UPDATE_ORDER_PRODUCT_STATUS,
+          payload: { orderId, status }
+        });
+        dispatch(showNotification('success', `Order status updated to ${status}`));
+      }
+    } catch (error) {
+      handleError(error, dispatch);
+    } finally {
+      dispatch(setOrderLoading(false));
+    }
+  };
+};
 
 export const fetchOrders = () => {
   return async (dispatch) => {

@@ -498,7 +498,8 @@ router.get(
         paymentStatus: paymentDetails?.data.status || "",
         paymentDate: paymentDetails?.data.paid_at || "",
         paymentCurrency: paymentDetails?.data.currency || "",
-        products: orderDoc?.products
+        products: orderDoc?.products,
+        productStatus: orderDoc?.productStatus
       };
     }
 
@@ -510,7 +511,8 @@ router.get(
         paymentStatus: paymentDetails?.data?.status || "",
         paymentDate: paymentDetails?.data?.paid_at || "",
         paymentCurrency: paymentDetails?.data?.currency || "",
-        products: orderDoc?.products || []
+        products: orderDoc?.products || [],
+        productStatus: orderDoc?.productStatus
       };
     }
 
@@ -749,7 +751,53 @@ router.delete('/id/:id', auth, role.check(ROLES.Admin), async (req, res) => {
   }
 });
 
+// PUT /order/:id/product-status - Update product order status (Admin only)
+router.put('/:id/product-status', auth, role.check(ROLES.Admin), async (req, res) => {
+  try {
+    const orderId = req.params.id;
+    const { status } = req.body;
 
+    if (!['processing', 'shipped', 'delivered'].includes(status)) {
+      return res.status(400).json({ error: 'Invalid status' });
+    }
+
+    const order = await Order.findByIdAndUpdate(
+      orderId,
+      { productStatus: status },
+      { new: true }
+    ).populate({
+      path: 'cart',
+      populate: {
+        path: 'products'
+      }
+    });
+
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    // Send email notification to user
+    const productNames = order.cart.products.map(p => p.productName).join(', ');
+    const emailData = {
+      orderId: order._id,
+      productNames,
+      status,
+      customerName: order.user?.name || order.guest?.name || 'Customer'
+    };
+
+    await mailgun.sendEmail(order.billingEmail, 'product-status-update', emailData);
+
+    return res.status(200).json({
+      success: true,
+      message: `Order status updated to ${status}`,
+      order
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: 'Your request could not be processed. Please try again.'
+    });
+  }
+});
 
 const increaseQuantity = (tickets) => {
   const bulkOptions = tickets.map(item => ({

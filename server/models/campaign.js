@@ -35,6 +35,14 @@ const CampaignSchema = new Schema({
     type: Boolean,
     default: false
   },
+  linkName: {
+    type: String,
+    default: null
+  },
+  linkUrl: {
+    type: String,
+    default: null
+  },
   organizer: {
     type: Schema.Types.ObjectId,
     ref: 'Organizer',

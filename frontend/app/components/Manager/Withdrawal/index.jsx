@@ -26,7 +26,7 @@ const ManagerWithdrawForm = (props) => {
     withdrawnAmount,
     canWithdrawAmount,
     commission,
-    withdrawalPaginated,
+    withdrawalPaginated = [],
     withdrawalPage,
     withdrawalPageCount,
     fetchWithdrawals,
@@ -35,14 +35,16 @@ const ManagerWithdrawForm = (props) => {
 
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
-  const eventsPerPage = 10;
+  const withdrawalsPerPage = 10;
 
   const filteredWithdrawals = withdrawals.filter(w =>
     w?.order?._id?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const startIndex = (withdrawalPage - 1) * eventsPerPage;
-  const endIndex = startIndex + eventsPerPage;
+  // const startIndex = (withdrawalPage - 1) * withdrawalsPerPage;
+  // const endIndex = startIndex + withdrawalsPerPage;
+  const startIndex = 0;
+  const endIndex = withdrawalsPerPage;
   const currentWithdrawals = filteredWithdrawals.slice(startIndex, endIndex);
 
   const canWithdraw = currentWithdrawals.filter(w => w.canWithdraw === true);
@@ -135,7 +137,6 @@ const ManagerWithdrawForm = (props) => {
       ) : (
         <div className={`text-center py-12 ${isLightMode ? 'p-black' : 'p-white'}`}>
           <h3 className="text-2xl font-semibold mb-2">No withdrawals found</h3>
-          <p className="text-lg">Try adjusting your search criteria</p>
         </div>
       )}
 
@@ -143,7 +144,7 @@ const ManagerWithdrawForm = (props) => {
         isLightMode={isLightMode}
         data={withdrawalPaginated}
         totalPages={withdrawalPageCount}
-        onPageChange={fetchWithdrawals}
+        onPageChange={(v) => fetchWithdrawals(false, v)}
         startIndex={startIndex}
       />
     </div>
@@ -152,6 +153,7 @@ const ManagerWithdrawForm = (props) => {
 
 class ManagerWithdraw extends React.PureComponent {
   componentDidMount () {
+    this.props.resetWithdrawal();
     this.props.fetchWithdrawals();
   }
 
@@ -162,7 +164,7 @@ class ManagerWithdraw extends React.PureComponent {
 
 const mapStateToProps = state => ({
   withdrawals: state.withdraw.withdrawals,
-  withdrawIsLoading: state.withdraw.isLoading,
+  withdrawIsLoading: state.withdraw.withdrawalIsLoading,
   earnings: state.withdraw.earnings,
   withdrawnAmount: state.withdraw.withdrawnAmount,
   canWithdrawAmount: state.withdraw.canWithdrawAmount,

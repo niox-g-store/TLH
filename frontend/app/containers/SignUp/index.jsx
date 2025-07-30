@@ -17,7 +17,13 @@ const Signup = (props) => {
     comparePasswords,
     signupReset,
     authenticated,
-    googleSignup
+    googleSignup,
+    showOtpModal,
+    setOtpModal,
+    otpCode,
+    otpChange,
+    verifyOtp,
+    otpErrors
   } = props;
 
   if (authenticated) return <Navigate to='/dashboard' />;
@@ -36,6 +42,9 @@ const mapStateToProps = (state) => {
     isLoading: state.signup.isLoading,
     isSubmitting: state.signup.isSubmitting,
     isSubscribed: state.signup.isSubscribed,
+    showOtpModal: state.signup.showOtpModal,
+    otpCode: state.signup.otpCode,
+    otpErrors: state.signup.otpErrors
   };
 };
 

@@ -7,6 +7,7 @@ import Input from '../../../Common/HtmlTags/Input';
 import LoadingIndicator from '../../../store/LoadingIndicator';
 import { GoBack } from '../../../../containers/goBack/inedx';
 import { useNavigate } from 'react-router-dom';
+import AssetDistribution from '../../../store/AssetDistribution';
 
 const HistoryWithdrawalsForm = (props) => {
   const {
@@ -17,12 +18,12 @@ const HistoryWithdrawalsForm = (props) => {
     withdrawalPaginated,
     withdrawalPage,
     withdrawalPageCount,
-    fetchWithdrawalsHistory
+    fetchWithdrawalsHistory,
+    withdrawnAmount
   } = props;
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
-  const eventsPerPage = 10;
-
+  const withdrawalsPerPage = 10;
   const handleSearch = (name, value) => {
     setSearchTerm(value);
   };
@@ -30,18 +31,22 @@ const HistoryWithdrawalsForm = (props) => {
   const filtered = withdrawals.filter(w =>
     w?.order?._id?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  // const startIndex = (withdrawalPage - 1) * withdrawalsPerPage;
+  // const endIndex = startIndex + withdrawalsPerPage;
+  const startIndex = 0;
+  const endIndex = withdrawalsPerPage;
 
-  const startIndex = (withdrawalPage - 1) * eventsPerPage;
-  const endIndex = startIndex + eventsPerPage;
   const currentWithdrawals = filtered.slice(startIndex, endIndex);
 
   return (
-    <div data-aos='fade-up' className='container-lg px-4 d-flex flex-column mb-custom-5em withdrawal'>
+    <div data-aos='fade-up' className='container-lg px-4 d-flex flex-column mb-custom-5em withdrawal-history'>
       {withdrawIsLoading && <LoadingIndicator isLightMode={isLightMode} />}
       <div style={{ gap: '2em' }} className='d-flex justify-content-between'>
         <h2 className={`${isLightMode ? 'p-black' : 'p-white'}`}>Withdrawal History</h2>
         <GoBack text={"Go Back"} navigate={navigate}/>
       </div>
+
+      <AssetDistribution isLightMode={isLightMode} withdrawnAmount={withdrawnAmount}/>
 
       <div className="my-4">
         <Input
@@ -91,10 +96,11 @@ const mapStateToProps = state => ({
   withdrawals: state.withdraw.withdrawals,
   isLightMode: state.dashboard.isLightMode,
   user: state.account.user,
-  withdrawIsLoading: state.withdraw.isLoading,
+  withdrawIsLoading: state.withdraw.withdrawalIsLoading,
   withdrawalPage: state.withdraw.withdrawalPage,
   withdrawalPageCount: state.withdraw.withdrawalPageCount,
-  withdrawalPaginated: state.withdraw.withdrawalPaginated
+  withdrawalPaginated: state.withdraw.withdrawalPaginated,
+  withdrawnAmount: state.withdraw.withdrawnAmount
 });
 
 export default connect(mapStateToProps, actions)(HistoryWithdrawals);

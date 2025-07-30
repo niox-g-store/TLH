@@ -9,9 +9,9 @@ import {
 } from '@coreui/react';
 import Button from '../../Common/HtmlTags/Button';
 import { ROLES } from "../../../constants";
+import { formatDate } from '../../../utils/formatDate';
 
-
-const WithdrawalGridItem = ({ user, currentWithdrawals, isLightMode, initialiseWithdrawal }) => {
+const WithdrawalGridItem = ({ user, currentWithdrawals, isLightMode, initialiseWithdrawal, withdrawForOrg = false }) => {
   const navigate = useNavigate();
   const [countdowns, setCountdowns] = useState({});
 
@@ -35,6 +35,7 @@ const WithdrawalGridItem = ({ user, currentWithdrawals, isLightMode, initialiseW
         <thead className={`${isLightMode ? 'bg-gray-100' : 'bg-gray-800'}`}>
           <tr>
             <th className="px-4 py-2 text-left">Amount</th>
+            <th className="px-4 py-2 text-left">Commission</th>
             <th className="px-4 py-2 text-left">Status</th>
             <th className="px-4 py-2 text-left">Order ID</th>
             <th className="px-4 py-2 text-left">Ticket Qty</th>
@@ -47,6 +48,7 @@ const WithdrawalGridItem = ({ user, currentWithdrawals, isLightMode, initialiseW
           {currentWithdrawals.map((withdrawal) => (
             <tr key={withdrawal._id} className={`${isLightMode ? 'bg-white' : 'bg-gray-900'} border-b`}>
               <td className="px-4 py-2 font-semibold">₦{withdrawal.amount?.toLocaleString()}</td>
+              <td className="px-4 py-2 font-semibold">₦{withdrawal?.amount !== withdrawal?.commission ? (withdrawal?.commission).toLocaleString() : 0}</td>
               <td className="px-4 py-2">
                 <CBadge color={
                   withdrawal.status === 'completed' ? 'success' :
@@ -67,7 +69,8 @@ const WithdrawalGridItem = ({ user, currentWithdrawals, isLightMode, initialiseW
                   style={{ padding: '8px', width: 'max-content' }}
                   onClick={() => initialiseWithdrawal(withdrawal._id,
                                                       withdrawal.order._id,
-                                                      navigate, withdrawal?.user?.organizer
+                                                      navigate,
+                                                      withdrawForOrg ? withdrawal?.user?.organizer : null
                                                     )}
                   text="Withdraw"
                 />

@@ -6,7 +6,11 @@ import {
   SUBSCRIBE_CHANGE,
   SET_SIGNUP_FORM_ERRORS,
   COMPARE_PASSWORD,
-  ORGANIZER_SIGNUP_CHANGE
+  ORGANIZER_SIGNUP_CHANGE,
+  SET_OTP_MODAL,
+  OTP_CHANGE,
+  VERIFY_OTP,
+  SET_OTP_ERRORS
 } from './constants';
 
 const initialState = {
@@ -29,11 +33,36 @@ const initialState = {
   formErrors: {},
   isSubmitting: false,
   isLoading: false,
-  isSubscribed: false
+  isSubscribed: false,
+  showOtpModal: false,
+  otpCode: '',
+  otpErrors: {},
+  tempUserData: {}
 };
 
 const signupReducer = (state = initialState, action) => {
   switch (action.type) {
+    case SET_OTP_MODAL:
+      return {
+        ...state,
+        showOtpModal: action.payload
+      };
+    case OTP_CHANGE:
+      return {
+        ...state,
+        otpCode: action.payload,
+        otpErrors: {}
+      };
+    case VERIFY_OTP:
+      return {
+        ...state,
+        tempUserData: action.payload
+      };
+    case SET_OTP_ERRORS:
+      return {
+        ...state,
+        otpErrors: action.payload
+      };
     case COMPARE_PASSWORD:
         return {
             ...state,
@@ -75,7 +104,11 @@ const signupReducer = (state = initialState, action) => {
         signupFormData: initialState.signupFormData,
         organizerSignupFormData: initialState.organizerSignupFormData,
         formErrors: {},
-        isLoading: false
+        isLoading: false,
+        showOtpModal: false,
+        otpCode: '',
+        otpErrors: {},
+        tempUserData: {}
       };
     default:
       return state;

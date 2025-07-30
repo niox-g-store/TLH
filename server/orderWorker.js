@@ -98,7 +98,7 @@ const newTransferUser = async (adminEmails, organizer) => {
   }
 }
 
-const adminOrgWithdrawal = async (adminEmails, organizer, order) => {
+const adminOrgWithdrawal = async (adminEmails, organizer, order, withdraw) => {
   for (const i of adminEmails) {
     await mailgun.sendEmail(i.email, 'admin-organizer-withdraw-notification', { organizer, order, withdraw })
   }

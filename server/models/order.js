@@ -84,6 +84,11 @@ const orderSchema = new mongoose.Schema({
     type: String,
     default: false,
   },
+  productStatus: {
+    type: String,
+    enum: ['processing', 'shipped', 'delivered'],
+    default: null
+  },
   billingEmail: {
     type: String
   },

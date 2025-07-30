@@ -5,6 +5,7 @@ import {
   FETCH_USER_ORDERS,
   SET_DELETE_ORDER,
   SET_SECOND_DISCOUNT,
+  UPDATE_ORDER_PRODUCT_STATUS
 } from './constants';
 
 const initialState = {
@@ -19,6 +20,13 @@ const initialState = {
 
 const ordersReducer = (state = initialState, action) => {
   switch (action.type) {
+    case UPDATE_ORDER_PRODUCT_STATUS:
+      return {
+        ...state,
+        order: state.order._id === action.payload.orderId 
+          ? { ...state.order, productStatus: action.payload.status }
+          : state.order
+      };
     case SET_SECOND_DISCOUNT:
       return {
         ...state,

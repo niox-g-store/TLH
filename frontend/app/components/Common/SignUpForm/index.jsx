@@ -8,6 +8,7 @@ import Input from "../HtmlTags/Input";
 import { BackIcon } from "../Icons/Back";
 import SignupProvider from "../../store/SignUpProvider";
 import LoadingIndicator from "../../store/LoadingIndicator";
+import { CModal, CModalBody, CModalHeader, CButton } from '@coreui/react';
 
 const SignForm = (props) => {
   const {
@@ -21,12 +22,23 @@ const SignForm = (props) => {
     signUpSubmit,
     comparePasswords,
     signupReset,
-    googleSignup
+    googleSignup,
+    showOtpModal,
+    setOtpModal,
+    otpCode,
+    otpChange,
+    verifyOtp,
+    otpErrors
   } = props;
 
   const handleSubmit = (e) => {
     e.preventDefault();
     signUpSubmit()
+  };
+
+  const handleOtpSubmit = (e) => {
+    e.preventDefault();
+    verifyOtp(false);
   };
 
   return (
@@ -150,6 +162,56 @@ const SignForm = (props) => {
           </p>
         </div>
       </div>
+
+      {/* OTP Modal */}
+      <CModal visible={showOtpModal} onClose={() => setOtpModal(false)} alignment="center">
+        <CModalHeader>
+          <h5>Verify Your Email</h5>
+        </CModalHeader>
+        <CModalBody>
+          <div className="text-center">
+            <p className="mb-3">
+              We've sent a 6-digit verification code to your email address. Please enter it below to complete your registration.
+            </p>
+            
+            <form onSubmit={handleOtpSubmit}>
+              <Input
+                type="text"
+                name="otp"
+                placeholder="Enter 6-digit code"
+                value={otpCode}
+                error={otpErrors.otp}
+                onInputChange={(name, value) => otpChange(value)}
+                className="mb-3"
+                style={{ textAlign: 'center', fontSize: '18px', letterSpacing: '2px' }}
+              />
+              
+              <div className="d-flex gap-2 justify-content-center">
+                <button
+                  type="submit"
+                  disabled={!otpCode || otpCode.length !== 6 || isLoading}
+                  style={{
+                    backgroundColor: 'var(--primary_color)',
+                    color: 'white',
+                    border: 'none',
+                    padding: '10px 20px',
+                    borderRadius: '5px',
+                    cursor: otpCode && otpCode.length === 6 ? 'pointer' : 'not-allowed'
+                  }}
+                >
+                  {isLoading ? 'Verifying...' : 'Verify Code'}
+                </button>
+                <CButton 
+                  color="secondary" 
+                  onClick={() => setOtpModal(false)}
+                >
+                  Cancel
+                </CButton>
+              </div>
+            </form>
+          </div>
+        </CModalBody>
+      </CModal>
     </div>
   );
 };

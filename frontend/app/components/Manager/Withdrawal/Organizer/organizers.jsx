@@ -35,7 +35,7 @@ const OrganizersManagerWithdrawForm = (props) => {
 
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate()
-  const eventsPerPage = 10;
+  const withdrawalsPerPage = 10;
 
   const filteredWithdrawals = withdrawals.filter(w => {
     const name = w?.organizer?.companyName?.toLowerCase() || '';
@@ -44,8 +44,10 @@ const OrganizersManagerWithdrawForm = (props) => {
     return name.includes(term) || email.includes(term);
   });
 
-  const startIndex = (withdrawalPage - 1) * eventsPerPage;
-  const endIndex = startIndex + eventsPerPage;
+  // const startIndex = (withdrawalPage - 1) * withdrawalsPerPage;
+  // const endIndex = startIndex + withdrawalsPerPage;
+  const startIndex = 0;
+  const endIndex = withdrawalsPerPage;
   const currentWithdrawals = filteredWithdrawals.slice(startIndex, endIndex);
 
   const handleSearch = (name, value) => {
@@ -109,6 +111,7 @@ const OrganizersManagerWithdrawForm = (props) => {
 
 class OrganizersManagerWithdraw extends React.PureComponent {
   componentDidMount () {
+    this.props.resetWithdrawal();
     this.props.fetchWithdrawals(true);
   }
 
@@ -120,7 +123,7 @@ class OrganizersManagerWithdraw extends React.PureComponent {
 const mapStateToProps = state => {
   return {
     withdrawals: state.withdraw.withdrawals,
-    withdrawIsLoading: state.withdraw.isLoading,
+    withdrawIsLoading: state.withdraw.withdrawalIsLoading,
     earnings: state.withdraw.earnings,
     withdrawnAmount: state.withdraw.withdrawnAmount,
     canWithdrawAmount: state.withdraw.canWithdrawAmount,

@@ -21,13 +21,14 @@ import { formatDate } from '../../../../utils/formatDate';
 import TopSlideConfirmModal from '../../../store/ConfirmModal';
 import { getCartPriceSummary } from '../../../store/CartSummary';
 import { renderTicketBreakdown } from '../../../store/TicketSummary';
+import Switch from '../../../store/Switch';
 
 const OrderViewer = (props) => {
   const { order = {}, user,
           isLightMode, orderIsLoading,
           setDeleteOrderVisibility, deleteOrderVisibility,
           deleteOrder, secondDiscount, setSecondDiscount,
-          invoice, downloadInvoice
+          invoice, downloadInvoice, updateOrderProductStatus
         } = props;
   const navigate = useNavigate();
   const { subTotal, total, deliveryFee } = getCartPriceSummary(order?.cart?.tickets, order?.cart?.products);
@@ -38,8 +39,12 @@ const OrderViewer = (props) => {
   const isMember = user?.role === ROLES.Member;
 
   const firstImage =
-    order?.cart?.tickets?.[0]?.eventId?.imageUrls?.[0] || '';
+    order?.cart?.tickets?.[0]?.eventId?.imageUrls?.[0] || order?.products?.[0]?.imageUrls?.[0] || '';
   const totalPrice = order?.cart?.tickets?.reduce((sum, ticket) => sum + ((ticket?.price * ticket.quantity) || 0), 0);
+
+  const handleProductStatusChange = (status) => {
+    updateOrderProductStatus(order._id, status);
+  };
 
   useEffect(() => {
     let secDiscount = 0;
@@ -101,6 +106,22 @@ const OrderViewer = (props) => {
                   </CCol>
                 </CRow>
 
+                {hasProducts && order?.productStatus && (
+                  <CRow className='mb-2'>
+                    <CCol><strong>Product Status:</strong></CCol>
+                    <CCol className='text-end'>
+                      <span style={{ 
+                        color: order.productStatus === 'delivered' ? '#28a745' : 
+                              order.productStatus === 'shipped' ? '#ffc107' : '#6c757d',
+                        fontWeight: 'bold',
+                        textTransform: 'capitalize'
+                      }}>
+                        {order.productStatus}
+                      </span>
+                    </CCol>
+                  </CRow>
+                )}
+
                     <div className='mt-2'>
                       <CRow>
                         <CCol><strong>SubTotal:</strong></CCol>
@@ -143,6 +164,41 @@ const OrderViewer = (props) => {
 
               </CCardBody>
             </CCard>
+
+            {/* Admin Product Status Controls */}
+            {isAdmin && hasProducts && (
+              <CCard className={`${isLightMode ? 'bg-white p-black' : 'bg-black p-white border'} mt-3`}>
+                <CCardBody>
+                  <h3>Product Order Status</h3>
+                  <div className="d-flex flex-column gap-3">
+                    <Switch
+                      id="processing-status"
+                      name="processing"
+                      label="Processing"
+                      checked={order?.productStatus === 'processing'}
+                      disabled={order?.productStatus && order?.productStatus === 'processing'}
+                      toggleCheckboxChange={() => handleProductStatusChange('processing')}
+                    />
+                    <Switch
+                      id="shipped-status"
+                      name="shipped"
+                      label="Shipped"
+                      checked={order?.productStatus === 'shipped'}
+                      disabled={order?.productStatus && order?.productStatus === 'shipped'}
+                      toggleCheckboxChange={() => handleProductStatusChange('shipped')}
+                    />
+                    <Switch
+                      id="delivered-status"
+                      name="delivered"
+                      label="Delivered"
+                      checked={order?.productStatus === 'delivered'}
+                      disabled={order?.productStatus && order?.productStatus === 'delivered'}
+                      toggleCheckboxChange={() => handleProductStatusChange('delivered')}
+                    />
+                  </div>
+                </CCardBody>
+              </CCard>
+            )}
           </CCol>
         </CRow>
 

@@ -129,7 +129,9 @@ export const createNewsletter = (navigate) => async (dispatch, getState) => {
       content: n.description,
       image: n.image,
       shouldEmailContainUserName: n.shouldEmailContainUserName,
-      eventId
+      eventId,
+      linkName: n.linkName,
+      linkUrl: n.linkUrl
     }
 
     const { isValid, errors } = allFieldsValidation(data, rules, {

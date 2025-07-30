@@ -20,23 +20,29 @@ const AssetDistribution = (props) => {
     } = props;
 
     const distribution = [
-        {
-            "text": org ? "Total Organizers earnings" : "Earnings",
-            "color": "#ffffff",
-            value: earnings || 0
-        },
-        {
-            "text": org ? "amount organizers can withdraw" : "Can Withdraw",
-            "color": `${isLightMode ? '#000000' : '#9172EC'}`,
-            value: canWithdrawAmount || 0
-        },
-    ]
+  earnings !== undefined && earnings !== 0 && {
+    text: org ? "Total Organizers earnings" : "Earnings",
+    color: "#ffffff",
+    value: earnings
+  },
+  canWithdrawAmount !== undefined && canWithdrawAmount >=0 && {
+    text: org ? "Amount organizers can withdraw" : "Can Withdraw",
+    color: isLightMode ? '#000000' : '#9172EC',
+    value: canWithdrawAmount
+  },
+  withdrawnAmount !== undefined && withdrawnAmount !== 0 && {
+    text: "Withdrawn Amount",
+    color: '#E06A4A',
+    value: withdrawnAmount
+  }
+].filter(Boolean);
+
 
     return (
         <>
-        <CCardTitle style={{ paddingLeft: '1em' }}>Asset distribution</CCardTitle>
+        <CCardTitle className={`${isLightMode ? 'p-black': 'p-white'}`} >Asset distribution</CCardTitle>
         <CCardBody className='asset-dis'>
-            <div className='withdrawal-title-and-desc'>
+            <div className={`${isLightMode ? 'p-black': 'p-white'} withdrawal-title-and-desc`}>
                 <ul>
                     {distribution.map((item, index) => (
                         <li key={index}>
@@ -61,6 +67,12 @@ const AssetDistribution = (props) => {
                     isLightMode={isLightMode}
                     second={canWithdrawAmount}
                 />
+            }
+            {withdrawnAmount !== 0 &&
+              <ChartDoughnutAndPie
+                    isLightMode={isLightMode}
+                    third={withdrawnAmount}
+              />
             }
             </div>
         </CCardBody>

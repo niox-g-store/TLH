@@ -343,6 +343,11 @@ const prepareTemplate = (type, host, data) => {
       message.sender = management;
       break;
 
+    case 'otp-verification':
+      message = template.otpVerificationEmail(data);
+      message.sender = auth;
+      break;
+
     case 'newsletter-subscription':
       message = template.newsletterSubscriptionEmail();
       message.sender = news;
@@ -406,6 +411,11 @@ const prepareTemplate = (type, host, data) => {
     case 'organizer-withdraw-failed':
       message = template.notifyOrganizerWithdrawalFailedEmail(data);
       message.sender = management;
+      break;
+
+    case 'product-status-update':
+      message = template.productStatusUpdateEmail(data);
+      message.sender = order;
       break;
 
     default:

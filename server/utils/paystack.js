@@ -140,7 +140,7 @@ const initiateTransfer = async(amount, reference, recipientId) => {
           `https://api.paystack.co/transfer`,
           {
             source: "balance", 
-            amount: amount,
+            amount: parseInt(amount),
             reference,
             recipient: recipientId,
             reason: "The link hangout payout"
@@ -180,7 +180,6 @@ const initiateTransfer = async(amount, reference, recipientId) => {
         throw NetworkError
       }
 }
-
 module.exports = {
   PaymentHandler,
   listBanks,

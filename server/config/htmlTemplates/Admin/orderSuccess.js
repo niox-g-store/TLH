@@ -31,7 +31,7 @@ exports.adminNewOrderHtml = (order) => {
             }
             .header-logo {
                 width: 100% !important;
-                max-width: 150px !important;
+                max-width: 100px !important;
             }
             .padding-mobile {
                 padding: 10px 20px !important;
@@ -51,7 +51,7 @@ exports.adminNewOrderHtml = (order) => {
                 <table class="content" align="center" width="600" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; background-color: #ffffff; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);">
                     <tr>
                         <td align="center" style="padding: 30px 30px 20px 30px; border-bottom: 1px solid #eeeeee;">
-                            <img class="header-logo" src="https://thelinkhangout.com/black_logo.png" alt="The Link Hangouts Logo" width="180" style="display: block; max-width: 180px; height: auto; border-radius: 10px; font-family: Arial, sans-serif; color: #333333; font-size: 20px; font-weight: bold;">
+                            <img class="header-logo" src="https://thelinkhangout.com/black_logo.png" alt="The Link Hangouts Logo" width="100" style="display: block; max-width: 100px; height: auto; border-radius: 10px; font-family: Arial, sans-serif; color: #333333; font-size: 20px; font-weight: bold;">
                         </td>
                     </tr>
 

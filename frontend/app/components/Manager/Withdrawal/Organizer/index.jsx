@@ -37,14 +37,16 @@ const ManagerWithdrawForm = (props) => {
 
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
-  const eventsPerPage = 10;
+  const withdrawalsPerPage = 10;
 
   const filteredWithdrawals = withdrawals.filter(w =>
     w?.order?._id?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const startIndex = (withdrawalPage - 1) * eventsPerPage;
-  const endIndex = startIndex + eventsPerPage;
+  // const startIndex = (withdrawalPage - 1) * withdrawalsPerPage;
+  // const endIndex = startIndex + withdrawalsPerPage;
+  const startIndex = 0;
+  const endIndex = withdrawalsPerPage;
   const currentWithdrawals = filteredWithdrawals.slice(startIndex, endIndex);
 
   const canWithdraw = currentWithdrawals.filter(w => w.canWithdraw === true);
@@ -122,6 +124,7 @@ const ManagerWithdrawForm = (props) => {
               isLightMode={isLightMode}
               currentWithdrawals={canWithdraw}
               initialiseWithdrawal={initialiseWithdrawal}
+              withdrawForOrg={true}
             />
           </div>
         }
@@ -185,7 +188,7 @@ class OrganizerManagerWithdraw extends React.PureComponent {
 
 const mapStateToProps = state => ({
   withdrawals: state.withdraw.withdrawals,
-  withdrawIsLoading: state.withdraw.isLoading,
+  withdrawIsLoading: state.withdraw.withdrawalIsLoading,
   earnings: state.withdraw.earnings,
   withdrawnAmount: state.withdraw.withdrawnAmount,
   canWithdrawAmount: state.withdraw.canWithdrawAmount,

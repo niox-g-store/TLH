@@ -11,6 +11,7 @@ const { productOrderEmailHtml } = require('./htmlTemplates/User/productOrderSucc
 const { adminCampaignTemplate } = require('./htmlTemplates/newsletterTemplate');
 const { orgCampaignTemplate } = require('./htmlTemplates/newsletterTemplate');
 const { DASHBOARD_URL } = require('../utils/constants');
+const { productOrderStatus } = require('./htmlTemplates/User/productOrderStatus');
 
 exports.newsLetterEmail = (campaignData) => {
   const message = {
@@ -21,7 +22,9 @@ exports.newsLetterEmail = (campaignData) => {
       campaignData.shouldEmailContainUserName,
       campaignData.content,
       campaignData.imageUrls,
-      campaignData.event
+      campaignData.event,
+      campaignData.linkName,
+      campaignData.linkUrl
     ),
     headers: { 'Content-Type': 'text/html' },
   }
@@ -37,7 +40,9 @@ exports.orgNewsLetterEmail = (campaignData) => {
       campaignData.shouldEmailContainUserName,
       campaignData.content,
       campaignData.imageUrls,
-      campaignData.event
+      campaignData.event,
+      campaignData.linkName,
+      campaignData.linkUrl
     ),
     headers: { 'Content-Type': 'text/html' },
   }
@@ -86,6 +91,36 @@ exports.signupEmail = user => {
     headers: { 'Content-Type': 'text/html' }
   };
 
+  return message;
+};
+
+exports.otpVerificationEmail = (user) => {
+  const message = {
+    subject: 'Verify Your Email - The Link Hangouts',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <img src="https://thelinkhangout.com/black_logo.png" alt="The Link Hangouts" style="width: 100px; border-radius: 10px;">
+        </div>
+        <h2 style="color: #333; text-align: center;">Verify Your Email Address</h2>
+        <p>Hi ${user.name},</p>
+        <p>Thank you for signing up with The Link Hangouts! To complete your registration, please use the verification code below:</p>
+        <div style="text-align: center; margin: 30px 0;">
+          <div style="background-color: #f8f9fa; border: 2px dashed #9172EC; padding: 20px; border-radius: 10px; display: inline-block;">
+            <h1 style="color: #9172EC; margin: 0; font-size: 32px; letter-spacing: 5px;">${user.otpCode}</h1>
+          </div>
+        </div>
+        <p>This code will expire in 10 minutes for security reasons.</p>
+        <p>If you didn't create an account with us, please ignore this email.</p>
+        <p>Best regards,<br>The Link Hangouts Team</p>
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+        <p style="font-size: 12px; color: #666; text-align: center;">
+          © ${new Date().getFullYear()} The Link Hangouts. All rights reserved.
+        </p>
+      </div>
+    `,
+    headers: { 'Content-Type': 'text/html' }
+  };
   return message;
 };
 
@@ -223,7 +258,7 @@ exports.notifyAdminWithdrawalEmail = (data) => {
       <p>A new withdrawal request has been initiated by <strong>${data.organizer.companyName}</strong>.</p>
       <p><strong>Withdrawal Details:</strong></p>
       <ul>
-        <li><strong>Amount:</strong> ${data.order.totalExpectedPayout.toLocaleString()}</li>
+        <li><strong>Amount:</strong>₦${data.order.expectedPayout.toLocaleString()}</li>
       </ul>
       <p>You can review and process this request by clicking the link below:</p>
       <p><a href="${DASHBOARD_URL.withdrawal}/${data.withdraw._id}" style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #ffffff; background-color: #9172EC; border-radius: 5px; text-decoration: none;">Review Withdrawal Request</a></p>
@@ -234,13 +269,15 @@ exports.notifyAdminWithdrawalEmail = (data) => {
 };
 
 exports.notifyOrganizerWithdrawalSuccessEmail = (data) => {
+  const msg = `
+  <p>You can review the full withdrawal details by clicking <a href="${DASHBOARD_URL.withdrawal}/${data.withdrawal._id}">here</a>.</p>
+  `
   const message = {
     subject: 'Withdrawal Successful from The Link Hangouts',
     html: `
         <p>Dear ${data.organizer.companyName},</p>
-        <p>We are pleased to inform you that your withdrawal of <strong>$${(data.order.totalExpectedPayout).toLocaleString()}</strong> has been successfully processed.</p>
+        <p>We are pleased to inform you that your withdrawal of <strong>₦${(data.order.totalExpectedPayout).toLocaleString()}</strong> has been successfully processed.</p>
         <p>Thank you for your continued trust in us.</p>
-        <p>You can review the full withdrawal details by clicking <a href="${DASHBOARD_URL.withdrawal}/${data.withdrawal._id}">here</a>.</p>
         <p>Sincerely,</p>
         <p>The Link Hangouts Team</p>
     `
@@ -249,12 +286,14 @@ exports.notifyOrganizerWithdrawalSuccessEmail = (data) => {
 };
 
 exports.notifyOrganizerWithdrawalFailedEmail = () => {
+  const msg = `
+  <p>Please review the withdrawal details and any associated error messages by clicking <a href="${DASHBOARD_URL.withdrawal}/${data.withdrawal._id}">here</a>. This will help you understand the reason for the failure and take appropriate action.</p>
+  `
   const message = {
     subject: 'Withdrawal Failed from The Link Hangouts',
     html: `
         <p>Dear ${data.organizer.companyName},</p>
-        <p>We regret to inform you that your recent withdrawal request for <strong>$${(data.order.totalExpectedPayout).toLocaleString()}</strong> was unsuccessful.</p>
-        <p>Please review the withdrawal details and any associated error messages by clicking <a href="${DASHBOARD_URL.withdrawal}/${data.withdrawal._id}">here</a>. This will help you understand the reason for the failure and take appropriate action.</p>
+        <p>We regret to inform you that your recent withdrawal request for <strong>₦${(data.order.totalExpectedPayout).toLocaleString()}</strong> was unsuccessful.</p>
         <p>If you require further assistance, please don't hesitate to contact our support team.</p>
         <p>Sincerely,</p>
         <p>The Link Hangouts Team</p>
@@ -262,3 +301,11 @@ exports.notifyOrganizerWithdrawalFailedEmail = () => {
 };
   return message;
 };
+
+exports.productStatusUpdateEmail = (order) => {
+  const message = {
+    subject: 'Update on your product order',
+    html: productOrderStatus(order)
+  }
+  return message;
+}

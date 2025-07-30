@@ -15,7 +15,7 @@ const ShowCampaignTemplate = (props) => {
   const templateContent = campaignTemplate(
     campaign.title, campaign.shouldEmailContainUserName,
     campaign.content, campaign.imageUrls, campaign.event,
-    campaign.user
+    campaign.user, campaign.linkName, campaign.linkUrl
   );
 
   return (
