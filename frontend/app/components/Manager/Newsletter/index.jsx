@@ -36,11 +36,12 @@ const Newsletter = (props) => {
     <div className={`${isLightMode ? 'p-black' : 'p-white'} container-lg px-4 d-flex flex-column mb-custom-5em`}>
       <div className='d-flex justify-content-between'>
         <h2 className={`${isLightMode ? 'p-black' : 'p-white'}`}>Newsletter</h2>
-        <Button
+        {userRole === ROLES.Admin && <Button
             className="third-btn mb-3"
             text="Create Campaign +"
             onClick={() => navigate("/dashboard/newsletter/add")}
           />
+          }
       </div>
         <h3 className={`${isLightMode ? 'p-black': 'p-white'}`}>Send reminders, newsletters, and campaign emails to users </h3>  
         {userRole === ROLES.Admin && 
