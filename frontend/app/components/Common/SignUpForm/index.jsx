@@ -118,19 +118,14 @@ const SignForm = (props) => {
               />
             </div>
 
-            <div className="forget-pass-sec">
-              <div className="remember-me signup">
-                <div className="input">
                   <Input
+                    className="mb-3"
                     type="checkbox"
                     name="checkbox"
                     checked={isSubscribed}
                     onInputChange={(n, v) => subscribeChange()}
                     label="I want to receive updates about The Link Hangouts"
                   />
-                </div>
-              </div>
-            </div>
 
             <div className="form-field input">
               <Input

@@ -126,7 +126,6 @@ const OrganizerSignUp = (props) => {
                   </div>
 
                   <div className='forget-pass-sec'>
-                    <div className='remember-me signup'>
                       <Input
                         name='checkbox'
                         checked={isSubscribed}
@@ -134,7 +133,6 @@ const OrganizerSignUp = (props) => {
                         type='checkbox'
                         label="I want to recieve updates about The link hangouts"
                       />
-                    </div>
                   </div>
                   <div className='create-account-links'>
                     <p className="p-black">
@@ -161,17 +159,13 @@ const OrganizerSignUp = (props) => {
 
               <div className='large-screens'>
                 <div className='forget-pass-sec-large-screen'>
-                  <div className='remember-me signup'>
                     <Input
+                      label="I want to recieve updates about The link hangouts"
                       name='checkbox'
                       checked={isSubscribed}
                       onInputChange={(n, v) => subscribeChange()}
                       type='checkbox'
                     />&nbsp;&nbsp;
-                    <div className='form-label'>
-                      <label className="p-black">I want to recieve updates about The link hangouts</label>
-                    </div>
-                  </div>
                 </div>
                 <div className='create-account-links-large-screen'>
                   <p className="p-black">
