@@ -137,8 +137,10 @@ export const resetAccountPassword = () => {
   };
 };
 
-export const updateProfile = (navigate, google) => {
+export const updateProfile = (navigate, google, updateBank) => {
   return async (dispatch, getState) => {
+    dispatch(setProfileLoading(true))
+    try {
     const profile = getState().account.user;
     let rules = null;
     if (!google) {
@@ -161,7 +163,6 @@ export const updateProfile = (navigate, google) => {
       return dispatch({ type: SET_PROFILE_EDIT_ERRORS, payload: errors });
     }
 
-    try {
       const formData = new FormData();
 
       for (const key in profile) {
@@ -170,11 +171,14 @@ export const updateProfile = (navigate, google) => {
             for (const file of profile.image) {
               formData.append('image', file);
             }
+          } else if(key === 'organizer') {
+            formData.append('organizer', JSON.stringify(profile[key]))
           } else {
             formData.append(key, profile[key]);
           }
         }
       }
+      formData.set('updateBank', false)
 
       const response = await axios.put(`${API_URL}/user`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
@@ -191,6 +195,8 @@ export const updateProfile = (navigate, google) => {
       navigate(0)
     } catch (error) {
       handleError(error, dispatch);
+    } finally {
+      dispatch(setProfileLoading(false))
     }
   };
 };
@@ -229,7 +235,8 @@ export const addUserBank = (navigate) => {
       let newBank = {
         bankName: bankName.label,
         bankAccountNumber: bankAccountNumber,
-        bankCode: bankName.value
+        bankCode: bankName.value,
+        updateBank: true
       };
 
       const { isValid, errors } = allFieldsValidation(newBank, rules, {

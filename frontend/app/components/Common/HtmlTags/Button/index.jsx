@@ -6,7 +6,7 @@ const Button = (props) => {
     return (
         <div style={containerstyle} className={`${cls ? cls : ''} button-container`}>
             <button
-                style={{ ...style }}
+                style={{ ...style, cursor: 'pointer' }}
                 className={type}
                 onClick={onClick}
                 {...restProps}

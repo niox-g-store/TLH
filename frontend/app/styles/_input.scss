@@ -31,7 +31,6 @@
         width: 1em !important;
         @include media-breakpoint-down(md) {
           position: relative;
-          top: -3px;
         }
     }
 }

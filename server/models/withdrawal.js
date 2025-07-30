@@ -122,8 +122,8 @@ withdrawalSchema.pre('validate', async function (next) {
         canWithdrawDate = new Date(now.getTime() + hours * 60 * 60 * 1000);
       }
 
-      //this.canWithdrawDate = canWithdrawDate;
-      this.canWithdrawDate = new Date(Date.now() + 1 * 60 * 1000);
+      this.canWithdrawDate = canWithdrawDate;
+      //this.canWithdrawDate = new Date(Date.now() + 1 * 60 * 1000);
       this.canWithdraw = false;
     }
 

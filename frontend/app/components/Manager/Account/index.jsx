@@ -28,7 +28,7 @@ import { API_URL } from '../../../constants';
 import resolveImage from '../../store/ResolveImage';
 import { useNavigate, Link } from 'react-router-dom';
 import { withRouter } from '../../../withRouter';
-import SelectOption from '../../store/SelectOption';
+import LoadingIndicator from '../../store/LoadingIndicator';
 
 const ManagerAccountForm = (props) => {
   let {
@@ -40,7 +40,8 @@ const ManagerAccountForm = (props) => {
     formErrors,
     createBank,
     isLightMode,
-    accountEditFormErrors
+    accountEditFormErrors,
+    isLoading
   } = props;
   const navigate = useNavigate()
 
@@ -58,6 +59,7 @@ const ManagerAccountForm = (props) => {
 
   return (
     <div data-aos="fade-up" className='container-lg px-4 d-flex flex-column mb-custom-5em'>
+      {isLoading && <LoadingIndicator />}
       <CCard className={`${isLightMode ? 'bg-white': 'bg-black'} w-100`}>
         <CCardHeader>
           <CCardTitle className={`${isLightMode ? 'p-black': 'p-white'} font-size-30`}>Account Details</CCardTitle>
@@ -222,7 +224,8 @@ class ManagerAccount extends React.PureComponent {
 
 const mapStateToProps = state => ({
   accountEditFormErrors: state.account.editFormErrors,
-  user: state.account.user
+  user: state.account.user,
+  isLoading: state.account.isLoading
 });
 
 export default connect(mapStateToProps, actions)(withRouter(ManagerAccount));

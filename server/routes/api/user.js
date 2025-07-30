@@ -156,9 +156,10 @@ router.put('/',
   try {
     const userId = req.user._id;
     let update = req.body;
-    let { bankAccountNumber, bankName, bankCode } = req.body;
+    let { bankAccountNumber, bankName, bankCode, updateBank = false } = req.body;
+    update.organizer ? update.organizer = JSON.parse(update.organizer) : null
 
-    if (bankAccountNumber && (!bankName || !bankCode)) {
+    if (bankAccountNumber && (!bankName && updateBank)) {
       return res.status(400).json({ error: "incomplete bank details, select a bank name" })
     }
 
@@ -187,8 +188,8 @@ router.put('/',
      update.organizer = null;
     }
 
-    if (bankAccountNumber && bankName && bankCode) {
-      const { data  } = await verifyCustomerBank(bankAccountNumber, bankCode);
+    if (bankAccountNumber && bankName && bankCode && updateBank !== 'false') {
+      const { data } = await verifyCustomerBank(bankAccountNumber, bankCode);
       const { account_number, account_name } = data;
       if (account_number && account_name) {
         update.bankAccountNumber = account_number
@@ -210,7 +211,7 @@ router.put('/',
       if (update.phoneNumber) {
         organizerUpdate.phoneNumber = update.phoneNumber;
       }
-      if (update.bankAccountNumber, update.bankName, update.bankAccountName) {
+      if (update.bankAccountNumber && update.bankName && update.bankAccountName && updateBank !== 'false') {
         organizerUpdate.bankAccountNumber = update.bankAccountNumber,
         organizerUpdate.bankName = update.bankName,
         organizerUpdate.bankAccountName = update.bankAccountName
