@@ -297,7 +297,7 @@ router.post('/verify-endpoint', async(req, res) => {
           organizer: organizer ? organizer : null,
           order: { totalExpectedPayout: amount },
         }
-        if (status === 'success' || status === 'received') {
+        if (status === 'success') {
             // successfuly transfer update withdrwal.status
             if (withdrawal) {
                 withdrawal.status = 'completed';
