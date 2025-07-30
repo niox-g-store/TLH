@@ -31,7 +31,8 @@ const ManagerWithdrawForm = (props) => {
     withdrawalPaginated,
     withdrawalPage,
     withdrawalPageCount,
-    fetchOrganizerWithdrawals
+    fetchOrganizerWithdrawals,
+    initialiseWithdrawal
   } = props;
 
   const navigate = useNavigate();
@@ -48,7 +49,9 @@ const ManagerWithdrawForm = (props) => {
 
   const canWithdraw = currentWithdrawals.filter(w => w.canWithdraw === true);
   const cannotWithdraw = currentWithdrawals.filter(w => w.canWithdraw === false);
-  const organizerUserId = filteredWithdrawals?.find(w => w.user)
+  const organizerUserId = filteredWithdrawals?.find(w => w.user);
+
+  const canWithdrawIds = canWithdraw.map(i => i._id);
 
   const handleSearch = (name, value) => {
     setSearchTerm(value);
@@ -61,7 +64,7 @@ const ManagerWithdrawForm = (props) => {
         <>
           <h2 className={`${isLightMode ? 'p-black' : 'p-white'}`}>{organizerUserId?.user?.companyName} Withdrawals</h2>
             <div style={{ gap: '2em' }} className='d-flex justify-content-between'>
-              <Link to={`/dashboard/withdrawals/history/${organizerUserId?.user?._id}`}>
+              <Link to={`/dashboard/withdrawals/history`}>
                 <Button style={{ fontSize: '16px' }} type='third-btn' text='View Withdrawal history' />
               </Link>
               <GoBack text={"Go back"} navigate={navigate}/>
@@ -73,7 +76,7 @@ const ManagerWithdrawForm = (props) => {
         <>
           <div style={{ gap: '2em' }} className='d-flex justify-content-between'>
             <h2 className={`${isLightMode ? 'p-black' : 'p-white'}`}>Withdrawals</h2>
-              <Link to={`/dashboard/withdrawals/history/${user._id}`}>
+              <Link to={`/dashboard/withdrawals/history`}>
                 <Button style={{ fontSize: '16px' }} type='third-btn' text='Withdrawal history' />
               </Link>
           </div>
@@ -107,12 +110,18 @@ const ManagerWithdrawForm = (props) => {
           <div className='can-withdraw-withdrawals'>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <h3 className={`${isLightMode ? 'p-black' : 'p-white'}`}>Ready for withdraw</h3>
-              <Button style={{ padding: '10px 20px' }} text={"withdraw all"} />
+              <Button onClick={() => initialiseWithdrawal(canWithdrawIds, null,
+                                                          navigate, organizerUserId?.user?.organizer
+                                                          )}
+                style={{ padding: '10px 20px' }}
+                text={"withdraw all"}
+              />
             </div>
             <WithdrawalGridItem
               user={user}
               isLightMode={isLightMode}
               currentWithdrawals={canWithdraw}
+              initialiseWithdrawal={initialiseWithdrawal}
             />
           </div>
         }

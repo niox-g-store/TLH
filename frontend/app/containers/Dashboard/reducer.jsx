@@ -17,6 +17,8 @@ import {
   SET_DASHBOARD_ANALYTICS,
   SET_DASHBD_STATS_OVERVIEW,
   SET_ATTENDEES_DATA,
+
+  SET_DASHBOARD_ROUTE,
 } from './constants';
 
 const initialState = {
@@ -35,10 +37,16 @@ const initialState = {
   attendees: [],
   attendeesPage: 1,
   attendeesTotalPages: 1,
+  routeType: '/dashboard'
 };
 
 const dashboardReducer = (state = initialState, action) => {
   switch (action.type) {
+    case SET_DASHBOARD_ROUTE:
+      return {
+        ...state,
+        routeType: action.payload
+      }
     case SET_ATTENDEES_DATA:
       return {
         ...state,

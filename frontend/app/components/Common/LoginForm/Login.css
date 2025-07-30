@@ -113,23 +113,14 @@
 .forget-pass-sec {
   display: flex;
   flex-wrap: wrap;
-  align-items: end;
   justify-content: space-between;
   margin-bottom: 20px;
 }
 .remember-me {
-  color: var(--secondary-bg);
-  opacity: 0.8;
-  display: flex;
-  align-items: normal;
+  color: var(--primary_color) !important;
 }
-.remember-me .form-label label {
-  margin: 0;
-}
-.remember-me .input {
-  padding-right: 5px;
-}
-.forget-pass a {
+
+.forget-pass-a {
   color: var(--primary_color);
 }
 .logo-signup a {
@@ -182,10 +173,6 @@
 
   .right-login {
     padding: 50px 20px;
-  }
-  .remember-me {
-    flex: 0 0 50%;
-    font-size: 16px;
   }
   .signup {
     flex: 0 0 100%;

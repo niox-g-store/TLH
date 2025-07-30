@@ -9,7 +9,7 @@ import TicketRevenueBreakdown from "../../../store/TicketRevenueBreakdown";
 import { GoBack } from "../../../../containers/goBack/inedx";
 import { useNavigate } from "react-router-dom";
 
-const WithdrawViewer = ({ isLoading, isLightMode, withdrawal }) => {
+const WithdrawViewer = ({ isLoading, isLightMode, withdrawal, initialiseWithdrawal }) => {
   const statusColor = {
     pending: 'warning',
     processing: 'info',
@@ -46,7 +46,12 @@ const WithdrawViewer = ({ isLoading, isLightMode, withdrawal }) => {
 
       {withdrawal?.status !== 'completed' &&
       <div className="mb-3">
-        <Button text={"Withdraw"} />
+        <Button onClick={() => initialiseWithdrawal(withdrawal._id,
+                                                    withdrawal.order._id,
+                                                    navigate,
+                                                    withdrawal?.user?.organizer
+                                                   )}
+          text={"Withdraw"} />
       </div>
       }
 
@@ -73,7 +78,6 @@ const WithdrawViewer = ({ isLoading, isLightMode, withdrawal }) => {
                 const commission = reverseExpectedPayout(p,
                                                          ticket?.expectedPayout,
                                                          ticket?.quantity, true)
-                console.log(commission)
                 const getCommission = ((commission/(p * ticket?.quantity)) * 100).toFixed(2)
                 return (
                 <tr key={idx}>

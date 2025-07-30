@@ -29,7 +29,6 @@ const EditProductForm = (props) => {
     productImageToRemove,
     productColorAndImageToRemove
   } = props;
-  console.log(product)
 
   const navigate = useNavigate();
 

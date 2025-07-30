@@ -70,19 +70,16 @@ const LoginForm = (props) => {
             </div>
 
             <div className="forget-pass-sec">
-              <div className="remember-me">
                 <Input
                   type="checkbox"
                   name="rememberMe"
                   checked={rememberMe}
                   onInputChange={(n, v) => rememberMeChange()}
                   label="Remember Me"
+                  className='remember-me'
                 />
-              </div>
 
-              <div className="forget-pass">
-                <a href="/forgot-password">Forget Password?</a>
-              </div>
+                <a className='remember-me' href="/forgot-password">Forget Password?</a>
             </div>
 
             <div className="form-field input login-btn">

@@ -289,6 +289,21 @@ input[type="date"] {
   background-color: var(--primary_color);
 }
 
+.purple-bg-round {
+  background-color: var(--primary_color) !important;
+  border-radius: 10px !important;
+  padding: 0;
+  height: 3em !important;
+}
+
+.purple-bg-round-white {
+  background-color: var(--primary_color) !important;
+  border-radius: 10px !important;
+  padding: 0;
+  height: 3em;
+  color: white !important;
+}
+
 .mb-custom-5em {
   margin-bottom: 5em !important;
 }

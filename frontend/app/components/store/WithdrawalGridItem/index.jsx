@@ -11,7 +11,7 @@ import Button from '../../Common/HtmlTags/Button';
 import { ROLES } from "../../../constants";
 
 
-const WithdrawalGridItem = ({ user, currentWithdrawals, isLightMode }) => {
+const WithdrawalGridItem = ({ user, currentWithdrawals, isLightMode, initialiseWithdrawal }) => {
   const navigate = useNavigate();
   const [countdowns, setCountdowns] = useState({});
 
@@ -65,7 +65,10 @@ const WithdrawalGridItem = ({ user, currentWithdrawals, isLightMode }) => {
                 {withdrawal.canWithdraw === true &&
                 <Button
                   style={{ padding: '8px', width: 'max-content' }}
-                  onClick={() => navigate(`/dashboard/withdrawal/${withdrawal._id}`)}
+                  onClick={() => initialiseWithdrawal(withdrawal._id,
+                                                      withdrawal.order._id,
+                                                      navigate, withdrawal?.user?.organizer
+                                                    )}
                   text="Withdraw"
                 />
                 }

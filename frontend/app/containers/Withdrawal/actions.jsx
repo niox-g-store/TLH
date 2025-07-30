@@ -11,6 +11,7 @@ import {
 
   SET_CAN_WITHDRAWAL_AMOUNT
 } from './constants';
+// import { setDashboardRouter } from '../Dashboard/actions';
 import { API_URL } from '../../constants';
 import { showNotification } from '../Notification/actions';
 import handleError from '../../utils/error';
@@ -19,9 +20,8 @@ export const resetWithdrawal = () => ({
   type: RESET_WITHDRAWAL
 })
 
-export const initialiseWithdrawal = (withdrawalId, orderId, navigate, organizerId = null) => async (dispatch) => {
+export const initialiseWithdrawal = (withdrawalId, orderId = null, navigate, organizerId = null) => async (dispatch) => {
   dispatch({ type: SET_WITHDRAWAL_LOADING, payload: true });
-
   try {
     const { data, status } = await axios.post(`${API_URL}/withdraw/initialise`, {
       withdrawalId,
@@ -31,7 +31,7 @@ export const initialiseWithdrawal = (withdrawalId, orderId, navigate, organizerI
 
     if (status === 200) {
       dispatch(showNotification('success', data.message))
-      navigate(-1);
+      navigate(0);
     }
   } catch (error) {
     handleError(error, dispatch)
@@ -42,7 +42,7 @@ export const initialiseWithdrawal = (withdrawalId, orderId, navigate, organizerI
 
 export const fetchWithdrawals = (organizer = false, page = 1) => async (dispatch) => {
   dispatch({ type: SET_WITHDRAWAL_LOADING, payload: true });
-
+  //dispatch(setDashboardRouter('/withdrawals'))
   try {
     const url = organizer
       ? `${API_URL}/withdraw/organizers?page=${page}`
@@ -95,7 +95,6 @@ export const fetchWithdrawals = (organizer = false, page = 1) => async (dispatch
 
 export const fetchOrganizerWithdrawals = (organizerId, page = 1) => async (dispatch) => {
   dispatch({ type: SET_WITHDRAWAL_LOADING, payload: true });
-  console.log(organizerId)
   try {
     const { data, status } = await axios.get(`${API_URL}/withdraw/organizer/${organizerId}?page=${page}`);
 
@@ -104,6 +103,13 @@ export const fetchOrganizerWithdrawals = (organizerId, page = 1) => async (dispa
       dispatch({ type: SET_EARNINGS, payload: data.earnings });
       dispatch({ type: SET_WITHDRAWN_AMOUNT, payload: data.withdrawnAmount });
       dispatch({ type: SET_CAN_WITHDRAWAL_AMOUNT, payload: data.canWithdrawAmount });
+      dispatch({ type: SET_WITHDRAWAL_PAGINITION,
+                 payload: {
+                   pageCount: data.pageCount,
+                   page: data.page,
+                   withdrawals: data.withdrawals
+                 }
+      });
     }
   } catch (error) {
     handleError(error, dispatch);
@@ -114,7 +120,6 @@ export const fetchOrganizerWithdrawals = (organizerId, page = 1) => async (dispa
 
 export const getWithdrawal = (withdrawalId) => async (dispatch) => {
   dispatch({ type: SET_WITHDRAWAL_LOADING, payload: true });
-
   try {
     const { data, status } = await axios.get(`${API_URL}/withdraw/withdrawal/${withdrawalId}`);
 
@@ -128,17 +133,20 @@ export const getWithdrawal = (withdrawalId) => async (dispatch) => {
   }
 };
 
-export const fetchWithdrawalsHistory = (userId, page = 1) => async (dispatch) => {
+export const fetchWithdrawalsHistory = (page = 1) => async (dispatch) => {
   dispatch({ type: SET_WITHDRAWAL_LOADING, payload: true });
-
   try {
-    const { data, status } = await axios.get(`${API_URL}/withdraw/history?userId=${userId}&page=${page}`);
+    const { data, status } = await axios.get(`${API_URL}/withdraw/history?page=${page}`);
 
     if (status === 200) {
       dispatch({ type: WITHDRAWALS, payload: data.withdrawals });
-      dispatch({ type: SET_WITHDRAWAL_PAGINATED, payload: data.paginated });
-      dispatch({ type: SET_WITHDRAWAL_PAGE, payload: page });
-      dispatch({ type: SET_WITHDRAWAL_PAGE_COUNT, payload: data.pageCount });
+      dispatch({ type: SET_WITHDRAWAL_PAGINITION,
+                 payload: {
+                   pageCount: data.pageCount,
+                   page: data.page,
+                   withdrawals: data.withdrawals
+                 }
+      });
     }
   } catch (error) {
     handleError(error, dispatch);

@@ -12,3 +12,4 @@ export const SET_DASHBOARD_LOADING = 'src/Dashboard/SET_DASHBOARD_LOADING';
 export const SET_DASHBOARD_ANALYTICS = 'src/Dashboard/SET_DASHBOARD_ANALYTICS';
 export const SET_DASHBD_STATS_OVERVIEW = 'src/Dashboard/SET_DASHBD_STATS_OVERVIEW';
 export const SET_ATTENDEES_DATA = 'src/Dashboard/SET_ATTENDEES_DATA';
+export const SET_DASHBOARD_ROUTE = 'src/Dashboard/SET_DASHBOARD_ROUTE';

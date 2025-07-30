@@ -35,6 +35,7 @@ import CampaignView from '../../components/Manager/Newsletter/View';
 
 import WithdrawView from '../../components/Manager/Withdrawal/View';
 import OrganizerManagerWithdraw from '../../components/Manager/Withdrawal/Organizer';
+import HistoryWithdrawals from '../../components/Manager/Withdrawal/View/history';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@coreui/coreui/dist/css/coreui.min.css';
@@ -68,6 +69,7 @@ const Organizer = (props) => {
           <Route path='newsletter/:id' element={<CampaignView {...props} />} />
           <Route path='earnings' element={<OrganizerManagerWithdraw {...props} />} />
           <Route path='withdrawal/:id' element={<WithdrawView {...props} />} />
+          <Route path='withdrawals/history' element={<HistoryWithdrawals {...props} />} />
           <Route path='*' element={<Page404 />} />
         </Routes>
       </div>

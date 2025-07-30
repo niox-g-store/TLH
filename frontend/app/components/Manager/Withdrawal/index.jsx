@@ -29,7 +29,8 @@ const ManagerWithdrawForm = (props) => {
     withdrawalPaginated,
     withdrawalPage,
     withdrawalPageCount,
-    fetchWithdrawals
+    fetchWithdrawals,
+    initialiseWithdrawal
   } = props;
 
   const navigate = useNavigate();
@@ -46,6 +47,8 @@ const ManagerWithdrawForm = (props) => {
 
   const canWithdraw = currentWithdrawals.filter(w => w.canWithdraw === true);
   const cannotWithdraw = currentWithdrawals.filter(w => w.canWithdraw === false)
+
+  const canWithdrawIds = canWithdraw.map(i => i._id);
 
   const handleSearch = (name, value) => {
     setSearchTerm(value);
@@ -104,16 +107,28 @@ const ManagerWithdrawForm = (props) => {
           <div className='can-withdraw-withdrawals'>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <h3 className={`${isLightMode ? 'p-black' : 'p-white'}`}>Ready for withdraw</h3>
-              <Button style={{ padding: '10px 20px' }} text={"withdraw all"} />
+              <Button onClick={() => initialiseWithdrawal(canWithdrawIds, null, navigate)}
+                style={{ padding: '10px 20px' }}
+                text={"withdraw all"}
+              />
             </div>
-            <WithdrawalGridItem user={user} isLightMode={isLightMode} currentWithdrawals={canWithdraw}/>
+            <WithdrawalGridItem
+              user={user}
+              isLightMode={isLightMode}
+              currentWithdrawals={canWithdraw}
+              initialiseWithdrawal={initialiseWithdrawal}
+            />
           </div>
         }
 
         {cannotWithdraw.length > 0 &&
           <div className='can-withdraw-withdrawals'>
             <h3 className={`text-center py-12 ${isLightMode ? 'p-black' : 'p-white'}`}>Not Ready for withdraw</h3>
-            <WithdrawalGridItem user={user} isLightMode={isLightMode} currentWithdrawals={cannotWithdraw}/>
+            <WithdrawalGridItem
+              user={user}
+              isLightMode={isLightMode}
+              currentWithdrawals={cannotWithdraw}
+            />
           </div>
         }
         </div>

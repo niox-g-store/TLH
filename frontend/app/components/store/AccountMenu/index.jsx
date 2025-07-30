@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import {
   CBadge,
   CSidebar,
@@ -56,10 +57,20 @@ const AccountMenu = (props) => {
   const {
     links, isMenuOpen,
     toggleMenu, signOut,
-    isLightMode, toggleDashboardTheme
+    isLightMode, toggleDashboardTheme,
+    routeType, setDashboardRouter
   } = props;
 
   const dispatch = useDispatch();
+  useEffect(() => {
+    const currentRoute = `/${window.location.href.split('dashboard')[1]?.split('/')[1]}`;
+    if (currentRoute !== '/undefined') {
+      dispatch(setDashboardRouter(currentRoute));
+    } else {
+      dispatch(setDashboardRouter('/dashboard'));
+    }
+  }, [dispatch]);
+
   const handleThemeToggle = () => {
     const newMode = !isLightMode;
     localStorage.setItem('isLightMode', newMode);
@@ -85,8 +96,10 @@ const AccountMenu = (props) => {
             {links.map((link, index) => {
               const PREFIX = link.prefix ? link.prefix : '';
                 const IconComponent = iconMap[link.icon];
+                const linkTo = link.to !== "" ? link.to : '/dashboard'
+                const matchedRouteType = routeType === linkTo
               return (
-                <CNavItem key={index} className={`${isLightMode ? 'p-black' : 'p-white'} item-hover margin-btm-sm`} href={PREFIX + link.to}>
+                <CNavItem key={index} className={`${isLightMode ? 'p-black' : 'p-white'} item-hover margin-btm-sm ${matchedRouteType ? isLightMode ? 'purple-bg-round-white' : 'purple-bg-round' : ''} `} href={PREFIX + link.to}>
                     {IconComponent && <IconComponent style={{ marginRight: '8px' }} />}
                     {link.name}
                 </CNavItem>
@@ -126,8 +139,10 @@ const AccountMenu = (props) => {
             {links.map((link, index) => {
               const PREFIX = link.prefix ? link.prefix : '';
                 const IconComponent = iconMap[link.icon];
+                const linkTo = link.to !== "" ? link.to : '/dashboard'
+                const matchedRouteType = routeType === linkTo
               return (
-                <CNavItem key={index} className={`${isLightMode ? 'p-black' : 'p-white'} item-hover margin-btm-sm`} href={PREFIX + link.to}>
+                <CNavItem key={index} className={`${isLightMode ? 'p-black' : 'p-white'} item-hover margin-btm-sm ${matchedRouteType ? isLightMode ? 'purple-bg-round-white' : 'purple-bg-round' : ''}`} href={PREFIX + link.to}>
                     {IconComponent && <IconComponent style={{ marginRight: '8px' }} />}
                     {link.name}
                 </CNavItem>

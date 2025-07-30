@@ -18,34 +18,33 @@ router.get('/', auth, role.check(ROLES.Admin), async (req, res) => {
     const limit = 10;
     const skip = (page - 1) * limit;
 
-    const allWithdrawals = await Withdrawal.find()
+    let allWithdrawals = await Withdrawal.find({ status: { $ne: 'completed' } })
       .populate('event ticket user order')
       .sort({ requestedAt: -1 });
+    allWithdrawals = await Promise.all(allWithdrawals.map(updateCanWithdrawDate));
 
     const adminWithdrawals = allWithdrawals.filter(w => w.user?.role === ROLES.Admin);
-
-    const paginated = adminWithdrawals.slice(skip, skip + limit);
-
     let earnings = 0;
-    let withdrawnAmount = 0;
+    let canWithdrawAmount = 0;
 
-    adminWithdrawals.forEach(w => {
+    adminWithdrawals.forEach(async (w) => {
       earnings += w.commission || 0;
-      if (w.status === 'completed') {
+      /*if (w.status === 'completed') {
         withdrawnAmount += w.commission || 0;
-      }
+      }*/
+      if (w.canWithdraw === true) { canWithdrawAmount += w.commission }
     });
+    const paginated = adminWithdrawals.slice(skip, skip + limit);
 
     return res.status(200).json({
       withdrawals: paginated,
       earnings,
-      withdrawnAmount,
+      canWithdrawAmount,
       total: adminWithdrawals.length,
       page,
       pageCount: Math.ceil(adminWithdrawals.length / limit)
     });
   } catch (err) {
-    console.log(err);
     return res.status(400).json({ error: 'Failed to load admin withdrawals' });
   }
 });
@@ -56,13 +55,14 @@ router.get('/organizers', auth, role.check(ROLES.Admin), async (req, res) => {
     const limit = 10;
     const skip = (page - 1) * limit;
 
-    const withdrawals = await Withdrawal.find()
+    let withdrawals = await Withdrawal.find({ status: { $ne: 'completed' } })
       .populate('event ticket user order')
       .sort({ requestedAt: -1 });
+    withdrawals = await Promise.all(withdrawals.map(updateCanWithdrawDate));
 
     const groupedMap = new Map();
 
-    withdrawals.forEach(w => {
+    withdrawals.forEach( async(w) => {
       if (w.user?.role === ROLES.Organizer) {
         const organizerId = w.user._id.toString();
 
@@ -71,7 +71,8 @@ router.get('/organizers', auth, role.check(ROLES.Admin), async (req, res) => {
             organizer: w.user,
             withdrawals: [],
             earnings: 0,
-            withdrawnAmount: 0
+            withdrawnAmount: 0,
+            canWithdrawAmount: 0
           });
         }
 
@@ -81,6 +82,7 @@ router.get('/organizers', auth, role.check(ROLES.Admin), async (req, res) => {
         if (w.status === 'completed') {
           group.withdrawnAmount += w.amount || 0;
         }
+        if (w.canWithdraw) { group.canWithdrawAmount += w.amount || 0 }
       }
     });
 
@@ -89,13 +91,12 @@ router.get('/organizers', auth, role.check(ROLES.Admin), async (req, res) => {
     const paginated = groupedArray.slice(skip, skip + limit);
 
     return res.status(200).json({
-      organizerWithdrawals: paginated,
+      withdrawals: paginated,
       total: groupedArray.length,
       page,
       pageCount: Math.ceil(groupedArray.length / limit)
     });
   } catch (err) {
-    console.log(err);
     return res.status(400).json({ error: 'Failed to load organizer withdrawals' });
   }
 });
@@ -107,32 +108,30 @@ router.get('/organizer/:id', auth, role.check(ROLES.Admin, ROLES.Organizer), asy
     const limit = 10;
     const skip = (page - 1) * limit;
 
-    const allWithdrawals = await Withdrawal.find({ user: id })
+    let allWithdrawals = await Withdrawal.find({ user: id, status: { $ne: 'completed' } })
       .populate('event ticket order user')
       .sort({ requestedAt: -1 });
 
-    const paginated = allWithdrawals.slice(skip, skip + limit);
+    allWithdrawals = await Promise.all(allWithdrawals.map(updateCanWithdrawDate));
 
     let earnings = 0;
-    let withdrawnAmount = 0;
+    let canWithdrawAmount = 0;
 
-    allWithdrawals.forEach(w => {
+    allWithdrawals.forEach(async (w) => {
       earnings += w.amount;
-      if (w.status === 'completed') {
-        withdrawnAmount += w.amount;
-      }
+      if (w.canWithdraw === true) { canWithdrawAmount += w.amount }
     });
+    const paginated = allWithdrawals.slice(skip, skip + limit);
 
     return res.status(200).json({
       withdrawals: paginated,
       earnings,
-      withdrawnAmount,
+      canWithdrawAmount,
       total: allWithdrawals.length,
       page,
       pageCount: Math.ceil(allWithdrawals.length / limit)
     });
   } catch (err) {
-    console.log(err);
     return res.status(400).json({ error: 'Failed to load organizer withdrawals' });
   }
 });
@@ -142,12 +141,53 @@ router.get('/withdrawal/:id', auth, role.check(ROLES.Admin), async (req, res) =>
     const { id } = req.params;
 
     const withdrawal = await Withdrawal.findById(id)
-      .populate('ticket event order user');
+      .populate('ticket event user')
+      .populate({
+        path: 'order',
+        populate: {
+          path: 'cart'
+        }
+      });
     if (!withdrawal) return res.status(400).json({ error: 'Withdrawal not found' });
 
     return res.status(200).json(withdrawal);
   } catch (err) {
     return res.status(400).json({ error: 'Server error fetching withdrawal' });
+  }
+});
+
+router.get('/history', auth, role.check(ROLES.Admin, ROLES.Organizer), async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const isAdmin = req.user.role === ROLES.Admin;
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
+    const skip = (page - 1) * limit;
+
+    let query = { status: 'completed' };
+
+    if (isAdmin) {
+      const adminUsers = await User.find({ role: ROLES.Admin }).select('_id');
+      const adminUserIds = adminUsers.map(u => u._id);
+      query.user = { $in: adminUserIds };
+    } else {
+      query.user = userId;
+    }
+
+    const allCompletedWithdrawals = await Withdrawal.find(query)
+      .populate('event ticket order user')
+      .sort({ requestedAt: -1 });
+
+    const paginated = allCompletedWithdrawals.slice(skip, skip + limit);
+
+    return res.status(200).json({
+      withdrawals: paginated,
+      total: allCompletedWithdrawals.length,
+      page,
+      pageCount: Math.ceil(allCompletedWithdrawals.length / limit)
+    });
+  } catch (err) {
+    return res.status(400).json({ error: 'Failed to load withdrawal history' });
   }
 });
 
@@ -169,9 +209,10 @@ router.post(
     }
 
     const now = new Date();
-    //if (withdrawal.canWithdrawDate > now || withdrawal.canWithdraw === false) {
-      //return res.status(400).json({ error: 'Not eligible to withdraw yet' });
-    //}
+    if (withdrawal.canWithdrawDate > now || withdrawal.canWithdraw === false) {
+      return res.status(400).json({ error: 'Not eligible to withdraw yet' });
+    }
+    console.log(withdrawal.user)
 
     const { bankAccountNumber, bankName, bankAccountName } = withdrawal.user;
     if (!bankAccountNumber || !bankName || !bankAccountName) {
@@ -277,5 +318,18 @@ router.post('/verify-endpoint', async(req, res) => {
         return res.status(400).json({ error: 'error verifying transfer status' })
     }
 })
+
+const updateCanWithdrawDate = async (withdrawal) => {
+  const now = new Date();
+  const target = new Date(withdrawal.canWithdrawDate);
+
+  if (!withdrawal.canWithdraw && now >= target) {
+    withdrawal.canWithdraw = true;
+    await withdrawal.save();
+  }
+
+  return withdrawal;
+};
+
 
 module.exports = router;

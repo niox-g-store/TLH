@@ -57,7 +57,9 @@ class Dashboard extends React.PureComponent {
       dashboardAnalytics, addUserBank, banks, bankFormError,
 
       initialiseWithdrawal, fetchWithdrawals,
+      routeType, setDashboardRouter
     } = this.props;
+    
     if (isDisabledOrganizerAccount(user)) {
       return (
         <DisabledOrganizerAccount signOut={signOut}
@@ -119,6 +121,7 @@ const mapStateToProps = state => {
     isLoading: state.account.isLoading,
     isMenuOpen: state.dashboard.isMenuOpen,
     isLightMode: state.dashboard.isLightMode,
+    routeType: state.dashboard.routeType,
 
     event: state.event.event,
     events: state.event.events,

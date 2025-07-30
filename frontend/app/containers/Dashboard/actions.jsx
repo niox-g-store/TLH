@@ -17,6 +17,7 @@ import {
   SET_DASHBOARD_ANALYTICS,
   SET_DASHBD_STATS_OVERVIEW,
   SET_ATTENDEES_DATA,
+  SET_DASHBOARD_ROUTE,
 } from './constants';
 import axios from 'axios';
 import { API_URL } from '../../constants';
@@ -32,6 +33,11 @@ const downloadBlob = (blobData, filename, type) => {
   link.click();
   link.remove();
 }
+
+export const setDashboardRouter = (v) => ({
+  type: SET_DASHBOARD_ROUTE,
+  payload: v
+})
 
 export const toggleDashboardMenu = () => {
   return {

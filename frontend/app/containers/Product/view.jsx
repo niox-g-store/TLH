@@ -15,7 +15,7 @@ import SocialShare from '../../components/store/SocialShare';
 import { FaShippingFast } from "react-icons/fa";
 import { GrLocationPin } from "react-icons/gr";
 import { LiaBoxOpenSolid } from "react-icons/lia";
-import scrollTo
+import { ScrollTop } from '../../pages/ScrollTop';
 
 const SizeSelector = ({ sizes, selectedSize, onSizeChange }) => {
   if (!sizes || sizes.length === 0) return null;
@@ -74,7 +74,10 @@ const ColorSelector = ({ colors, selectedColor, onColorChange }) => {
         {colors.map((colorItem, index) => (
           <button
             key={index}
-            onClick={() => onColorChange(colorItem.color)}
+            onClick={() => {
+              onColorChange(colorItem.color);
+              ScrollTop({ height: 0 })
+            }}
             style={{
               padding: '0.5em 1em',
               border: selectedColor === colorItem.color ? '2px solid #9172EC' : '1px solid #ddd',

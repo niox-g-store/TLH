@@ -150,7 +150,9 @@ router.get('/banks', auth, async (req, res) => {
   }
 });
 
-router.put('/', auth, organizerBanned, upload.single('image'), async (req, res) => {
+router.put('/',
+  auth, organizerBanned,
+  upload.single('image'), async (req, res) => {
   try {
     const userId = req.user._id;
     let update = req.body;

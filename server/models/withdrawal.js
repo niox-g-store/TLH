@@ -76,60 +76,66 @@ const withdrawalSchema = new Schema({
 
 withdrawalSchema.pre('validate', async function (next) {
   try {
-    const setting = await Setting.findOne();
-
-    if (!setting) {
-      throw new Error("System setting not found");
-    }
     const now = new Date();
-    let canWithdrawDate = now;
 
-    if (setting.earningControl === 'fixed') {
-      const todayIndex = now.getDay();
-      const dayMap = {
-        Sunday: 0,
-        Monday: 1,
-        Tuesday: 2,
-        Wednesday: 3,
-        Thursday: 4,
-        Friday: 5,
-        Saturday: 6,
-      };
+    // if canWithdrawDate is not set, compute it from system settings
+    if (!this.canWithdrawDate) {
+      const setting = await Setting.findOne();
+      if (!setting) throw new Error("System setting not found");
 
-      const fixedIndexes = setting.fixedDays.map(day => dayMap[day]);
-      fixedIndexes.sort((a, b) => a - b);
+      let canWithdrawDate = now;
 
-      let daysToAdd = null;
-      for (let i = 0; i < fixedIndexes.length; i++) {
-        const diff = fixedIndexes[i] - todayIndex;
-        if (diff > 0) {
-          daysToAdd = diff;
-          break;
+      if (setting.earningControl === 'fixed') {
+        const todayIndex = now.getDay();
+        const dayMap = {
+          Sunday: 0,
+          Monday: 1,
+          Tuesday: 2,
+          Wednesday: 3,
+          Thursday: 4,
+          Friday: 5,
+          Saturday: 6,
+        };
+
+        const fixedIndexes = setting.fixedDays.map(day => dayMap[day]);
+        fixedIndexes.sort((a, b) => a - b);
+
+        let daysToAdd = null;
+        for (let i = 0; i < fixedIndexes.length; i++) {
+          const diff = fixedIndexes[i] - todayIndex;
+          if (diff > 0) {
+            daysToAdd = diff;
+            break;
+          }
         }
+
+        if (daysToAdd === null && fixedIndexes.length > 0) {
+          daysToAdd = 7 - todayIndex + fixedIndexes[0];
+        }
+
+        if (daysToAdd !== null) {
+          canWithdrawDate = new Date(now.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
+        }
+
+      } else if (setting.earningControl === 'hours') {
+        const hours = setting.hours || 24;
+        canWithdrawDate = new Date(now.getTime() + hours * 60 * 60 * 1000);
       }
 
-      // if none found in future, pick first of next week
-      if (daysToAdd === null && fixedIndexes.length > 0) {
-        daysToAdd = 7 - todayIndex + fixedIndexes[0];
-      }
-
-      if (daysToAdd !== null) {
-        canWithdrawDate = new Date(now.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
-      }
-
-    } else if (setting.earningControl === 'hours') {
-      const hours = setting.hours || 24;
-      canWithdrawDate = new Date(now.getTime() + hours * 60 * 60 * 1000);
+      this.canWithdrawDate = canWithdrawDate;
+      // this.canWithdrawDate = new Date(Date.now() + 1 * 60 * 1000);
+      this.canWithdraw = false;
     }
 
-    this.canWithdrawDate = canWithdrawDate;
-    this.canWithdraw = false;
+    // if withdrawal date has passed and canWithdraw is still false, mark it eligible
+    /*if (!this.canWithdraw && this.canWithdrawDate && now >= this.canWithdrawDate) {
+      this.canWithdraw = true;
+    }*/
 
     next();
   } catch (err) {
     next(err);
   }
 });
-
 
 module.exports = mongoose.model('Withdrawal', withdrawalSchema);

@@ -1,7 +1,15 @@
    import { FETCH_SETTINGS, UPDATE_SETTINGS, SETTINGS_ERROR, SETTING_LOADING } from './constants';
 
    const initialState = {
-     settings: {},
+     settings: {
+        maintenance: false,
+        commission: '',
+        islandDeliveryFee: '',
+        mainlandDeliveryFee: '',
+        earningControl: '',
+        fixedDays: [],
+        hours: null
+     },
      error: null,
      isLoading: false,
    };

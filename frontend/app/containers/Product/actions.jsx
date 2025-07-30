@@ -263,7 +263,6 @@ export const addProduct = (navigate) => {
       };
 
       const product = getState().product.productFormData;
-      console.log(product)
       
       const newProduct = {
         name: product.name,

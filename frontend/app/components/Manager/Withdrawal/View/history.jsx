@@ -1,15 +1,12 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { withRouter } from '../../../../withRouter';
-import actions from '../../../../actions';
-import ManagerPagination from '../Pagination';
-import LoadingIndicator from '../../store/LoadingIndicator';
-import WithdrawalGridItem from '../../../store/WithdrawalGridItem';
-
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import actions from '../../../../actions';
+import ManagerPagination from '../../Pagination';
 import WithdrawalGridItem from '../../../store/WithdrawalGridItem';
 import Input from '../../../Common/HtmlTags/Input';
 import LoadingIndicator from '../../../store/LoadingIndicator';
+import { GoBack } from '../../../../containers/goBack/inedx';
+import { useNavigate } from 'react-router-dom';
 
 const HistoryWithdrawalsForm = (props) => {
   const {
@@ -22,7 +19,7 @@ const HistoryWithdrawalsForm = (props) => {
     withdrawalPageCount,
     fetchWithdrawalsHistory
   } = props;
-
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const eventsPerPage = 10;
 
@@ -41,8 +38,10 @@ const HistoryWithdrawalsForm = (props) => {
   return (
     <div data-aos='fade-up' className='container-lg px-4 d-flex flex-column mb-custom-5em withdrawal'>
       {withdrawIsLoading && <LoadingIndicator isLightMode={isLightMode} />}
-
-      <h2 className={`${isLightMode ? 'p-black' : 'p-white'}`}>Withdrawal History</h2>
+      <div style={{ gap: '2em' }} className='d-flex justify-content-between'>
+        <h2 className={`${isLightMode ? 'p-black' : 'p-white'}`}>Withdrawal History</h2>
+        <GoBack text={"Go Back"} navigate={navigate}/>
+      </div>
 
       <div className="my-4">
         <Input
@@ -80,10 +79,7 @@ const HistoryWithdrawalsForm = (props) => {
 class HistoryWithdrawals extends React.PureComponent {
   componentDidMount () {
     this.props.resetWithdrawal();
-    const userId = this.props.match.params.id || this.props?.user?._id;
-    if (userId) {
-      this.props.fetchWithdrawalsHistory(userId);
-    }
+    this.props.fetchWithdrawalsHistory();
   }
 
   render () {
@@ -101,6 +97,6 @@ const mapStateToProps = state => ({
   withdrawalPaginated: state.withdraw.withdrawalPaginated
 });
 
-export default connect(mapStateToProps, actions)(withRouter(HistoryWithdrawals));
+export default connect(mapStateToProps, actions)(HistoryWithdrawals);
 
 
