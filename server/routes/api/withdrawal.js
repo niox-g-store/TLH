@@ -20,7 +20,7 @@ router.get('/', auth, role.check(ROLES.Admin), async (req, res) => {
     const limit = 10;
     const skip = (page - 1) * limit;
 
-    let allWithdrawals = await AdminWithdrawal.find({ status: { $ne: 'completed' } })
+    let allWithdrawals = await AdminWithdrawal.find()
       .populate('event ticket user order')
       .sort({ requestedAt: -1 });
     allWithdrawals = await Promise.all(allWithdrawals.map(updateCanWithdrawDate));
@@ -59,7 +59,7 @@ router.get('/organizers', auth, role.check(ROLES.Admin), async (req, res) => {
     const limit = 10;
     const skip = (page - 1) * limit;
 
-    let withdrawals = await Withdrawal.find({ status: { $ne: 'completed' } })
+    let withdrawals = await Withdrawal.find()
       .populate('event ticket user order')
       .sort({ requestedAt: -1 });
     withdrawals = await Promise.all(withdrawals.map(updateCanWithdrawDate));
@@ -112,7 +112,7 @@ router.get('/organizer/:id', auth, role.check(ROLES.Admin, ROLES.Organizer), asy
     const limit = 10;
     const skip = (page - 1) * limit;
 
-    let allWithdrawals = await Withdrawal.find({ user: id, status: { $ne: 'completed' } })
+    let allWithdrawals = await Withdrawal.find({ user: id})
       .populate('event ticket order user')
       .sort({ requestedAt: -1 });
 
