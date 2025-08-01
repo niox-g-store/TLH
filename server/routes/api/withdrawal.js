@@ -35,7 +35,7 @@ router.get('/', auth, role.check(ROLES.Admin), async (req, res) => {
       /*if (w.status === 'completed') {
         withdrawnAmount += w.commission || 0;
       }*/
-      if (w.canWithdraw === true) { canWithdrawAmount += w.commission }
+      if (w.canWithdraw === true && w.status !== 'completed') { canWithdrawAmount += w.commission }
     });
     const paginated = adminWithdrawals.slice(skip, skip + limit);
 
@@ -86,7 +86,7 @@ router.get('/organizers', auth, role.check(ROLES.Admin), async (req, res) => {
         if (w.status === 'completed') {
           group.withdrawnAmount += w.amount || 0;
         }
-        if (w.canWithdraw) { group.canWithdrawAmount += w.amount || 0 }
+        if (w.canWithdraw && w.status !== 'completed') { group.canWithdrawAmount += w.amount || 0 }
       }
     });
 
@@ -112,7 +112,7 @@ router.get('/organizer/:id', auth, role.check(ROLES.Admin, ROLES.Organizer), asy
     const limit = 10;
     const skip = (page - 1) * limit;
 
-    let allWithdrawals = await Withdrawal.find({ user: id})
+    let allWithdrawals = await Withdrawal.find({ user: id })
       .populate('event ticket order user')
       .sort({ requestedAt: -1 });
 
@@ -123,7 +123,7 @@ router.get('/organizer/:id', auth, role.check(ROLES.Admin, ROLES.Organizer), asy
 
     allWithdrawals.forEach(async (w) => {
       earnings += w.amount;
-      if (w.canWithdraw === true) { canWithdrawAmount += w.amount }
+      if (w.canWithdraw === true && w.status !== 'completed') { canWithdrawAmount += w.amount }
     });
     const paginated = allWithdrawals.slice(skip, skip + limit);
 
