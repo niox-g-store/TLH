@@ -1,3 +1,5 @@
+# 1 month 6 days
+
 The Link Hangouts Web Application
 This repository contains the source code for The Link Hangouts web application, a platform designed for [briefly describe what it does, e.g., "event management and ticketing"].
 
