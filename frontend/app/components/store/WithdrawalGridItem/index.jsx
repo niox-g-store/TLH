@@ -11,7 +11,13 @@ import Button from '../../Common/HtmlTags/Button';
 import { ROLES } from "../../../constants";
 import { formatDate } from '../../../utils/formatDate';
 
-const WithdrawalGridItem = ({ user, currentWithdrawals, isLightMode, initialiseWithdrawal, withdrawForOrg = false }) => {
+const WithdrawalGridItem = (props) => {
+  const {
+    dontWithdraw = false, user,
+    currentWithdrawals, isLightMode,
+    initialiseWithdrawal, withdrawForOrg = false
+  } = props;
+
   const navigate = useNavigate();
   const [countdowns, setCountdowns] = useState({});
 
@@ -44,9 +50,9 @@ const WithdrawalGridItem = ({ user, currentWithdrawals, isLightMode, initialiseW
           </tr>
         </thead>
         <tbody>
-          {currentWithdrawals.map((withdrawal) => {
+          {currentWithdrawals.map((withdrawal, index) => {
             return (
-            <tr key={withdrawal._id} className={`${isLightMode ? 'bg-white' : 'bg-gray-900'} border-b`}>
+            <tr key={index} className={`${isLightMode ? 'bg-white' : 'bg-gray-900'} border-b`}>
               <td className="px-4 py-2 font-semibold">₦{withdrawal?.amount !== withdrawal?.commission ? (withdrawal?.commission).toLocaleString() : (withdrawal?.amount).toLocaleString()}</td>
               <td className="px-4 py-2">
                 <CBadge color={
@@ -63,7 +69,7 @@ const WithdrawalGridItem = ({ user, currentWithdrawals, isLightMode, initialiseW
               <td className="px-4 py-2">{withdrawal.processedAt ? formatDate(withdrawal.processedAt) : 'Not processed'}</td>
               {withdrawal?.status !== 'completed' ?
               <td className="px-4 py-2 space-x-2 d-flex gap-2">
-                {withdrawal.canWithdraw === true &&
+                {withdrawal.canWithdraw === true && !dontWithdraw &&
                 <Button
                   style={{ padding: '8px', width: 'max-content' }}
                   onClick={() => initialiseWithdrawal(withdrawal._id,

@@ -45,7 +45,8 @@ router.get('/', auth, role.check(ROLES.Admin), async (req, res) => {
       canWithdrawAmount,
       total: adminWithdrawals.length,
       page,
-      pageCount: Math.ceil(adminWithdrawals.length / limit)
+      pageCount: Math.ceil(adminWithdrawals.length / limit),
+      proccessingWithdrawals: adminWithdrawals.filter(i => i.canWithdraw === true && i.status === 'processing')
     });
   } catch (err) {
     return res.status(400).json({ error: 'Failed to load admin withdrawals' });
@@ -132,7 +133,8 @@ router.get('/organizer/:id', auth, role.check(ROLES.Admin, ROLES.Organizer), asy
       canWithdrawAmount,
       total: allWithdrawals.length,
       page,
-      pageCount: Math.ceil(allWithdrawals.length / limit)
+      pageCount: Math.ceil(allWithdrawals.length / limit),
+      proccessingWithdrawals: allWithdrawals.filter(i => i.canWithdraw === true && i.status === 'processing')
     });
   } catch (err) {
     return res.status(400).json({ error: 'Failed to load organizer withdrawals' });
@@ -314,7 +316,8 @@ router.post(
 
       return res.status(200).json({
         message: `Your withdrawal${initiatedWithdrawals.length > 1 ? 's have' : ' has'} been successfully initiated. You will receive email notifications regarding the status and updates.`,
-        withdrawals: initiatedWithdrawals
+        withdrawals: initiatedWithdrawals,
+        proccessingWithdrawals: initiatedWithdrawals.filter(w => w.canWithdraw === true && w.status === 'processing')
       });
 
     } catch (err) {

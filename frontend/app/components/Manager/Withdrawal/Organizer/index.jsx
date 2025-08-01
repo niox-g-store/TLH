@@ -32,7 +32,9 @@ const ManagerWithdrawForm = (props) => {
     withdrawalPage,
     withdrawalPageCount,
     fetchOrganizerWithdrawals,
-    initialiseWithdrawal
+    initialiseWithdrawal,
+
+    proccessingWithdrawals
   } = props;
 
   const navigate = useNavigate();
@@ -105,6 +107,19 @@ const ManagerWithdrawForm = (props) => {
           onInputChange={handleSearch}
         />
       </div>
+
+      {
+        proccessingWithdrawals.length > 0 && 
+        <div className='can-withdraw-withdrawals mb-3'>
+          <h3 className={`${isLightMode ? 'p-black' : 'p-white'}`}>Processing withdrawals</h3>
+          <WithdrawalOrganizerGridItem
+            user={user}
+            isLightMode={isLightMode}
+            currentWithdrawals={proccessingWithdrawals}
+            dontWithdraw={true}
+          />
+        </div>
+      }
 
       {currentWithdrawals.length > 0 ? (
         <div style={{ gap: '3em' }} className='withdrawals-group d-flex flex-column'>
@@ -196,6 +211,8 @@ const mapStateToProps = state => ({
   withdrawalPageCount: state.withdraw.withdrawalPageCount,
   withdrawalPaginated: state.withdraw.withdrawalPaginated,
   user: state.account.user,
+
+  proccessingWithdrawals: state.withdraw.proccessingWithdrawals
 });
 
 export default connect(mapStateToProps, actions)(withRouter(OrganizerManagerWithdraw));

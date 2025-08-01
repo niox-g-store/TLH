@@ -10,7 +10,8 @@ import {
   SET_WITHDRAWAL_PAGINITION,
   INITIALISE_WITHDRAWAL,
   SET_WITHDRAWAL_ORGANIZER,
-  CLEAR_WITHDRAWAL_ORGANIZER
+  CLEAR_WITHDRAWAL_ORGANIZER,
+  SET_PROCESSING_WITHDRAWAL
 } from './constants';
 
 import {
@@ -31,10 +32,16 @@ const initialState = {
   withdrawalPaginated: [],
   withdrawalPage: 1,
   withdrawalPageCount: 1,
+  proccessingWithdrawals: []
 };
 
 const withdrawalReducer = (state = initialState, action) => {
   switch (action.type) {
+    case SET_PROCESSING_WITHDRAWAL:
+      return {
+        ...state,
+        proccessingWithdrawals: [...state.proccessingWithdrawals, ...action.payload]
+      };
     case CLEAR_WITHDRAWAL_ORGANIZER:
       localStorage.removeItem('organizerId');
       return {

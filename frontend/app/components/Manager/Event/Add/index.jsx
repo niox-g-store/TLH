@@ -21,6 +21,7 @@ import AdvancedUpload from '../../../store/AdanceFileUpload';
 import { connect } from 'react-redux';
 import { withRouter } from '../../../../withRouter';
 import actions from "../../../../actions";
+import { ROLES } from '../../../../constants';
 
 const AddEventForm = (props) => {
   const {
@@ -35,7 +36,11 @@ const AddEventForm = (props) => {
     eventTickets,
     couponsOptions,
     commission,
-    user
+    user,
+
+    earningControl,
+    fixedDays,
+    hours
   } = props;
 
   const navigate = useNavigate();
@@ -65,6 +70,22 @@ const AddEventForm = (props) => {
         <h2 className={`${isLightMode ? 'p-black' : 'p-white'} font-size-25`}>Create Event</h2>
         <GoBack navigate={navigate} />
       </div>
+      {user.role === ROLES.Organizer &&
+            <div className="alert alert-info mb-3 mt-3" role="alert">
+            {
+              earningControl === 'fixed' && fixedDays.length > 0 ? (
+                <>
+                  Payouts are released on <strong>{fixedDays.join(' and, ')}</strong> from the day a ticket is sold.
+                </>
+              ) : earningControl === 'hours' ? (
+                <>
+                  Payouts are released <strong>{hours} hours</strong> after a ticket is sold.
+                </>
+              ) : ''
+            }
+            </div>
+          }
+
       <form onSubmit={handleSubmit} noValidate>
         <Row>
           {/* Event Name */}
@@ -240,6 +261,11 @@ const mapStateToProps = state => ({
   couponsOptions: state.coupon.couponsSelect,
   user: state.account.user,
   commission: state.setting.settings.commission,
+
+  earningControl: state.setting.settings.earningControl,
+  fixedDays: state.setting?.settings?.fixedDays || [],
+  hours: state.setting?.settings?.hours || null
+
 });
 
 export default connect(mapStateToProps, actions)(withRouter(AddEvent));

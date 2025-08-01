@@ -12,7 +12,8 @@ import {
   SET_CAN_WITHDRAWAL_AMOUNT,
   INITIALISE_WITHDRAWAL,
   SET_WITHDRAWAL_ORGANIZER,
-  CLEAR_WITHDRAWAL_ORGANIZER
+  CLEAR_WITHDRAWAL_ORGANIZER,
+  SET_PROCESSING_WITHDRAWAL
 } from './constants';
 // import { setDashboardRouter } from '../Dashboard/actions';
 import { API_URL } from '../../constants';
@@ -41,6 +42,10 @@ export const initialiseWithdrawal = (withdrawalId, orderId = null, navigate, org
       dispatch({
         type: INITIALISE_WITHDRAWAL,
         payload: data.withdrawals
+      })
+      dispatch({
+        type: SET_PROCESSING_WITHDRAWAL,
+        payload: data.proccessingWithdrawals
       })
     }
   } catch (error) {
@@ -74,6 +79,10 @@ export const fetchWithdrawals = (organizer = false, page = 1) => async (dispatch
           page: data.page,
           withdrawals: data.withdrawals
         }
+      })
+      dispatch({
+        type: SET_PROCESSING_WITHDRAWAL,
+        payload: data.proccessingWithdrawals
       })
 
       if (organizer) {
@@ -118,6 +127,7 @@ export const fetchOrganizerWithdrawals = (organizerId, page = 1) => async (dispa
     const { data, status } = await axios.get(`${API_URL}/withdraw/organizer/${id}?page=${page}`);
 
     if (status === 200) {
+      dispatch({ type: SET_PROCESSING_WITHDRAWAL, payload: data.proccessingWithdrawals });
       dispatch({ type: WITHDRAWALS, payload: data.withdrawals });
       dispatch({ type: SET_EARNINGS, payload: data.earnings });
       dispatch({ type: SET_WITHDRAWN_AMOUNT, payload: data.withdrawnAmount });

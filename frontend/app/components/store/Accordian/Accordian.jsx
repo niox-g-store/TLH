@@ -67,7 +67,7 @@ const Accordian = () => {
     {
       question: "How often can I withdraw my earnings?",
       answer:
-        "You can withdraw every 3 days after ticket sales begin. This allows time for proper verification and accurate payouts.",
+        "You can withdraw on fridays and mondays after ticket sales begin. This allows time for proper verification and accurate payouts.",
     },
     {
       question: "How do I become an event organizer on Link Hangouts?",

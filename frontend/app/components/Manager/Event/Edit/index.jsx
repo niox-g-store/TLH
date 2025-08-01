@@ -18,6 +18,7 @@ import { eventCategoryFinder } from '../../../../utils/eventCategories';
 import AdvancedUpload from '../../../store/AdanceFileUpload';
 import { API_URL } from '../../../../constants';
 import AdvancedUploadHelper from '../../../store/AdanceFileUpload/updateFileUpload';
+import { ROLES } from '../../../../constants';
 
 import {
   CTable,
@@ -44,6 +45,11 @@ const EditEventForm = (props) => {
     deleteEvent,
     eventImageToRemove,
     eventChange,
+
+    earningControl,
+    fixedDays,
+    hours,
+    user
   } = props;
 
   const navigate = useNavigate();
@@ -69,6 +75,22 @@ const EditEventForm = (props) => {
         <h2 className={`${isLightMode ? 'p-black' : 'p-white'} font-size-25`}>Event details</h2>
         <GoBack navigate={navigate} />
       </div>
+
+      {user.role === ROLES.Organizer &&
+        <div className="alert alert-info mb-3 mt-3" role="alert">
+          {
+            earningControl === 'fixed' && fixedDays.length > 0 ? (
+              <>
+                Payouts are released on <strong>{fixedDays.join(' and, ')}</strong> from the day a ticket is sold.
+              </>
+              ) : earningControl === 'hours' ? (
+              <>
+                Payouts are released <strong>{hours} hours</strong> after a ticket is sold.
+              </>
+              ) : ''
+          }
+        </div>
+      }
       
       <form noValidate>
         <Row>
@@ -305,7 +327,12 @@ class EditEvent extends React.PureComponent {
 const mapStateToProps = state => ({
   event: state.event.event,
   eventEditFormErrors: state.event.editFormErrors,
-  eventIsLoading: state.event.isLoading
+  eventIsLoading: state.event.isLoading,
+
+  earningControl: state.setting.settings.earningControl,
+  fixedDays: state.setting?.settings?.fixedDays || [],
+  hours: state.setting?.settings?.hours || null,
+  user: state.account.user
 });
 
 export default connect(mapStateToProps, actions)(withRouter(EditEvent));
