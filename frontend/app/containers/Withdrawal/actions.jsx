@@ -80,10 +80,12 @@ export const fetchWithdrawals = (organizer = false, page = 1) => async (dispatch
           withdrawals: data.withdrawals
         }
       })
-      dispatch({
-        type: SET_PROCESSING_WITHDRAWAL,
-        payload: data.proccessingWithdrawals
-      })
+      if (!organizer) {
+        dispatch({
+          type: SET_PROCESSING_WITHDRAWAL,
+          payload: data.proccessingWithdrawals
+        })
+      }
 
       if (organizer) {
         let earnings = 0;
