@@ -38,9 +38,12 @@ const initialState = {
 const withdrawalReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_PROCESSING_WITHDRAWAL:
+      const existingIds = state.proccessingWithdrawals.map(w => w._id);
+      const newWithdrawals = action.payload.filter(w => !existingIds.includes(w._id));
+
       return {
         ...state,
-        proccessingWithdrawals: [...state.proccessingWithdrawals, ...action.payload]
+        proccessingWithdrawals: [...state.proccessingWithdrawals, ...newWithdrawals]
       };
     case CLEAR_WITHDRAWAL_ORGANIZER:
       localStorage.removeItem('organizerId');
