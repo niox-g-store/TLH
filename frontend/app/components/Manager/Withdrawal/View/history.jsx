@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import actions from '../../../../actions';
 import ManagerPagination from '../../Pagination';
-import WithdrawalGridItem from '../../../store/WithdrawalGridItem';
+import WithdrawalOrganizerGridItem from '../../../store/WithdrawalGridItem/organizerGrid';
 import Input from '../../../Common/HtmlTags/Input';
 import LoadingIndicator from '../../../store/LoadingIndicator';
 import { GoBack } from '../../../../containers/goBack/inedx';
@@ -59,7 +59,7 @@ const HistoryWithdrawalsForm = (props) => {
       </div>
 
       {currentWithdrawals.length > 0 ? (
-        <WithdrawalGridItem
+        <WithdrawalOrganizerGridItem
           user={user}
           isLightMode={isLightMode}
           currentWithdrawals={currentWithdrawals}
