@@ -194,7 +194,7 @@ router.get('/history', auth, role.check(ROLES.Admin, ROLES.Organizer), async (re
       let withdrawnAmount = 0;
 
       for (const item of withdrawals) {
-        withdrawnAmount += isAdmin ? item.commission : item.amount;
+        withdrawnAmount += item.amount;
       }
 
       return res.status(200).json({
