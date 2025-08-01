@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Backend server",
   "scripts": {
-    "dev": "concurrently \"nodemon index.js\" \"nodemon orderWorker.js\"",
-    "start": "cross-env NODE_ENV=production concurrently \"node index.js\" \"node orderWorker.js\"",
+    "dev": "concurrently \"nodemon index.js\" \"nodemon orderWorker.js\" \"nodemon withdrawalWorker.js\"",
+    "start": "cross-env NODE_ENV=production concurrently \"node index.js\" \"node orderWorker.js\" \"nodemon withdrawalWorker.js\"",
     "seed:db": "node utils/seed.js"
   },
   "dependencies": {

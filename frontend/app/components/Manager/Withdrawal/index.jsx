@@ -47,7 +47,7 @@ const ManagerWithdrawForm = (props) => {
   const endIndex = withdrawalsPerPage;
   const currentWithdrawals = filteredWithdrawals.slice(startIndex, endIndex);
 
-  const canWithdraw = currentWithdrawals.filter(w => w.canWithdraw === true);
+  const canWithdraw = currentWithdrawals.filter(w => w.canWithdraw === true && ['failed', 'pending'].includes(w.status));
   const cannotWithdraw = currentWithdrawals.filter(w => w.canWithdraw === false)
 
   const canWithdrawIds = canWithdraw.map(i => i._id);

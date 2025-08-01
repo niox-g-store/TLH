@@ -150,45 +150,18 @@ router.get('/banks', auth, async (req, res) => {
   }
 });
 
-router.put('/',
-  auth, organizerBanned,
-  upload.single('image'), async (req, res) => {
+router.put('/update-bank',
+  auth, organizerBanned, async (req, res) => {
   try {
     const userId = req.user._id;
     let update = req.body;
-    let { bankAccountNumber, bankName, bankCode, updateBank = false } = req.body;
-    update.organizer ? update.organizer = JSON.parse(update.organizer) : null
+    let { bankAccountNumber, bankName, bankCode } = req.body;
 
-    if (bankAccountNumber && (!bankName && updateBank)) {
+    if (bankAccountNumber && (!bankName || !bankCode)) {
       return res.status(400).json({ error: "incomplete bank details, select a bank name" })
     }
 
-    let userDoc;
-
-    if (update.userName) {
-      const usernameRegex = /^[a-zA-Z0-9_-]+$/;
-      if (!usernameRegex.test(update.userName)) {
-        return res.status(400).json({
-          error: 'Username may only contain letters, numbers, underscores, and dashes.'
-        });
-      }
-
-      const existingUser = await User.findOne({ userName: update.userName, _id: { $ne: userId } });
-      if (existingUser) {
-        return res.status(400).json({
-          error: 'This username is already taken. Please choose a different one.'
-        });
-      }
-    }
-
-    if (req.file) {
-      update.imageUrl = `/uploads/profile/${req.file.filename}`;
-    }
-    if (update.organizer === 'null') {
-     update.organizer = null;
-    }
-
-    if (bankAccountNumber && bankName && bankCode && updateBank !== 'false') {
+    if (bankAccountNumber && bankName && bankCode) {
       const { data } = await verifyCustomerBank(bankAccountNumber, bankCode);
       const { account_number, account_name } = data;
       if (account_number && account_name) {
@@ -205,13 +178,7 @@ router.put('/',
 
     if (userDoc.organizer) {
       const organizerUpdate = {};
-      if (update.companyName) {
-        organizerUpdate.companyName = update.companyName;
-      }
-      if (update.phoneNumber) {
-        organizerUpdate.phoneNumber = update.phoneNumber;
-      }
-      if (update.bankAccountNumber && update.bankName && update.bankAccountName && updateBank !== 'false') {
+      if (update.bankAccountNumber && update.bankName && update.bankAccountName) {
         organizerUpdate.bankAccountNumber = update.bankAccountNumber,
         organizerUpdate.bankName = update.bankName,
         organizerUpdate.bankAccountName = update.bankAccountName
@@ -250,6 +217,65 @@ router.put('/',
         error: 'Your request could not be processed. Please try again.'
       });
     }
+  }
+});
+
+router.put('/',
+  auth, organizerBanned,
+  upload.single('image'), async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const update = req.body;
+    let userDoc;
+
+    if (update.userName) {
+      const usernameRegex = /^[a-zA-Z0-9_-]+$/;
+      if (!usernameRegex.test(update.userName)) {
+        return res.status(400).json({
+          error: 'Username may only contain letters, numbers, underscores, and dashes.'
+        });
+      }
+
+      const existingUser = await User.findOne({ userName: update.userName, _id: { $ne: userId } });
+      if (existingUser) {
+        return res.status(400).json({
+          error: 'This username is already taken. Please choose a different one.'
+        });
+      }
+    }
+
+    if (req.file) {
+      update.imageUrl = `/uploads/profile/${req.file.filename}`;
+    }
+    if (update.organizer === 'null') {
+     update.organizer = null;
+    }
+
+    userDoc = await User.findByIdAndUpdate(userId, update);
+
+    // If user has organizer linked, update that too
+    if (userDoc.organizer) {
+      const organizerUpdate = {};
+      if (update.companyName) {
+        organizerUpdate.companyName = update.companyName;
+      }
+      if (update.phoneNumber) {
+        organizerUpdate.phoneNumber = update.phoneNumber;
+      }
+      if (Object.keys(organizerUpdate).length > 0) {
+        await Organizer.findByIdAndUpdate(userDoc.organizer, organizerUpdate);
+      }
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'successfully updated!',
+      user: userDoc
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: 'Your request could not be processed. Please try again.'
+    });
   }
 });
 

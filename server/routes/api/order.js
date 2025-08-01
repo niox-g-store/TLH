@@ -9,6 +9,7 @@ const Ticket = require('../../models/ticket');
 const User = require('../../models/user');
 const Organizer = require('../../models/organizer');
 const Withdrawal = require('../../models/withdrawal');
+const AdminWithdrawal = require('../../models/adminWithdrawal');
 const Guest = require('../../models/guest');
 const QRCODE = require('../../models/qrCode');
 const Product = require('../../models/product');
@@ -297,19 +298,31 @@ router.put('/edit/order/', async (req, res) => {
       let quantity = 0;
       for (const item of cartDoc.tickets) {
         const tick = await Ticket.findById(item.ticketId);
-        tick.soldCount += item.quantity;
-        await tick.save()
-        quantity += item.quantity
+        if (tick) {
+          tick.soldCount = (tick.soldCount || 0) + item.quantity;
+          await tick.save();
+          quantity += item.quantity;
+        }
       }
 
-      if (cartDoc.user) { // add to registered attendees
+
+      if (cartDoc.user) {
+        // For registered attendees
         for (const item of cartEvents) {
           const eve = await Event.findById(item._id);
-          eve.attendees += quantity;
+
+          // Sum quantities for this specific event
+          let attendeeQty = 0;
+          for (const cartItem of cartDoc.tickets) {
+            if (cartItem.eventId.equals(eve._id)) {
+              attendeeQty += cartItem.quantity;
+            }
+          }
+
+          eve.attendees = (eve.attendees || 0) + attendeeQty;
 
           const userIdStr = cartDoc.user.toString();
           const alreadyRegistered = eve.registeredAttendees.some(id => id.toString() === userIdStr);
-
           if (!alreadyRegistered) {
             eve.registeredAttendees.push(cartDoc.user);
           }
@@ -317,11 +330,12 @@ router.put('/edit/order/', async (req, res) => {
           await eve.save();
         }
       } else {
+        // For guests
         for (const item of cartEvents) {
-          const eve = await Event.findById(item._id)
-          eve.attendees += quantity
-          eve.unregisteredAttendees.push(guest._id)
-          await eve.save()
+          const eve = await Event.findById(item._id);
+          eve.attendees = (eve.attendees || 0) + quantity;
+          eve.unregisteredAttendees.push(guest._id);
+          await eve.save();
         }
       }
       // assign qr code to the ticket
@@ -901,12 +915,26 @@ const createWithdrawal = async (cartDoc, updateOrder) => {
 
       let adminCommission = 0
       if (owner.role === ROLES.Organizer) {
-        adminCommission = reverseExpectedPayout(itemPrice, expected, ticket.quantity, true)
+        adminCommission = reverseExpectedPayout(itemPrice, expected, ticket.quantity, true);
       } else {
-        adminCommission = amount
+        adminCommission = amount;
       }
-
-      const withdrawal = new Withdrawal({
+      if (owner.role === ROLES.Organizer) {
+        const withdrawal = new Withdrawal({
+          user: owner._id,
+          event: event._id,
+          ticket: ticket.ticketId,
+          ticketQuantity: quantity,
+          order: updateOrder._id,
+          amount,
+          commission: adminCommission,
+          bankAccountNumber: owner.bankAccountNumber,
+          bankAccountName: owner.bankAccountName,
+          bankName: owner.bankName,
+        });
+        await withdrawal.save();
+      }
+      const adminWithdrawal = new AdminWithdrawal({
         user: owner._id,
         event: event._id,
         ticket: ticket.ticketId,
@@ -917,9 +945,8 @@ const createWithdrawal = async (cartDoc, updateOrder) => {
         bankAccountNumber: owner.bankAccountNumber,
         bankAccountName: owner.bankAccountName,
         bankName: owner.bankName,
-      });
-
-      await withdrawal.save();
+      })
+      await adminWithdrawal.save()
       // createdWithdrawals.push(withdrawal);
     }
   }

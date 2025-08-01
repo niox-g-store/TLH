@@ -188,7 +188,6 @@ const ManagerCouponHelper = (props) => {
       ) : (
         <div className={`text-center py-5 ${isLightMode ? 'p-black' : 'p-white'}`}>
           <h3>No coupons found</h3>
-          <p>Try adjusting your search criteria</p>
         </div>
       )}
 

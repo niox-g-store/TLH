@@ -35,7 +35,6 @@ const WithdrawalGridItem = ({ user, currentWithdrawals, isLightMode, initialiseW
         <thead className={`${isLightMode ? 'bg-gray-100' : 'bg-gray-800'}`}>
           <tr>
             <th className="px-4 py-2 text-left">Amount</th>
-            <th className="px-4 py-2 text-left">Commission</th>
             <th className="px-4 py-2 text-left">Status</th>
             <th className="px-4 py-2 text-left">Order ID</th>
             <th className="px-4 py-2 text-left">Ticket Qty</th>
@@ -45,10 +44,10 @@ const WithdrawalGridItem = ({ user, currentWithdrawals, isLightMode, initialiseW
           </tr>
         </thead>
         <tbody>
-          {currentWithdrawals.map((withdrawal) => (
+          {currentWithdrawals.map((withdrawal) => {
+            return (
             <tr key={withdrawal._id} className={`${isLightMode ? 'bg-white' : 'bg-gray-900'} border-b`}>
-              <td className="px-4 py-2 font-semibold">₦{withdrawal.amount?.toLocaleString()}</td>
-              <td className="px-4 py-2 font-semibold">₦{withdrawal?.amount !== withdrawal?.commission ? (withdrawal?.commission).toLocaleString() : 0}</td>
+              <td className="px-4 py-2 font-semibold">₦{withdrawal?.amount !== withdrawal?.commission ? (withdrawal?.commission).toLocaleString() : (withdrawal?.amount).toLocaleString()}</td>
               <td className="px-4 py-2">
                 <CBadge color={
                   withdrawal.status === 'completed' ? 'success' :
@@ -95,7 +94,8 @@ const WithdrawalGridItem = ({ user, currentWithdrawals, isLightMode, initialiseW
               <td>No action needed</td>
               }
             </tr>
-          ))}
+            )
+          })}
         </tbody>
       </table>
     </div>

@@ -111,6 +111,7 @@ const OrganizersManagerWithdrawForm = (props) => {
 
 class OrganizersManagerWithdraw extends React.PureComponent {
   componentDidMount () {
+    this.props.clearWithdrawOrganizer();
     this.props.resetWithdrawal();
     this.props.fetchWithdrawals(true);
   }

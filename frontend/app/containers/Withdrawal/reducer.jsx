@@ -8,7 +8,15 @@ import {
   SET_CAN_WITHDRAWAL_AMOUNT,
   RESET_WITHDRAWAL,
   SET_WITHDRAWAL_PAGINITION,
+  INITIALISE_WITHDRAWAL,
+  SET_WITHDRAWAL_ORGANIZER,
+  CLEAR_WITHDRAWAL_ORGANIZER
 } from './constants';
+
+import {
+  getSelectedOrganizerFromStorage,
+  saveSelectedOrganizerToStorage
+} from '../../utils/selectedOrganizer';
 
 const initialState = {
   withdrawals: [],
@@ -18,6 +26,7 @@ const initialState = {
   withdrawnAmount: 0,
   commission: 0,
   canWithdrawAmount: 0,
+  organizerId: getSelectedOrganizerFromStorage(),
 
   withdrawalPaginated: [],
   withdrawalPage: 1,
@@ -26,6 +35,26 @@ const initialState = {
 
 const withdrawalReducer = (state = initialState, action) => {
   switch (action.type) {
+    case CLEAR_WITHDRAWAL_ORGANIZER:
+      localStorage.removeItem('organizerId');
+      return {
+        ...state,
+        organizerId: null
+      }
+    case SET_WITHDRAWAL_ORGANIZER:
+      saveSelectedOrganizerToStorage(action.payload)
+      return {
+        ...state,
+        organizerId: action.payload
+      }
+    case INITIALISE_WITHDRAWAL:
+      const updatedMap = new Map(action.payload.map(w => [w._id, w]));
+        return {
+          ...state,
+          withdrawals: state.withdrawals.map(w =>
+          updatedMap.has(w._id) ? updatedMap.get(w._id) : w
+        ),
+      }
     case SET_CAN_WITHDRAWAL_AMOUNT:
       return {
         ...state,
@@ -45,7 +74,7 @@ const withdrawalReducer = (state = initialState, action) => {
         withdrawalTotalPages: 1,
         withdrawals: [],
         withdrawalPaginated: [],
-        withdrawnAmount: 0
+        withdrawnAmount: 0,
       }
     case SET_WITHDRAWAL_COMMISSION:
       return {

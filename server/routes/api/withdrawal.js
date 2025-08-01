@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Withdrawal = require('../../models/withdrawal');
+const AdminWithdrawal = require('../../models/adminWithdrawal');
 const User = require('../../models/user');
 const Organizer = require('../../models/organizer');
 const Order = require('../../models/order');
@@ -19,7 +20,7 @@ router.get('/', auth, role.check(ROLES.Admin), async (req, res) => {
     const limit = 10;
     const skip = (page - 1) * limit;
 
-    let allWithdrawals = await Withdrawal.find({ status: { $ne: 'completed' } })
+    let allWithdrawals = await AdminWithdrawal.find({ status: { $ne: 'completed' } })
       .populate('event ticket user order')
       .sort({ requestedAt: -1 });
     allWithdrawals = await Promise.all(allWithdrawals.map(updateCanWithdrawDate));
@@ -142,65 +143,103 @@ router.get('/withdrawal/:id', auth, role.check(ROLES.Admin), async (req, res) =>
   try {
     const { id } = req.params;
 
-    const withdrawal = await Withdrawal.findById(id)
+    let withdrawal = await Withdrawal.findById(id)
       .populate('ticket event user')
       .populate({
         path: 'order',
         populate: {
-          path: 'cart'
-        }
+          path: 'cart',
+        },
       });
-    if (!withdrawal) return res.status(400).json({ error: 'Withdrawal not found' });
+
+    if (!withdrawal) {
+      withdrawal = await AdminWithdrawal.findById(id)
+        .populate('event user')
+        .populate({
+          path: 'order',
+          populate: {
+            path: 'cart',
+          },
+        });
+    }
+
+    if (!withdrawal) {
+      return res.status(404).json({ error: 'Withdrawal not found' });
+    }
 
     return res.status(200).json(withdrawal);
   } catch (err) {
-    return res.status(400).json({ error: 'Server error fetching withdrawal' });
+    return res.status(500).json({ error: 'Server error fetching withdrawal' });
   }
 });
 
 router.get('/history', auth, role.check(ROLES.Admin, ROLES.Organizer), async (req, res) => {
   try {
     const userId = req.user._id;
+    const organizerId = req.query.organizerId;
     const isAdmin = req.user.role === ROLES.Admin;
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const skip = (page - 1) * limit;
 
-    let query = { status: 'completed' };
+    let withdrawals = [];
 
-    if (isAdmin) {
-      const adminUsers = await User.find({ role: ROLES.Admin }).select('_id');
-      const adminUserIds = adminUsers.map(u => u._id);
-      query.user = { $in: adminUserIds };
-    } else {
-      query.user = userId;
+    if (isAdmin && organizerId) {
+      const organizerWithdrawals = await Withdrawal.find({ status: 'completed', user: organizerId })
+        .populate('event ticket order user')
+        .sort({ requestedAt: -1 });
+
+      withdrawals = organizerWithdrawals;
+      const paginated = withdrawals.slice(skip, skip + limit);
+      let withdrawnAmount = 0;
+
+      for (const item of withdrawals) {
+        withdrawnAmount += isAdmin ? item.commission : item.amount;
+      }
+
+      return res.status(200).json({
+        withdrawals: paginated,
+        total: withdrawals.length,
+        page,
+        withdrawnAmount,
+        pageCount: Math.ceil(withdrawals.length / limit),
+      });
     }
 
-    const allCompletedWithdrawals = await Withdrawal.find(query)
-      .populate('event ticket order user')
-      .sort({ requestedAt: -1 });
+    if (isAdmin) {
+      const adminWithdrawals = await AdminWithdrawal.find({ status: 'completed' })
+        .populate('event order user')
+        .sort({ requestedAt: -1 });
 
-    const paginated = allCompletedWithdrawals.slice(skip, skip + limit);
+      withdrawals = adminWithdrawals;
+    } else {
+      const organizerWithdrawals = await Withdrawal.find({ status: 'completed', user: userId })
+        .populate('event ticket order user')
+        .sort({ requestedAt: -1 });
+
+      withdrawals = organizerWithdrawals;
+    }
+
+    const paginated = withdrawals.slice(skip, skip + limit);
     let withdrawnAmount = 0;
-    for (const items of allCompletedWithdrawals) {
-      if (isAdmin) {
-        withdrawnAmount += items.commission
-      } else {
-        withdrawnAmount += items.amount
-      }
+
+    for (const item of withdrawals) {
+      withdrawnAmount += isAdmin ? item.commission : item.amount;
     }
 
     return res.status(200).json({
       withdrawals: paginated,
-      total: allCompletedWithdrawals.length,
+      total: withdrawals.length,
       page,
       withdrawnAmount,
-      pageCount: Math.ceil(allCompletedWithdrawals.length / limit)
+      pageCount: Math.ceil(withdrawals.length / limit),
     });
+
   } catch (err) {
     return res.status(400).json({ error: 'Failed to load withdrawal history' });
   }
 });
+
 
 router.post(
   '/initialise',
@@ -218,6 +257,7 @@ router.post(
 
       let organizer = null;
       let orderDoc = {};
+
       if (organizerId) {
         organizer = await Organizer.findById(organizerId);
       }
@@ -226,10 +266,16 @@ router.post(
       }
 
       for (const id of withdrawalIds) {
-        const withdrawal = await Withdrawal.findById(id).populate('user');
-        if (!withdrawal) continue;
+        let withdrawal;
+        if (isAdmin && organizerId && organizer) {
+          withdrawal = await Withdrawal.findById(id).populate('user');
+        } else if (isAdmin) {
+          withdrawal = await AdminWithdrawal.findById(id).populate('user');
+        } else {
+          withdrawal = await Withdrawal.findById(id).populate('user');
+        }
 
-        // Access control
+        // Prevent non-admins from initiating someone else’s withdrawal
         if (!isAdmin && !withdrawal.user._id.equals(req.user._id)) {
           return res.status(403).json({ error: 'Unauthorized withdrawal access' });
         }
@@ -244,18 +290,17 @@ router.post(
           return res.status(400).json({ error: 'Bank details not set on user profile' });
         }
 
-        // Finalize withdrawal
+        // Update and initiate transfer
         withdrawal.requestedAt = now;
         withdrawal.reference = uuidv4();
         withdrawal.status = 'processing';
         await withdrawal.save();
-        
-        const amount = organizerId ? withdrawal.amount : withdrawal.commission;
 
+        const amount = isAdmin ? withdrawal.commission : withdrawal.amount;
         await initiateTransfer(amount, withdrawal.reference, organizer.recipientId);
-
         initiatedWithdrawals.push(withdrawal);
-        // Notify admin if initiated by non-admin user
+
+        // Send email to admins if initiated by an organizer
         if (!isAdmin && initiatedWithdrawals.length > 0) {
           const adminEmails = await User.find({ role: ROLES.Admin });
           await orderQueue.add('send-admin-email', {
@@ -267,10 +312,8 @@ router.post(
         }
       }
 
-
       return res.status(200).json({
-        message: `Your withdrawal${initiatedWithdrawals.length > 1 ? 's have' : ' has'} been successfully initiated.
-                  You will receive email notifications regarding the status and updates.`,
+        message: `Your withdrawal${initiatedWithdrawals.length > 1 ? 's have' : ' has'} been successfully initiated. You will receive email notifications regarding the status and updates.`,
         withdrawals: initiatedWithdrawals
       });
 
@@ -283,48 +326,78 @@ router.post(
 // set a withdrawal webhook url to accept withdrawal reference and status
 // to update withdrawal status, if withdrawal failed, retry again with same
 // reference to avoid duplicate withdrawals
-router.post('/verify-endpoint', async(req, res) => {
-    try {
-        const { data } = req.body;
-        const { reference, status, amount } = data.transfers[0];
-        const now = new Date();
-
-        const withdrawal = await Withdrawal.findOne({ reference })
-          .populate('user');
-        const organizer = await Organizer.findById(withdrawal.user.organizer)
-        const oppData = {
-          withdrawal,
-          organizer: organizer ? organizer : null,
-          order: { totalExpectedPayout: amount },
-        }
-        if (status === 'success') {
-            // successfuly transfer update withdrwal.status
-            if (withdrawal) {
-                withdrawal.status = 'completed';
-                withdrawal.processedAt = now;
-                await withdrawal.save();
-            }
-            // send success email to organizer
-            if (organizer) {
-              await mailgun.sendEmail(withdrawal.user.email, 'organizer-withdraw-successful', oppData)
-            }
-          return res.status(200)
-        } else if (status === 'failed' || status === 'reversed') {
-            if (withdrawal) {
-                withdrawal.status = 'failed';
-                await withdrawal.save();
-            }
-            // send failed email to organizer
-            if (organizer) {
-              await mailgun.sendEmail(withdrawal.user.email, 'organizer-withdraw-failed', oppData)
-            }
-          return res.status(400)
-        }
-        return res.status(200)
-    } catch (error) {
-        return res.status(400).json({ error: 'error verifying transfer status' })
+router.post('/verify-endpoint', async (req, res) => {
+  try {
+    const { data } = req.body;
+    if (!data?.transfers || !Array.isArray(data.transfers) || data.transfers.length === 0) {
+      return res.status(400).json({ message: 'No transfer data received' });
     }
-})
+
+    const { reference, status, amount } = data.transfers[0];
+    const now = new Date();
+
+    let withdrawal = await Withdrawal.findOne({ reference }).populate('user');
+    let isAdminWithdrawal = false;
+
+    if (!withdrawal) {
+      withdrawal = await AdminWithdrawal.findOne({ reference }).populate('user');
+      isAdminWithdrawal = true;
+    }
+
+    if (!withdrawal) {
+      return res.status(400).json({ message: 'Withdrawal not found' });
+    }
+
+    const expectedAmount = isAdminWithdrawal
+      ? parseInt(withdrawal?.amount !== withdrawal?.commission ? withdrawal?.commission : withdrawal?.amount)
+      : parseInt(withdrawal.amount) || parseInt(withdrawal.commission);
+
+    if (expectedAmount !== amount / 100) {
+      return res.status(400).json({ message: 'Amount mismatch — ignoring webhook' });
+    }
+
+    let organizer = null;
+    if (!isAdminWithdrawal) {
+      organizer = await Organizer.findById(withdrawal.user.organizer);
+    }
+
+    const oppData = {
+      withdrawal,
+      organizer,
+      order: { totalExpectedPayout: amount },
+    };
+
+    if (status === 'received') {
+      withdrawal.status = 'processing';
+      await withdrawal.save();
+      return res.status(200).json({ message: 'Transfer received' });
+    }
+
+    if (status === 'success') {
+      withdrawal.status = 'completed';
+      withdrawal.processedAt = now;
+      await withdrawal.save();
+
+      if (!isAdminWithdrawal && organizer) {
+        await mailgun.sendEmail(withdrawal.user.email, 'organizer-withdraw-successful', oppData);
+      }
+    } else if (status === 'failed' || status === 'reversed') {
+      withdrawal.status = 'failed';
+      await withdrawal.save();
+
+      if (!isAdminWithdrawal && organizer) {
+        await mailgun.sendEmail(withdrawal.user.email, 'organizer-withdraw-failed', oppData);
+      }
+    }
+
+    return res.status(200).json({ message: 'Webhook processed' });
+
+  } catch (error) {
+    return res.status(400).json({ message: 'Error processing webhook' });
+  }
+});
+
+
 
 const updateCanWithdrawDate = async (withdrawal) => {
   const now = new Date();

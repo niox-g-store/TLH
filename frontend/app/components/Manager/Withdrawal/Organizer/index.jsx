@@ -14,7 +14,7 @@ import actions from '../../../../actions';
 import ManagerPagination from '../../Pagination';
 import LoadingIndicator from '../../../store/LoadingIndicator';
 import AssetDistribution from '../../../store/AssetDistribution';
-import WithdrawalGridItem from '../../../store/WithdrawalGridItem';
+import WithdrawalOrganizerGridItem from '../../../store/WithdrawalGridItem/organizerGrid';
 import { withRouter } from '../../../../withRouter';
 import { GoBack } from '../../../../containers/goBack/inedx';
 
@@ -49,7 +49,7 @@ const ManagerWithdrawForm = (props) => {
   const endIndex = withdrawalsPerPage;
   const currentWithdrawals = filteredWithdrawals.slice(startIndex, endIndex);
 
-  const canWithdraw = currentWithdrawals.filter(w => w.canWithdraw === true);
+  const canWithdraw = currentWithdrawals.filter(w => w.canWithdraw === true && [ 'failed', 'pending' ].includes(w.status));
   const cannotWithdraw = currentWithdrawals.filter(w => w.canWithdraw === false);
   const organizerUserId = filteredWithdrawals?.find(w => w.user);
 
@@ -119,7 +119,7 @@ const ManagerWithdrawForm = (props) => {
                 text={"withdraw all"}
               />
             </div>
-            <WithdrawalGridItem
+            <WithdrawalOrganizerGridItem
               user={user}
               isLightMode={isLightMode}
               currentWithdrawals={canWithdraw}
@@ -132,7 +132,7 @@ const ManagerWithdrawForm = (props) => {
         {cannotWithdraw.length > 0 &&
           <div className='can-withdraw-withdrawals'>
             <h3 className={`text-center py-12 ${isLightMode ? 'p-black' : 'p-white'}`}>Not Ready for withdraw</h3>
-            <WithdrawalGridItem
+            <WithdrawalOrganizerGridItem
               user={user}
               isLightMode={isLightMode}
               currentWithdrawals={cannotWithdraw}
@@ -143,7 +143,6 @@ const ManagerWithdrawForm = (props) => {
       ) : (
         <div className={`text-center py-12 ${isLightMode ? 'p-black' : 'p-white'}`}>
           <h3 className="text-2xl font-semibold mb-2">No withdrawals found</h3>
-          <p className="text-lg">Try adjusting your search criteria</p>
         </div>
       )}
 
@@ -163,9 +162,9 @@ class OrganizerManagerWithdraw extends React.PureComponent {
     this.props.resetWithdrawal();
     const organizerId = this.props.match.params.id;
     if (organizerId) {
-        this.props.fetchOrganizerWithdrawals(organizerId);
+      this.props.fetchOrganizerWithdrawals({organizerId});
     } else {
-        this.props.fetchOrganizerWithdrawals(this.props?.user?._id);
+      this.props.fetchOrganizerWithdrawals(this.props?.user?._id);
     }
   }
 

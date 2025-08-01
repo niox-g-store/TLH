@@ -140,7 +140,7 @@ const initiateTransfer = async(amount, reference, recipientId) => {
           `https://api.paystack.co/transfer`,
           {
             source: "balance", 
-            amount: parseInt(amount),
+            amount: parseInt(amount) * 100,
             reference,
             recipient: recipientId,
             reason: "The link hangout payout"
@@ -180,10 +180,30 @@ const initiateTransfer = async(amount, reference, recipientId) => {
         throw NetworkError
       }
 }
+
+const verifyTransfer = async (reference) => {
+  try {
+    const req = await axios.get(`https://api.paystack.co/transfer/verify/${reference}`,
+      {
+        headers: {
+          Authorization: `Bearer ${payStackKey}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+    return req.status && req.data;
+  } catch (error) {
+    const NetworkError = new Error('Error initiating transfer', error.response ? error.response.data : error.message);
+    NetworkError.code = 'NETWORK_ERROR'
+    throw NetworkError
+  }
+}
+
 module.exports = {
   PaymentHandler,
   listBanks,
   verifyCustomerBank,
   createTransferRecipient,
-  initiateTransfer
+  initiateTransfer,
+  verifyTransfer
 };

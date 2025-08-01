@@ -249,7 +249,7 @@ export const addUserBank = (navigate) => {
       if (!isValid) {
         return dispatch({ type: SET_BANK_FORM_ERROR, payload: errors });
       }
-      const response = await axios.put(`${API_URL}/user`, newBank, {
+      const response = await axios.put(`${API_URL}/user/update-bank`, newBank, {
         headers: { 'Content-Type': 'application/json' }
       });
 
@@ -274,33 +274,6 @@ export const addUserBank = (navigate) => {
     }
   }
 }
-
-
-// delete a bank
-/*export const deleteBank = (id) => {
-  return async(dispatch, getState) => {
-    try {
-      if (id) {
-        const response  = await axios.delete(`${API_URL}/admin_account_bank/delete/${id}`)
-        if (response.data.success) {
-          const successfulOptions = {
-            title: `${response.data.message}`,
-            position: 'tr',
-            autoDismiss: 1
-          };
-
-          dispatch({
-            type: DELETE_BANK,
-            payload: id
-          })
-          dispatch(success(successfulOptions));
-        }
-      }
-    } catch (error) {
-      handleError(error, dispatch);
-    }
-  }
-}*/
 
 export const twoFaVerificationCodeChange = (name, value) => {
   let formData= {};

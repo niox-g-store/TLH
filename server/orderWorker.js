@@ -1,5 +1,6 @@
 require('dotenv').config();
 const orderQueue = require('./queues/orderQueue');
+const withdrawalQueue = require('./queues/withdrawalQueue');
 const mailgun = require('./services/mailgun');
 const { generateInvoice } = require('./utils/invoiceService');
 const chalk = require('chalk');
@@ -104,4 +105,4 @@ const adminOrgWithdrawal = async (adminEmails, organizer, order, withdraw) => {
   }
 }
 
-console.log(chalk.green.bold('[✔] Order Worker is active and listening for jobs...'));
+console.log(chalk.green.bold('[✔] Order Workers are active and listening for jobs...'));

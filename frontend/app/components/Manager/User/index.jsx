@@ -85,7 +85,6 @@ const ManagerUserHelper = (props) => {
       ) : (
         <div className={`text-center py-5 ${isLightMode ? 'p-black' : 'p-white'}`}>
           <h3>No users found</h3>
-          <p>Try adjusting your search criteria</p>
         </div>
       )}
 

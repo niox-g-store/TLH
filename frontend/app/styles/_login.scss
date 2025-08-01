@@ -2,13 +2,14 @@
     @include media-breakpoint-down(md) {
         height: 100vh;
     }
+    overflow-x: hidden;
     .left-login {
         @include media-breakpoint-down(md) {
             display: none;
         }
         img {
             margin-bottom: -5px;
-            height: auto;
+            height: 100vh;
         }
     }
 

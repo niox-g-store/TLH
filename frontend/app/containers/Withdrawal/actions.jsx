@@ -9,7 +9,10 @@ import {
   RESET_WITHDRAWAL,
   SET_WITHDRAWAL_PAGINITION,
 
-  SET_CAN_WITHDRAWAL_AMOUNT
+  SET_CAN_WITHDRAWAL_AMOUNT,
+  INITIALISE_WITHDRAWAL,
+  SET_WITHDRAWAL_ORGANIZER,
+  CLEAR_WITHDRAWAL_ORGANIZER
 } from './constants';
 // import { setDashboardRouter } from '../Dashboard/actions';
 import { API_URL } from '../../constants';
@@ -18,6 +21,10 @@ import handleError from '../../utils/error';
 
 export const resetWithdrawal = () => ({
   type: RESET_WITHDRAWAL
+})
+
+export const clearWithdrawOrganizer = () => ({
+  type: CLEAR_WITHDRAWAL_ORGANIZER
 })
 
 export const initialiseWithdrawal = (withdrawalId, orderId = null, navigate, organizerId = null) => async (dispatch) => {
@@ -31,7 +38,10 @@ export const initialiseWithdrawal = (withdrawalId, orderId = null, navigate, org
 
     if (status === 200) {
       dispatch(showNotification('success', data.message))
-      navigate(0);
+      dispatch({
+        type: INITIALISE_WITHDRAWAL,
+        payload: data.withdrawals
+      })
     }
   } catch (error) {
     handleError(error, dispatch)
@@ -96,7 +106,16 @@ export const fetchWithdrawals = (organizer = false, page = 1) => async (dispatch
 export const fetchOrganizerWithdrawals = (organizerId, page = 1) => async (dispatch) => {
   dispatch({ type: SET_WITHDRAWAL_LOADING, payload: true });
   try {
-    const { data, status } = await axios.get(`${API_URL}/withdraw/organizer/${organizerId}?page=${page}`);
+    let id = null;
+
+    if (organizerId && typeof organizerId === 'object' && organizerId.organizerId) {
+      id = organizerId.organizerId;
+      dispatch({ type: SET_WITHDRAWAL_ORGANIZER, payload: organizerId.organizerId });
+    } else {
+      id  = organizerId;
+    }
+
+    const { data, status } = await axios.get(`${API_URL}/withdraw/organizer/${id}?page=${page}`);
 
     if (status === 200) {
       dispatch({ type: WITHDRAWALS, payload: data.withdrawals });
@@ -133,10 +152,18 @@ export const getWithdrawal = (withdrawalId) => async (dispatch) => {
   }
 };
 
-export const fetchWithdrawalsHistory = (page = 1) => async (dispatch) => {
+export const fetchWithdrawalsHistory = (page = 1) => async (dispatch, getState) => {
   dispatch({ type: SET_WITHDRAWAL_LOADING, payload: true });
   try {
-    const { data, status } = await axios.get(`${API_URL}/withdraw/history?page=${page}`);
+    const organizerId = getState().withdraw.organizerId || null;
+
+    let response;
+    if (organizerId) {
+      response = await axios.get(`${API_URL}/withdraw/history?organizerId=${organizerId}&page=${page}`);
+    } else {
+      response = await axios.get(`${API_URL}/withdraw/history?page=${page}`);
+    }
+    const { data, status } = response;
 
     if (status === 200) {
       dispatch({ type: WITHDRAWALS, payload: data.withdrawals });
