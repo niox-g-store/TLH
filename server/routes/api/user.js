@@ -225,8 +225,9 @@ router.put('/',
   upload.single('image'), async (req, res) => {
   try {
     const userId = req.user._id;
-    const update = req.body;
+    let update = req.body;
     let userDoc;
+    update.organizer = update.organizer ? JSON.parse(update.organizer) : null
 
     if (update.userName) {
       const usernameRegex = /^[a-zA-Z0-9_-]+$/;
@@ -273,6 +274,7 @@ router.put('/',
       user: userDoc
     });
   } catch (error) {
+    console.log(error)
     return res.status(400).json({
       error: 'Your request could not be processed. Please try again.'
     });
