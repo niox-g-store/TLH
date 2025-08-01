@@ -353,7 +353,7 @@ router.post('/verify-endpoint', async (req, res) => {
 
     const expectedAmount = isAdminWithdrawal
       ? parseInt(withdrawal?.amount !== withdrawal?.commission ? withdrawal?.commission : withdrawal?.amount)
-      : parseInt(withdrawal.amount) || parseInt(withdrawal.commission);
+      : parseInt(withdrawal.amount);
 
     if (expectedAmount !== amount / 100) {
       return res.status(400).json({ message: 'Amount mismatch — ignoring webhook' });
