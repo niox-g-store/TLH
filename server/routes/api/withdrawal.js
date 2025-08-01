@@ -298,7 +298,7 @@ router.post(
         withdrawal.status = 'processing';
         await withdrawal.save();
 
-        const amount = isAdmin ? withdrawal.commission : withdrawal.amount;
+        const amount = isAdmin && !organizerId ? withdrawal.commission : withdrawal.amount;
         await initiateTransfer(amount, withdrawal.reference, organizer.recipientId);
         initiatedWithdrawals.push(withdrawal);
 
